@@ -55,3 +55,79 @@ test("el asiento de apertura por cuenta conserva el primer día del nuevo ejerci
   assert.equal(entries[0].kind, "apertura");
   assert.equal(entries[0].lines.some((line) => line.account.startsWith("6") || line.account.startsWith("7")), false);
 });
+
+test("traslada facturas pendientes y las cancela al cobrarlas o pagarlas en el ejercicio siguiente", () => {
+  const invoices = [
+    {
+      id: "venta-pendiente",
+      number: "V-2025-01",
+      kind: "LIQUIDACION",
+      issueDate: "2025-12-15",
+      status: "PAGADO",
+      paidDate: "2026-01-10",
+      base: 150,
+      igic: 10,
+      total: 160,
+    },
+    {
+      id: "compra-pendiente",
+      number: "C-2025-01",
+      kind: "FACTURA",
+      issueDate: "2025-12-20",
+      status: "PAGADO",
+      paidDate: "2026-01-12",
+      base: 100,
+      igic: 7,
+      total: 107,
+    },
+  ];
+  const closingEntries = asientosDe(invoices, {
+    from: "2025-01-01",
+    to: "2025-12-31",
+  });
+  const openingLines = aperturaDesdeCierre(closingEntries);
+  const opening = new Map(openingLines.map((line) => [
+    line.account,
+    Number((line.debit - line.credit).toFixed(2)),
+  ]));
+
+  assert.equal(opening.get("430"), 160);
+  assert.equal(opening.get("400"), -107);
+  assert.equal(
+    openingLines.some((line) => line.account.startsWith("6") || line.account.startsWith("7")),
+    false
+  );
+
+  const newYearEntries = asientosDe(invoices, {
+    from: "2026-01-01",
+    to: "2026-12-31",
+    apertura: { fecha: "2026-01-01", lines: openingLines },
+  });
+  const newYearBalances = new Map();
+  for (const entry of newYearEntries) {
+    for (const line of entry.lines) {
+      const saldo = (newYearBalances.get(line.account) || 0) + line.debit - line.credit;
+      newYearBalances.set(line.account, Number(saldo.toFixed(2)));
+    }
+  }
+
+  assert.deepEqual(
+    newYearEntries.map((entry) => entry.kind).sort(),
+    ["apertura", "cobro", "pago"]
+  );
+  assert.equal(newYearBalances.get("430"), 0);
+  assert.equal(newYearBalances.get("400"), 0);
+  assert.equal(newYearBalances.get("572"), 53);
+  assert.equal(
+    newYearEntries.find((entry) => entry.kind === "apertura").lines.some(
+      (line) => line.account.startsWith("6") || line.account.startsWith("7")
+    ),
+    false
+  );
+  assert.equal(
+    newYearEntries.some((entry) => entry.lines.some(
+      (line) => line.account.startsWith("6") || line.account.startsWith("7")
+    )),
+    false
+  );
+});

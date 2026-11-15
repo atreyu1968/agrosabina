@@ -421,9 +421,9 @@ export function asientosDe(invoices, opts = {}) {
         ? nominaRaw
         : ingreso
           ? [
-              [cuentaDoc, base],
-              ["477", igic],
-              [tercero, -total],
+              [cuentaDoc, -base],
+              ["477", -igic],
+              [tercero, total],
             ]
           : [
               [cuentaDoc, base],
