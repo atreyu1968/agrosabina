@@ -26,6 +26,7 @@ import {
 import {
   addInvoice,
   addMessage,
+  activeExerciseYear,
   applyBankReconciliation,
   clearAll,
   deleteInvoice,
@@ -35,6 +36,7 @@ import {
   exportJSON,
   findDuplicate,
   findSupplierByNameOrNif,
+  exerciseDateError,
   getState,
   importJSON,
   invoicesOf,
@@ -4168,7 +4170,7 @@ function nominaFormHtml(v) {
         <div class="with-suffix"><input id="n-neto" type="text" inputmode="decimal" value="${val(n.neto)}" placeholder="0,00"><span>€</span></div>
       </div>
       <p class="lines-sum" id="iv-nom-sum"></p>
-      <p class="lines-hint span-2">El líquido pasa a ser el total del documento y el bruto la base: es lo que sale del banco o de la caja al pagarla.</p>
+      <p class="lines-hint span-2">La nómina no lleva IGIC. El líquido pasa a ser el importe a pagar y el bruto se registra como sueldo.</p>
     </div>
   </div>`;
 }
@@ -4214,7 +4216,7 @@ function bindNomina(wrap, ctx) {
 
   function pasarAlDocumento(n) {
     if (ctx.base && document.activeElement !== ctx.base) ctx.base.value = n.bruto == null ? "" : fmtNum(n.bruto);
-    if (ctx.igic && document.activeElement !== ctx.igic) ctx.igic.value = "0";
+    if (ctx.igic) ctx.igic.value = "0";
     if (ctx.rate) ctx.rate.value = "0";
     if (ctx.total && document.activeElement !== ctx.total) ctx.total.value = n.neto == null ? "" : fmtNum(n.neto);
   }
@@ -4225,7 +4227,13 @@ function bindNomina(wrap, ctx) {
   }
 
   function ver() {
-    box.hidden = !ctx.kindSel || ctx.kindSel.value !== "NOMINA";
+    const payroll = !!ctx.kindSel && ctx.kindSel.value === "NOMINA";
+    box.hidden = !payroll;
+    for (const field of ctx.taxFields || []) field.hidden = payroll;
+    if (payroll) {
+      if (ctx.igic) ctx.igic.value = "0";
+      if (ctx.rate) ctx.rate.value = "0";
+    }
   }
 
   for (const el of [nBruto, nSs, nIrpf, nSsEmp, nNeto]) {
@@ -4236,7 +4244,11 @@ function bindNomina(wrap, ctx) {
       recalcular();
     });
   }
-  if (ctx.kindSel) ctx.kindSel.addEventListener("change", ver);
+  if (ctx.kindSel) ctx.kindSel.addEventListener("change", () => {
+    ver();
+    if (ctx.kindSel.value === "NOMINA") recalcular();
+    else pintarResumen();
+  });
   ver();
   if (ctx.kindSel && ctx.kindSel.value === "NOMINA") recalcular();
   else pintarResumen();
@@ -4266,9 +4278,26 @@ function readNomina(wrap) {
   return algo ? n : null;
 }
 
-function invoiceFormHtml(v) {  const state = getState();
+function invoiceFormHtml(v) {
+  const state = getState();
+  const exerciseYear = activeExerciseYear();
+  const missingDetectedDate = !v.id && Array.isArray(v.notes) && v.notes.some((note) => /no he encontrado la fecha de la factura/i.test(String(note)));
+  const issueDateValue = missingDetectedDate ? "" : String(v.issueDate || "");
+  const issueYear = Number(issueDateValue.slice(0, 4));
+  const matchesExercise = issueYear === exerciseYear;
+  const dateBounds = (v.id ? matchesExercise : !issueDateValue || matchesExercise)
+    ? `min="${exerciseYear}-01-01" max="${exerciseYear}-12-31"`
+    : "";
+  const exerciseHint = missingDetectedDate
+    ? "No se detectó la fecha del documento. Escríbela para poder asignarlo al ejercicio correcto."
+    : issueDateValue && !matchesExercise
+      ? `El documento está fechado en ${issueYear}, fuera del ejercicio ${exerciseYear}. Selecciona ese año en Contabilidad para guardarlo.`
+    : v.id && v.issueDate && !matchesExercise
+    ? `Este documento pertenece al ejercicio ${issueYear}. Para cambiar su fecha, selecciona primero ese ejercicio en Contabilidad.`
+    : `La fecha de emisión debe pertenecer al ejercicio ${exerciseYear}. El vencimiento o el pago pueden ser de otro año.`;
   const kind = v.kind || "FACTURA";
   const direction = v.direction || directionOf(kind);
+  const payrollTaxHidden = kind === "NOMINA" ? "hidden" : "";
   return `
   <div class="form-grid">
     <div class="field">
@@ -4301,29 +4330,30 @@ function invoiceFormHtml(v) {  const state = getState();
     </div>
     <div class="field">
       <label for="f-issue">Fecha de la factura</label>
-      <input id="f-issue" type="date" value="${esc(v.issueDate || "")}">
+      <input id="f-issue" type="date" ${dateBounds} value="${esc(issueDateValue)}" required>
+      <span class="hint">${esc(exerciseHint)}</span>
     </div>
     <div class="field">
       <label for="f-due">Vencimiento <span class="hint">(opcional)</span></label>
       <input id="f-due" type="date" value="${esc(v.dueDate || "")}">
     </div>
-    <div class="field">
+    <div class="field invoice-tax-field" id="f-base-field" ${payrollTaxHidden}>
       <label for="f-base">Base imponible</label>
       <div class="with-suffix"><input id="f-base" type="text" inputmode="decimal" value="${v.base != null ? fmtNum(v.base) : ""}" placeholder="0,00"><span>€</span></div>
     </div>
-    <div class="field">
+    <div class="field invoice-tax-field" id="f-rate-field" ${payrollTaxHidden}>
       <label for="f-rate">Tipo de IGIC</label>
       <select id="f-rate">${rateOptions(v.rate)}</select>
     </div>
-    <div class="field">
+    <div class="field invoice-tax-field" id="f-igic-field" ${payrollTaxHidden}>
       <label for="f-igic">Cuota de IGIC</label>
       <div class="with-suffix"><input id="f-igic" type="text" inputmode="decimal" value="${v.igic != null ? fmtNum(v.igic) : ""}" placeholder="0,00"><span>€</span></div>
     </div>
-    <div class="field">
+    <div class="field invoice-tax-field" id="f-total-field" ${payrollTaxHidden}>
       <label for="f-total">Total de la factura</label>
       <div class="with-suffix"><input id="f-total" type="text" inputmode="decimal" value="${v.total != null ? fmtNum(v.total) : ""}" placeholder="0,00"><span>€</span></div>
     </div>
-    <div class="field span-2">
+    <div class="field span-2 invoice-tax-field" id="f-lines-field" ${payrollTaxHidden}>
       <div class="lines-head">
         <div>
           <label for="iv-lines">Varios tipos de IGIC en el mismo documento</label>
@@ -4444,7 +4474,7 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
           supplierName: "",
           supplierNif: "",
           number: "",
-          issueDate: todayISO(),
+          issueDate: Number(todayISO().slice(0, 4)) === activeExerciseYear() ? todayISO() : "",
           dueDate: "",
           base: null,
           rate: getState().settings.defaultRate,
@@ -4860,9 +4890,12 @@ function bindForm(wrap, initial) {
 
   paintLines();
   paintLiq();
-  bindNomina(wrap, { kindSel, base, igic, rate, total });
+  bindNomina(wrap, {
+    kindSel, base, igic, rate, total,
+    taxFields: [...wrap.querySelectorAll(".invoice-tax-field")],
+  });
 
-  if (initial && initial.rate != null) rate.value = String(initial.rate);
+  if (initial && initial.rate != null && kindSel.value !== "NOMINA") rate.value = String(initial.rate);
 
   // Al importar una liquidación, la base, el IGIC y el total salen del líquido
   // que dice el papel (no del importe que hubiera elegido el lector genérico).
@@ -4935,6 +4968,8 @@ function readForm(wrap) {
   const total = parseAmount(q("#f-total").value);
   const lines = readIgicLines(wrap);
   const kind = (q("#f-kind") && q("#f-kind").value) || "FACTURA";
+  const payroll = kind === "NOMINA";
+  const nomina = payroll ? readNomina(wrap) : null;
 
   return {
     supplierName: q("#f-name").value.trim(),
@@ -4945,20 +4980,21 @@ function readForm(wrap) {
     kind,
     category: (q("#f-cat") && q("#f-cat").value) || "",
     direction: directionOf(kind),
-    base,
-    rate:
-      lines.length > 1 && base > 0 && igic != null
+    base: payroll ? nomina?.bruto ?? null : base,
+    rate: payroll
+      ? 0
+      : lines.length > 1 && base > 0 && igic != null
         ? round2((igic / base) * 100)
         : Number.isFinite(rate)
           ? rate
           : null,
-    igic,
-    total,
-    lines,
+    igic: payroll ? 0 : igic,
+    total: payroll ? nomina?.neto ?? null : total,
+    lines: payroll ? [] : lines,
     // Cada tipo guarda solo lo suyo: una nómina no se queda con kilos ni una
     // liquidación con el recibo de salarios.
     liquidacion: kind === "NOMINA" ? null : readLiquidacion(wrap),
-    nomina: kind === "LIQUIDACION" ? null : readNomina(wrap),
+    nomina: kind === "LIQUIDACION" ? null : payroll ? nomina : readNomina(wrap),
     status: status === STATUS.PAID ? STATUS.PAID : STATUS.PENDING,
     paidDate:
       status === STATUS.PAID
@@ -4974,6 +5010,16 @@ function readForm(wrap) {
 
 async function submitInvoice(wrap, { mode, invoice, job }) {
   const v = readForm(wrap);
+
+  const dateChanged = mode !== "edit" || !invoice || v.issueDate !== String(invoice.issueDate || "");
+  if (dateChanged) {
+    const dateError = exerciseDateError(v.issueDate);
+    if (dateError) {
+      toast(dateError, "bad", 7000);
+      wrap.querySelector("#f-issue").focus();
+      return null;
+    }
+  }
 
   if (!v.supplierName) {
     toast("Escribe el nombre del proveedor.", "bad");
@@ -4999,7 +5045,7 @@ async function submitInvoice(wrap, { mode, invoice, job }) {
 
   if (mode === "edit" && invoice) {
     const { supplier, created } = ensureSupplier(v.supplierName, v.supplierNif);
-    updateInvoice(invoice.id, {
+    const updated = updateInvoice(invoice.id, {
       supplierId: supplier.id,
       number: v.number,
       issueDate: v.issueDate,
@@ -5019,6 +5065,10 @@ async function submitInvoice(wrap, { mode, invoice, job }) {
       category: v.category,
       direction: v.direction,
     });
+    if (!updated) {
+      toast(exerciseDateError(v.issueDate) || "No se pudo actualizar el documento.", "bad", 6500);
+      return null;
+    }
     toast(created ? `Documento guardado y proveedor «${supplier.name}» creado.` : "Documento actualizado.");
     return { invoice };
   }
@@ -5031,6 +5081,10 @@ async function submitInvoice(wrap, { mode, invoice, job }) {
     notes: job ? job.parsed.notes : [],
     confidence: job ? job.parsed.confidence : null,
   });
+  if (res.error || !res.invoice) {
+    toast(res.error || "No se pudo guardar el documento.", "bad", 6500);
+    return null;
+  }
 
   // El fichero del que salieron los datos (la foto, el PDF) se guarda tal cual,
   // aparte de los datos, para poder volver a mirarlo desde la ficha.
@@ -6009,21 +6063,33 @@ export function onChange(event) {
     return;
   }
   if (target.id === "accIgicYear") {
-      ui.conta.year = Number(target.value) || new Date().getFullYear();
+      activateExercise(target.value);
       render();
       return;
     }
-    if (target.id === "accRange") {
-    ui.conta.range = target.value;
-    if (ui.conta.range === "custom") {
-      if (!ui.conta.from) ui.conta.from = `${new Date().getFullYear()}-01-01`;
-      if (!ui.conta.to) ui.conta.to = todayISO();
+  if (target.id === "accExercise") {
+    if (!activateExercise(target.value)) {
+      toast("El ejercicio seleccionado no es válido.", "warn");
     }
     render();
     return;
   }
   if (target.id === "accFrom" || target.id === "accTo") {
-    ui.conta[target.id === "accFrom" ? "from" : "to"] = target.value;
+    const year = activeExerciseYear();
+    const err = exerciseDateError(target.value, year);
+    if (err) {
+      toast(`El periodo debe estar dentro del ejercicio ${year}.`, "warn");
+      render();
+      return;
+    }
+    const key = target.id === "accFrom" ? "from" : "to";
+    const other = target.id === "accFrom" ? ui.conta.to : ui.conta.from;
+    if (other && (key === "from" ? target.value > other : target.value < other)) {
+      toast("La fecha inicial debe ser anterior a la final.", "warn");
+      render();
+      return;
+    }
+    ui.conta[key] = target.value;
     render();
     return;
   }
@@ -6159,7 +6225,7 @@ export function startBankStatementImport(file) {
       <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
     </div>
     <div class="modal-body">
-      <div class="notice info"><strong>${esc(file.name)}</strong><br>Se leerán las fechas, los conceptos y los importes del archivo. El original se conservará en este navegador.</div>
+      <div class="notice info"><strong>${esc(file.name)}</strong><br>Se leerán las fechas, los conceptos y los importes. Este extracto debe corresponder al ejercicio ${activeExerciseYear()}; el original se conservará en este navegador.</div>
       <label class="field" style="margin-top:14px">
         <span>Nombre de la cuenta bancaria</span>
         <input id="bankStatementAccount" type="text" list="bankStatementAccounts" value="${esc(defaultAccount)}" placeholder="Por ejemplo, cuenta agrícola" maxlength="120" required>
@@ -6183,9 +6249,59 @@ export function startBankStatementImport(file) {
   );
 }
 
-/** El periodo contable que se está mirando. */
+function exerciseYears() {
+  const current = new Date().getFullYear();
+  const years = new Set([activeExerciseYear()]);
+  for (let year = current - 10; year <= current + 2; year += 1) years.add(year);
+  const state = getState();
+  for (const inv of state.invoices || []) {
+    const year = Number(String(inv.issueDate || "").slice(0, 4));
+    if (Number.isInteger(year) && year >= 1900 && year <= 2200) years.add(year);
+  }
+  for (const entry of Array.isArray(state.settings?.asientosManuales) ? state.settings.asientosManuales : []) {
+    const year = Number(String(entry.date || "").slice(0, 4));
+    if (Number.isInteger(year) && year >= 1900 && year <= 2200) years.add(year);
+  }
+  for (const batch of Array.isArray(state.settings?.bankStatements) ? state.settings.bankStatements : []) {
+    for (const movement of Array.isArray(batch?.movements) ? batch.movements : []) {
+      const year = Number(String(movement.date || "").slice(0, 4));
+      if (Number.isInteger(year) && year >= 1900 && year <= 2200) years.add(year);
+    }
+  }
+  return [...years].sort((a, b) => b - a);
+}
+
+function activateExercise(yearValue) {
+  const year = Number(yearValue);
+  if (!Number.isInteger(year) || year < 1900 || year > 2200) return false;
+  updateSettings({ activeExerciseYear: year });
+  ui.conta.exerciseYear = year;
+  ui.conta.year = year;
+  ui.conta.from = `${year}-01-01`;
+  ui.conta.to = `${year}-12-31`;
+  return true;
+}
+
+/** El periodo contable queda siempre dentro del ejercicio natural activo. */
 function contaWindow() {
-  return windowFor(ui.conta);
+  const year = activeExerciseYear();
+  const start = `${year}-01-01`;
+  const end = `${year}-12-31`;
+  if (ui.conta.exerciseYear !== year) {
+    ui.conta.exerciseYear = year;
+    ui.conta.year = year;
+    ui.conta.from = start;
+    ui.conta.to = end;
+  }
+  let from = ui.conta.from || start;
+  let to = ui.conta.to || end;
+  if (exerciseDateError(from, year) || exerciseDateError(to, year) || from > to) {
+    from = start;
+    to = end;
+    ui.conta.from = from;
+    ui.conta.to = to;
+  }
+  return { from, to, label: `Ejercicio ${year}` };
 }
 
 /** Los documentos con el nombre de su proveedor o comprador, listos para contabilizar. */
@@ -6343,18 +6459,18 @@ function accNum(value) {
 }
 
 function accRangeBar(w) {
+  const year = activeExerciseYear();
+  const start = `${year}-01-01`;
+  const end = `${year}-12-31`;
   return `
     <div class="filters">
-      <select id="accRange" aria-label="Elegir el periodo">
-        ${SALES_RANGES.map((r) => `<option value="${r.id}"${ui.conta.range === r.id ? " selected" : ""}>${r.label}</option>`).join("")}
-      </select>
-      ${ui.conta.range === "custom" ? `
-      <label class="date-filter"><span>Desde</span><input id="accFrom" type="date" value="${esc(ui.conta.from)}" aria-label="Desde"></label>
-      <label class="date-filter"><span>Hasta</span><input id="accTo" type="date" value="${esc(ui.conta.to)}" aria-label="Hasta"></label>` : ""}
+      <label class="date-filter"><span>Ejercicio</span><select id="accExercise" aria-label="Ejercicio contable">${exerciseYears().map((item) => `<option value="${item}"${item === year ? " selected" : ""}>${item}</option>`).join("")}</select></label>
+      <label class="date-filter"><span>Desde</span><input id="accFrom" type="date" min="${start}" max="${end}" value="${esc(ui.conta.from || start)}" aria-label="Desde"></label>
+      <label class="date-filter"><span>Hasta</span><input id="accTo" type="date" min="${start}" max="${end}" value="${esc(ui.conta.to || end)}" aria-label="Hasta"></label>
       <div class="spacer"></div>
       <button class="btn sm" data-action="acc-entry-new">${icon("plus")}<span>Nuevo asiento</span></button>
       <span class="tag kind">Contabilidad · versión 3</span>
-      <span class="tag kind">${esc(w.label)}</span>
+      <span class="tag kind">${esc(w.label)} · año natural</span>
     </div>`;
 }
 
@@ -6995,6 +7111,13 @@ async function confirmBankStatementImport() {
     toast(err?.message || "No he podido leer el extracto.", "warn", 6000);
     return;
   }
+  const year = activeExerciseYear();
+  const outsideExercise = parsed.filter((movement) => !String(movement.date || "").startsWith(`${year}-`));
+  if (outsideExercise.length) {
+    const years = [...new Set(outsideExercise.map((movement) => String(movement.date || "").slice(0, 4)))].join(", ");
+    toast(`El extracto contiene ${outsideExercise.length} movimientos fuera del ejercicio ${year} (${years}). No se ha importado ninguno; cierra este aviso, cambia el ejercicio en Contabilidad y vuelve a subirlo.`, "bad", 8000);
+    return;
+  }
 
   const batches = bankStatementBatches();
   const known = new Set(
@@ -7031,6 +7154,7 @@ async function confirmBankStatementImport() {
     id: uid("bankstatement"),
     name: String(file.name || "extracto").slice(0, 180),
     account,
+    exerciseYear: year,
     importedAt: new Date().toISOString(),
     duplicatesIgnored,
     skippedRows: Number(parsed.skippedRows) || 0,
@@ -7703,6 +7827,11 @@ function accEntryAddRow() {
 /** La ventana para escribir o corregir un asiento a mano. */
 function accEntryModal(existing) {
   const e = existing || null;
+  const exerciseYear = activeExerciseYear();
+  const entryDate = String((e && e.date) || "").slice(0, 10);
+  const dateBounds = !e || entryDate.startsWith(`${exerciseYear}-`)
+    ? `min="${exerciseYear}-01-01" max="${exerciseYear}-12-31"`
+    : "";
   accEditing = e ? String(e.id) : "";
   const lineas = e && Array.isArray(e.lineas) ? e.lineas : [];
   const filas = [];
@@ -7730,7 +7859,8 @@ function accEntryModal(existing) {
        <div class="form-grid">
          <label class="field">
            <span>Fecha</span>
-           <input id="accEntryDate" type="date" value="${esc(String((e && e.date) || todayISO()).slice(0, 10))}">
+           <input id="accEntryDate" type="date" ${dateBounds} value="${esc(entryDate || (Number(todayISO().slice(0, 4)) === exerciseYear ? todayISO() : ""))}" required>
+           <span class="hint">Los asientos nuevos deben llevar una fecha del ejercicio ${exerciseYear}.</span>
          </label>
          <label class="field">
            <span>Número o referencia (si quieres)</span>
@@ -7776,6 +7906,15 @@ function saveAccEntry() {
   const concept = document.getElementById("accEntryConcept");
   const box = document.getElementById("accLines");
   const dia = String((day && day.value) || "").slice(0, 10) || todayISO();
+  const existing = accManuales().find((entry) => String(entry.id) === String(accEditing));
+  if (!existing || dia !== String(existing.date || "").slice(0, 10)) {
+    const dateError = exerciseDateError(dia);
+    if (dateError) {
+      toast(dateError, "bad", 6500);
+      day?.focus();
+      return;
+    }
+  }
 
   const lineas = [];
   if (box) {

@@ -13,6 +13,7 @@ Transcribe cada número exactamente, sin corregirlo para que cuadre.
 No mezcles documentos, trabajadores, páginas ajenas ni totales de resumen.
 Si hay varios tipos de IGIC, devuelve TODAS las bases y tipos en lineas.
 IVA no es IGIC: indica impuesto IVA y deja igic y tipo_igic en null.
+Las nóminas no llevan IGIC: deja igic, tipo_igic e impuesto en null y lineas en [].
 En nóminas, base es bruto y total es neto; no sumes IGIC al bruto.
 En liquidaciones, conserva kilos, precio (hasta 6 decimales), bruto,
 descuentos y líquido por separado. No confundas céntimos/kg con euros/kg.
@@ -93,7 +94,7 @@ export function normalizeExtraction(json) {
   if (Array.isArray(json.advertencias)) {
     json.advertencias.slice(0, 10).forEach((v) => { if (text(v, 220)) warn(text(v, 220)); });
   }
-  if (Array.isArray(json.lineas) && json.lineas.length) {
+  if (kind !== "NOMINA" && Array.isArray(json.lineas) && json.lineas.length) {
     let valid = true;
     const lines = json.lineas.slice(0, 100).map((line) => {
       if (!record(line)) { valid = false; return null; }
@@ -128,7 +129,7 @@ export function normalizeExtraction(json) {
     out.amountsValid = false;
     warn("Tipo de IGIC fuera de rango.");
   }
-  if (text(json.impuesto).toUpperCase() === "IVA") {
+  if (kind !== "NOMINA" && text(json.impuesto).toUpperCase() === "IVA") {
     out.igic = null;
     out.rate = null;
     out.lines = [];
@@ -159,6 +160,25 @@ export function normalizeExtraction(json) {
       out.payrollValid = false;
       warn("El desglose de nómina no coincide con sus importes de cabecera.");
     }
+  }
+  if (kind === "NOMINA") {
+    const lineTaxReported = Array.isArray(json.lineas) && json.lineas.some((line) => {
+      if (!record(line)) return false;
+      const rate = extractionNumber(line.tipo ?? line.rate);
+      return rate != null && rate !== 0;
+    });
+    const taxReported =
+      (out.igic != null && out.igic !== 0) ||
+      (out.rate != null && out.rate !== 0) ||
+      lineTaxReported ||
+      /igic|iva/i.test(text(json.impuesto));
+    if (taxReported) {
+      out.amountsValid = false;
+      warn("La nómina no lleva IGIC. Se descartó el importe fiscal detectado; revisa el documento.");
+    }
+    out.igic = 0;
+    out.rate = 0;
+    out.lines = [];
   }
   if (kind === "LIQUIDACION" && record(json.liquidacion)) {
     const l = json.liquidacion;

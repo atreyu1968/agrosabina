@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parseAmount } from "../assets/js/util.js";
+import { parseAmount, todayISO } from "../assets/js/util.js";
 import { validateBackup } from "../assets/js/backup.js";
 import * as store from "../assets/js/store.js";
 
@@ -23,6 +23,9 @@ for (const [input, expected] of [
   });
 }
 
+const TEST_DATE = todayISO();
+const TEST_YEAR = Number(TEST_DATE.slice(0, 4));
+
 test("la nómina conserva sus datos al crear, exportar y restaurar", () => {
   const nomina = {
     trabajador: "Auditoría", bruto: 2000, ssTrabajador: 130,
@@ -30,13 +33,60 @@ test("la nómina conserva sus datos al crear, exportar y restaurar", () => {
   };
   const { invoice } = store.addInvoice({
     supplierName: "Proveedor de prueba", kind: "NOMINA", number: "TEST-001",
-    base: 1500, total: 1500, rate: 0, nomina,
+    issueDate: TEST_DATE,
+    base: 2000, total: 1500, rate: 7, igic: 140,
+    lines: [{ base: 2000, rate: 7 }], nomina,
   });
   assert.equal(invoice.nomina.bruto, 2000);
   assert.equal(invoice.nomina.irpf, 370);
+  assert.equal(invoice.rate, 0);
+  assert.equal(invoice.igic, 0);
+  assert.deepEqual(invoice.lines, []);
+  store.updateInvoice(invoice.id, {
+    rate: 7, igic: 140, lines: [{ base: 2000, rate: 7 }],
+  });
+  assert.equal(store.invoiceById(invoice.id).rate, 0);
+  assert.equal(store.invoiceById(invoice.id).igic, 0);
+  assert.deepEqual(store.invoiceById(invoice.id).lines, []);
   const exported = store.exportJSON();
   store.importJSON(exported);
   assert.equal(store.invoiceById(invoice.id).nomina.ssEmpresa, 600);
+});
+
+test("rechaza documentos nuevos y cambios de emisión fuera del ejercicio activo", () => {
+  const year = store.activeExerciseYear();
+  assert.equal(store.exerciseDateError(`${year}-03-15`), "");
+  assert.match(store.exerciseDateError(`${year - 1}-12-31`), /no al/);
+
+  const rejected = store.addInvoice({
+    supplierName: "Fuera de ejercicio",
+    number: "OUTSIDE-001",
+    issueDate: `${year - 1}-12-31`,
+    base: 100,
+    total: 100,
+  });
+  assert.equal(rejected.invoice, null);
+  assert.match(rejected.error, /no al/);
+
+  const { invoice } = store.addInvoice({
+    supplierName: "Dentro de ejercicio",
+    number: "INSIDE-001",
+    issueDate: `${year}-03-15`,
+    base: 100,
+    total: 100,
+  });
+  assert.equal(store.updateInvoice(invoice.id, { issueDate: `${year - 1}-12-31` }), null);
+  assert.equal(store.invoiceById(invoice.id).issueDate, `${year}-03-15`);
+});
+
+test("el ejercicio activo se conserva al guardar y restaurar la copia", () => {
+  const previous = store.activeExerciseYear();
+  const selected = previous - 1;
+  store.updateSettings({ activeExerciseYear: selected });
+  assert.equal(store.activeExerciseYear(), selected);
+  store.importJSON(store.exportJSON());
+  assert.equal(store.activeExerciseYear(), selected);
+  store.updateSettings({ activeExerciseYear: previous });
 });
 
 test("fecha, medio y cuenta de pago sobreviven a la recarga del estado", () => {
@@ -61,6 +111,7 @@ test("el pago con tarjeta se distingue del banco y conserva su cuenta", () => {
     supplierName: "Pago con tarjeta",
     kind: "FACTURA",
     number: "CARD-001",
+    issueDate: TEST_DATE,
     base: 25,
     rate: 0,
     total: 25,
@@ -82,7 +133,7 @@ test("conciliar un movimiento valida importe y sentido, y al deshacer el pago vu
     supplierName: "Suministros de prueba",
     kind: "FACTURA",
     number: "BANK-001",
-    issueDate: "2026-10-01",
+    issueDate: `${TEST_YEAR}-10-01`,
     base: 100,
     rate: 0,
     total: 100,
@@ -91,13 +142,13 @@ test("conciliar un movimiento valida importe y sentido, y al deshacer el pago vu
   const statements = [{
     id: "statement-test",
     account: "Cuenta de prueba",
-    movements: [{ id: "movement-test", date: "2026-10-12", amount: -100, status: "PENDIENTE" }],
+    movements: [{ id: "movement-test", date: `${TEST_YEAR}-10-12`, amount: -100, status: "PENDIENTE" }],
   }];
   const rejected = store.applyBankReconciliation(statements, [{
     movementId: "movement-test",
     invoiceId: invoice.id,
     amount: -99,
-    date: "2026-10-12",
+    date: `${TEST_YEAR}-10-12`,
     method: "BANCO",
     account: "Cuenta de prueba",
   }]);
@@ -107,7 +158,7 @@ test("conciliar un movimiento valida importe y sentido, y al deshacer el pago vu
     movementId: "movement-test",
     invoiceId: invoice.id,
     amount: -100,
-    date: "2026-10-12",
+    date: `${TEST_YEAR}-10-12`,
     method: "BANCO",
     account: "Cuenta de prueba",
   }]);
@@ -124,6 +175,7 @@ test("una factura importada como pagada conserva la fecha vacía al editar y rec
   const { invoice } = store.addInvoice({
     supplierName: "Proveedor sin fecha de prueba",
     number: "PAGADA-SIN-FECHA",
+    issueDate: TEST_DATE,
     base: 100,
     total: 107,
     status: "PAGADO",

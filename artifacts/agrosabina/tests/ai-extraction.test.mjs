@@ -82,6 +82,20 @@ test("extrae el desglose de nómina y detecta inconsistencias", () => {
   assert.equal(result.payrollValid, true);
   assert.equal(result.nomina.ssEmpresa, 600);
   assert.equal(result.liquidacion, null);
+  assert.equal(result.igic, 0);
+  assert.equal(result.rate, 0);
+  assert.deepEqual(result.lines, []);
+  const falseTax = normalizeExtraction({
+    ...payroll,
+    igic: 140,
+    tipo_igic: 7,
+    lineas: [{ base: 2000, tipo: 7 }],
+  });
+  assert.equal(falseTax.igic, 0);
+  assert.equal(falseTax.rate, 0);
+  assert.deepEqual(falseTax.lines, []);
+  assert.equal(falseTax.amountsValid, false);
+  assert.match(falseTax.warnings.join(" "), /nómina no lleva IGIC/);
   assert.equal(normalizeExtraction({ ...payroll, total: 1600 }).payrollValid, false);
   assert.equal(normalizeExtraction({ ...payroll, nomina: { ...payroll.nomina, neto: 1400 } }).payrollValid, false);
 });

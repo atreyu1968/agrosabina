@@ -39,6 +39,7 @@ function emptyState() {
     settings: {
       defaultRate: 7,
       businessName: "Agrosabina SL",
+      activeExerciseYear: new Date().getFullYear(),
       // Cuentas que se ofrecen al marcar un cobro o un pago.
       bankAccounts: [],
       bankStatements: [],
@@ -171,11 +172,14 @@ function normaliseNomina(nom) {
 }
 
 function normaliseInvoice(inv) {
+  const kind = String(inv.kind || "FACTURA").toUpperCase();
   const base = Number.isFinite(+inv.base) && inv.base !== null && inv.base !== "" ? +inv.base : null;
   const igic = Number.isFinite(+inv.igic) && inv.igic !== null && inv.igic !== "" ? +inv.igic : null;
   const total = Number.isFinite(+inv.total) && inv.total !== null && inv.total !== "" ? +inv.total : null;
   const rate = Number.isFinite(+inv.rate) && inv.rate !== null && inv.rate !== "" ? +inv.rate : null;
-  const complete = completeAmounts({ base, igic, total, rate });
+  const complete = kind === "NOMINA"
+    ? { base, rate: 0, igic: 0, total }
+    : completeAmounts({ base, igic, total, rate });
   return {
     id: inv.id || uid("inv"),
     supplierId: inv.supplierId || null,
@@ -191,11 +195,11 @@ function normaliseInvoice(inv) {
     // Cómo se cobró o se pagó: en efectivo (caja) o por banco, y en qué cuenta.
     payMethod: normaliseMedio(inv.payMethod),
     payAccount: String(inv.payAccount || "").trim().slice(0, 120),
-    kind: String(inv.kind || "FACTURA"),
+    kind,
     category: String(inv.category || ""),
     direction: invoiceDirection(inv),
     // Un documento puede llevar varios tipos de IGIC: cada línea guarda su base y su tipo.
-    lines: Array.isArray(inv.lines)
+    lines: kind === "NOMINA" ? [] : Array.isArray(inv.lines)
       ? inv.lines
           .map((l) => {
             const lb = Number.isFinite(+l.base) && l.base !== null && l.base !== "" ? +l.base : null;
@@ -210,8 +214,7 @@ function normaliseInvoice(inv) {
     liquidacion:
       String(inv.kind || "").toUpperCase() === "NOMINA" ? null : normaliseLiquidacion(inv.liquidacion),
     // Nómina: bruto, Seguridad Social, IRPF y líquido del recibo de salarios.
-    nomina:
-      String(inv.kind || "").toUpperCase() === "LIQUIDACION" ? null : normaliseNomina(inv.nomina),
+    nomina: kind === "NOMINA" ? normaliseNomina(inv.nomina) : null,
     source: inv.source || "manual",
     fileName: inv.fileName || "",
     // El fichero original (foto, PDF, correo) que se guardó con el documento.
@@ -599,9 +602,11 @@ export function findDuplicate(supplierId, number) {
 
 /**
  * Guarda una factura. Crea el proveedor si hace falta.
- * @returns {{invoice: object, supplier: object, supplierCreated: boolean, duplicate: object|null}}
+ * @returns {{invoice: object|null, supplier: object|null, supplierCreated: boolean, duplicate: object|null, error?: string}}
  */
 export function addInvoice(data) {
+  const dateError = exerciseDateError(data?.issueDate);
+  if (dateError) return { invoice: null, supplier: null, supplierCreated: false, duplicate: null, error: dateError };
   const { supplier, created } = ensureSupplier(
     data.supplierName,
     data.supplierNif,
@@ -609,12 +614,17 @@ export function addInvoice(data) {
   );
   const duplicate = findDuplicate(supplier.id, data.number);
 
-  const complete = completeAmounts({
-    base: numOrNull(data.base),
-    igic: numOrNull(data.igic),
-    total: numOrNull(data.total),
-    rate: numOrNull(data.rate),
-  });
+  const kind = String(data.kind || "FACTURA").toUpperCase();
+  const base = numOrNull(data.base);
+  const total = numOrNull(data.total);
+  const complete = kind === "NOMINA"
+    ? { base, rate: 0, igic: 0, total }
+    : completeAmounts({
+        base,
+        igic: numOrNull(data.igic),
+        total,
+        rate: numOrNull(data.rate),
+      });
 
   const invoice = normaliseInvoice({
     supplierId: supplier.id,
@@ -626,7 +636,7 @@ export function addInvoice(data) {
     igic: complete.igic,
     total: complete.total,
     status: data.status,
-    kind: data.kind || "FACTURA",
+    kind,
     category: data.category || "",
     direction: direccionDeDocumento(data),
     lines: data.lines || [],
@@ -651,18 +661,26 @@ export function addInvoice(data) {
 export function updateInvoice(id, patch) {
   const inv = state.invoices.find((i) => i.id === id);
   if (!inv) return null;
+  if (Object.prototype.hasOwnProperty.call(patch || {}, "issueDate") && String(patch.issueDate || "") !== String(inv.issueDate || "")) {
+    if (exerciseDateError(patch.issueDate)) return null;
+  }
   Object.assign(inv, patch);
-  const complete = completeAmounts({
-    base: numOrNull(inv.base),
-    igic: numOrNull(inv.igic),
-    total: numOrNull(inv.total),
-    rate: numOrNull(inv.rate),
-  });
+  const payroll = String(inv.kind || "").toUpperCase() === "NOMINA";
+  const base = numOrNull(inv.base);
+  const total = numOrNull(inv.total);
+  const complete = payroll
+    ? { base, rate: 0, igic: 0, total }
+    : completeAmounts({
+        base,
+        igic: numOrNull(inv.igic),
+        total,
+        rate: numOrNull(inv.rate),
+      });
   inv.base = complete.base;
   inv.igic = complete.igic;
   inv.total = complete.total;
   inv.rate = complete.rate;
-  inv.lines = normaliseInvoice({ lines: inv.lines }).lines;
+  inv.lines = payroll ? [] : normaliseInvoice({ lines: inv.lines }).lines;
   inv.liquidacion = normaliseLiquidacion(inv.liquidacion);
   inv.original = normaliseOriginal(inv.original);
   inv.payMethod = normaliseMedio(inv.payMethod);
@@ -1010,6 +1028,28 @@ export function updateSettings(patch) {
   return state.settings;
 }
 
+/** El ejercicio fiscal activo usa años naturales y se conserva en los ajustes. */
+export function activeExerciseYear() {
+  const year = Number(state.settings?.activeExerciseYear);
+  return Number.isInteger(year) && year >= 1900 && year <= 2200 ? year : new Date().getFullYear();
+}
+
+/** Devuelve un aviso si la fecha de emisión no pertenece al ejercicio activo. */
+export function exerciseDateError(value, year = activeExerciseYear()) {
+  const date = String(value || "").slice(0, 10);
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+  if (!match) return "Indica una fecha de emisión válida para asignar el ejercicio contable.";
+  const [, y, m, d] = match.map(Number);
+  const parsed = new Date(Date.UTC(y, m - 1, d));
+  if (parsed.getUTCFullYear() !== y || parsed.getUTCMonth() !== m - 1 || parsed.getUTCDate() !== d) {
+    return "La fecha de emisión no es válida.";
+  }
+  if (y !== Number(year)) {
+    return `La fecha ${date} pertenece al ejercicio ${y}, no al ${year}. Cambia el ejercicio en Contabilidad o corrige la fecha.`;
+  }
+  return "";
+}
+
 export function clearAll() {
   state = emptyState();
   // Los originales también se van: si no, se quedarían ocupando sitio sin dueño.
@@ -1037,10 +1077,11 @@ export function importJSON(text) {
 /** Datos de ejemplo, para que se vea cómo funciona sin tener que subir nada. */
 export function seedDemo() {
   const t = todayISO();
-  const y = Number(t.slice(0, 4));
+  const y = activeExerciseYear();
   const m = Number(t.slice(5, 7));
   const stamp = (monthOffset, day) => {
-    const d = new Date(y, m - 1 - monthOffset, Math.min(day, 28));
+    const month = Math.max(0, Math.min(11, m - 1 - monthOffset));
+    const d = new Date(y, month, Math.min(day, 28));
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   };
 

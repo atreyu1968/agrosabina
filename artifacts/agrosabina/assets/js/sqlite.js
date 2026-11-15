@@ -244,6 +244,20 @@ function addMissingColumns() {
   // Un tercero es proveedor, cliente o las dos cosas.
   const haveSup = new Set(rows("PRAGMA table_info(proveedores)").map((r) => String(r.name)));
   if (!haveSup.has("rol")) exec("ALTER TABLE proveedores ADD COLUMN rol TEXT DEFAULT 'PROVEEDOR'");
+
+  exec("DROP VIEW IF EXISTS igic_por_proveedor");
+  exec(`CREATE VIEW igic_por_proveedor AS
+    SELECT p.id AS proveedor_id,
+           p.nombre AS proveedor,
+           f.estado AS estado,
+           COUNT(*) AS facturas,
+           ROUND(SUM(f.base), 2) AS base,
+           ROUND(SUM(f.cuota_igic), 2) AS igic,
+           ROUND(SUM(f.total), 2) AS total
+      FROM facturas f
+      JOIN proveedores p ON p.id = f.proveedor_id
+     WHERE UPPER(COALESCE(f.tipo, '')) <> 'NOMINA'
+     GROUP BY p.id, f.estado`);
 }
 
 /* ------------------------------------------------------------------ */

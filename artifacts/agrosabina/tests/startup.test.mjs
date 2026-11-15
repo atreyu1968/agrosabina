@@ -32,6 +32,7 @@ function environment() {
     readyState: "loading",
     addEventListener: (name, fn) => events.document.set(name, fn),
     getElementById: () => null,
+    querySelector: () => null,
   };
   globalThis.location = { hash: "#/compras" };
   globalThis.Element = class {

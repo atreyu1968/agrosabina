@@ -291,7 +291,7 @@ export function medioDePagoTexto(inv) {
 /** Base, cuota y total de un documento, cuadrados entre sí. */
 function importes(inv) {
   let base = round2(Number(inv.base) || 0);
-  const igic = round2(Number(inv.igic) || 0);
+  const igic = esNomina(inv) ? 0 : round2(Number(inv.igic) || 0);
   let total = round2(Number(inv.total) || 0);
   if (!total) total = round2(base + igic);
   if (!total) return { base: 0, igic: 0, total: 0 };
