@@ -5078,6 +5078,7 @@ async function submitInvoice(wrap, { mode, invoice, job }) {
     source: job ? job.source : "manual",
     fileName: job ? job.file.name : "",
     rawText: job ? job.parsed.rawText : "",
+    supplierNifOcrOriginal: job ? job.parsed.supplierNifOcrOriginal : "",
     notes: job ? job.parsed.notes : [],
     confidence: job ? job.parsed.confidence : null,
   });

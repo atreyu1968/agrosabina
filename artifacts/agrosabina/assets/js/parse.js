@@ -485,6 +485,15 @@ export function parseInvoiceText(rawText, options = {}) {
   const supplierNifHit =
     topSupplierNifs.size === 1 ? topSupplierNifs.values().next().value : null;
   const supplierNif = supplierNifHit ? supplierNifHit.nif : null;
+  const supplierNifOcrOriginal =
+    supplierNifHit && nifKey(supplierNifHit.raw) !== supplierNif
+      ? supplierNifHit.raw
+      : "";
+  if (supplierNifOcrOriginal) {
+    notes.push(
+      `He corregido un carácter del NIF del emisor leído por OCR: «${supplierNifOcrOriginal}» → «${supplierNif}». Compruébalo con el documento.`
+    );
+  }
   const unreliableSupplierNif = nifs.some(
     (hit) =>
       !hit.valid &&
@@ -615,6 +624,7 @@ export function parseInvoiceText(rawText, options = {}) {
   return {
     supplierName: supplierName || "",
     supplierNif: supplierNif || "",
+    supplierNifOcrOriginal,
     number: number || "",
     issueDate,
     dueDate: dueDate || "",

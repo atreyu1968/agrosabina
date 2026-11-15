@@ -62,6 +62,17 @@ test("el importador conserva identificador, emisor, precisión, IGIC y categorí
   assert.equal(doc.liquidacion.category, "");
 });
 
+test("la revisión de liquidación avisa si corrige el NIF del emisor leído por OCR", () => {
+  const scan = fixture.replace(
+    "Comercial de prueba S.A.           Empresa receptora S.L.\nNIF: A00000000",
+    "Emisor: Comercial de prueba S.A.\nCIF: B1234567A\nCliente: Empresa receptora S.L.\nNIF: A38000123"
+  );
+  const doc = leerDocumento(scan, { fileName: "documento.pdf" }).doc;
+  assert.equal(doc.supplierNif, "B12345674");
+  assert.equal(doc.supplierNifOcrOriginal, "B1234567A");
+  assert.match(doc.notes.join(" "), /corregido un carácter del NIF del emisor.*B1234567A.*B12345674/);
+});
+
 test("advierte si el resumen no cuadra; no sustituye el total impreso por una suma errónea", () => {
   const result = leerResumenLiquidacion(fixture.replace("Gabaceras 1.474", "Gabaceras 1.400"));
   assert.equal(result.kg, 3434);

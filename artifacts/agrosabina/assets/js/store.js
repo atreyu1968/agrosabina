@@ -220,6 +220,7 @@ function normaliseInvoice(inv) {
     // El fichero original (foto, PDF, correo) que se guardó con el documento.
     original: normaliseOriginal(inv.original),
     rawText: String(inv.rawText || "").slice(0, 8000),
+    supplierNifOcrOriginal: String(inv.supplierNifOcrOriginal || "").trim().slice(0, 24),
     notes: Array.isArray(inv.notes) ? inv.notes : [],
     confidence: Number.isFinite(inv.confidence) ? inv.confidence : null,
     createdAt: inv.createdAt || new Date().toISOString(),
@@ -649,6 +650,7 @@ export function addInvoice(data) {
     fileName: data.fileName || "",
     original: data.original || null,
     rawText: data.rawText || "",
+    supplierNifOcrOriginal: data.supplierNifOcrOriginal || "",
     notes: data.notes || [],
     confidence: data.confidence,
   });

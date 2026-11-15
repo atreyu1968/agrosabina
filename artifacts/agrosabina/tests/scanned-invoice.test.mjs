@@ -65,7 +65,7 @@ test("recupera un CIF dañado por OCR y lo muestra en la revisión", () => {
 CIF B1234567A
 Factura: PRUEBA-2026
 Cliente: EMPRESA RECEPTORA S.L.
-NIF B00000000
+NIF A38000123
 Base imponible 100,00
 IGIC 7,00
 Total 107,00`;
@@ -76,6 +76,8 @@ Total 107,00`;
   assert.equal(normaliseSpanishNif("B12345675", { repairOcr: true }), "");
   assert.equal(review.supplierName, "COMERCIAL DE PRUEBA S.L");
   assert.equal(review.supplierNif, "B12345674");
+  assert.equal(review.supplierNifOcrOriginal, "B1234567A");
+  assert.match(review.notes.join(" "), /corregido un carácter del NIF del emisor.*B1234567A.*B12345674/);
   assert.doesNotMatch(review.notes.join(" "), /NIF del proveedor/);
 });
 
@@ -94,12 +96,14 @@ test("el NIF revisado del proveedor se conserva al restaurar el documento", asyn
 CIF B1234567A
 Factura: PRUEBA-RECARGA
 Cliente: EMPRESA RECEPTORA S.L.
-NIF B00000000
+NIF A38000123
 Base imponible 100,00
 IGIC 7,00
 Total 107,00`).doc;
   const { invoice } = store.addInvoice(review);
   assert.equal(store.supplierById(invoice.supplierId).nif, "B12345674");
+  assert.equal(invoice.supplierNifOcrOriginal, "B1234567A");
+  assert.match(invoice.notes.join(" "), /corregido un carácter del NIF del emisor/);
 
   const saved = store.exportJSON();
   assert.ok(saved.includes("B12345674"));
@@ -115,6 +119,8 @@ Total 107,00`).doc;
   const restored = store.invoiceById(invoice.id);
   assert.ok(restored);
   assert.equal(store.supplierById(restored.supplierId).nif, "B12345674");
+  assert.equal(restored.supplierNifOcrOriginal, "B1234567A");
+  assert.match(restored.notes.join(" "), /corregido un carácter del NIF del emisor/);
 });
 
 test("recupera base, IGIC y total separados de las etiquetas sin usar cantidades de producto", () => {

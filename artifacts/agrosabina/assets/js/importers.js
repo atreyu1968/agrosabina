@@ -61,8 +61,14 @@ function identidad(texto, opciones) {
     dueDate: base.dueDate || "",
     supplierName: base.supplierName || "",
     supplierNif: base.supplierNif || "",
+    supplierNifOcrOriginal: base.supplierNifOcrOriginal || "",
     status: base.status || STATUS.PENDING,
   };
+}
+
+function avisoCorreccionNif(id) {
+  if (!id.supplierNifOcrOriginal) return "";
+  return `He corregido un carácter del NIF del emisor leído por OCR: «${id.supplierNifOcrOriginal}» → «${id.supplierNif}». Compruébalo con el documento.`;
 }
 
 /** Suma los pesos de las señales que aparecen en el texto. */
@@ -118,6 +124,7 @@ const NOMINA = {
     doc.issueDate = id.issueDate;
     doc.supplierName = n.trabajador || id.supplierName || "";
     doc.supplierNif = n.nif || id.supplierNif || "";
+    if (!n.nif) doc.supplierNifOcrOriginal = id.supplierNifOcrOriginal || "";
     doc.category = "LABORALES";
     doc.direction = DIRECTIONS.OUT;
     doc.nomina = {
@@ -141,6 +148,8 @@ const NOMINA = {
     doc.total = n.neto;
     doc.confidence = n.bruto != null && n.neto != null ? (n.notas?.length ? 0.65 : 0.9) : 0.45;
     doc.notes = Array.isArray(n.notas) ? n.notas.slice() : [];
+    const nifWarning = !n.nif ? avisoCorreccionNif(id) : "";
+    if (nifWarning) doc.notes.push(nifWarning);
     if (n.bruto == null) {
       doc.notes.push(
         "No he sabido leer el bruto de esta nómina. Escríbelo a mano: la Seguridad Social, el IRPF y el líquido salen solos."
@@ -188,6 +197,7 @@ const LIQUIDACION = {
     doc.dueDate = id.dueDate;
     doc.supplierName = id.supplierName;
     doc.supplierNif = id.supplierNif;
+    doc.supplierNifOcrOriginal = id.supplierNifOcrOriginal || "";
     doc.status = id.status;
     doc.category = "FRUTA";
     doc.direction = DIRECTIONS.IN;
@@ -224,6 +234,8 @@ const LIQUIDACION = {
     doc.total = l.net != null ? round2(l.net + cuota) : l.gross;
     doc.confidence = l.ok ? 0.85 : 0.4;
     doc.notes = Array.isArray(l.notes) ? l.notes.slice() : [];
+    const nifWarning = avisoCorreccionNif(id);
+    if (nifWarning) doc.notes.push(nifWarning);
     doc.classifyNote = `Liquidación de fruta${
       l.kg != null && l.price != null ? `: ${fmtNum(l.kg, 2)} kg a ${fmtNum(l.price, 4)} €/kg` : ""
     }, líquido a percibir ${fmtEUR(l.net)}. Va como ingreso, con sus kilos y su precio por kilo.`;
@@ -243,6 +255,7 @@ function leerFactura(texto, opciones = {}) {
   doc.dueDate = base.dueDate || "";
   doc.supplierName = base.supplierName || "";
   doc.supplierNif = base.supplierNif || "";
+  doc.supplierNifOcrOriginal = base.supplierNifOcrOriginal || "";
   doc.base = base.base;
   doc.rate = base.rate;
   doc.igic = base.igic;
