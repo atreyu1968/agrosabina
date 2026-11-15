@@ -1,0 +1,87 @@
+{
+  "id": "ev_4bee7c14080e4a3ab59e2663c2751a364c9a6d690cee2a76191a279f78a4ed94",
+  "subject": {
+    "kind": "script",
+    "sha256": "c35b6fd72f850500756b33053ef68815af8f7d6cba5e00dd23068cfd723e3fba",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "prueba-leer-texto"
+  },
+  "result": {
+    "file_size": 272651,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "7072756562612d6c6565722d746578746f",
+        "file_offset": 113497,
+        "file_offset_hex": "0x1bb59",
+        "length": 17,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "7072756562612d6c6565722d746578746f",
+        "file_offset": 208804,
+        "file_offset_hex": "0x32fa4",
+        "length": 17,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 17
+      },
+      {
+        "kind": "utf16le",
+        "length": 34
+      }
+    ],
+    "total_matches": 2
+  },
+  "summary": "2 match(es) for utf8 + utf16le in views.js; showing 2 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x1bb59"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x32fa4"
+    }
+  ],
+  "links": []
+}

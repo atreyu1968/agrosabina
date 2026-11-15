@@ -1,0 +1,72 @@
+{
+  "id": "ev_a2790d1fbd2c6602a24c69c5be52ebef1a88ae1cb3de65beea73bf6f7086739a",
+  "subject": {
+    "kind": "script",
+    "sha256": "28c69e5cfe3a6682b9f586624246c04d71ce42d6f4020fdc67a6a67650b50b22",
+    "name": "util.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 5,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js",
+    "pattern": null,
+    "text": "export function fold"
+  },
+  "result": {
+    "file_size": 7518,
+    "limit": 5,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6578706f72742066756e6374696f6e20666f6c64",
+        "file_offset": 2849,
+        "file_offset_hex": "0xb21",
+        "length": 20,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 20
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 in util.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0xb21"
+    }
+  ],
+  "links": []
+}

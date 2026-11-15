@@ -1,0 +1,54 @@
+{
+  "id": "ev_3816e987c12299257b3a03384bbc925c6dcee931bcee376ece29fba4763ab325",
+  "subject": {
+    "kind": "script",
+    "sha256": "83704397ea89e45fa1af80334964cb8e67554af7773347bdc2b1474dc48b4b50",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 2870,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 245244,
+    "lines": 45,
+    "more": true,
+    "offset": 2870,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "function liquidacionReadHtml(v) {\n  if ((v.kind || \"\") !== \"LIQUIDACION\") return \"\";\n  const read = v.liquidacionRead || null;\n  const liq = v.liquidacion || null;\n  const kg = read && read.kg != null ? read.kg : liq ? liq.kg : null;\n  const price = read && read.price != null ? read.price : liq ? liq.price : null;\n  const dtos = (read && read.discounts) || (liq && liq.discounts) || [];\n  const dto = round2(dtos.reduce((a, d) => a + (d.amount || 0), 0));\n  const gross =\n    read && read.gross != null ? read.gross : kg != null && price != null ? round2(kg * price) : null;\n  const net = read && read.net != null ? read.net : gross != null ? round2(gross - dto) : null;\n  if (kg == null && price == null && net == null) return \"\";\n\n  const rows = [];\n  const row = (k, val, strong) => rows.push([k, val, strong]);\n  if (read && read.product) row(\"Producto\", esc(read.product));\n  if (read && read.category) row(\"Categoría\", esc(read.category));\n  if (read && Array.isArray(read.partidas) && read.partidas.length) {\n    read.partidas.forEach((p, i) => {\n      const nombre = (p && p.categoria) || `Partida ${i + 1}`;\n      const trozos = [];\n      if (p && p.kg != null) trozos.push(`${fmtNum(p.kg, 2)} kg`);\n      if (p && p.price != null) trozos.push(`${fmtNum(p.price, 3)} €/kg`);\n      if (p && p.gross != null) trozos.push(fmtEUR(p.gross));\n      row(esc(nombre), trozos.join(\" · \") || \"—\");\n    });\n  }\n  if (kg != null) row(\"Kilos\", `${fmtNum(kg, 2)} kg`, true);\n  if (price != null) row(\"Precio por kilo\", `${fmtNum(price, 3)} €/kg`, true);\n  if (gross != null) row(\"Bruto (kilos × precio)\", fmtEUR(gross));\n  if (dto) row(`Descuentos (${dtos.length})`, fmtEUR(dto));\n  if (net != null) row(\"Líquido a percibir\", fmtEUR(net), true);\n  if (net != null) {\n    const rate = read && read.rate != null ? Number(read.rate) : 0;\n    const cuota = read && read.igic != null ? read.igic : round2((net * (rate || 0)) / 100);\n    row(\"IGIC del papel\", rate ? `${rateText(rate)} · ${fmtEUR(cuota)}` : \"0 % (no aparece)\");\n    row(\"Total a cobrar\", fmtEUR(round2(net + cuota)), true);\n  }\n\n  return `<div class=\"summary-box span-2\" style=\"margin-bottom:12px\">\n    ${icon(\"info\")}\n    <div>\n      <div style=\"font-weight:600;margin-bottom:4px\">Datos que voy a importar</div>\n      <div style=\"display:grid;grid-template-columns:auto auto;gap:2px 14px;font-size:13px\">\n        ${rows\n",
+    "total_lines": 6154
+  },
+  "summary": "views.js: lines 2871–2915 of 6154 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 6154,
+    "next_offset": 2915
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

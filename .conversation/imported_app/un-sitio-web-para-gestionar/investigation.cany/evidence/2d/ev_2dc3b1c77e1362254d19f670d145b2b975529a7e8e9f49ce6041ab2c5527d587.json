@@ -1,0 +1,212 @@
+{
+  "id": "ev_2dc3b1c77e1362254d19f670d145b2b975529a7e8e9f49ce6041ab2c5527d587",
+  "subject": {
+    "kind": "script",
+    "sha256": "cb4be4f191b16cd0c1314e4c0f2ca0fcc3eedd081a0430d450dcf4f846bae80e",
+    "name": "pgc.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\pgc.js",
+    "pattern": null,
+    "text": "  [\"3"
+  },
+  "result": {
+    "file_size": 13147,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "20205b2233",
+        "file_offset": 4729,
+        "file_offset_hex": "0x1279",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 4758,
+        "file_offset_hex": "0x1296",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 4787,
+        "file_offset_hex": "0x12b3",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 4819,
+        "file_offset_hex": "0x12d3",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 4851,
+        "file_offset_hex": "0x12f3",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 4878,
+        "file_offset_hex": "0x130e",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 4902,
+        "file_offset_hex": "0x1326",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 4936,
+        "file_offset_hex": "0x1348",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 4960,
+        "file_offset_hex": "0x1360",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 4982,
+        "file_offset_hex": "0x1376",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 5016,
+        "file_offset_hex": "0x1398",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 5051,
+        "file_offset_hex": "0x13bb",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 5090,
+        "file_offset_hex": "0x13e2",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 5125,
+        "file_offset_hex": "0x1405",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 5152,
+        "file_offset_hex": "0x1420",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 5205,
+        "file_offset_hex": "0x1455",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "20205b2233",
+        "file_offset": 5261,
+        "file_offset_hex": "0x148d",
+        "length": 5,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\pgc.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 5
+      }
+    ],
+    "total_matches": 17
+  },
+  "summary": "17 match(es) for utf8 in pgc.js; showing 17 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 17,
+    "total": 17
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x1279"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x1296"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x12b3"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x12d3"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x12f3"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x130e"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x1326"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x1348"
+    }
+  ],
+  "links": []
+}

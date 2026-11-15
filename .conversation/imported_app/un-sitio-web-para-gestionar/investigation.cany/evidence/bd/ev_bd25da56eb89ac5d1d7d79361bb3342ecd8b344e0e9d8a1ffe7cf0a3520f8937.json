@@ -1,0 +1,54 @@
+{
+  "id": "ev_bd25da56eb89ac5d1d7d79361bb3342ecd8b344e0e9d8a1ffe7cf0a3520f8937",
+  "subject": {
+    "kind": "script",
+    "sha256": "6df73fe23bbf94a3e971bcb1289f079e926f75b788b8f015c1a2bb5a4338b940",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 8,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 130441,
+    "lines": 8,
+    "more": true,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "/*\n * Las pantallas del sitio y lo que hace cada botón.\n */\n\nimport {\n  IGIC_RATES,\n  STATUS,\n  daysUntil,\n",
+    "total_lines": 3476
+  },
+  "summary": "views.js: lines 1–8 of 3476 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 8,
+    "total": 3476,
+    "next_offset": 8
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

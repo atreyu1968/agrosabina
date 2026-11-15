@@ -1,0 +1,54 @@
+{
+  "id": "ev_72439e4e1001181e41975b28991ff70fda0f58366cfcbce7ac385c43239c1bf1",
+  "subject": {
+    "kind": "script",
+    "sha256": "19c649531ccbf4416273a6b59f6de9c8841f4ea9597ad871bf4e01578923d711",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 22,
+    "offset": 612,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 194743,
+    "lines": 22,
+    "more": true,
+    "offset": 612,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    <h3 style=\"margin:16px 0 6px\">El texto que se leyó</h3>\n    ${\n      raw\n        ? `<div class=\"raw-text\">${esc(raw)}</div>`\n        : `<p class=\"sub\">De este documento no se guardó texto: se escribió a mano.</p>`\n    }`;\n\n  openModal(\n    `<div class=\"modal-head\">\n      <div>\n        <h2>${esc(info.label || \"Documento\")}${inv.number ? ` ${esc(inv.number)}` : \"\"}</h2>\n        <p>${esc(sup.name || \"Sin proveedor\")} · ${fmtEUR(inv.total)}</p>\n      </div>\n      <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n    </div>\n    <div class=\"modal-body\">${body}</div>\n    <div class=\"modal-foot\">\n      <div class=\"spacer\"></div>\n      <button class=\"btn primary\" data-modal-cancel>Cerrar</button>\n    </div>`\n  );\n}\n",
+    "total_lines": 5053
+  },
+  "summary": "views.js: lines 613–634 of 5053 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 22,
+    "total": 5053,
+    "next_offset": 634
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

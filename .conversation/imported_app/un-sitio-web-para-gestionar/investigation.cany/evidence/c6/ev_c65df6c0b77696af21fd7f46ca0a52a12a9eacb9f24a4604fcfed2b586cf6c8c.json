@@ -1,0 +1,54 @@
+{
+  "id": "ev_c65df6c0b77696af21fd7f46ca0a52a12a9eacb9f24a4604fcfed2b586cf6c8c",
+  "subject": {
+    "kind": "script",
+    "sha256": "8281c07a6c6e0e591b3d171028ac0385d2e4d6c7e6e685816c745534065f2b7d",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 1,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 23722,
+    "lines": 70,
+    "more": true,
+    "offset": 1,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": " * Contabilidad de Agrosabina SL.\n *\n * De cada documento guardado (facturas, liquidaciones, subvenciones, cobros,\n * nóminas) sale un asiento, y de los asientos salen los cuatro libros que\n * pide la persona: diario, mayor, balance de sumas y saldos, balance de\n * situación y cuenta de pérdidas y ganancias. Los dos últimos se presentan\n * con los epígrafes del modelo oficial del Plan General de Contabilidad.\n *\n * Este fichero no toca la pantalla ni la base de datos: solo hace cuentas.\n * Todas las funciones son puras y devuelven datos listos para pintar.\n */\n\nimport { round2 } from \"./util.js\";\nimport { directionOf } from \"./model.js\";\n\n/* ------------------------------------------------------------------ */\n/* Plan de cuentas                                                    */\n/* ------------------------------------------------------------------ */\n\n/**\n * Las cuentas que usa el programa. `pl` dice en qué línea de la cuenta de\n * pérdidas y ganancias va; `balance`, en qué epígrafe del balance. Las de\n * gastos e ingresos no van al balance (su saldo acaba en el resultado).\n */\nexport const CUENTAS = Object.freeze([\n  { code: \"100\", name: \"Capital social\", balance: \"PN_I\" },\n  { code: \"113\", name: \"Reservas voluntarias\", balance: \"PN_III\" },\n  { code: \"121\", name: \"Resultados negativos de ejercicios anteriores\", balance: \"PN_V\" },\n  { code: \"400\", name: \"Proveedores\", balance: \"PC_V\" },\n  { code: \"430\", name: \"Clientes\", balance: \"AC_III\" },\n  { code: \"472\", name: \"Hacienda Pública, IGIC soportado\", balance: \"AC_III\" },\n  { code: \"477\", name: \"Hacienda Pública, IGIC repercutido\", balance: \"PC_V\" },\n  { code: \"570\", name: \"Caja\", balance: \"AC_VII\" },\n  { code: \"572\", name: \"Bancos e instituciones de crédito c/c\", balance: \"AC_VII\" },\n  { code: \"602\", name: \"Compras de otros aprovisionamientos\", pl: \"4\" },\n  { code: \"623\", name: \"Servicios de profesionales independientes\", pl: \"7\" },\n  { code: \"628\", name: \"Suministros\", pl: \"7\" },\n  { code: \"629\", name: \"Otros servicios\", pl: \"7\" },\n  { code: \"630\", name: \"Impuesto sobre beneficios\", pl: \"17\" },\n  { code: \"631\", name: \"Otros tributos\", pl: \"7\" },\n  { code: \"640\", name: \"Sueldos y salarios\", pl: \"6\" },\n  { code: \"642\", name: \"Seguridad Social a cargo de la empresa\", pl: \"6\" },\n  { code: \"701\", name: \"Ventas de productos terminados\", pl: \"1\" },\n  { code: \"740\", name: \"Subvenciones a la explotación\", pl: \"5\" },\n  { code: \"759\", name: \"Ingresos por servicios diversos\", pl: \"5\" },\n]);\n\n/** Epígrafe de balance que le toca a una cuenta que no está en la lista. */\nfunction balancePorDefecto(code) {\n  const c = String(code || \"\");\n  const first = c.charAt(0);\n  if (first === \"1\") return \"PN_V\";\n  if (first === \"2\") return \"AN_II\";\n  if (first === \"3\") return \"AC_II\";\n  if (first === \"4\") return c < \"450\" ? \"PC_V\" : \"AC_III\";\n  if (first === \"5\") return c < \"560\" ? \"PC_III\" : \"AC_VII\";\n  return \"\";\n}\n\nconst CACHE_CUENTAS = new Map();\n\n/** La ficha de una cuenta: código, nombre, epígrafe de balance y línea de P&G. */\nexport function cuenta(code) {\n  const key = String(code || \"\");\n  if (CACHE_CUENTAS.has(key)) return CACHE_CUENTAS.get(key);\n  const found = CUENTAS.find((c) => c.code === key);\n  const row = found\n    ? {\n        code: key,\n        name: found.name,\n",
+    "total_lines": 586
+  },
+  "summary": "accounting.js: lines 2–71 of 586 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 586,
+    "next_offset": 71
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

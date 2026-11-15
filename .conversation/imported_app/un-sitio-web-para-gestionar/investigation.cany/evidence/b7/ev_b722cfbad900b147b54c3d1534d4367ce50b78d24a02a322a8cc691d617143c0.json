@@ -1,0 +1,54 @@
+{
+  "id": "ev_b722cfbad900b147b54c3d1534d4367ce50b78d24a02a322a8cc691d617143c0",
+  "subject": {
+    "kind": "script",
+    "sha256": "6238b99ab8c1c0f10ce834ae43fb81a8055d05a8f9b20d7043327b18867475d9",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 136,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 134368,
+    "lines": 40,
+    "more": true,
+    "offset": 136,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "        }\n      },\n    }\n  );\n}\n\nfunction statusPill(inv, interactive = true) {\n  const paid = inv.status === STATUS.PAID;\n  const cls = paid ? \"paid\" : \"pending\";\n  const isIncome = directionOf(inv.kind) === \"INGRESO\";\n  const label = paid ? (isIncome ? \"Cobrado\" : \"Pagado\") : \"Pendiente\";\n  const day = paid && inv.paidDate ? fmtDate(inv.paidDate) : \"\";\n  if (!interactive) {\n    return `<span class=\"status static ${cls}\" ${day ? `title=\"${isIncome ? \"Cobrado\" : \"Pagado\"} el ${day}\"` : \"\"}>${label}${\n      day ? `<span class=\"status-day\">${esc(day)}</span>` : \"\"\n    }</span>`;\n  }\n  const nextLabel = paid ? \"pendiente\" : isIncome ? \"cobrado\" : \"pagado\";\n  return `<button class=\"status ${cls}\" data-action=\"toggle-status\" data-id=\"${inv.id}\"\n    title=\"${day ? `${isIncome ? \"Cobrado\" : \"Pagado\"} el ${day}. ` : \"\"}Cambiar a ${nextLabel}\">${label}${\n    day ? `<span class=\"status-day\">${esc(day)}</span>` : \"\"\n  }</button>`;\n}\n\nfunction supplierName(id) {\n  const s = supplierById(id);\n  return s ? s.name : \"Sin proveedor\";\n}\n\nfunction rateText(rate) {\n  return Number.isFinite(rate) ? `${fmtNum(rate, rate % 1 === 0 ? 0 : 1)} %` : \"—\";\n}\n\n/** Etiqueta corta del tipo y del concepto, para las listas. */\nfunction tagOf(inv) {\n  const kind = kindInfo(inv.kind);\n  const cat = categoryInfo(inv.category);\n  const isIn = inv.direction === \"INGRESO\";\n  const cls = isIn ? \"tag is-in\" : \"tag\";\n  const label = inv.category && cat.id ? `${kind.short} · ${cat.label}` : kind.short;\n",
+    "total_lines": 3575
+  },
+  "summary": "views.js: lines 137–176 of 3575 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 3575,
+    "next_offset": 176
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

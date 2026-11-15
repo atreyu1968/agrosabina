@@ -1,0 +1,54 @@
+{
+  "id": "ev_d67eb548757a10e49dff815366d7c4170d6cd5e622cb9a9e77e4ab0a1abd3efb",
+  "subject": {
+    "kind": "script",
+    "sha256": "effbee695913dd70eb1d3b51952ecc8ed76c4969a93f6df5b3ddba29ce97f26c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 140,
+    "offset": 4360,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 196170,
+    "lines": 140,
+    "more": true,
+    "offset": 4360,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      <a class=\"btn${fuera ? \"\" : \" primary\"}\" href=\"#/compras\">${icon(\"plus\")} Ir a compras</a>\n      <a class=\"btn\" href=\"#/ventas\">${icon(\"wallet\")} Ir a ventas</a>\n    </div>\n  </div></section>`;\n}\n\n/** Diario: un renglón por cuenta y asiento, con la fecha y el número del asiento. */\nfunction accDiarioHtml(entries) {\n  if (!entries.length) return accEmpty();\n  let debe = 0;\n  let haber = 0;\n  const rows = [];\n  for (const e of entries) {\n    const sumDebe = round2(e.lines.reduce((n, l) => n + l.debit, 0));\n    const sumHaber = round2(e.lines.reduce((n, l) => n + l.credit, 0));\n    debe = round2(debe + sumDebe);\n    haber = round2(haber + sumHaber);\n    e.lines.forEach((l, i) => {\n      rows.push(`<tr class=\"acc-row${i === 0 ? \" acc-row-first\" : \"\"}\">\n        <td class=\"num\">${i === 0 ? fmtDate(e.date) : \"\"}</td>\n        <td class=\"num\">${i === 0 ? e.number : \"\"}</td>\n        <td class=\"mono\">${esc(l.account)}</td>\n        <td>\n          <span class=\"acc-name\">${esc(l.name)}</span>\n          ${i === 0 && e.concept ? `<div class=\"sub\">${esc(e.concept)}</div>` : \"\"}\n          ${i === 0 && e.manual ? `<div class=\"acc-row-tools\">\n            <span class=\"tag kind\">A mano</span>\n            <button class=\"btn xs ghost\" data-action=\"acc-entry-edit\" data-id=\"${esc(String(e.id))}\">${icon(\"edit\")}<span>Editar</span></button>\n            <button class=\"btn xs ghost\" data-action=\"acc-entry-del\" data-id=\"${esc(String(e.id))}\">${icon(\"trash\")}<span>Borrar</span></button>\n          </div>` : \"\"}\n        </td>\n        <td class=\"num\">${l.debit ? fmtEUR(l.debit) : \"\"}</td>\n        <td class=\"num\">${l.credit ? fmtEUR(l.credit) : \"\"}</td>\n      </tr>`);\n    });\n  }\n  return `\n  <section class=\"card\">\n    <div class=\"card-head\">\n      <div>\n        <h2>Libro diario</h2>\n        <p>${entries.length} ${entries.length === 1 ? \"asiento\" : \"asientos\"} en orden de fecha</p>\n      </div>\n      <div class=\"spacer\"></div>\n      <button class=\"btn sm ghost\" data-action=\"export-acc-csv\">${icon(\"download\")}<span>Exportar CSV</span></button>\n    </div>\n    <div class=\"table-wrap\">\n      <table class=\"data acc-table\">\n        <thead><tr>\n          <th>Fecha</th><th class=\"num\">Asiento</th><th>Cuenta</th><th>Concepto</th>\n          <th class=\"num\">Debe</th><th class=\"num\">Haber</th>\n        </tr></thead>\n        <tbody>${rows.join(\"\")}</tbody>\n        <tfoot><tr>\n          <td colspan=\"4\">Sumas del periodo</td>\n          <td class=\"num\">${fmtEUR(debe)}</td>\n          <td class=\"num\">${fmtEUR(haber)}</td>\n        </tr></tfoot>\n      </table>\n    </div>\n  </section>`;\n}\n\n/** Mayor: una tarjeta por cuenta con sus movimientos y el saldo que va quedando. */\nfunction accMayorHtml(mayor) {\n  if (!mayor.length) return accEmpty();\n  return `\n  <div class=\"acc-toolbar-note\">\n    <span class=\"tag kind\">${mayor.length} ${mayor.length === 1 ? \"cuenta\" : \"cuentas\"} con movimiento</span>\n    <button class=\"btn sm ghost\" data-action=\"export-acc-csv\">${icon(\"download\")}<span>Exportar CSV</span></button>\n  </div>\n  <div class=\"stack\">\n  ${mayor.map((r) => `\n    <section class=\"card acc-account\">\n      <div class=\"card-head\">\n        <div>\n          <h2><span class=\"mono\">${esc(r.code)}</span> ${esc(r.name)}</h2>\n          <p>${r.moves.length} ${r.moves.length === 1 ? \"movimiento\" : \"movimientos\"} · saldo ${r.saldo >= 0 ? \"deudor\" : \"acreedor\"} ${fmtEUR(Math.abs(r.saldo))}</p>\n        </div>\n      </div>\n      <div class=\"table-wrap\">\n        <table class=\"data acc-table\">\n          <thead><tr>\n            <th>Fecha</th><th class=\"num\">Asiento</th><th>Concepto</th>\n            <th class=\"num\">Debe</th><th class=\"num\">Haber</th><th class=\"num\">Saldo</th>\n          </tr></thead>\n          <tbody>\n            ${r.moves.map((m) => `<tr class=\"acc-row\">\n              <td class=\"num\">${fmtDate(m.date)}</td>\n              <td class=\"num\">${m.number}</td>\n              <td><span class=\"acc-name\">${esc(m.concept)}</span></td>\n              <td class=\"num\">${m.debit ? fmtEUR(m.debit) : \"\"}</td>\n              <td class=\"num\">${m.credit ? fmtEUR(m.credit) : \"\"}</td>\n              <td class=\"num strong\">${fmtEUR(m.running)}</td>\n            </tr>`).join(\"\")}\n          </tbody>\n          <tfoot><tr>\n            <td colspan=\"3\">Sumas y saldo</td>\n            <td class=\"num\">${fmtEUR(r.debit)}</td>\n            <td class=\"num\">${fmtEUR(r.credit)}</td>\n            <td class=\"num\">${fmtEUR(r.saldo)}</td>\n          </tr></tfoot>\n        </table>\n      </div>\n    </section>`).join(\"\")}\n  </div>`;\n}\n\n/** Balance de sumas y saldos: lo que se ha movido en cada cuenta y lo que queda. */\nfunction accSumasHtml(sumas) {\n  if (!sumas.rows.length) return accEmpty();\n  return `\n  <section class=\"card\">\n    <div class=\"card-head\">\n      <div>\n        <h2>Balance de sumas y saldos</h2>\n        <p>${sumas.rows.length} ${sumas.rows.length === 1 ? \"cuenta\" : \"cuentas\"} · ${sumas.cuadra ? \"los saldos cuadran\" : \"los saldos no cuadran\"}</p>\n      </div>\n      <div class=\"spacer\"></div>\n      <button class=\"btn sm ghost\" data-action=\"export-acc-csv\">${icon(\"download\")}<span>Exportar CSV</span></button>\n    </div>\n    <div class=\"table-wrap\">\n      <table class=\"data acc-table\">\n        <thead><tr>\n          <th>Cuenta</th><th>Nombre</th>\n          <th class=\"num\">Suma debe</th><th class=\"num\">Suma haber</th>\n          <th class=\"num\">Saldo deudor</th><th class=\"num\">Saldo acreedor</th>\n        </tr></thead>\n        <tbody>\n          ${sumas.rows.map((r) => `<tr class=\"acc-row\">\n            <td class=\"mono\">${esc(r.code)}</td>\n            <td><span class=\"acc-name\">${esc(r.name)}</span></td>\n            <td class=\"num\">${fmtEUR(r.debit)}</td>\n            <td class=\"num\">${fmtEUR(r.credit)}</td>\n            <td class=\"num\">${r.deudor ? fmtEUR(r.deudor) : '<span class=\"muted\">—</span>'}</td>\n            <td class=\"num\">${r.acreedor ? fmtEUR(r.acreedor) : '<span class=\"muted\">—</span>'}</td>\n          </tr>`).join(\"\")}\n        </tbody>\n        <tfoot><tr>\n          <td colspan=\"2\">Totales</td>\n",
+    "total_lines": 5107
+  },
+  "summary": "views.js: lines 4361–4500 of 5107 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 140,
+    "total": 5107,
+    "next_offset": 4500
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

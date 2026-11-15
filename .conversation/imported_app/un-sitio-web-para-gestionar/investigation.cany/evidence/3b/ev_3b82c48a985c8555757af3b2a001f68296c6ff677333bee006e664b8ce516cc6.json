@@ -1,0 +1,54 @@
+{
+  "id": "ev_3b82c48a985c8555757af3b2a001f68296c6ff677333bee006e664b8ce516cc6",
+  "subject": {
+    "kind": "script",
+    "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 26,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24919,
+    "lines": 26,
+    "more": true,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "/*\n * Los datos: proveedores, facturas y ajustes.\n * Se guardan en una base de datos SQLite que vive dentro del navegador (ver\n * sqlite.js). Si SQLite no puede cargarse, se guarda como antes, en\n * localStorage, y Ajustes lo avisa.\n */\n\nimport {\n  STATUS,\n  completeAmounts,\n  fold,\n  nifKey,\n  round2,\n  todayISO,\n  uid,\n} from \"./util.js\";\nimport * as sqlite from \"./sqlite.js\";\n\nconst KEY = \"facturas.igic.v1\";\nconst listeners = new Set();\n\nlet state = emptyState();\nlet lastSaveOk = true;\nlet engine = \"local\"; // \"sqlite\" | \"local\"\nlet persistTimer = null;\n\n",
+    "total_lines": 789
+  },
+  "summary": "store.js: lines 1–26 of 789 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 26,
+    "total": 789,
+    "next_offset": 26
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

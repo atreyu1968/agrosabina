@@ -1,0 +1,54 @@
+{
+  "id": "ev_89171b6de156a6fb56b47c363d4ab897412b377d3f51a25703bc3a83fced4beb",
+  "subject": {
+    "kind": "script",
+    "sha256": "cd48c5cf20b87e39095de591bed9b4aadd07c9211f3a562a2f958858a55644b0",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 1100,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 123883,
+    "lines": 70,
+    "more": true,
+    "offset": 1100,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "          <th class=\"num\">Total</th>\n          <th>Estado</th>\n          <th></th>\n        </tr>\n      </thead>\n      <tbody>\n        ${list.map((inv) => {\n          const overdue = inv.status !== STATUS.PAID && inv.dueDate && inv.dueDate < today;\n          return `<tr data-id=\"${inv.id}\">\n            <td>\n              <div class=\"cell-main\">\n                <span class=\"name\">${esc(supplierName(inv.supplierId))}</span>\n                <span class=\"sub\">${esc((supplierById(inv.supplierId) || {}).nif || \"\")}</span>\n                ${tagOf(inv)}\n              </div>\n            </td>\n            <td class=\"mono\">${esc(inv.number || \"—\")}</td>\n            <td class=\"num\">${fmtDate(inv.issueDate)}</td>\n            <td class=\"num\">${inv.dueDate ? `${fmtDate(inv.dueDate)}${overdue ? ' <span class=\"tag\" style=\"background:var(--danger-soft);color:var(--danger)\">vencida</span>' : \"\"}` : '<span class=\"muted\">—</span>'}</td>\n            <td class=\"num\">${fmtEUR(inv.base)}</td>\n            <td class=\"num\">${fmtEUR(inv.igic)}<div class=\"sub\" style=\"font-size:11px;color:var(--ink-3)\">${inv.lines && inv.lines.length > 1 ? `${inv.lines.length} tipos` : rateText(inv.rate)}</div></td>\n            <td class=\"num strong\">${fmtEUR(inv.total)}</td>\n            <td>${statusPill(inv)}</td>\n            <td>\n              <div class=\"row-actions\">\n                <button class=\"icon-btn\" data-action=\"edit-invoice\" data-id=\"${inv.id}\" title=\"Editar\" aria-label=\"Editar documento\">${icon(\"edit\")}</button>\n                <button class=\"icon-btn\" data-action=\"delete-invoice\" data-id=\"${inv.id}\" title=\"Borrar\" aria-label=\"Borrar documento\">${icon(\"trash\")}</button>\n              </div>\n            </td>\n          </tr>`;\n        }).join(\"\")}\n      </tbody>\n      <tfoot>\n        <tr>\n          <td colspan=\"4\">${t.count} ${t.count === 1 ? \"documento\" : \"documentos\"}</td>\n          <td class=\"num\">${fmtEUR(t.base)}</td>\n          <td class=\"num\">${fmtEUR(t.igic)}</td>\n          <td class=\"num\">${fmtEUR(t.total)}</td>\n          <td colspan=\"2\">${fmtEUR(t.pending)} pendiente</td>\n        </tr>\n      </tfoot>\n    </table>\n  </div>`;\n}\n\nfunction refreshInvoiceTable() {\n  const wrap = document.getElementById(\"invoiceTableWrap\");\n  if (wrap) wrap.innerHTML = invoiceTable();\n  document.querySelectorAll(\"[data-filter-status]\").forEach((b) => {\n    b.classList.toggle(\"active\", b.dataset.filterStatus === ui.filters.status);\n  });\n  updateNavBadge();\n}\n\n/* ------------------------------------------------------------------ */\n/* Proveedores                                                        */\n/* ------------------------------------------------------------------ */\n\nfunction viewProveedores() {\n  const state = getState();\n  if (!state.suppliers.length) {\n    return `<section class=\"card\"><div class=\"empty\">\n      <div class=\"e-icon\">${icon(\"store\")}</div>\n      <h3>Los proveedores se crean solos</h3>\n      <p>En cuanto subas una factura, guardo el proveedor con su nombre y su NIF. Si quieres, también puedes darlo de alta tú.</p>\n      <div class=\"e-actions\">\n        <button class=\"btn primary\" data-action=\"import-files\">${icon(\"upload\")} Subir factura</button>\n        <button class=\"btn\" data-action=\"new-supplier\">${icon(\"plus\")} Añadir proveedor</button>\n      </div>\n    </div></section>`;\n",
+    "total_lines": 3310
+  },
+  "summary": "views.js: lines 1101–1170 of 3310 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 3310,
+    "next_offset": 1170
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

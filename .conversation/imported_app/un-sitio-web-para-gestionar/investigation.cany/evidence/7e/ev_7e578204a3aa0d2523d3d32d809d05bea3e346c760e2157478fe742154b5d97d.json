@@ -1,0 +1,54 @@
+{
+  "id": "ev_7e578204a3aa0d2523d3d32d809d05bea3e346c760e2157478fe742154b5d97d",
+  "subject": {
+    "kind": "script",
+    "sha256": "6238b99ab8c1c0f10ce834ae43fb81a8055d05a8f9b20d7043327b18867475d9",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 636,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 134368,
+    "lines": 30,
+    "more": true,
+    "offset": 636,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    return { id: range, from, to, label };\n  }\n  return { id: \"year\", from: `${y}-01-01`, to: today, label: \"Este año\" };\n}\n\nfunction inSalesWindow(date, w) {\n  const d = date || \"\";\n  if (w.from && (!d || d < w.from)) return false;\n  if (w.to && (!d || d > w.to)) return false;\n  return true;\n}\n\n/** Todo lo que entra: liquidaciones de fruta, subvenciones, cobros… */\nfunction isIncomeDoc(inv) {\n  return (inv.direction || directionOf(inv.kind || \"FACTURA\")) === \"INGRESO\";\n}\n\nfunction salesDocs() {\n  const w = salesWindow();\n  return getState()\n    .invoices.filter(isIncomeDoc)\n    .filter((inv) => inSalesWindow(inv.issueDate, w))\n    .sort((a, b) => String(b.issueDate || \"\").localeCompare(String(a.issueDate || \"\")));\n}\n\n/** Kilos, precio por kilo, descuentos, bruto y líquido de un documento. */\nfunction liquidacionNumbers(inv) {\n  const liq = inv.liquidacion;\n  const kg = liq && Number.isFinite(Number(liq.kg)) ? Number(liq.kg) : 0;\n  const price = liq && Number.isFinite(Number(liq.price)) ? Number(liq.price) : 0;\n",
+    "total_lines": 3575
+  },
+  "summary": "views.js: lines 637–666 of 3575 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 3575,
+    "next_offset": 666
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

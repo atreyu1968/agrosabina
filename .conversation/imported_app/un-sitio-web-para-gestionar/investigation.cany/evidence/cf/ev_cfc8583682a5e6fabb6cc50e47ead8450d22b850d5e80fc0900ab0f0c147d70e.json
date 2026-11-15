@@ -1,0 +1,53 @@
+{
+  "id": "ev_cfc8583682a5e6fabb6cc50e47ead8450d22b850d5e80fc0900ab0f0c147d70e",
+  "subject": {
+    "kind": "script",
+    "sha256": "6238b99ab8c1c0f10ce834ae43fb81a8055d05a8f9b20d7043327b18867475d9",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 20,
+    "offset": 3556,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 134368,
+    "lines": 19,
+    "more": false,
+    "offset": 3556,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  document.addEventListener(\"dragleave\", (ev) => {\n    const dz = ev.target instanceof Element ? ev.target.closest(\"#dropzone, #mailDrop\") : null;\n    if (dz) dz.classList.remove(\"drag\");\n  });\n  document.addEventListener(\"drop\", (ev) => {\n    const dz = ev.target instanceof Element ? ev.target.closest(\"#dropzone, #mailDrop\") : null;\n    if (!dz) return;\n    ev.preventDefault();\n    dz.classList.remove(\"drag\");\n    if (ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files.length) {\n      if (dz.id === \"mailDrop\") importEmails(ev.dataTransfer.files);\n      else queueFiles(ev.dataTransfer.files);\n    }\n  });\n}\n\nexport function hasJobs() {\n  return ui.jobs.length > 0;\n}\n",
+    "total_lines": 3575
+  },
+  "summary": "views.js: lines 3557–3575 of 3575 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 19,
+    "total": 3575
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

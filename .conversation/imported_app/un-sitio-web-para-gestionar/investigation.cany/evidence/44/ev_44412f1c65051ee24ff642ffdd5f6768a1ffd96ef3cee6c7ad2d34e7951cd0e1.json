@@ -1,0 +1,76 @@
+{
+  "id": "ev_44412f1c65051ee24ff642ffdd5f6768a1ffd96ef3cee6c7ad2d34e7951cd0e1",
+  "subject": {
+    "kind": "script",
+    "sha256": "cb4be4f191b16cd0c1314e4c0f2ca0fcc3eedd081a0430d450dcf4f846bae80e",
+    "name": "pgc.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\pgc.js",
+    "pattern": null,
+    "text": "Remuneraciones pendientes"
+  },
+  "result": {
+    "file_size": 13147,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "52656d756e65726163696f6e65732070656e6469656e746573",
+        "file_offset": 5948,
+        "file_offset_hex": "0x173c",
+        "length": 25,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\pgc.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 25
+      },
+      {
+        "kind": "utf16le",
+        "length": 50
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 + utf16le in pgc.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x173c"
+    }
+  ],
+  "links": []
+}

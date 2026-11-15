@@ -1,0 +1,127 @@
+{
+  "id": "ev_454468ae1c3d0a374da2b4c6baf128ce3b0ab1575eac8472159dbce9ce8550b3",
+  "subject": {
+    "kind": "script",
+    "sha256": "b5ec8ecd019ebf3f0b5e4c38ff86674474fec575152ea1cd7aa7654e5abf18cb",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 10,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "iv-lines"
+  },
+  "result": {
+    "file_size": 92447,
+    "limit": 10,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "69762d6c696e6573",
+        "file_offset": 51837,
+        "file_offset_hex": "0xca7d",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "69762d6c696e6573",
+        "file_offset": 52260,
+        "file_offset_hex": "0xcc24",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "69762d6c696e6573",
+        "file_offset": 52391,
+        "file_offset_hex": "0xcca7",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "69762d6c696e6573",
+        "file_offset": 62586,
+        "file_offset_hex": "0xf47a",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "69762d6c696e6573",
+        "file_offset": 62621,
+        "file_offset_hex": "0xf49d",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "69762d6c696e6573",
+        "file_offset": 64904,
+        "file_offset_hex": "0xfd88",
+        "length": 8,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 8
+      }
+    ],
+    "total_matches": 6
+  },
+  "summary": "6 match(es) for utf8 in views.js; showing 6 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 6,
+    "total": 6
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0xca7d"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xcc24"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xcca7"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xf47a"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xf49d"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xfd88"
+    }
+  ],
+  "links": []
+}

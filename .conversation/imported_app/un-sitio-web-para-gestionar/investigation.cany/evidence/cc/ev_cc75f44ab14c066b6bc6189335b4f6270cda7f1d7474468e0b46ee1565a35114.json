@@ -1,0 +1,54 @@
+{
+  "id": "ev_cc75f44ab14c066b6bc6189335b4f6270cda7f1d7474468e0b46ee1565a35114",
+  "subject": {
+    "kind": "script",
+    "sha256": "f1f292c38e39f6aea2ea3237b1829d946c3cce32589be780b6ded9d82db4159d",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 16,
+    "offset": 148,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 178628,
+    "lines": 16,
+    "more": true,
+    "offset": 148,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "        const input = wrap.querySelector(\"#paid-date\");\n        const go = () => {\n          const day = String((input && input.value) || \"\").slice(0, 10) || today;\n          closeModal();\n          onSave(day);\n        };\n        wrap.querySelector(\"[data-ok]\").addEventListener(\"click\", go);\n        if (input) {\n          input.addEventListener(\"keydown\", (e) => {\n            if (e.key === \"Enter\") go();\n          });\n          setTimeout(() => input.focus(), 40);\n        }\n      },\n    }\n  );\n",
+    "total_lines": 4655
+  },
+  "summary": "views.js: lines 149–164 of 4655 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 16,
+    "total": 4655,
+    "next_offset": 164
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

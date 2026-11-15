@@ -1,0 +1,54 @@
+{
+  "id": "ev_247679bc18708181cb911c3288eff95b0542ad09cd9e133e1f20a14bc3c6109f",
+  "subject": {
+    "kind": "script",
+    "sha256": "a184588da01bbaaff7f7e9b3028b69a729173e09996373b78baeb039c091ccf7",
+    "name": "dom.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 100,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 9091,
+    "lines": 45,
+    "more": true,
+    "offset": 100,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js",
+    "replaced_sequences": 0,
+    "text": "  return !!activeModal;\n}\n\n/** Pregunta sí/no. Devuelve una promesa con true o false. */\nexport function confirmDialog({ title, message, confirm = \"Sí, seguir\", cancel = \"Cancelar\", danger = false }) {\n  return new Promise((resolve) => {\n    let answered = false;\n    openModal(\n      `<div class=\"modal-head\">\n         <div>\n           <h2>${esc(title)}</h2>\n           <p>${esc(message)}</p>\n         </div>\n         <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n       </div>\n       <div class=\"modal-foot\">\n         <button class=\"btn ${danger ? \"danger\" : \"primary\"}\" data-confirm-yes>${esc(confirm)}</button>\n         <button class=\"btn ghost\" data-modal-cancel>${esc(cancel)}</button>\n       </div>`,\n      {\n        narrow: true,\n        onMount(wrap) {\n          wrap.querySelector(\"[data-confirm-yes]\").addEventListener(\"click\", () => {\n            answered = true;\n            closeModal();\n            resolve(true);\n          });\n          wrap.querySelectorAll(\"[data-modal-cancel]\").forEach((b) =>\n            b.addEventListener(\"click\", () => {\n              if (answered) return;\n              answered = true;\n              closeModal();\n              resolve(false);\n            })\n          );\n        },\n        onClose() {\n          if (!answered) resolve(false);\n        },\n      }\n    );\n  });\n}\n\nexport function escapeKeyCloses() {\n",
+    "total_lines": 153
+  },
+  "summary": "dom.js: lines 101–145 of 153 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 153,
+    "next_offset": 145
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js"
+    }
+  ],
+  "links": []
+}

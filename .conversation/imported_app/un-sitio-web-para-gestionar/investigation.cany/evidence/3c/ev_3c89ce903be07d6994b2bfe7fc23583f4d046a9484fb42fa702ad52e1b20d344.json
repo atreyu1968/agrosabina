@@ -1,0 +1,54 @@
+{
+  "id": "ev_3c89ce903be07d6994b2bfe7fc23583f4d046a9484fb42fa702ad52e1b20d344",
+  "subject": {
+    "kind": "script",
+    "sha256": "74d04d86a9e267ad2036e387eae84d9dac1474b696d523baafcaae4fd6496266",
+    "name": "sqlite.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 90,
+    "offset": 218,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 17820,
+    "lines": 90,
+    "more": true,
+    "offset": 218,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js",
+    "replaced_sequences": 0,
+    "text": "/**\n * Una base de datos creada con la versión anterior no tiene las columnas del\n * tipo de documento. Se añaden a mano, sin tocar los datos que ya hay.\n */\nfunction addMissingColumns() {\n  const have = new Set(rows(\"PRAGMA table_info(facturas)\").map((r) => String(r.name)));\n  if (!have.has(\"tipo\")) exec(\"ALTER TABLE facturas ADD COLUMN tipo TEXT DEFAULT 'FACTURA'\");\n  if (!have.has(\"categoria\")) exec(\"ALTER TABLE facturas ADD COLUMN categoria TEXT DEFAULT ''\");\n  if (!have.has(\"sentido\")) exec(\"ALTER TABLE facturas ADD COLUMN sentido TEXT DEFAULT 'GASTO'\");\n  if (!have.has(\"lineas\")) exec(\"ALTER TABLE facturas ADD COLUMN lineas TEXT DEFAULT ''\");\n  if (!have.has(\"liquidacion\")) exec(\"ALTER TABLE facturas ADD COLUMN liquidacion TEXT DEFAULT ''\");\n}\n\n/* ------------------------------------------------------------------ */\n/* Abrir / cerrar                                                     */\n/* ------------------------------------------------------------------ */\n\n/** Abre la base de datos (o la crea). Devuelve true si SQLite está disponible. */\nexport async function init() {\n  if (db) return true;\n  try {\n    SQL = await loadSqlJs();\n    const saved = await idbRead().catch(() => null);\n    db = saved && saved.byteLength ? new SQL.Database(new Uint8Array(saved)) : new SQL.Database();\n    db.run(SCHEMA);\n    addMissingColumns();\n    available = true;\n    failReason = \"\";\n    return true;\n  } catch (err) {\n    available = false;\n    failReason = (err && err.message) || String(err);\n    console.warn(\"SQLite no está disponible; se guardará como antes:\", err);\n    return false;\n  }\n}\n\nexport function isAvailable() {\n  return available && !!db;\n}\n\nexport function why() {\n  return failReason;\n}\n\n/* ------------------------------------------------------------------ */\n/* Leer y escribir los datos                                          */\n/* ------------------------------------------------------------------ */\n\nfunction settingsFromDb() {\n  const out = {};\n  for (const row of rows(\"SELECT clave, valor FROM ajustes\")) {\n    try {\n      out[row.clave] = JSON.parse(row.valor);\n    } catch (_) {\n      out[row.clave] = row.valor;\n    }\n  }\n  return out;\n}\n\n/**\n * Devuelve los datos como { settings, suppliers, invoices }, o null si la base\n * de datos está recién creada y todavía no tiene nada.\n */\nexport function readState() {\n  if (!isAvailable()) return null;\n\n  const settings = settingsFromDb();\n  const suppliers = rows(\n    \"SELECT id, nombre, nif, email, telefono, nota, creado_en FROM proveedores ORDER BY creado_en\"\n  ).map((r) => ({\n    id: r.id,\n    name: r.nombre,\n    nif: r.nif || \"\",\n    email: r.email || \"\",\n    phone: r.telefono || \"\",\n    note: r.nota || \"\",\n    createdAt: r.creado_en,\n  }));\n\n  const invoices = rows(\n    `SELECT id, proveedor_id, numero, fecha, vencimiento, base, tipo_igic, cuota_igic, total,\n            estado, fecha_pago, tipo, categoria, sentido, lineas, liquidacion, origen, fichero,\n            texto, notas, confianza, creado_en, actualizado_en\n       FROM facturas ORDER BY creado_en DESC`\n  ).map((r) => {\n    let notes = [];\n    try {\n      notes = r.notas ? JSON.parse(r.notas) : [];\n",
+    "total_lines": 554
+  },
+  "summary": "sqlite.js: lines 219–308 of 554 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 90,
+    "total": 554,
+    "next_offset": 308
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,16 @@
+{
+  "id": "unk_239772205fed7368",
+  "revision": 1,
+  "question": "¿Guarda y enseña de verdad el original en un navegador real? El análisis estático dice que sí, pero la persona dijo que no a ejecutar el sitio, así que no está probado en marcha.",
+  "severity": "medium",
+  "domain": "ejecución",
+  "status": "open",
+  "probes": [
+    "Abrir el sitio servido (project_preview) y guardar un documento con una foto, para ver los botones Ver/Descargar y comprobar que el original queda en IndexedDB",
+    "Exportar una copia .sqlite y mirar que la columna original trae el resumen del fichero"
+  ],
+  "evidence_for": [
+    "ev_3873fde51eed7ab93de143a5af8433ebfb96f4cfead0b11e10374b9e2eeb45fe"
+  ],
+  "evidence_against": []
+}

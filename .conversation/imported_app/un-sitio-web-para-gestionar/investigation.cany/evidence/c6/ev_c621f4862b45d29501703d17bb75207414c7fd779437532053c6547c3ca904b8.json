@@ -1,0 +1,59 @@
+{
+  "id": "ev_c621f4862b45d29501703d17bb75207414c7fd779437532053c6547c3ca904b8",
+  "subject": {
+    "kind": "unknown",
+    "sha256": "bb3ff6c11b5fd5ae3a6e6ea5b6e209bccc5593c2103574893ce892a6b49e32e9",
+    "name": "picture-3.png"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 5,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\attachments\\picture-3.png",
+    "pattern": "FF D8 FF",
+    "text": null
+  },
+  "result": {
+    "file_size": 143338,
+    "limit": 5,
+    "match_cap_reached": false,
+    "matches": [],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\attachments\\picture-3.png",
+    "searched_for": [
+      {
+        "kind": "pattern",
+        "length": 3
+      }
+    ],
+    "total_matches": 0
+  },
+  "summary": "0 match(es) for pattern in picture-3.png.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 0,
+    "total": 0
+  },
+  "locations": [],
+  "links": []
+}

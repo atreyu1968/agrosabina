@@ -1,0 +1,54 @@
+{
+  "id": "ev_a08a86327c2932c508c3e120582c2f0083e1f0e9cc9aba8f65796bce1bdade13",
+  "subject": {
+    "kind": "script",
+    "sha256": "9be5a3bfd0a63d5de152c9c8c23375c99a17da56e72e1add6d642e6178ed2ce3",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 385,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24552,
+    "lines": 40,
+    "more": true,
+    "offset": 385,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "      existing.nif = cleanNif;\n      touched = true;\n    }\n    if (!existing.name && cleanName) {\n      existing.name = cleanName;\n      touched = true;\n    }\n    if (touched) save();\n    return { supplier: existing, created: false };\n  }\n\n  const supplier = {\n    id: uid(\"sup\"),\n    name: cleanName || cleanNif || \"Proveedor sin nombre\",\n    nif: cleanNif,\n    email: \"\",\n    phone: \"\",\n    note: \"\",\n    createdAt: new Date().toISOString(),\n  };\n  state.suppliers.push(supplier);\n  emit();\n  return { supplier, created: true };\n}\n\nexport function updateSupplier(id, patch) {\n  const s = state.suppliers.find((x) => x.id === id);\n  if (!s) return null;\n  Object.assign(s, patch);\n  save();\n  return s;\n}\n\nexport function deleteSupplier(id) {\n  state.suppliers = state.suppliers.filter((s) => s.id !== id);\n  state.invoices = state.invoices.filter((inv) => inv.supplierId !== id);\n  save();\n}\n\nexport function supplierById(id) {\n",
+    "total_lines": 780
+  },
+  "summary": "store.js: lines 386–425 of 780 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 780,
+    "next_offset": 425
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

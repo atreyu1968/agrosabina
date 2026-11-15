@@ -1,0 +1,54 @@
+{
+  "id": "ev_f285194f5add4d190156081a50344db43664a902c21f9e8b3d6f1bfaaa21f37d",
+  "subject": {
+    "kind": "script",
+    "sha256": "c6cbd7a9fb896dd0daa5470e838aef9e7c2d572df1acb081ed692c2b9d605563",
+    "name": "nomina.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 108,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 10890,
+    "lines": 30,
+    "more": true,
+    "offset": 108,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js",
+    "replaced_sequences": 0,
+    "text": "  }\n  if (irpf == null && bruto != null && irpfPct != null) {\n    irpf = round2((bruto * irpfPct) / 100);\n  }\n\n  let neto = importe(src.neto);\n  if (neto == null && bruto != null && (ssTrabajador != null || irpf != null)) {\n    neto = round2(bruto - (ssTrabajador || 0) - (irpf || 0));\n  }\n\n  const descuadre =\n    bruto != null && neto != null && ssTrabajador != null && irpf != null\n      ? round2(bruto - ssTrabajador - irpf - neto)\n      : null;\n\n  return {\n    trabajador: texto(src.trabajador),\n    nif: texto(src.nif),\n    puesto: texto(src.puesto),\n    periodo: texto(src.periodo),\n    dias: importe(src.dias),\n    bruto,\n    ssTrabajador,\n    irpf,\n    ssEmpresa,\n    neto,\n    ssPct,\n    irpfPct,\n    totalSS: round2((ssTrabajador || 0) + (ssEmpresa || 0)),\n    coste: bruto == null ? null : round2(bruto + (ssEmpresa || 0)),\n",
+    "total_lines": 291
+  },
+  "summary": "nomina.js: lines 109–138 of 291 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 291,
+    "next_offset": 138
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js"
+    }
+  ],
+  "links": []
+}

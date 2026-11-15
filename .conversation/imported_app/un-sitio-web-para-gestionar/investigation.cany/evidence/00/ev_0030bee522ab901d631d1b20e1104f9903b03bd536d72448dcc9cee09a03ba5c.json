@@ -1,0 +1,54 @@
+{
+  "id": "ev_0030bee522ab901d631d1b20e1104f9903b03bd536d72448dcc9cee09a03ba5c",
+  "subject": {
+    "kind": "script",
+    "sha256": "dce5715426f363eda41a5e86d8aca69716de8b9e5f03038cae3689841a53368b",
+    "name": "nomina.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 14,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 10720,
+    "lines": 14,
+    "more": true,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js",
+    "replaced_sequences": 0,
+    "text": "/*\n * Nóminas (recibos de salarios).\n *\n * Dos mitades bien separadas:\n *  - `leerNomina(texto)` saca del texto ya leído los números del recibo\n *    (bruto, Seguridad Social del trabajador, IRPF, líquido a percibir y\n *    Seguridad Social a cargo de la empresa) y avisa cuando las cuentas del\n *    papel no cuadran.\n *  - `calcularNomina` y `lineasNomina` son las cuentas que usan la ficha y la\n *    contabilidad, para que las dos enseñen exactamente lo mismo.\n *\n * El asiento que sale de aquí es el del PGC para una nómina:\n *   640 Sueldos y salarios ...................... al debe (bruto)\n *   642 Seguridad Social a cargo de la empresa .. al debe\n",
+    "total_lines": 288
+  },
+  "summary": "nomina.js: lines 1–14 of 288 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 14,
+    "total": 288,
+    "next_offset": 14
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_fd75ee87b116d5ef25dae0c509af3a2fdd10ca16e00c8af3be6fa0d430f1a20c",
+  "subject": {
+    "kind": "script",
+    "sha256": "7e98e599cd551f7e67ec504b14ed383ec90014db80fd487c43eab9b37f77df59",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 120,
+    "offset": 2800,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 289212,
+    "lines": 120,
+    "more": true,
+    "offset": 2800,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "            stage: \"En cola (otra hoja del mismo archivo)\",\n            preTexto: trozos[i].texto,\n            preSource: source,\n          });\n        }\n        job.name = trozos[0].nombre;\n        job.trozos = trozos.length;\n        text = trozos[0].texto;\n      }\n    }\n\n    job.text = text;\n    job.source = source;\n\n    if (!text.trim()) {\n      job.state = \"error\";\n      job.error = \"No he podido sacar texto. Prueba con una foto más nítida o escríbela a mano.\";\n      paintIngest();\n      return;\n    }\n\n    job.stage = \"Mirando qué documento es\";\n    job.pct = 90;\n    paintIngestSoon();\n\n    // Cada tipo de documento se lee con su propio importador: la nómina con el\n    // suyo, la liquidación con el suyo… Nada de leerlo todo como una factura y\n    // luego ir parcheándolo.\n    const { lectura, cls } = await leerTextoDocumento(text, job.name || job.file.name);\n    job.importador = lectura.etiqueta;\n    job.parsed = lectura.doc;\n    job.parsed.rawText = text.slice(0, 30000);\n    if (job.trozos > 1) {\n      job.parsed.notes.unshift(\n        `En el mismo archivo venían ${job.trozos} papeles: este es el de ${job.name.split(\" · \").pop()}. Cada uno se guarda por separado.`\n      );\n    }\n    if (lectura.id === \"factura\" && !looksLikeInvoice(text)) {\n      job.parsed.notes.unshift(\"Esto no parece una factura. Comprueba que has subido el documento correcto.\");\n    }\n\n    // Si la persona ha encendido la IA, la IA lee el documento tal cual (las\n    // hojas o la foto) y corrige lo que mis reglas hayan podido ver mal: los\n    // importes de una tabla, las columnas cambiadas, un papel torcido… Aquí es\n    // donde se nota: sus datos mandan sobre los míos y quedan anotados.\n    const settings = getState().settings;\n    if (aiConfigured(settings) && settings.aiReadDocument !== false) {\n      await applyAiDocument(job, text);\n    } else if (aiConfigured(settings)) {\n      job.parsed.notes.push(\n        \"La IA está encendida, pero en Ajustes has elegido que solo lea el texto, así que el fichero no sale de aquí.\"\n      );\n    }\n\n    job.state = \"parsed\";\n    paintIngest();\n    if (cls && cls.note) toast(cls.note, \"warn\", 6000);\n    await reviewJob(job);\n  } catch (err) {\n    job.state = \"error\";\n    job.error = err && err.message ? err.message : \"No he podido leer el archivo.\";\n    paintIngest();\n  }\n}\n\n/* ------------------------------------------------------------------ */\n/* Banco de pruebas: leer un PDF de ejemplo y ver qué sale             */\n/* ------------------------------------------------------------------ */\n\n/**\n * Coge un PDF (o una foto) de ejemplo, lo lee igual que lo leería de verdad\n * y enseña dos cosas: el texto tal cual ha salido y lo que el programa\n * entiende de él. No guarda nada —ni documento, ni proveedor, ni fichero— y\n * no manda nada a internet. Sirve para mirar por qué un papel se lee mal\n * antes de tocar el programa.\n */\nasync function runPruebas(files) {\n  if (ui.pruebas.busy) {\n    toast(\"Espera un momento: estoy terminando con el documento anterior.\", \"warn\");\n    return;\n  }\n  ui.pruebas.busy = true;\n  try {\n    for (const file of files) {\n      const item = {\n        name: file.name || \"documento\",\n        kb: Math.max(1, Math.round((file.size || 0) / 1024)),\n        source: \"\",\n        pages: 1,\n        texto: \"\",\n        error: \"\",\n        lectura: null,\n        pendiente: true,\n      };\n      ui.pruebas.list.unshift(item);\n      setPruebaStatus(`Leyendo ${item.name}…`);\n      paintPruebas();\n      try {\n        const leido = await readFile(file, (stage, pct) => {\n          const p = Number.isFinite(pct) ? ` · ${Math.round(pct)} %` : \"\";\n          setPruebaStatus(`Leyendo ${item.name}: ${stage || \"un momento\"}${p}`);\n        });\n        item.source = leido.source || \"\";\n        item.pages = leido.pages || 1;\n        item.texto = String(leido.text || \"\");\n        if (!item.texto.trim()) {\n          item.error = \"No he podido sacar ni una letra de este fichero. Prueba con otra copia del PDF o con una foto más nítida.\";\n        } else {\n          // Se lee con el mismo camino que la importación de verdad\n          // (leerTextoDocumento): primero el lector que más se parece al papel\n          // y, si no hay ninguno claro, las reglas afinan el tipo. Si aquí se\n          // llamara solo a leerDocumento, la prueba diría «factura genérica»\n          // donde la aplicación acierta con la nómina, y no serviría de nada.\n          // Un archivo puede traer varios papeles (tres nóminas, una nómina y\n          // una factura…). Se separan ANTES de leer y cada uno se lee por su\n          // cuenta: así la prueba enseña lo que el programa entiende de cada\n          // papel, no una mezcla de todos los textos metida en un solo\n          // documento. Es el mismo camino que la importación de verdad.\n          const trozos = trocearPapeles(leido.textos, item.name);\n          if (trozos.length > 1) {\n",
+    "total_lines": 7272
+  },
+  "summary": "views.js: lines 2801–2920 of 7272 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 120,
+    "total": 7272,
+    "next_offset": 2920
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

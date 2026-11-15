@@ -1,0 +1,54 @@
+{
+  "id": "ev_9290010f9df5e2fbf050da8761ff7585fc6d87efb47928fc40c86364ad0bfba5",
+  "subject": {
+    "kind": "script",
+    "sha256": "c35b6fd72f850500756b33053ef68815af8f7d6cba5e00dd23068cfd723e3fba",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 2600,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 272651,
+    "lines": 40,
+    "more": true,
+    "offset": 2600,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": " * Lee un texto con el importador que le toca y, cuando el papel no tiene un\n * tipo propio claro (una factura, un justificante cualquiera), afina el tipo\n * con las reglas que el programa lleva dentro (model.js). Si esas reglas\n * nombran un tipo que tiene lector propio (nómina, liquidación, subvención…),\n * el documento se vuelve a leer entero con él, para que no salga a medias.\n *\n * Aquí no se llama a ninguna IA: el documento se lee solo con el programa, en\n * este ordenador, sin mandar el texto a ninguna parte.\n */\nasync function leerTextoDocumento(text, fileName) {\n  const opciones = { defaultRate: getState().settings.defaultRate, fileName };\n  let lectura = leerDocumento(text, opciones);\n  let cls = null;\n  if (!lectura.generico) return { lectura, cls };\n\n  cls = classifyLocal(text, { fileName });\n  if (cls.kind && cls.kind !== lectura.doc.kind) {\n    const otra = leerDocumento(text, { ...opciones, tipo: cls.kind });\n    if (otra.reconoce) return { lectura: otra, cls: null };\n    lectura.doc.kind = cls.kind;\n    lectura.doc.direction = cls.direction || directionOf(cls.kind);\n  }\n  lectura.doc.category = cls.category || lectura.doc.category;\n  lectura.doc.direction = cls.direction || lectura.doc.direction;\n  lectura.doc.classifyWhy = cls.why || \"\";\n  lectura.doc.classifyNote = cls.note || \"\";\n  return { lectura, cls };\n}\n\nasync function runOne(job) {\n  job.state = \"reading\";\n  job.stage = \"Abriendo el archivo\";\n  job.pct = 4;\n  paintIngestSoon();\n\n  try {\n    const { text, source } = await readFile(job.file, (stage, pct) => {\n      job.stage = stage;\n      job.pct = pct;\n      paintIngestSoon();\n",
+    "total_lines": 6844
+  },
+  "summary": "views.js: lines 2601–2640 of 6844 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 6844,
+    "next_offset": 2640
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

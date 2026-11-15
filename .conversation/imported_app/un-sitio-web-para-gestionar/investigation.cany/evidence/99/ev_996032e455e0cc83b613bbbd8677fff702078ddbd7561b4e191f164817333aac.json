@@ -1,0 +1,87 @@
+{
+  "id": "ev_996032e455e0cc83b613bbbd8677fff702078ddbd7561b4e191f164817333aac",
+  "subject": {
+    "kind": "script",
+    "sha256": "a6efaf1951f6d94f6a827d45ca436123cf3900809e858bae693540ef9445eb7d",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "aiExtract"
+  },
+  "result": {
+    "file_size": 280991,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "616945787472616374",
+        "file_offset": 1306,
+        "file_offset_hex": "0x51a",
+        "length": 9,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "616945787472616374",
+        "file_offset": 137518,
+        "file_offset_hex": "0x2192e",
+        "length": 9,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 9
+      },
+      {
+        "kind": "utf16le",
+        "length": 18
+      }
+    ],
+    "total_matches": 2
+  },
+  "summary": "2 match(es) for utf8 + utf16le in views.js; showing 2 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x51a"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x2192e"
+    }
+  ],
+  "links": []
+}

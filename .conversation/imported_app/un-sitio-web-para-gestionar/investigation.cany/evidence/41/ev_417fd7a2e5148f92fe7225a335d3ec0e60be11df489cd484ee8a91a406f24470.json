@@ -1,0 +1,54 @@
+{
+  "id": "ev_417fd7a2e5148f92fe7225a335d3ec0e60be11df489cd484ee8a91a406f24470",
+  "subject": {
+    "kind": "script",
+    "sha256": "c15ac0adaf235ce3581c94efe38fd40425633ddbc5bab4a939965ea4cd9fee68",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 585,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 135395,
+    "lines": 40,
+    "more": true,
+    "offset": 585,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "          <button class=\"btn\" data-action=\"new-invoice\">${icon(\"edit\")} Escribirla a mano</button>\n          <button class=\"btn ghost\" data-action=\"seed-demo\">Ver con datos de ejemplo</button>\n        </div>\n      </div>\n    </section>\n\n    <section class=\"card\">\n      <div class=\"card-head\">\n        <div>\n          <h2>Cómo funciona</h2>\n          <p>Tres pasos y la factura queda guardada</p>\n        </div>\n      </div>\n      <div class=\"card-body\">\n        <div class=\"howto\">\n          <div class=\"step\">\n            <div class=\"n\">1</div>\n            <h4>Sube la factura</h4>\n            <p>Una foto del móvil, un escaneo o el PDF que te ha mandado el proveedor.</p>\n          </div>\n          <div class=\"step\">\n            <div class=\"n\">2</div>\n            <h4>Revisa lo que he leído</h4>\n            <p>Relleno proveedor, número, fechas, base, IGIC y total. Puedes corregir cualquier cosa.</p>\n          </div>\n          <div class=\"step\">\n            <div class=\"n\">3</div>\n            <h4>Marca pagado o pendiente</h4>\n            <p>Con un clic cambias el estado. El resumen te dice cuánto debes y cuánto IGIC llevas.</p>\n          </div>\n        </div>\n      </div>\n    </section>\n  </div>`;\n}\n\n/* ------------------------------------------------------------------ */\n/* Ventas e ingresos                                                  */\n/* ------------------------------------------------------------------ */\n\n",
+    "total_lines": 3603
+  },
+  "summary": "views.js: lines 586–625 of 3603 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 3603,
+    "next_offset": 625
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

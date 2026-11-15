@@ -1,0 +1,54 @@
+{
+  "id": "ev_f8bdda2c79d8db3909b362e9d10ed6a1e184a970a22c95b897ded876c2b5e743",
+  "subject": {
+    "kind": "script",
+    "sha256": "6412b9c3eba9e2c5b4d9640870df1abab88a4cf5ac18455e51a42105c7de18cf",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 26,
+    "offset": 2098,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 123763,
+    "lines": 26,
+    "more": true,
+    "offset": 2098,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  const title = editing ? \"Editar documento\" : job ? \"Revisa lo que he leído\" : \"Nuevo documento\";\n  const sub = editing\n    ? \"Cambia lo que haga falta y guarda.\"\n    : job\n      ? `${sourceLabel(job.source)} · ${esc(job.file.name)}`\n      : \"Escribe los datos de la factura.\";\n\n  const conf = job ? Math.round((job.parsed.confidence || 0) * 100) : null;\n\n  const html = `\n    <div class=\"modal-head\">\n      <div>\n        <h2>${title}</h2>\n        <p>${sub}</p>\n      </div>\n      <div class=\"spacer\"></div>\n      ${conf != null ? `<span class=\"tag ${conf >= 65 ? \"kind\" : \"\"}\">${conf} % leído</span>` : \"\"}\n      <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n    </div>\n    <div class=\"modal-body\">\n      ${job ? notesHtml(job.parsed.notes) : \"\"}\n      <div id=\"dupWarning\" class=\"summary-box warn\" hidden style=\"margin-bottom:14px\">${icon(\"alert\")}<div></div></div>\n      <div class=\"review-layout\">\n        <div>\n          ${invoiceFormHtml(values)}\n        </div>\n",
+    "total_lines": 3308
+  },
+  "summary": "views.js: lines 2099–2124 of 3308 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 26,
+    "total": 3308,
+    "next_offset": 2124
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

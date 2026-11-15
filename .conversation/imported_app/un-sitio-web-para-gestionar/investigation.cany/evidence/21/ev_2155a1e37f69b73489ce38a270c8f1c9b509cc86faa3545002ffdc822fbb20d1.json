@@ -1,0 +1,105 @@
+{
+  "id": "ev_2155a1e37f69b73489ce38a270c8f1c9b509cc86faa3545002ffdc822fbb20d1",
+  "subject": {
+    "kind": "script",
+    "sha256": "220dcfdbc6a049f4299ace4ac37018a447379c05ada086f3f97c6084e4723b5b",
+    "name": "pdf.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\pdf.js",
+    "pattern": null,
+    "text": "filename"
+  },
+  "result": {
+    "file_size": 11337,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "66696c656e616d65",
+        "file_offset": 5692,
+        "file_offset_hex": "0x163c",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "66696c656e616d65",
+        "file_offset": 5753,
+        "file_offset_hex": "0x1679",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "66696c656e616d65",
+        "file_offset": 10726,
+        "file_offset_hex": "0x29e6",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "66696c656e616d65",
+        "file_offset": 10742,
+        "file_offset_hex": "0x29f6",
+        "length": 8,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\pdf.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 8
+      }
+    ],
+    "total_matches": 4
+  },
+  "summary": "4 match(es) for utf8 in pdf.js; showing 4 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 4,
+    "total": 4
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x163c"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x1679"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x29e6"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x29f6"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_901bfa8c0e9260f4171336c9dee2a6adfb7b06e76158cc734e8bf850fbf3726a",
+  "subject": {
+    "kind": "script",
+    "sha256": "95cfec9262b76d4a06e9da1f5aa03517b468bd8e6341b387341adabc3c2d11cb",
+    "name": "model.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 10340,
+    "lines": 45,
+    "more": true,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js",
+    "replaced_sequences": 0,
+    "text": "/*\n * Qué documentos lleva una empresa agrícola y cómo se ordenan solos.\n *\n * Agrosabina SL no emite facturas: recibe liquidaciones y pagos de fruta y\n * subvenciones. Por eso cada documento tiene un «sentido»: INGRESO o GASTO,\n * que se deduce del tipo de documento.\n *\n * `classifyLocal` es el clasificador de reglas: mira el texto ya leído de la\n * factura y busca palabras conocidas (agua, Endesa, nómina, glifosato…). Es\n * el que funciona siempre, sin internet y sin enviar nada a ningún sitio.\n */\n\nexport const DIRECTIONS = Object.freeze({ IN: \"INGRESO\", OUT: \"GASTO\" });\n\n/** Tipos de documento que entran en el programa. */\nexport const DOC_KINDS = Object.freeze([\n  { id: \"FACTURA\", label: \"Factura recibida\", short: \"Factura\", direction: DIRECTIONS.OUT },\n  { id: \"LIQUIDACION\", label: \"Liquidación de fruta\", short: \"Liquidación\", direction: DIRECTIONS.IN },\n  { id: \"SUBVENCION\", label: \"Subvención o ayuda\", short: \"Subvención\", direction: DIRECTIONS.IN },\n  { id: \"COBRO\", label: \"Cobro o abono recibido\", short: \"Cobro\", direction: DIRECTIONS.IN },\n  { id: \"NOMINA\", label: \"Nómina o coste laboral\", short: \"Laboral\", direction: DIRECTIONS.OUT },\n  { id: \"OTRO\", label: \"Otro documento\", short: \"Otro\", direction: DIRECTIONS.OUT },\n]);\n\n/** Conceptos de gasto e ingreso habituales en una explotación agrícola. */\nexport const CATEGORIES = Object.freeze([\n  { id: \"\", label: \"Sin clasificar\", direction: \"\" },\n  { id: \"AGUA\", label: \"Agua y riego\", direction: DIRECTIONS.OUT },\n  { id: \"ELECTRICIDAD\", label: \"Electricidad\", direction: DIRECTIONS.OUT },\n  { id: \"LABORALES\", label: \"Laborales y Seguridad Social\", direction: DIRECTIONS.OUT },\n  { id: \"SERVICIOS\", label: \"Servicios externos\", direction: DIRECTIONS.OUT },\n  { id: \"FITOSANITARIOS\", label: \"Fitosanitarios\", direction: DIRECTIONS.OUT },\n  { id: \"ABONOS\", label: \"Abonos y fertilizantes\", direction: DIRECTIONS.OUT },\n  { id: \"COMBUSTIBLE\", label: \"Combustible y carburantes\", direction: DIRECTIONS.OUT },\n  { id: \"IMPUESTOS\", label: \"Impuestos y tasas\", direction: DIRECTIONS.OUT },\n  { id: \"FRUTA\", label: \"Fruta (liquidaciones y pagos)\", direction: DIRECTIONS.IN },\n  { id: \"SUBVENCIONES\", label: \"Subvenciones y ayudas\", direction: DIRECTIONS.IN },\n  { id: \"OTROS\", label: \"Otros\", direction: \"\" },\n]);\n\nexport function kindInfo(id) {\n  return DOC_KINDS.find((k) => k.id === id) || DOC_KINDS[0];\n}\n\nexport function categoryInfo(id) {\n",
+    "total_lines": 242
+  },
+  "summary": "model.js: lines 1–45 of 242 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 242,
+    "next_offset": 45
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js"
+    }
+  ],
+  "links": []
+}

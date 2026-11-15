@@ -1,0 +1,54 @@
+{
+  "id": "ev_128faa5678e27a1194af0fbf3f956cbab7bec394459ada6988e4f4d19e986f65",
+  "subject": {
+    "kind": "script",
+    "sha256": "574cd47d1004baa89f37311f26c4dfa678365011fb64fd81c1e6f767526b9fdd",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 18,
+    "offset": 44,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 124413,
+    "lines": 18,
+    "more": true,
+    "offset": 44,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  totals,\n  updateInvoice,\n  updateSettings,\n  updateSupplier,\n  exportSqliteBytes,\n  sqliteIgicSummary,\n  storageInfo,\n} from \"./store.js\";\nimport { parseInvoiceText, parseKg, parseLiquidacion, parsePrice, looksLikeInvoice } from \"./parse.js\";\nimport { describeFile, readFile, sourceLabel } from \"./read.js\";\nimport { cameraSupported, openCamera } from \"./camera.js\";\nimport {\n  categoryInfo,\n  categoryOptions,\n  directionOf,\n  kindInfo,\n  kindOptions,\n} from \"./model.js\";\n",
+    "total_lines": 3320
+  },
+  "summary": "views.js: lines 45–62 of 3320 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 18,
+    "total": 3320,
+    "next_offset": 62
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_0fdf4a62600a688c9f99fccb8bd5ad16092cc1c40234d0650566e3e5ea5e1698",
+  "subject": {
+    "kind": "script",
+    "sha256": "f146588a03b730c7c6548a2cfb31a72908881807e03d3227675e2c6ba79a3c69",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 3652,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 199114,
+    "lines": 60,
+    "more": true,
+    "offset": 3652,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Copia de seguridad</h3>\n      <p style=\"font-size:13px;color:var(--ink-3);margin-bottom:12px\">\n        Los datos viven en este navegador. Si limpias el historial o cambias de ordenador, se pierden:\n        descarga una copia de vez en cuando.\n      </p>\n      <div class=\"row wrap\">\n        <button class=\"btn sm\" data-action=\"export-json\">${icon(\"download\")} Descargar copia</button>\n        <button class=\"btn sm\" data-action=\"import-json\">${icon(\"upload\")} Restaurar copia</button>\n        <div class=\"spacer\"></div>\n        <button class=\"btn sm danger\" data-action=\"clear-all\">${icon(\"trash\")} Borrar todo</button>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Interpretación con IA <span class=\"tag\">opcional</span></h3>\n      <p style=\"font-size:13px;color:var(--ink-3);margin-bottom:12px\">\n        Con esto encendido, la IA ayuda a leer los documentos: de qué tipo son, en qué concepto entran y, si es\n        una liquidación, los kilos, el precio por kilo y los descuentos. A la IA solo le llega\n        <strong>el texto ya leído</strong>, nunca la foto ni el PDF, y solo si tú escribes tu clave. Las reglas del\n        programa siempre van primero: si la IA no contesta, se sigue con ellas.\n      </p>\n      <label style=\"display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;margin-bottom:12px\">\n        <input type=\"checkbox\" id=\"set-ai-on\" ${s.aiEnabled ? \"checked\" : \"\"}> Usar una IA para leer los documentos\n      </label>\n      <div class=\"form-grid\">\n        <div class=\"field span-2\">\n          <label for=\"set-ai-provider\">Servicio</label>\n          <select id=\"set-ai-provider\">\n            ${AI_PROVIDERS.map(\n              (p) => `<option value=\"${p.id}\" ${provider.id === p.id ? \"selected\" : \"\"}>${p.label}</option>`\n            ).join(\"\")}\n          </select>\n          <span class=\"hint\" id=\"set-ai-provider-hint\">${esc(provider.hint)}</span>\n        </div>\n        <div class=\"field span-2\">\n          <label for=\"set-ai-endpoint\">Dirección del servicio</label>\n          <input id=\"set-ai-endpoint\" type=\"text\" autocomplete=\"off\" value=\"${esc(s.aiEndpoint || AI_DEFAULTS.aiEndpoint)}\" placeholder=\"https://api.deepseek.com/v1\">\n          <span class=\"hint\">Se rellena sola al elegir el servicio. Vale cualquier otro que hable el idioma de OpenAI.</span>\n        </div>\n        <div class=\"field\">\n          <label for=\"set-ai-model\">Modelo</label>\n          <input id=\"set-ai-model\" type=\"text\" autocomplete=\"off\" value=\"${esc(s.aiModel || AI_DEFAULTS.aiModel)}\" placeholder=\"deepseek-chat\">\n        </div>\n        <div class=\"field\">\n          <label for=\"set-ai-key\">Clave</label>\n          <input id=\"set-ai-key\" type=\"password\" autocomplete=\"off\" value=\"${esc(s.aiKey || \"\")}\" placeholder=\"sk-…\">\n          <span class=\"hint\">Se queda guardada en este navegador, junto a tus facturas.</span>\n        </div>\n      </div>\n      <div class=\"row wrap\" style=\"margin-top:12px\">\n        <button class=\"btn sm\" data-action=\"test-ai\">${icon(\"sparkle\")} Probar la conexión</button>\n        <span id=\"aiStatus\" style=\"font-size:12.5px;color:var(--ink-3)\"></span>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Base de datos SQLite</h3>\n",
+    "total_lines": 5180
+  },
+  "summary": "views.js: lines 3653–3712 of 5180 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 5180,
+    "next_offset": 3712
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,83 @@
+{
+  "id": "ev_e7d4503174952eed11dba24ca960fbb6b512c3f22bac80ea584cd92d8c270356",
+  "subject": {
+    "kind": "script",
+    "sha256": "d3429cdf47110ecd732d2fb98412f312890b35e1ceb799fe3800a1c8466fea32",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 6,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "guessLiquidacion"
+  },
+  "result": {
+    "file_size": 119171,
+    "limit": 6,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "67756573734c69717569646163696f6e",
+        "file_offset": 67861,
+        "file_offset_hex": "0x10915",
+        "length": 16,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "67756573734c69717569646163696f6e",
+        "file_offset": 76626,
+        "file_offset_hex": "0x12b52",
+        "length": 16,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 16
+      }
+    ],
+    "total_matches": 2
+  },
+  "summary": "2 match(es) for utf8 in views.js; showing 2 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x10915"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x12b52"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_faa0d56cf2ac25b9d24721e21330e3409aa4bb5575c6abd0ff75484d8591f202",
+  "subject": {
+    "kind": "script",
+    "sha256": "aea2f632810a30a206bb5c03f817d42223cbbd6fc0a8616cce3c29f88a6f2449",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 42,
+    "offset": 414,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 29170,
+    "lines": 42,
+    "more": true,
+    "offset": 414,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "    out.push({\n      id: String(m.id || `manual-${out.length + 1}`),\n      date: dia,\n      concept: concepto,\n      ref: String(m.ref || \"\").trim(),\n      kind: \"manual\",\n      manual: true,\n      lines,\n    });\n  }\n\n  out.sort((a, b) => {\n    if (a.date !== b.date) return a.date < b.date ? -1 : 1;\n    const oa = ORDEN[a.kind] == null ? 9 : ORDEN[a.kind];\n    const ob = ORDEN[b.kind] == null ? 9 : ORDEN[b.kind];\n    if (oa !== ob) return oa - ob;\n    return a.concept.localeCompare(b.concept);\n  });\n  out.forEach((e, i) => {\n    e.number = i + 1;\n    e.total = totalLineas(e.lines);\n  });\n  return out;\n}\n\n/* ------------------------------------------------------------------ */\n/* Libro mayor                                                        */\n/* ------------------------------------------------------------------ */\n\n/** Una fila por cuenta: lo que se ha movido y el saldo que queda. */\nexport function libroMayor(entries) {\n  const map = new Map();\n  for (const e of entries || []) {\n    for (const l of e.lines || []) {\n      let row = map.get(l.account);\n      if (!row) {\n        const c = cuenta(l.account);\n        row = {\n          code: l.account,\n          name: c.name,\n          balance: c.balance,\n          pl: c.pl,\n",
+    "total_lines": 732
+  },
+  "summary": "accounting.js: lines 415–456 of 732 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 42,
+    "total": 732,
+    "next_offset": 456
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

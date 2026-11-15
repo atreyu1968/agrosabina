@@ -1,0 +1,54 @@
+{
+  "id": "ev_36d5df31112bd3b8f9ac04bf10fef82392915832293d842f535b25e655f4a773",
+  "subject": {
+    "kind": "script",
+    "sha256": "479c0b5d585ce4e340a01c8c964abd39b1b238cda327fbbccdc5214504c813c4",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 26,
+    "offset": 2570,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 246123,
+    "lines": 26,
+    "more": true,
+    "offset": 2570,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      const job = ui.jobs.find((j) => j.state === \"queued\");\n      if (!job) break;\n      await runOne(job);\n    }\n  } finally {\n    runningQueue = false;\n    paintIngest();\n  }\n}\n\n/**\n * Lee un texto con el importador que le toca y, cuando el papel no tiene un\n * tipo propio claro (una factura, un justificante cualquiera), deja que el\n * clasificador de siempre afine el tipo. Si ese clasificador nombra un tipo\n * que tiene lector propio (nómina, liquidación, subvención…), el documento se\n * vuelve a leer entero con él, para que no salga a medias.\n */\nasync function leerTextoDocumento(text, fileName) {\n  const opciones = { defaultRate: getState().settings.defaultRate, fileName };\n  let lectura = leerDocumento(text, opciones);\n  let cls = null;\n  if (!lectura.generico) return { lectura, cls };\n\n  cls = await classifyDocument(text, getState().settings, { fileName });\n  if (cls.kind && cls.kind !== lectura.doc.kind) {\n    const otra = leerDocumento(text, { ...opciones, tipo: cls.kind });\n",
+    "total_lines": 6170
+  },
+  "summary": "views.js: lines 2571–2596 of 6170 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 26,
+    "total": 6170,
+    "next_offset": 2596
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

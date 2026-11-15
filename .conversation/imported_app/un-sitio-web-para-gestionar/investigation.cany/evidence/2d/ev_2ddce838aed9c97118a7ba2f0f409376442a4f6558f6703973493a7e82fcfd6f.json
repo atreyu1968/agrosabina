@@ -1,0 +1,54 @@
+{
+  "id": "ev_2ddce838aed9c97118a7ba2f0f409376442a4f6558f6703973493a7e82fcfd6f",
+  "subject": {
+    "kind": "script",
+    "sha256": "b2e5934b5b5d5b0863dbcfd14ac048c613516ee3c6a204f3f3b2aac0c9263cae",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 4068,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 155982,
+    "lines": 40,
+    "more": true,
+    "offset": 4068,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "}\n\n/** Descarga en CSV lo que se está viendo. */\nfunction exportAccCsv() {\n  const w = contaWindow();\n  const entries = asientosContables(w);\n  if (!entries.length) {\n    toast(\"No hay asientos en ese periodo.\", \"warn\");\n    return;\n  }\n  const mayor = libroMayor(entries);\n  let headers = [];\n  let rows = [];\n  const tab = ui.conta.tab;\n  if (tab === \"mayor\") {\n    headers = [\"Cuenta\", \"Nombre\", \"Fecha\", \"Asiento\", \"Concepto\", \"Debe\", \"Haber\", \"Saldo\"];\n    for (const r of mayor) {\n      for (const m of r.moves) {\n        rows.push([r.code, r.name, m.date, m.number, m.concept, fmtNum(m.debit), fmtNum(m.credit), fmtNum(m.running)]);\n      }\n    }\n  } else if (tab === \"sumas\") {\n    const sumas = balanceSumasYSaldos(mayor);\n    headers = [\"Cuenta\", \"Nombre\", \"Suma debe\", \"Suma haber\", \"Saldo deudor\", \"Saldo acreedor\"];\n    rows = sumas.rows.map((r) => [r.code, r.name, fmtNum(r.debit), fmtNum(r.credit), fmtNum(r.deudor), fmtNum(r.acreedor)]);\n    rows.push([\"\", \"TOTALES\", fmtNum(sumas.totals.debit), fmtNum(sumas.totals.credit), fmtNum(sumas.totals.deudor), fmtNum(sumas.totals.acreedor)]);\n  } else if (tab === \"balance\") {\n    const pyg = cuentaResultados(mayor);\n    const bal = balanceSituacion(mayor, pyg.resultado);\n    headers = [\"Epígrafe\", \"Importe\"];\n    rows = bal.rows.map((r) => [r.label, fmtNum(r.value)]);\n    rows.push([\"Comprobación (activo − patrimonio y pasivo)\", fmtNum(bal.descuadre)]);\n  } else if (tab === \"resultados\") {\n    const pyg = cuentaResultados(mayor);\n    headers = [\"Concepto\", \"Importe\"];\n    rows = pyg.lines.map((l) => [l.label, fmtNum(l.value)]);\n  } else {\n    headers = [\"Fecha\", \"Asiento\", \"Cuenta\", \"Nombre\", \"Concepto\", \"Debe\", \"Haber\"];\n    for (const e of entries) {\n      for (const l of e.lines) {\n",
+    "total_lines": 4117
+  },
+  "summary": "views.js: lines 4069–4108 of 4117 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 4117,
+    "next_offset": 4108
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

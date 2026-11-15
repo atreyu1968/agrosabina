@@ -1,0 +1,54 @@
+{
+  "id": "ev_5394d8c6d050eb93cbc5adcb1bda434377aaf1321a386b075bf9e7eacf1ecd84",
+  "subject": {
+    "kind": "script",
+    "sha256": "c48ded4f9cf5041b482b33ee217b0c9019182ba5922a959fb68cfe1f038baa21",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 75,
+    "offset": 2405,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 246388,
+    "lines": 75,
+    "more": true,
+    "offset": 2405,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "function viewImportar() {\n  const defaultRate = getState().settings.defaultRate;\n  return `\n  <div class=\"stack\">\n    <section class=\"card\">\n      <div class=\"card-body\">\n        <div id=\"dropzone\" class=\"dropzone\">\n          <div class=\"dz-icon\">${icon(\"upload\")}</div>\n          <h3>Arrastra aquí los documentos</h3>\n          <p>Fotos (JPG, PNG) o PDF, varias a la vez. Cada tipo se lee con su propio lector: ${importadoresDisponibles()\n            .map((i) => i.label.toLowerCase())\n            .join(\", \")}. Todo se lee en tu ordenador y se guarda en tu base de datos.</p>\n          <div class=\"dz-actions\">\n            <button class=\"btn primary\" data-action=\"import-files\">${icon(\"file\")} Elegir archivos</button>\n            <button class=\"btn\" data-action=\"import-camera\">${icon(\"camera\")} Hacer una foto</button>\n            <button class=\"btn ghost\" data-action=\"paste-text\">${icon(\"text\")} Pegar el texto</button>\n            <button class=\"btn ghost\" data-action=\"import-email\">${icon(\"mail\")} Correo</button>\n          </div>\n          <p style=\"font-size:12.5px;color:var(--ink-3);margin-top:10px\">\n            Con «Hacer una foto» puedes disparar varias seguidas y luego revisarlas todas juntas.\n          </p>\n        </div>\n        <div id=\"ingestList\" class=\"filelist\"></div>\n      </div>\n    </section>\n\n    <div class=\"hint-bar\">\n      ${icon(\"info\")}\n      <span>El IGIC por defecto es <strong>${rateText(defaultRate)}</strong>. Puedes cambiarlo en Ajustes, y en cada factura si es otro tipo.</span>\n    </div>\n\n    <section class=\"card\">\n      <div class=\"card-head\">\n        <div>\n          <h2>Qué leo de cada factura</h2>\n          <p>Y qué puedes corregir antes de guardar</p>\n        </div>\n      </div>\n      <div class=\"card-body\">\n        <div class=\"howto\">\n          <div class=\"step\">\n            <div class=\"n\">1</div>\n            <h4>Proveedor</h4>\n            <p>Nombre y NIF. Si ya lo tengo, la factura se une a su ficha; si no, lo creo.</p>\n          </div>\n          <div class=\"step\">\n            <div class=\"n\">2</div>\n            <h4>Importes</h4>\n            <p>Base imponible, tipo de IGIC, cuota y total. Si falta uno, lo calculo con los otros.</p>\n          </div>\n          <div class=\"step\">\n            <div class=\"n\">3</div>\n            <h4>Qué documento es</h4>\n            <p>Factura, liquidación de fruta, subvención, nómina… y en qué concepto entra (agua, luz, laborales, fitosanitarios, abonos…).</p>\n          </div>\n          <div class=\"step\">\n            <div class=\"n\">4</div>\n            <h4>Fechas y estado</h4>\n            <p>Fecha, vencimiento y si el documento está cobrado, pagado o pendiente.</p>\n          </div>\n        </div>\n      </div>\n    </section>\n  </div>`;\n}\n\n/* ---- lista de ficheros de esta sesión ---- */\n\nlet paintScheduled = false;\nfunction paintIngestSoon() {\n  if (paintScheduled) return;\n  paintScheduled = true;\n  requestAnimationFrame(() => {\n    paintScheduled = false;\n    paintIngest();\n",
+    "total_lines": 6175
+  },
+  "summary": "views.js: lines 2406–2480 of 6175 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 75,
+    "total": 6175,
+    "next_offset": 2480
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

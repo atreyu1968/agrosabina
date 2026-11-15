@@ -1,0 +1,54 @@
+{
+  "id": "ev_a6b5f78613045262cb4b4e6d24407189936eebd22f77b68e222038a67c2f541e",
+  "subject": {
+    "kind": "text",
+    "sha256": "3db480224effa4b9d211e596ed9d47f2a363fef9510e14cffbc71a449f3b6e8a",
+    "name": "styles.css"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 120,
+    "offset": 930,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 35654,
+    "lines": 120,
+    "more": true,
+    "offset": 930,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "replaced_sequences": 0,
+    "text": "  .sidebar {\n    width: auto;\n    flex: 0 0 auto;\n    height: auto;\n    position: sticky;\n    top: 0;\n    z-index: 20;\n    flex-direction: row;\n    align-items: center;\n    gap: 10px;\n    padding: 9px 12px;\n    border-right: none;\n    border-bottom: 1px solid var(--line);\n    overflow-x: auto;\n  }\n  .brand { padding: 0; flex: 0 0 auto; }\n  .brand-text { display: none; }\n  .brand-mark { width: auto; height: 30px; max-width: 120px; }\n  .brand-mark img { width: auto; height: 30px; max-height: 30px; }\n\n  .nav { flex-direction: row; gap: 4px; }\n  .nav a { padding: 7px 10px; font-size: 13.5px; }\n  .nav a svg { width: 16px; height: 16px; }\n  .sidebar-foot { display: none; }\n\n  .topbar { padding: 14px 18px; }\n  .topbar-titles h1 { font-size: 18px; }\n  .topbar-titles p { font-size: 12px; }\n  #view { padding: 18px 18px 80px; }\n\n  .kpis { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }\n  .kpi .kpi-value { font-size: 22px; }\n  .howto { grid-template-columns: minmax(0, 1fr); }\n  .form-grid { grid-template-columns: minmax(0, 1fr); }\n  .form-grid .span-2 { grid-column: span 1; }\n  .modal { padding: 12px 10px; }\n  .modal-body, .modal-head, .modal-foot { padding-left: 16px; padding-right: 16px; }\n  .toasts { right: 12px; bottom: 12px; left: 12px; max-width: none; }\n}\n\n@media (max-width: 560px) {\n  .nav a span:not(.nav-count) { display: none; }\n  .nav a { padding: 8px; }\n  .topbar-actions .btn span { display: none; }\n  .topbar-actions .btn { padding: 9px; }\n  .supplier-grid { grid-template-columns: minmax(0, 1fr); }\n  .kpi .kpi-value { font-size: 20px; }\n  .filters { gap: 8px; }\n  .filters .search { flex: 1 1 100%; }\n}\n\n/* ---------- Espera mientras se abre la base de datos ------------------- */\n\n.spinner.big {\n  width: 26px; height: 26px;\n  border-width: 2.5px;\n}\n\n/* ---------- Panel de la base de datos ---------------------------------- */\n\n.db-stats {\n  display: flex; flex-wrap: wrap; gap: 8px;\n  list-style: none; margin: 0; padding: 0;\n}\n.db-stats li {\n  padding: 6px 11px;\n  border-radius: 999px;\n  background: var(--surface-2);\n  border: 1px solid var(--line);\n  font-size: 12.5px;\n  color: var(--ink-2);\n}\n.db-stats strong { color: var(--ink-1); }\n\n/* ---------- Cámara ----------------------------------------------------- */\n\n.camera-overlay {\n  position: fixed; inset: 0;\n  z-index: 90;\n  display: flex; flex-direction: column;\n  background: #0b0f0e;\n  color: #f3f5f4;\n  animation: fade .15s ease-out;\n}\n\n.camera-head {\n  display: flex; align-items: center; justify-content: space-between;\n  gap: 12px;\n  padding: 12px 16px;\n}\n.camera-head strong { display: block; font-size: 15px; font-weight: 650; }\n.camera-head span { display: block; font-size: 12px; color: #9fb0ac; margin-top: 2px; }\n.camera-overlay .icon-btn {\n  color: #dfe6e4;\n  background: rgba(255, 255, 255, .08);\n  border-color: transparent;\n}\n.camera-overlay .icon-btn:hover { background: rgba(255, 255, 255, .16); }\n\n.camera-stage {\n  position: relative;\n  flex: 1 1 auto;\n  min-height: 0;\n  overflow: hidden;\n  background: #000;\n}\n.camera-stage video {\n  width: 100%; height: 100%;\n  object-fit: contain;\n  display: block;\n}\n.camera-flash {\n  position: absolute; inset: 0;\n  background: #fff;\n  opacity: 0;\n  pointer-events: none;\n}\n.camera-flash.on { animation: camflash .28s ease-out; }\n@keyframes camflash { from { opacity: .85; } to { opacity: 0; } }\n\n",
+    "total_lines": 1303
+  },
+  "summary": "styles.css: lines 931–1050 of 1303 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 120,
+    "total": 1303,
+    "next_offset": 1050
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+    }
+  ],
+  "links": []
+}

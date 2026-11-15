@@ -1,0 +1,53 @@
+{
+  "id": "ev_2ba64d0b150ea2a42517de3960cbc14fcb5b5e013098baff430bf1cc73b3de6b",
+  "subject": {
+    "kind": "text",
+    "sha256": "00d9a50785c633ee6b9b8815fafc03b48f91314167e84536979c41959284a367",
+    "name": "styles.css"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 1186,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 34331,
+    "lines": 69,
+    "more": false,
+    "offset": 1186,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "replaced_sequences": 0,
+    "text": "/* ------------------------------------------------------------------ */\n/* Varios tipos de IGIC en el mismo documento                          */\n/* ------------------------------------------------------------------ */\n\n.lines-head {\n  display: flex;\n  align-items: flex-start;\n  justify-content: space-between;\n  gap: 12px;\n  margin-bottom: 9px;\n}\n.lines-head > div { min-width: 0; }\n.lines-head label { display: block; font-size: inherit; font-weight: 600; color: var(--ink-2); }\n.lines-hint {\n  margin: 3px 0 0;\n  font-size: 12px;\n  line-height: 1.45;\n  color: var(--ink-3);\n}\n.lines-head .btn { flex: 0 0 auto; }\n\n.igic-lines { display: flex; flex-direction: column; gap: 8px; }\n.igic-line {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) 148px 34px;\n  gap: 8px;\n  align-items: center;\n}\n.igic-line select { width: 100%; min-width: 0; }\n.igic-line .with-suffix { min-width: 0; }\n.igic-line .icon-btn {\n  justify-self: end;\n  color: var(--ink-3);\n}\n.igic-line .icon-btn:hover { color: #b4342a; background: #fdeceb; }\n\n.lines-sum {\n  margin: 9px 0 0;\n  padding: 7px 11px;\n  border-radius: 9px;\n  background: var(--brand-soft, #e6f0ee);\n  color: var(--ink-2);\n  font-size: 12.5px;\n  font-weight: 550;\n}\n\n@media (max-width: 620px) {\n  .lines-head { flex-direction: column; }\n  .igic-line { grid-template-columns: minmax(0, 1fr) 118px 32px; }\n}\n\n/* Liquidación de fruta: kilos, precio por kilo y descuentos */\n.liq-grid {\n  display: grid;\n  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);\n  gap: 10px;\n  margin-bottom: 10px;\n}\n.liq-grid .field { margin: 0; }\n.dto-line {\n  grid-template-columns: minmax(0, 1fr) 148px 34px;\n}\n.dto-line input[type=\"text\"] { width: 100%; min-width: 0; }\n\n@media (max-width: 620px) {\n  .liq-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }\n  .liq-grid .field:first-child { grid-column: 1 / -1; }\n  .dto-line { grid-template-columns: minmax(0, 1fr) 108px 32px; }\n}\n",
+    "total_lines": 1255
+  },
+  "summary": "styles.css: lines 1187–1255 of 1255 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 69,
+    "total": 1255
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_a0f6b65d6052af50ae904f7b47b8ae254d2da7a4a9339f187f64bbed9173c337",
+  "subject": {
+    "kind": "script",
+    "sha256": "6ec57842818ead8f65029f95b4b820488a6dbfbb6233142f78099083827d16c7",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 50,
+    "offset": 1042,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177631,
+    "lines": 50,
+    "more": true,
+    "offset": 1042,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "function refreshSales() {\n  if (ui.route !== \"ventas\") return;\n  const view = document.getElementById(\"view\");\n  if (!view) return;\n  view.innerHTML = viewVentas();\n  const meta = pageMeta(\"ventas\");\n  const title = document.getElementById(\"viewTitle\");\n  const sub = document.getElementById(\"viewSub\");\n  if (title) title.textContent = meta.title;\n  if (sub) sub.textContent = meta.sub;\n  paintIngest();\n}\n\nfunction exportSalesCsv() {\n  const w = salesWindow();\n  const list = salesDocs();\n  if (!list.length) {\n    toast(\"No hay ventas en ese periodo.\", \"warn\");\n    return;\n  }\n  const headers = [\n    \"Fecha\",\n    \"Comprador\",\n    \"NIF\",\n    \"Documento\",\n    \"Tipo\",\n    \"Producto\",\n    \"Categoría\",\n    \"Kilos\",\n    \"Precio €/kg\",\n    \"Bruto\",\n    \"Descuentos\",\n    \"Líquido\",\n    \"Total documento\",\n    \"Estado\",\n    \"Fecha de cobro\",\n  ];\n  const rows = list.map((inv) => {\n    const num = liquidacionNumbers(inv);\n    const liq = inv.liquidacion || {};\n    const sup = supplierById(inv.supplierId) || {};\n    return [\n      inv.issueDate || \"\",\n      supplierName(inv.supplierId),\n      sup.nif || \"\",\n      inv.number || \"\",\n      kindInfo(inv.kind).label,\n      liq.product || \"\",\n      liq.category || \"\",\n      num.kg ? fmtNum(num.kg) : \"\",\n",
+    "total_lines": 4628
+  },
+  "summary": "views.js: lines 1043–1092 of 4628 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 50,
+    "total": 4628,
+    "next_offset": 1092
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,14 @@
+{
+  "id": "unk_584faede5b8b31b1",
+  "revision": 2,
+  "question": "This computer has no Node.js, so the standard build step cannot run; the site is delivered as ready-to-serve static files instead.",
+  "severity": "medium",
+  "domain": "build",
+  "status": "resolved",
+  "probes": [
+    "Install Node.js on this computer if the person wants a build step in the future"
+  ],
+  "evidence_for": [],
+  "evidence_against": [],
+  "resolution": "Solved by not needing it: the site is plain HTML/CSS/ES modules with no compilation, and app/build.bat copies site/ to dist/ with xcopy. It ran successfully (exit 0). Node.js is only needed if the person later prefers `npm run build`."
+}

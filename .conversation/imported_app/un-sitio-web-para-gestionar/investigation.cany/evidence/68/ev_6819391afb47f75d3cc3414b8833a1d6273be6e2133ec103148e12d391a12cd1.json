@@ -1,0 +1,54 @@
+{
+  "id": "ev_6819391afb47f75d3cc3414b8833a1d6273be6e2133ec103148e12d391a12cd1",
+  "subject": {
+    "kind": "script",
+    "sha256": "a6efaf1951f6d94f6a827d45ca436123cf3900809e858bae693540ef9445eb7d",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 40,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 280991,
+    "lines": 60,
+    "more": true,
+    "offset": 40,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  sortedInvoices,\n  statsBySupplier,\n  supplierById,\n  toggleInvoiceStatus,\n  totals,\n  updateInvoice,\n  updateSettings,\n  updateSupplier,\n  exportSqliteBytes,\n  sqliteIgicSummary,\n  storageInfo,\n  keepInvoiceOriginal,\n  invoiceOriginalBody,\n  originalsUsage,\n} from \"./store.js\";\nimport { parseKg, parseLiquidacion, parsePrice, looksLikeInvoice } from \"./parse.js\";\nimport { leerDocumento, importadoresDisponibles } from \"./importers.js\";\nimport { describeFile, readFile, sourceLabel } from \"./read.js\";\nimport { cameraSupported, openCamera } from \"./camera.js\";\nimport {\n  categoryInfo,\n  categoryOptions,\n  classifyLocal,\n  directionOf,\n  kindInfo,\n  kindOptions,\n} from \"./model.js\";\nimport { AI_DEFAULTS, AI_PROVIDERS, aiConfigured, aiExtract, aiPing, aiProviderOf, classifyDocument } from \"./ai.js\";\nimport { isEmailFile, looksLikeInvoiceMail, parseEml } from \"./mail.js\";\nimport {\n  asientosDe,\n  balanceSituacion,\n  balanceSumasYSaldos,\n  claveDeTercero,\n  claveDeTrabajador,\n  cuentaResultados,\n  libroMayor,\n  setPlanDeCuentas,\n} from \"./accounting.js\";\nimport { pgcNombre, siguienteSubcuenta } from \"./pgc.js\";\nimport { igicPorTrimestre, tesoreriaPorCuenta, vencimientos } from \"./erp.js\";\nimport { CUENTAS_NOMINA, calcularNomina, esNomina } from \"./nomina.js\";\nimport { informeBalancePdf, informeResultadosPdf } from \"./reports.js\";\nimport {\n  closeModal,\n  confirmDialog,\n  icon,\n  modalIsOpen,\n  openModal,\n  toast,\n} from \"./dom.js\";\n\n/* ------------------------------------------------------------------ */\n/* Estado de la interfaz                                              */\n/* ------------------------------------------------------------------ */\n\nexport const ui = {\n  route: \"resumen\",\n  filters: { status: \"all\", supplier: \"\", q: \"\", direction: \"all\" },\n  supplierQuery: \"\",\n",
+    "total_lines": 7068
+  },
+  "summary": "views.js: lines 41–100 of 7068 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 7068,
+    "next_offset": 100
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

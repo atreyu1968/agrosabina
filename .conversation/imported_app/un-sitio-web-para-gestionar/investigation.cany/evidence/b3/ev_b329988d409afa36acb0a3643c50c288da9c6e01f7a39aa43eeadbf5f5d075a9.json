@@ -1,0 +1,54 @@
+{
+  "id": "ev_b329988d409afa36acb0a3643c50c288da9c6e01f7a39aa43eeadbf5f5d075a9",
+  "subject": {
+    "kind": "script",
+    "sha256": "7e98e599cd551f7e67ec504b14ed383ec90014db80fd487c43eab9b37f77df59",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 130,
+    "offset": 3555,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 289212,
+    "lines": 130,
+    "more": true,
+    "offset": 3555,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    });\n  } catch (err) {\n    const why = err && err.message ? err.message : \"no ha contestado\";\n    p.notes.push(`La IA no ha podido leer el documento (${why}). Se queda lo que he leído yo.`);\n    return [];\n  }\n\n  const cambiado = [];\n  const pon = (key, valor, etiqueta) => {\n    if (valor == null || valor === \"\") return;\n    const antes = p[key];\n    const vacio = antes == null || antes === \"\" || (typeof antes === \"number\" && !Number.isFinite(antes));\n    if (!vacio) {\n      if (typeof valor === \"number\" && typeof antes === \"number\") {\n        if (Math.abs(valor - antes) < 0.005) return;\n      } else if (String(antes) === String(valor)) {\n        return;\n      }\n    }\n    p[key] = valor;\n    cambiado.push(etiqueta);\n  };\n\n  // El tipo: si mis reglas no han sabido qué papel es, manda la IA. Si yo\n  // había reconocido un tipo propio (nómina, liquidación, subvención…) el\n  // papel manda y solo se avisa de que la IA ve otra cosa.\n  const tipoIA = ai.kind || \"\";\n  if (tipoIA) {\n    const tipoMio = p.kind || \"\";\n    const generico = !tipoMio || tipoMio === \"OTRO\" || tipoMio === \"FACTURA\";\n    if (tipoIA === tipoMio) {\n      /* de acuerdo */\n    } else if (generico) {\n      p.kind = tipoIA;\n      p.direction = directionOf(tipoIA);\n      cambiado.push(`que es ${kindInfo(tipoIA).label.toLowerCase()}`);\n    } else {\n      p.notes.push(\n        `Ojo: la IA cree que esto es ${kindInfo(tipoIA).label.toLowerCase()} y yo he leído ${\n          kindInfo(tipoMio).label.toLowerCase()\n        }. Mira de qué papel se trata antes de guardarlo.`\n      );\n    }\n  }\n\n  pon(\"category\", ai.category, \"el concepto\");\n  pon(\"supplierName\", ai.supplierName, \"el nombre\");\n  pon(\"supplierNif\", ai.supplierNif, \"el NIF\");\n  pon(\"number\", ai.number, \"el número\");\n  pon(\"issueDate\", ai.issueDate, \"la fecha\");\n  pon(\"dueDate\", ai.dueDate, \"el vencimiento\");\n  pon(\"base\", ai.base, \"la base\");\n  pon(\"igic\", ai.igic, \"la cuota de IGIC\");\n  pon(\"total\", ai.total, \"el total\");\n\n  // La liquidación de fruta: kilos, precio por kilo y descuentos. Solo se pone\n  // si el papel es una liquidación (por mis reglas o por lo que dice la IA) y\n  // la IA ha traído algo de eso.\n  const liqIA = ai.liquidacion;\n  const esLiquidacion = p.kind === \"LIQUIDACION\" || tipoIA === \"LIQUIDACION\";\n  if (liqIA && esLiquidacion) {\n    const kg = liqIA.kg;\n    const price = liqIA.price;\n    const discounts = Array.isArray(liqIA.discounts) ? liqIA.discounts : [];\n    const bruto = kg != null && price != null ? round2(kg * price) : null;\n    const dto = round2(discounts.reduce((s, d) => s + (Number(d.amount) || 0), 0));\n    const liquido = liqIA.net != null ? liqIA.net : bruto != null ? round2(bruto - dto) : null;\n\n    if (kg != null || price != null || liquido != null) {\n      p.liquidacion = {\n        product: liqIA.product || (p.liquidacion && p.liquidacion.product) || \"\",\n        category: liqIA.category || (p.liquidacion && p.liquidacion.category) || \"\",\n        kg,\n        price,\n        discounts,\n      };\n      p.liquidacionRead = {\n        kg,\n        price,\n        gross: bruto,\n        discounts,\n        net: liquido,\n        product: p.liquidacion.product,\n        category: p.liquidacion.category,\n        ok: true,\n      };\n      if (p.kind !== \"LIQUIDACION\") {\n        p.kind = \"LIQUIDACION\";\n        p.direction = \"INGRESO\";\n        cambiado.push(\"que es una liquidación\");\n      }\n      if (kg != null) cambiado.push(\"los kilos\");\n      if (price != null) cambiado.push(\"el precio por kilo\");\n      if (discounts.length) cambiado.push(\"los descuentos\");\n      if (liquido != null) {\n        const tipo = Number.isFinite(Number(p.rate)) ? Number(p.rate) : 0;\n        const cuota = round2((liquido * tipo) / 100);\n        p.base = liquido;\n        p.igic = cuota;\n        p.total = round2(liquido + cuota);\n        cambiado.push(\"el líquido a percibir\");\n      }\n    }\n  }\n\n  p.aiUsed = model;\n  p.aiLeido = ai.leido === \"papel\" ? \"papel\" : \"texto\";\n  if (varios && images.length === 0) {\n    p.notes.push(\n      \"La IA ha leído el texto de este papel, no su imagen, porque el archivo traía varios papeles juntos.\"\n    );\n  }\n\n  if (cambiado.length) {\n    const como = p.aiLeido === \"papel\" ? \"mirando el papel\" : \"a partir del texto\";\n    const msg = `Estos datos los ha leído la IA (${model}) ${como}, y no las reglas: ${cambiado.join(\n      \", \"\n    )}. Revísalos antes de guardar.`;\n    p.notes.push(msg);\n    p.classifyNote = p.classifyNote ? `${p.classifyNote} · ${msg}` : msg;\n  } else if (ai.why) {\n    p.notes.push(`La IA ha mirado el documento y coincide con lo que he leído yo. Dice: ${ai.why}`);\n  }\n\n  return cambiado;\n}\n\n/* ------------------------------------------------------------------ */\n/* (Sin usar) La IA como segundo par de ojos                          */\n/* ------------------------------------------------------------------ */\n",
+    "total_lines": 7272
+  },
+  "summary": "views.js: lines 3556–3685 of 7272 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 130,
+    "total": 7272,
+    "next_offset": 3685
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

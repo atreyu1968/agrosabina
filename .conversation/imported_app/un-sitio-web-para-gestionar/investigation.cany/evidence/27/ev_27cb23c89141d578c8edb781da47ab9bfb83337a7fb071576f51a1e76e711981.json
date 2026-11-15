@@ -1,0 +1,54 @@
+{
+  "id": "ev_27cb23c89141d578c8edb781da47ab9bfb83337a7fb071576f51a1e76e711981",
+  "subject": {
+    "kind": "script",
+    "sha256": "ba06c9c8563afcb1214245c7b22e5cabfd8beb973036ce38eb989816f919b255",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 55,
+    "offset": 85,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 154318,
+    "lines": 55,
+    "more": true,
+    "offset": 85,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "export const ui = {\n  route: \"resumen\",\n  filters: { status: \"all\", supplier: \"\", q: \"\", direction: \"all\" },\n  supplierQuery: \"\",\n  jobs: [],\n  // Pantalla de ventas: periodo elegido y fechas a mano.\n  sales: { range: \"year\", from: \"\", to: \"\" },\n  // Pantalla de contabilidad: qué libro se mira y de qué fechas.\n  conta: { tab: \"diario\", range: \"year\", from: \"\", to: \"\" },\n};\n\nconst ROUTES = [\"resumen\", \"ventas\", \"contabilidad\", \"compras\", \"proveedores\", \"correo\", \"importar\"];\n\n\n/* ------------------------------------------------------------------ */\n/* Utilidades de pintado                                              */\n/* ------------------------------------------------------------------ */\n\n/**\n * Pregunta la fecha del cobro (o del pago) antes de marcar un documento.\n * Viene puesta la de hoy, que es lo normal; se puede cambiar.\n */\nfunction askPaidDate(inv, isIncome, onSave) {\n  const today = todayISO();\n  openModal(\n    `<div class=\"modal-head\">\n      <div>\n        <h2>${isIncome ? \"¿Cuándo lo has cobrado?\" : \"¿Cuándo lo has pagado?\"}</h2>\n        <p>${esc(inv.number || \"Sin número\")} · ${esc(supplierName(inv.supplierId))} · ${fmtEUR(inv.total)}</p>\n      </div>\n      <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"field\">\n        <label for=\"paid-date\">Fecha ${isIncome ? \"del cobro\" : \"del pago\"}</label>\n        <input id=\"paid-date\" type=\"date\" value=\"${esc(today)}\">\n        <span class=\"hint\">Se guarda con el documento y sale en su ficha y en los listados. Puedes cambiarla después.</span>\n      </div>\n    </div>\n    <div class=\"modal-foot\">\n      <button class=\"btn primary\" data-ok>Guardar la fecha</button>\n      <button class=\"btn ghost\" data-modal-cancel>Cancelar</button>\n    </div>`,\n    {\n      onMount(wrap) {\n        wrap.querySelectorAll(\"[data-modal-cancel]\").forEach((b) =>\n          b.addEventListener(\"click\", () => closeModal())\n        );\n        const input = wrap.querySelector(\"#paid-date\");\n        const go = () => {\n          const day = String((input && input.value) || \"\").slice(0, 10) || today;\n          closeModal();\n          onSave(day);\n        };\n        wrap.querySelector(\"[data-ok]\").addEventListener(\"click\", go);\n",
+    "total_lines": 4075
+  },
+  "summary": "views.js: lines 86–140 of 4075 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 55,
+    "total": 4075,
+    "next_offset": 140
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

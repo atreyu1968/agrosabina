@@ -1,0 +1,54 @@
+{
+  "id": "ev_73e836d199dce57fa3b0e7082163fb4fd2167e94abfcc6e23fad18f1bc9b2814",
+  "subject": {
+    "kind": "script",
+    "sha256": "c0289682ae3319a39044d0d80d8b78f5ccb4f95e31dc988fa7e0b0fa47a5eacf",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 55,
+    "offset": 2940,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 277690,
+    "lines": 55,
+    "more": true,
+    "offset": 2940,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    name: String(nombre || \"texto pegado a mano\"),\n    kb: Math.max(1, Math.round(cuerpo.length / 1024)),\n    source: \"\",\n    pages: 0,\n    texto: cuerpo,\n    error: \"\",\n    lectura: null,\n    pendiente: true,\n  };\n  ui.pruebas.list.unshift(item);\n  setPruebaStatus(`Leyendo ${item.name}…`);\n  paintPruebas();\n  try {\n    // Sin nombre de fichero: aquí no hay fichero, así que el lector no puede\n    // dejarse llevar por cómo se llame. Se decide solo por el texto.\n    const { lectura, cls } = await leerTextoDocumento(cuerpo, \"\");\n    item.lectura = lectura;\n    item.cls = cls || null;\n  } catch (err) {\n    item.error = err && err.message ? err.message : \"No he podido leer este texto.\";\n  } finally {\n    item.pendiente = false;\n    ui.pruebas.busy = false;\n  }\n  setPruebaStatus(`Ya está: ${item.name}. Esto no se ha guardado en ningún sitio.`);\n  render();\n}\n\n/** El estado de la línea que dice qué está haciendo. */\nfunction setPruebaStatus(texto) {\n  ui.pruebas.status = String(texto || \"\");\n  const el = document.getElementById(\"pruebaStatus\");\n  if (el) el.textContent = ui.pruebas.status;\n}\n\n/** Vuelve a pintar solo la lista de resultados (sin tocar los botones). */\nfunction paintPruebas() {\n  const host = document.getElementById(\"pruebaResults\");\n  if (!host) return;\n  host.innerHTML = pruebasResultadosHtml();\n  const el = document.getElementById(\"pruebaStatus\");\n  if (el) el.textContent = ui.pruebas.status || \"Ningún documento probado todavía.\";\n}\n\nfunction viewPruebas() {\n  const hay = ui.pruebas.list.length > 0;\n  return `\n    <section class=\"card\">\n      <div class=\"card-head\">\n        <div>\n          <h2>Probar cómo leo un documento</h2>\n          <p>Elige un PDF o una foto de ejemplo y te enseño el texto que saco y lo que entiendo de él. Sin guardar nada y sin mandarlo a ningún sitio.</p>\n        </div>\n      </div>\n      <div class=\"card-body\">\n",
+    "total_lines": 6975
+  },
+  "summary": "views.js: lines 2941–2995 of 6975 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 55,
+    "total": 6975,
+    "next_offset": 2995
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

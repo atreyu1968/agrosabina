@@ -1,0 +1,54 @@
+{
+  "id": "ev_7721c81d7b474940a506f62ea043e574f75a2eb8d70f3bdaf675c8233a299846",
+  "subject": {
+    "kind": "script",
+    "sha256": "effbee695913dd70eb1d3b51952ecc8ed76c4969a93f6df5b3ddba29ce97f26c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 100,
+    "offset": 4500,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 196170,
+    "lines": 100,
+    "more": true,
+    "offset": 4500,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "          <td class=\"num\">${fmtEUR(sumas.totals.debit)}</td>\n          <td class=\"num\">${fmtEUR(sumas.totals.credit)}</td>\n          <td class=\"num\">${fmtEUR(sumas.totals.deudor)}</td>\n          <td class=\"num\">${fmtEUR(sumas.totals.acreedor)}</td>\n        </tr></tfoot>\n      </table>\n    </div>\n    ${sumas.cuadra ? \"\" : `<div class=\"acc-warn\">Los saldos deudores y acreedores no suman lo mismo. Revisa los documentos del periodo.</div>`}\n  </section>`;\n}\n\n/** Balance de situación, con los epígrafes del modelo oficial. */\nfunction accBalanceHtml(bal, resultado) {\n  const rows = bal.rows.map((r) => {\n    const total = r.kind === \"total\" || r.kind === \"grand\";\n    const shown = total ? fmtEUR(r.value) : r.value ? fmtEUR(r.value) : '<span class=\"muted\">—</span>';\n    return `<tr class=\"acc-row acc-${r.kind}\">\n      <td class=\"acc-label\">${esc(r.label)}</td>\n      <td class=\"num\">${shown}</td>\n    </tr>`;\n  });\n  const aviso = bal.cuadra\n    ? \"\"\n    : `<div class=\"acc-warn\">\n        <strong>El balance no cuadra por ${fmtEUR(Math.abs(bal.descuadre))}.</strong>\n        Lo normal es que falte el asiento de apertura: el capital social y el dinero que había en el banco el primer día.\n        Mientras no se pongan, el activo y el patrimonio no pueden coincidir.\n        <button class=\"btn sm\" data-action=\"acc-apertura\">${icon(\"edit\")}<span>Poner los datos de partida</span></button>\n      </div>`;\n  return `\n  <section class=\"card\">\n    <div class=\"card-head\">\n      <div>\n        <h2>Balance de situación</h2>\n        <p>Modelo oficial del Plan General de Contabilidad · resultado del periodo ${fmtEUR(resultado)}</p>\n      </div>\n      <div class=\"spacer\"></div>\n      <button class=\"btn sm\" data-action=\"acc-pdf-balance\">${icon(\"download\")}<span>Descargar PDF</span></button>\n      <button class=\"btn sm ghost\" data-action=\"export-acc-csv\">${icon(\"download\")}<span>Exportar CSV</span></button>\n    </div>\n    <div class=\"table-wrap\">\n      <table class=\"data acc-table acc-balance\">\n        <thead><tr><th>Epígrafe</th><th class=\"num\">Importe</th></tr></thead>\n        <tbody>${rows.join(\"\")}</tbody>\n        <tfoot><tr>\n          <td>Comprobación: activo − (patrimonio neto + pasivo)</td>\n          <td class=\"num\">${fmtEUR(bal.descuadre)}</td>\n        </tr></tfoot>\n      </table>\n    </div>\n    ${aviso}\n  </section>`;\n}\n\n/** Cuenta de pérdidas y ganancias, también con el modelo oficial. */\nfunction accResultadosHtml(pyg) {\n  const rows = pyg.lines.map((l) => {\n    const shown = l.total ? fmtEUR(l.value) : l.value ? fmtEUR(l.value) : '<span class=\"muted\">—</span>';\n    return `<tr class=\"acc-row ${l.total ? \"acc-total\" : \"\"}\">\n      <td class=\"acc-label\">${esc(l.label)}</td>\n      <td class=\"num\">${shown}</td>\n    </tr>`;\n  });\n  const aviso = pyg.sinClasificar\n    ? `<div class=\"acc-warn\">Hay ${fmtEUR(Math.abs(pyg.sinClasificar))} en cuentas de gasto o ingreso que no he sabido colocar en ninguna línea del modelo. Revisa el concepto de esos documentos.</div>`\n    : \"\";\n  return `\n  <section class=\"card\">\n    <div class=\"card-head\">\n      <div>\n        <h2>Cuenta de pérdidas y ganancias</h2>\n        <p>Modelo oficial del Plan General de Contabilidad · los gastos van en negativo</p>\n      </div>\n      <div class=\"spacer\"></div>\n      <button class=\"btn sm\" data-action=\"acc-pdf-resultados\">${icon(\"download\")}<span>Descargar PDF</span></button>\n      <button class=\"btn sm ghost\" data-action=\"export-acc-csv\">${icon(\"download\")}<span>Exportar CSV</span></button>\n    </div>\n    <div class=\"table-wrap\">\n      <table class=\"data acc-table acc-balance\">\n        <thead><tr><th>Concepto</th><th class=\"num\">Importe</th></tr></thead>\n        <tbody>${rows.join(\"\")}</tbody>\n      </table>\n    </div>\n    ${aviso}\n  </section>`;\n}\n\n/** El libro que está elegido en las pestañas. */\nfunction accBody() {\n  try {\n    const entries = asientosContables();\n    const mayor = libroMayor(entries);\n    if (ui.conta.tab === \"cuentas\") return accCuentasHtml(accPlan(), mayor);\n    if (ui.conta.tab === \"mayor\") return accMayorHtml(mayor);\n    if (ui.conta.tab === \"sumas\") return accSumasHtml(balanceSumasYSaldos(mayor));\n    if (ui.conta.tab === \"balance\") {\n      const pyg = cuentaResultados(mayor);\n      return accBalanceHtml(balanceSituacion(mayor, pyg.resultado), pyg.resultado);\n    }\n    if (ui.conta.tab === \"resultados\") return accResultadosHtml(cuentaResultados(mayor));\n",
+    "total_lines": 5107
+  },
+  "summary": "views.js: lines 4501–4600 of 5107 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 100,
+    "total": 5107,
+    "next_offset": 4600
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_3e37cca702e9474e8d65c48abdcc79a8d36e212f676f247ddbcabf36acca2e46",
+  "subject": {
+    "kind": "script",
+    "sha256": "8507202a1ba6342fffddfe21c32a304d79e01606fad52d2790180ff984ca36f5",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 40,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 117677,
+    "lines": 30,
+    "more": true,
+    "offset": 40,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  sortedInvoices,\n  statsBySupplier,\n  supplierById,\n  toggleInvoiceStatus,\n  totals,\n  updateInvoice,\n  updateSettings,\n  updateSupplier,\n  exportSqliteBytes,\n  sqliteIgicSummary,\n  storageInfo,\n} from \"./store.js\";\nimport { parseInvoiceText, looksLikeInvoice } from \"./parse.js\";\nimport { describeFile, readFile, sourceLabel } from \"./read.js\";\nimport { cameraSupported, openCamera } from \"./camera.js\";\nimport {\n  categoryInfo,\n  categoryOptions,\n  directionOf,\n  kindInfo,\n  kindOptions,\n} from \"./model.js\";\nimport { AI_DEFAULTS, aiConfigured, classifyDocument } from \"./ai.js\";\nimport { isEmailFile, looksLikeInvoiceMail, parseEml } from \"./mail.js\";\nimport {\n  closeModal,\n  confirmDialog,\n  icon,\n  modalIsOpen,\n  openModal,\n",
+    "total_lines": 3156
+  },
+  "summary": "views.js: lines 41–70 of 3156 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 3156,
+    "next_offset": 70
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

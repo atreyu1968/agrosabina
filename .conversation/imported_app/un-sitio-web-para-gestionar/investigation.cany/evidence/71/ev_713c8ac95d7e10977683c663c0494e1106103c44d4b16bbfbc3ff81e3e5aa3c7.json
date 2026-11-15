@@ -1,0 +1,72 @@
+{
+  "id": "ev_713c8ac95d7e10977683c663c0494e1106103c44d4b16bbfbc3ff81e3e5aa3c7",
+  "subject": {
+    "kind": "script",
+    "sha256": "ce5c52366b6f7839d7a82f1a7f92348fb3d9eff595be0cc7c2fe2f512c61f3be",
+    "name": "store.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 10,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "pattern": null,
+    "text": "export function updateInvoice"
+  },
+  "result": {
+    "file_size": 23121,
+    "limit": 10,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6578706f72742066756e6374696f6e20757064617465496e766f696365",
+        "file_offset": 13789,
+        "file_offset_hex": "0x35dd",
+        "length": 29,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 29
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 in store.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x35dd"
+    }
+  ],
+  "links": []
+}

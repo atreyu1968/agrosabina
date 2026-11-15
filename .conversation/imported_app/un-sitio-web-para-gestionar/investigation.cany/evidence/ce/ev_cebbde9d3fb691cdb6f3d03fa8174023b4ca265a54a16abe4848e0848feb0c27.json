@@ -1,0 +1,54 @@
+{
+  "id": "ev_cebbde9d3fb691cdb6f3d03fa8174023b4ca265a54a16abe4848e0848feb0c27",
+  "subject": {
+    "kind": "script",
+    "sha256": "83704397ea89e45fa1af80334964cb8e67554af7773347bdc2b1474dc48b4b50",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 58,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 245244,
+    "lines": 45,
+    "more": true,
+    "offset": 58,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "import { cameraSupported, openCamera } from \"./camera.js\";\nimport {\n  categoryInfo,\n  categoryOptions,\n  directionOf,\n  kindInfo,\n  kindOptions,\n} from \"./model.js\";\nimport { AI_DEFAULTS, AI_PROVIDERS, aiConfigured, aiExtract, aiPing, aiProviderOf, classifyDocument } from \"./ai.js\";\nimport { isEmailFile, looksLikeInvoiceMail, parseEml } from \"./mail.js\";\nimport {\n  asientosDe,\n  balanceSituacion,\n  balanceSumasYSaldos,\n  claveDeTercero,\n  claveDeTrabajador,\n  cuentaResultados,\n  libroMayor,\n  setPlanDeCuentas,\n} from \"./accounting.js\";\nimport { pgcNombre, siguienteSubcuenta } from \"./pgc.js\";\nimport { igicPorTrimestre, tesoreriaPorCuenta, vencimientos } from \"./erp.js\";\nimport { CUENTAS_NOMINA, calcularNomina, esNomina } from \"./nomina.js\";\nimport { informeBalancePdf, informeResultadosPdf } from \"./reports.js\";\nimport {\n  closeModal,\n  confirmDialog,\n  icon,\n  modalIsOpen,\n  openModal,\n  toast,\n} from \"./dom.js\";\n\n/* ------------------------------------------------------------------ */\n/* Estado de la interfaz                                              */\n/* ------------------------------------------------------------------ */\n\nexport const ui = {\n  route: \"resumen\",\n  filters: { status: \"all\", supplier: \"\", q: \"\", direction: \"all\" },\n  supplierQuery: \"\",\n  // Pantalla de terceros: si se miran los proveedores, los clientes o todos.\n  supplierRole: \"PROVEEDOR\",\n  jobs: [],\n  // Pantalla de ventas: periodo elegido y fechas a mano.\n",
+    "total_lines": 6154
+  },
+  "summary": "views.js: lines 59–103 of 6154 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 6154,
+    "next_offset": 103
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

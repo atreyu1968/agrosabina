@@ -1,0 +1,54 @@
+{
+  "id": "ev_52058748d0bd698937092140108888130d35abeb67f95396c7ad389857c628f3",
+  "subject": {
+    "kind": "script",
+    "sha256": "a6efaf1951f6d94f6a827d45ca436123cf3900809e858bae693540ef9445eb7d",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 5010,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 280991,
+    "lines": 70,
+    "more": true,
+    "offset": 5010,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Copia de seguridad</h3>\n      <p style=\"font-size:13px;color:var(--ink-3);margin-bottom:12px\">\n        Los datos viven en este navegador. Si limpias el historial o cambias de ordenador, se pierden:\n        descarga una copia de vez en cuando.\n      </p>\n      <div class=\"row wrap\">\n        <button class=\"btn sm\" data-action=\"export-json\">${icon(\"download\")} Descargar copia</button>\n        <button class=\"btn sm\" data-action=\"import-json\">${icon(\"upload\")} Restaurar copia</button>\n        <div class=\"spacer\"></div>\n        <button class=\"btn sm danger\" data-action=\"clear-all\">${icon(\"trash\")} Borrar todo</button>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Los originales</h3>\n      <p style=\"font-size:13px;color:var(--ink-3);margin-bottom:8px\">\n        De cada documento se guarda también el fichero tal y como entró —la foto, el PDF o el correo— y se puede\n        volver a ver o descargar desde su ficha. Ojo: la copia en .json y el fichero .sqlite no lo llevan dentro,\n        porque pesarían demasiado; lo que se copia son los datos.\n      </p>\n      <p id=\"origUsage\" style=\"font-size:12.5px;color:var(--ink-3)\">Mirando cuánto ocupan los originales…</p>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Cuentas de cobro y pago</h3>\n      <p style=\"font-size:13px;color:var(--ink-3);margin-bottom:12px\">\n        Al marcar un documento como cobrado o pagado se pregunta si fue en efectivo (caja) o por el banco, y en qué\n        cuenta. Aquí se guardan los nombres para elegirlos sin escribirlos cada vez. La caja entra en la cuenta 570\n        del PGC y el banco en la 572.\n      </p>\n      <div class=\"form-grid\">\n        <div class=\"field span-2\">\n          <label for=\"set-cash\">Nombre de la caja</label>\n          <input id=\"set-cash\" type=\"text\" value=\"${esc(s.cashAccount || \"Caja general\")}\" placeholder=\"Caja general\">\n        </div>\n        <div class=\"field span-2\">\n          <label for=\"set-banks\">Cuentas corrientes <span class=\"hint\">(una por línea)</span></label>\n          <textarea id=\"set-banks\" rows=\"3\" placeholder=\"La Caixa · ES91 2100 0418 4502 0005 1332\">${esc((Array.isArray(s.bankAccounts) ? s.bankAccounts : []).join(\"\\n\"))}</textarea>\n          <span class=\"hint\">Puedes escribir el nombre, el número o las dos cosas.</span>\n        </div>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Interpretación con IA <span class=\"tag\">opcional</span></h3>\n      <p style=\"font-size:13px;color:var(--ink-3);margin-bottom:12px\">\n        Con esto encendido, la IA ayuda a leer los documentos: de qué tipo son, en qué concepto entran y, si es\n        una liquidación, los kilos, el precio por kilo y los descuentos. A la IA solo le llega\n        <strong>el texto ya leído</strong>, nunca la foto ni el PDF, y solo si tú escribes tu clave. Las reglas del\n        programa siempre van primero: si la IA no contesta, se sigue con ellas.\n      </p>\n      <label style=\"display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;margin-bottom:12px\">\n        <input type=\"checkbox\" id=\"set-ai-on\" ${s.aiEnabled ? \"checked\" : \"\"}> Usar una IA para leer los documentos\n      </label>\n      <div class=\"form-grid\">\n        <div class=\"field span-2\">\n          <label for=\"set-ai-provider\">Servicio</label>\n          <select id=\"set-ai-provider\">\n            ${AI_PROVIDERS.map(\n              (p) => `<option value=\"${p.id}\" ${provider.id === p.id ? \"selected\" : \"\"}>${p.label}</option>`\n            ).join(\"\")}\n          </select>\n          <span class=\"hint\" id=\"set-ai-provider-hint\">${esc(provider.hint)}</span>\n        </div>\n        <div class=\"field span-2\">\n          <label for=\"set-ai-endpoint\">Dirección del servicio</label>\n          <input id=\"set-ai-endpoint\" type=\"text\" autocomplete=\"off\" value=\"${esc(s.aiEndpoint || AI_DEFAULTS.aiEndpoint)}\" placeholder=\"https://api.deepseek.com/v1\">\n          <span class=\"hint\">Se rellena sola al elegir el servicio. Vale cualquier otro que hable el idioma de OpenAI.</span>\n",
+    "total_lines": 7068
+  },
+  "summary": "views.js: lines 5011–5080 of 7068 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 7068,
+    "next_offset": 5080
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

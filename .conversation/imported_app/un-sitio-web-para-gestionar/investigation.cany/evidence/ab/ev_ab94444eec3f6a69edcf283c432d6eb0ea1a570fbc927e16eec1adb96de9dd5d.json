@@ -1,0 +1,54 @@
+{
+  "id": "ev_ab94444eec3f6a69edcf283c432d6eb0ea1a570fbc927e16eec1adb96de9dd5d",
+  "subject": {
+    "kind": "text",
+    "sha256": "4fe60690afd191689125263f7a21ff533af7830b18f58351425306d2cecdc67b",
+    "name": "styles.css"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 425,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 34346,
+    "lines": 30,
+    "more": true,
+    "offset": 425,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "replaced_sequences": 0,
+    "text": "  padding: 2px 8px;\n  border-radius: 6px;\n  background: var(--surface-3);\n  color: var(--ink-2);\n}\n.tag.calc { background: #eef2fb; color: #3a5390; }\n.tag.kind { background: var(--brand-soft); color: var(--brand-2); }\n\n/* ---------- Filtros ----------------------------------------------------- */\n\n.filters {\n  display: flex;\n  align-items: center;\n  gap: 9px;\n  flex-wrap: wrap;\n  padding: 13px 16px;\n  border-bottom: 1px solid var(--line);\n}\n\n.segmented {\n  display: inline-flex;\n  background: var(--surface-3);\n  border-radius: 9px;\n  padding: 3px;\n  gap: 2px;\n}\n.segmented button {\n  border: none;\n  background: transparent;\n  padding: 5px 12px;\n",
+    "total_lines": 1255
+  },
+  "summary": "styles.css: lines 426–455 of 1255 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 1255,
+    "next_offset": 455
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+    }
+  ],
+  "links": []
+}

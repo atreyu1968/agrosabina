@@ -1,0 +1,54 @@
+{
+  "id": "ev_429a7ae5ceba756e4da612758634ae7ed6346d3468d3e9e44d0a5569c1659e52",
+  "subject": {
+    "kind": "script",
+    "sha256": "109a740b4833101eb06da233acf482b9795e7d492908398e6b18f982dc295507",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 50,
+    "offset": 405,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 30512,
+    "lines": 50,
+    "more": true,
+    "offset": 405,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "                [teso, total],\n                [tercero, -total],\n              ]\n            : [\n                [tercero, total],\n                [teso, -total],\n              ]\n        );\n        if (linesPago.length) {\n          out.push({\n            id: `${inv.id}:${ingreso ? \"cobro\" : \"pago\"}`,\n            date: diaPago,\n            concept: `${ingreso ? \"Cobro\" : \"Pago\"}${numero ? ` ${numero}` : \"\"}${quien}${medio ? ` · ${medio}` : \"\"}`,\n            ref: numero,\n            kind: ingreso ? \"cobro\" : \"pago\",\n            docId: inv.id,\n            lines: linesPago,\n          });\n        }\n      }\n    }\n  }\n\n  // Asientos escritos a mano, que se mezclan con los demás por fecha.\n  for (const m of opts.manuales || []) {\n    if (!m) continue;\n    const dia = String(m.date || \"\").slice(0, 10);\n    if (!dentro(dia)) continue;\n    const raw = [];\n    for (const l of m.lineas || []) {\n      const code = String((l && l.cuenta) || \"\").trim();\n      if (!/^\\d{3,6}$/.test(code)) continue;\n      const valor = round2((Number(l.debe) || 0) - (Number(l.haber) || 0));\n      if (!valor) continue;\n      raw.push([code, valor]);\n    }\n    const lines = lineas(raw);\n    if (!lines.length) continue;\n    const concepto = String(m.concept || \"\").trim() || \"Asiento manual\";\n    out.push({\n      id: String(m.id || `manual-${out.length + 1}`),\n      date: dia,\n      concept: concepto,\n      ref: String(m.ref || \"\").trim(),\n      kind: \"manual\",\n      manual: true,\n      lines,\n    });\n  }\n\n",
+    "total_lines": 762
+  },
+  "summary": "accounting.js: lines 406–455 of 762 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 50,
+    "total": 762,
+    "next_offset": 455
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

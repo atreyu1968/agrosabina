@@ -1,0 +1,54 @@
+{
+  "id": "ev_532b82aca9d284f234e1e01b3471fae58d97681d12944819b8d94799079f768a",
+  "subject": {
+    "kind": "script",
+    "sha256": "f1c93129d75ab0a38973e99e3a8c4949466f30cbe3354a6ee1afd671fb6d69c3",
+    "name": "ai.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 380,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 18104,
+    "lines": 40,
+    "more": true,
+    "offset": 380,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js",
+    "replaced_sequences": 0,
+    "text": "        kg: kg != null && kg >= 0 ? kg : null,\n        price: price != null && price >= 0 && price < 100 ? price : null,\n        discounts,\n        net: net != null ? net : null,\n      };\n    }\n  }\n\n  const conf = Number(json.confianza);\n  return {\n    kind,\n    category,\n    confidence: Number.isFinite(conf) ? Math.max(0, Math.min(1, conf)) : 0.6,\n    why: String(json.motivo || \"\").slice(0, 220),\n    supplierName: String(json.proveedor || \"\").trim().slice(0, 80),\n    supplierNif: nifKey(json.nif || \"\"),\n    number: String(json.numero || \"\").trim().slice(0, 40),\n    issueDate: asIsoDate(json.fecha),\n    dueDate: asIsoDate(json.vencimiento),\n    base: toNum(json.base),\n    igic: toNum(json.igic),\n    total: toNum(json.total),\n    liquidacion,\n    leido,\n    hojas: hojasLeidas,\n    note: nota,\n  };\n}\n\n/** Comprobación rápida de la clave y la dirección desde Ajustes. */\nexport async function aiPing(settings) {\n  const content = await requestContent(settings, {\n    system: \"Contestas en una sola línea.\",\n    user: \"Responde solo con la palabra: GRACIAS\",\n    timeoutMs: 20000,\n    temperature: 0,\n  });\n  const clean = String(content || \"\").trim().slice(0, 80);\n  if (!clean) throw new Error(\"La IA ha contestado vacío.\");\n  return clean;\n",
+    "total_lines": 488
+  },
+  "summary": "ai.js: lines 381–420 of 488 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 488,
+    "next_offset": 420
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js"
+    }
+  ],
+  "links": []
+}

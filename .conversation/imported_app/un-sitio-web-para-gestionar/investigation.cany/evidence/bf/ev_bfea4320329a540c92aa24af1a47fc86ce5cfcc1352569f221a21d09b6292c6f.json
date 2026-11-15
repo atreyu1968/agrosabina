@@ -1,0 +1,54 @@
+{
+  "id": "ev_bfea4320329a540c92aa24af1a47fc86ce5cfcc1352569f221a21d09b6292c6f",
+  "subject": {
+    "kind": "script",
+    "sha256": "f70772e6f31104a528d9c01e84925d7e7a46aa25b45bc2189d1c51f520d31cca",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 14,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 155982,
+    "lines": 30,
+    "more": true,
+    "offset": 14,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  initials,\n  lastMonths,\n  monthKey,\n  monthLabel,\n  parseAmount,\n  round2,\n  todayISO,\n} from \"./util.js\";\nimport {\n  addInvoice,\n  addMessage,\n  clearAll,\n  deleteInvoice,\n  deleteMessage,\n  deleteSupplier,\n  ensureSupplier,\n  exportJSON,\n  findDuplicate,\n  findSupplierByNameOrNif,\n  getState,\n  setInvoiceStatus,\n  importJSON,\n  invoicesOf,\n  markMessageUsed,\n  messages,\n  seedDemo,\n  setInvoiceStatus,\n  sortedInvoices,\n  statsBySupplier,\n  supplierById,\n",
+    "total_lines": 4118
+  },
+  "summary": "views.js: lines 15–44 of 4118 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 4118,
+    "next_offset": 44
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

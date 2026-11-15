@@ -1,0 +1,54 @@
+{
+  "id": "ev_58d36e60dd808e6134d43f66e03686c23eacbb760de8c5be8df6b4e3003b83d0",
+  "subject": {
+    "kind": "script",
+    "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 140,
+    "offset": 100,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24919,
+    "lines": 140,
+    "more": true,
+    "offset": 100,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "  return { product, category, kg, price, discounts };\n}\n\nfunction normaliseInvoice(inv) {\n  const base = Number.isFinite(+inv.base) && inv.base !== null && inv.base !== \"\" ? +inv.base : null;\n  const igic = Number.isFinite(+inv.igic) && inv.igic !== null && inv.igic !== \"\" ? +inv.igic : null;\n  const total = Number.isFinite(+inv.total) && inv.total !== null && inv.total !== \"\" ? +inv.total : null;\n  const rate = Number.isFinite(+inv.rate) && inv.rate !== null && inv.rate !== \"\" ? +inv.rate : null;\n  const complete = completeAmounts({ base, igic, total, rate });\n  return {\n    id: inv.id || uid(\"inv\"),\n    supplierId: inv.supplierId || null,\n    number: String(inv.number || \"\").trim(),\n    issueDate: inv.issueDate || \"\",\n    dueDate: inv.dueDate || \"\",\n    base: complete.base,\n    rate: complete.rate,\n    igic: complete.igic,\n    total: complete.total,\n    status: inv.status === STATUS.PAID ? STATUS.PAID : STATUS.PENDING,\n    paidDate: String(inv.paidDate || \"\").slice(0, 10),\n    kind: String(inv.kind || \"FACTURA\"),\n    category: String(inv.category || \"\"),\n    direction:\n      inv.direction === \"INGRESO\"\n        ? \"INGRESO\"\n        : inv.direction === \"GASTO\"\n          ? \"GASTO\"\n          : [\"LIQUIDACION\", \"SUBVENCION\", \"COBRO\"].includes(String(inv.kind || \"\"))\n            ? \"INGRESO\"\n            : \"GASTO\",\n    // Un documento puede llevar varios tipos de IGIC: cada línea guarda su base y su tipo.\n    lines: Array.isArray(inv.lines)\n      ? inv.lines\n          .map((l) => {\n            const lb = Number.isFinite(+l.base) && l.base !== null && l.base !== \"\" ? +l.base : null;\n            const lr = Number.isFinite(+l.rate) && l.rate !== null && l.rate !== \"\" ? +l.rate : null;\n            return lb == null || lr == null ? null : { base: lb, rate: lr };\n          })\n          .filter(Boolean)\n      : [],\n    // Liquidación de fruta: kilos, precio por kilo, descuentos y líquido a percibir.\n    liquidacion: normaliseLiquidacion(inv.liquidacion),\n    source: inv.source || \"manual\",\n    fileName: inv.fileName || \"\",\n    rawText: String(inv.rawText || \"\").slice(0, 8000),\n    notes: Array.isArray(inv.notes) ? inv.notes : [],\n    confidence: Number.isFinite(inv.confidence) ? inv.confidence : null,\n    createdAt: inv.createdAt || new Date().toISOString(),\n    updatedAt: inv.updatedAt || inv.createdAt || new Date().toISOString(),\n  };\n}\n\nfunction normalise(raw) {\n  const base = emptyState();\n  if (!raw || typeof raw !== \"object\") return base;\n  const out = {\n    version: 1,\n    settings: Object.assign(base.settings, raw.settings || {}),\n    suppliers: Array.isArray(raw.suppliers) ? raw.suppliers.map(normaliseSupplier).filter(Boolean) : [],\n    invoices: Array.isArray(raw.invoices) ? raw.invoices.map(normaliseInvoice) : [],\n    messages: Array.isArray(raw.messages) ? raw.messages.map(normaliseMessage).filter(Boolean) : [],\n  };\n  // Una factura sin proveedor válido se queda sin asignar en lugar de romper.\n  const ids = new Set(out.suppliers.map((s) => s.id));\n  out.invoices = out.invoices.filter((inv) => !inv.supplierId || ids.has(inv.supplierId));\n  return out;\n}\n\nfunction normaliseSupplier(s) {\n  if (!s || typeof s !== \"object\") return null;\n  const name = String(s.name || \"\").trim();\n  if (!name && !s.nif) return null;\n  return {\n    id: s.id || uid(\"sup\"),\n    name: name || String(s.nif || \"Proveedor\"),\n    nif: String(s.nif || \"\").trim(),\n    email: String(s.email || \"\").trim(),\n    phone: String(s.phone || \"\").trim(),\n    note: String(s.note || \"\").trim(),\n    createdAt: s.createdAt || new Date().toISOString(),\n  };\n}\n\nfunction load() {\n  try {\n    const raw = localStorage.getItem(KEY);\n    if (!raw) return emptyState();\n    return normalise(JSON.parse(raw));\n  } catch (err) {\n    console.warn(\"No se pudieron leer los datos guardados:\", err);\n    return emptyState();\n  }\n}\n\n/**\n * Arranca el almacén. Se llama una vez, antes de pintar nada.\n * - Abre la base de datos SQLite (o la crea con sus tablas).\n * - Si hay datos, los trae; si la base está vacía y había datos de la versión\n *   anterior en localStorage, los pasa a SQLite (migración de una sola vez).\n * Devuelve \"sqlite\" o \"local\".\n */\nexport async function initStore() {\n  const ok = await sqlite.init();\n\n  if (ok) {\n    engine = \"sqlite\";\n    const snapshot = sqlite.readState();\n    if (snapshot) {\n      state = normalise(snapshot);\n    } else {\n      state = load(); // datos de antes, si los había\n      sqlite.writeState(state);\n      await sqlite.persist();\n    }\n  } else {\n    engine = \"local\";\n    state = load();\n  }\n\n  lastSaveOk = true;\n  emit();\n  return engine;\n}\n\n/** Guarda: primero en SQLite y además una copia en texto, por si acaso. */\nexport function save() {\n  let stored = false;\n\n  if (engine === \"sqlite\" && sqlite.isAvailable()) {\n    try {\n      if (sqlite.writeState(state)) {\n        stored = true;\n        schedulePersist();\n      }\n    } catch (err) {\n      console.warn(\"No se pudo escribir en SQLite:\", err);\n    }\n  }\n\n",
+    "total_lines": 789
+  },
+  "summary": "store.js: lines 101–240 of 789 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 140,
+    "total": 789,
+    "next_offset": 240
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

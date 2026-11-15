@@ -1,0 +1,76 @@
+{
+  "id": "ev_8e6c5a759df266a300d1d35ad886a70bc1faae374391ea3b0ad26b05dbd465cf",
+  "subject": {
+    "kind": "script",
+    "sha256": "bd1a7c4db1d211c35d40bee0f35fdff38dc09caa217fb954d8985cac13e061de",
+    "name": "importers.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\importers.js",
+    "pattern": null,
+    "text": "function leerFactura"
+  },
+  "result": {
+    "file_size": 13151,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "66756e6374696f6e206c65657246616374757261",
+        "file_offset": 8381,
+        "file_offset_hex": "0x20bd",
+        "length": 20,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\importers.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 20
+      },
+      {
+        "kind": "utf16le",
+        "length": 40
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 + utf16le in importers.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x20bd"
+    }
+  ],
+  "links": []
+}

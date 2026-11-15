@@ -1,0 +1,54 @@
+{
+  "id": "ev_c8822867767e1a5d3790eaae34f28769180ed890ead28cf33c9da059f1eae53f",
+  "subject": {
+    "kind": "script",
+    "sha256": "ebcac35616019f36fd5ba77302d7c7dd59d513d2f7d4565e01096327e8085115",
+    "name": "read.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 55,
+    "offset": 455,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\read.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 18047,
+    "lines": 55,
+    "more": true,
+    "offset": 455,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\read.js",
+    "replaced_sequences": 0,
+    "text": "\n/**\n * Lee un fichero y devuelve su texto.\n * onProgress(etapa, 0..100)\n */\nexport async function readFile(file, onProgress = () => {}) {\n  const kind = describeFile(file);\n  if (kind === \"unknown\") {\n    throw new Error(\"Solo puedo leer fotos (JPG, PNG…) y PDF.\");\n  }\n  if (file.size > MAX_BYTES) {\n    throw new Error(\"El fichero es demasiado grande (más de 30 MB).\");\n  }\n\n  if (kind === \"pdf\") {\n    onProgress(\"Abriendo el PDF\", 5);\n    let leido = null;\n    try {\n      leido = await pdfTextLayer(file, onProgress);\n    } catch (err) {\n      throw new Error(\n        \"No he podido abrir el PDF. Si es un escaneo, prueba a subirlo como foto o comprueba la conexión.\"\n      );\n    }\n\n    const text = leido ? leido.text : \"\";\n    const compact = text.replace(/\\s/g, \"\");\n    if (compact.length >= 120) {\n      onProgress(\"Texto del PDF leído\", 100);\n      return { text, source: \"pdf-text\", pages: leido ? leido.pages : 1 };\n    }\n\n    // Escaneo dentro de un PDF: hay que mirarlo como imagen. Se leen TODAS las\n    // páginas (hasta un tope: cada una cuesta unos segundos de lector). Antes\n    // se leían dos y se paraba en cuanto una página nombraba el total, así que\n    // en un papel de tres hojas la tercera no se miraba nunca.\n    onProgress(\"Es un PDF escaneado: pasando al lector de imágenes\", 15);\n    const escaneo = await pdfScanCanvases(file, 12);\n    const canvases = escaneo.canvases;\n    const parts = [];\n    for (let i = 0; i < canvases.length; i++) {\n      const base = 20 + Math.round((i / canvases.length) * 60);\n      const textoPagina = await ocrCanvas(canvases[i], (stage, pct) => {\n        onProgress(`Página ${i + 1}: ${stage || \"leyendo\"}`, Math.min(96, base + Math.round(pct / 3)));\n      });\n      parts.push(textoPagina);\n    }\n    if (escaneo.total > canvases.length) {\n      parts.push(\n        `(El PDF tiene ${escaneo.total} páginas y he leído las ${canvases.length} primeras.)`\n      );\n    }\n    return { text: parts.join(\"\\n\\n\"), source: \"pdf-ocr\", pages: canvases.length };\n  }\n\n",
+    "total_lines": 527
+  },
+  "summary": "read.js: lines 456–510 of 527 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 55,
+    "total": 527,
+    "next_offset": 510
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\read.js"
+    }
+  ],
+  "links": []
+}

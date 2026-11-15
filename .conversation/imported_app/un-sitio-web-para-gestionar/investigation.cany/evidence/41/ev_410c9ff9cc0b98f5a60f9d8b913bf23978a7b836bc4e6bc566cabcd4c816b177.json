@@ -1,0 +1,54 @@
+{
+  "id": "ev_410c9ff9cc0b98f5a60f9d8b913bf23978a7b836bc4e6bc566cabcd4c816b177",
+  "subject": {
+    "kind": "script",
+    "sha256": "6238b99ab8c1c0f10ce834ae43fb81a8055d05a8f9b20d7043327b18867475d9",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 50,
+    "offset": 816,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 134368,
+    "lines": 50,
+    "more": true,
+    "offset": 816,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "          </div>\n        </div>\n        <div id=\"ingestList\" class=\"filelist\"></div>\n      </div>\n    </section>`;\n\n  if (!list.length) {\n    return `\n    <div class=\"stack\">\n      ${drop}\n      <section class=\"card\">\n        ${salesRangeBar(w)}\n        <div class=\"empty\">\n          <div class=\"e-icon\">${icon(\"sparkle\")}</div>\n          <h3>Sin ventas en este periodo</h3>\n          <p>Cuando subas una liquidación de fruta verás aquí los kilos, el precio medio y el líquido a percibir. También puedes cambiar el periodo.</p>\n        </div>\n      </section>\n    </div>`;\n  }\n\n  const rowsOf = (map) => [...map.values()].sort((a, b) => b.kg - a.kg || b.net - a.net);\n  const productRows = rowsOf(s.byProduct);\n  const buyerRows = rowsOf(s.byBuyer);\n  const categoryRows = rowsOf(s.byCategory);\n  const monthRows = [...s.byMonth.entries()]\n    .sort((a, b) => a[0].localeCompare(b[0]))\n    .map(([mk, row]) => ({ ...row, key: monthLabel(mk) }));\n  const hasCategory = categoryRows.some((r) => r.key !== \"Sin categoría\");\n\n  return `\n  <div class=\"stack\">\n    ${drop}\n\n    <section class=\"card\">\n      ${salesRangeBar(w)}\n      <div class=\"card-body\">\n        <div class=\"kpis\">\n          <article class=\"kpi is-brand\">\n            <div class=\"kpi-label\"><span class=\"dot\"></span>Kilos vendidos</div>\n            <div class=\"kpi-value\">${fmtNum(Math.round(s.kg))} kg</div>\n            <div class=\"kpi-foot\">${s.withKg} ${s.withKg === 1 ? \"liquidación con kilos\" : \"liquidaciones con kilos\"} de ${s.count} documentos</div>\n          </article>\n          <article class=\"kpi\">\n            <div class=\"kpi-label\"><span class=\"dot\"></span>Precio medio</div>\n            <div class=\"kpi-value\">${s.kg > 0 ? `${fmtNum(s.avgPrice, 3)} €` : \"—\"}</div>\n            <div class=\"kpi-foot\">por kilo · bruto ${fmtEUR(s.gross)}</div>\n          </article>\n          <article class=\"kpi\">\n            <div class=\"kpi-label\"><span class=\"dot\"></span>Peso medio por entrega</div>\n",
+    "total_lines": 3575
+  },
+  "summary": "views.js: lines 817–866 of 3575 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 50,
+    "total": 3575,
+    "next_offset": 866
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

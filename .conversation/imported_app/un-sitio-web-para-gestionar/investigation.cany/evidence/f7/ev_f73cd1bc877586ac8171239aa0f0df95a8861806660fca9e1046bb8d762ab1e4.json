@@ -1,0 +1,54 @@
+{
+  "id": "ev_f73cd1bc877586ac8171239aa0f0df95a8861806660fca9e1046bb8d762ab1e4",
+  "subject": {
+    "kind": "script",
+    "sha256": "dce5715426f363eda41a5e86d8aca69716de8b9e5f03038cae3689841a53368b",
+    "name": "nomina.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 120,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 10720,
+    "lines": 120,
+    "more": true,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js",
+    "replaced_sequences": 0,
+    "text": "/*\n * Nóminas (recibos de salarios).\n *\n * Dos mitades bien separadas:\n *  - `leerNomina(texto)` saca del texto ya leído los números del recibo\n *    (bruto, Seguridad Social del trabajador, IRPF, líquido a percibir y\n *    Seguridad Social a cargo de la empresa) y avisa cuando las cuentas del\n *    papel no cuadran.\n *  - `calcularNomina` y `lineasNomina` son las cuentas que usan la ficha y la\n *    contabilidad, para que las dos enseñen exactamente lo mismo.\n *\n * El asiento que sale de aquí es el del PGC para una nómina:\n *   640 Sueldos y salarios ...................... al debe (bruto)\n *   642 Seguridad Social a cargo de la empresa .. al debe\n *   476 Organismos de la Seguridad Social ...... al haber (trabajador + empresa)\n *   4751 Hacienda Pública, acreedora por IRPF .. al haber\n *   465 Remuneraciones pendientes de pago ...... al haber (el líquido)\n * Cuando la nómina se marca pagada, la contabilidad saca el dinero de la\n * cuenta 465 contra caja (570) o banco (572), como cualquier otro pago.\n */\n\nimport { parseAmount, round2 } from \"./util.js\";\n\n/** Las cuentas del PGC que toca una nómina. */\nexport const CUENTAS_NOMINA = Object.freeze({\n  sueldos: \"640\",\n  ssEmpresa: \"642\",\n  ssPagar: \"476\",\n  irpf: \"4751\",\n  liquido: \"465\",\n});\n\n/** Porcentajes de referencia del régimen general, solo como pista. */\nexport const SS_TRABAJADOR_PCT = 6.35;\nexport const SS_EMPRESA_PCT = 30;\n\n/** ¿Este documento es una nómina? */\nexport function esNomina(doc) {\n  return String((doc && doc.kind) || \"\").toUpperCase() === \"NOMINA\";\n}\n\n/* ------------------------------------------------------------------ */\n/* Números y textos                                                   */\n/* ------------------------------------------------------------------ */\n\nfunction texto(v) {\n  return String(v == null ? \"\" : v)\n    .replace(/\\s+/g, \" \")\n    .trim();\n}\n\n/** Un importe venga como número o como texto («1.234,56»). */\nfunction importe(v) {\n  if (v == null || v === \"\") return null;\n  if (typeof v === \"number\") return Number.isFinite(v) ? round2(v) : null;\n  const n = parseAmount(String(v));\n  return Number.isFinite(n) ? round2(n) : null;\n}\n\n/** Céntimos con coma, para las notas. */\nfunction euros(v) {\n  return v == null || !Number.isFinite(Number(v))\n    ? \"—\"\n    : `${Number(v).toFixed(2).replace(\".\", \",\")} €`;\n}\n\nfunction lineasDe(textoCrudo) {\n  return String(textoCrudo || \"\")\n    .split(/\\r?\\n/)\n    .map((l) => l.replace(/\\s+/g, \" \").trim())\n    .filter(Boolean);\n}\n\n/** El último importe con céntimos de la línea (la columna «importe»). */\nfunction importeDeLinea(linea) {\n  const m = String(linea).match(/-?\\d[\\d.]*,\\d{2}|\\d+\\.\\d{2}/g);\n  if (!m || !m.length) return null;\n  return importe(m[m.length - 1]);\n}\n\n/** El tanto por ciento que traiga la línea, si lo trae. */\nfunction porcentajeDeLinea(linea) {\n  const m = String(linea).match(/(\\d{1,2}(?:[.,]\\d{1,2})?)\\s*%/);\n  return m ? importe(m[1]) : null;\n}\n\n/* ------------------------------------------------------------------ */\n/* Las cuentas                                                        */\n/* ------------------------------------------------------------------ */\n\n/**\n * Las cuentas de una nómina, siempre iguales para la ficha y para el asiento.\n * Si falta un dato se calcula con los demás; si nada se puede calcular, el\n * valor se queda en `null` en vez de inventarse un cero.\n */\nexport function calcularNomina(n) {\n  const src = n && typeof n === \"object\" ? n : {};\n  const bruto = importe(src.bruto);\n  const ssPct = importe(src.ssPct);\n  const irpfPct = importe(src.irpfPct);\n\n  let ssTrabajador = importe(src.ssTrabajador);\n  let irpf = importe(src.irpf);\n  const ssEmpresa = importe(src.ssEmpresa);\n\n  if (ssTrabajador == null && bruto != null && ssPct != null) {\n    ssTrabajador = round2((bruto * ssPct) / 100);\n  }\n  if (irpf == null && bruto != null && irpfPct != null) {\n    irpf = round2((bruto * irpfPct) / 100);\n  }\n\n  let neto = importe(src.neto);\n  if (neto == null && bruto != null && (ssTrabajador != null || irpf != null)) {\n    neto = round2(bruto - (ssTrabajador || 0) - (irpf || 0));\n  }\n\n  const descuadre =\n    bruto != null && neto != null && ssTrabajador != null && irpf != null\n      ? round2(bruto - ssTrabajador - irpf - neto)\n",
+    "total_lines": 288
+  },
+  "summary": "nomina.js: lines 1–120 of 288 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 120,
+    "total": 288,
+    "next_offset": 120
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,72 @@
+{
+  "id": "ev_d6eae4528e198ce2f3d4df55e79aef2e2defaa3649bd3a455e38f5dde822d8f5",
+  "subject": {
+    "kind": "script",
+    "sha256": "500108cea21ba5d430159d2c1d0c13ac15ca7ae4534c1c7e0cdeb0a41d25c99f",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 3,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "const res = addInvoice({"
+  },
+  "result": {
+    "file_size": 88043,
+    "limit": 3,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "636f6e737420726573203d20616464496e766f696365287b",
+        "file_offset": 63544,
+        "file_offset_hex": "0xf838",
+        "length": 24,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 24
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 in views.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0xf838"
+    }
+  ],
+  "links": []
+}

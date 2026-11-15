@@ -1,0 +1,69 @@
+{
+  "id": "ev_b4daab5bc95bd002fc1734b8626df02fe1790481753cdba0bc5e4ec105cacd87",
+  "subject": {
+    "kind": "script",
+    "sha256": "04cfc4300fa266dff4c92a5d409712941f2dbcb2e6ffb7ef2a0aa0a537cbedf2",
+    "name": "views.js"
+  },
+  "operation": "core_evidence_browse",
+  "params": {
+    "show": {
+      "field_names": true,
+      "fields": [
+        "name",
+        "line",
+        "start_line",
+        "end_line",
+        "kind"
+      ],
+      "kind": "rows",
+      "limit": 4,
+      "list": "nodes",
+      "matching": {
+        "name": "onAction"
+      }
+    },
+    "source": {
+      "evidence_id": "ev_7a40e963b55b0bdca8bfc5d833f87b50c170bac99098a6d9629f4f64c6960132",
+      "kind": "saved"
+    }
+  },
+  "result": {
+    "coverage": {
+      "at_end": true,
+      "examined": 0,
+      "next_offset": null,
+      "status": "empty",
+      "total": 0
+    },
+    "from_evidence": "ev_7a40e963b55b0bdca8bfc5d833f87b50c170bac99098a6d9629f4f64c6960132",
+    "from_tool": "js_app_map",
+    "shown": {
+      "field_names": [],
+      "items": [],
+      "list": "nodes",
+      "list_total": 275,
+      "offset": 0,
+      "total": 0
+    }
+  },
+  "summary": "Part of js_app_map evidence (empty).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 0,
+    "total": 0
+  },
+  "locations": [],
+  "links": [
+    "ev_7a40e963b55b0bdca8bfc5d833f87b50c170bac99098a6d9629f4f64c6960132"
+  ]
+}

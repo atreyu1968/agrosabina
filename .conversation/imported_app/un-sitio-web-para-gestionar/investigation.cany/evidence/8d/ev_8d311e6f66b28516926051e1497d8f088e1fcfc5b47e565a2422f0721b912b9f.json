@@ -1,0 +1,54 @@
+{
+  "id": "ev_8d311e6f66b28516926051e1497d8f088e1fcfc5b47e565a2422f0721b912b9f",
+  "subject": {
+    "kind": "script",
+    "sha256": "c35b6fd72f850500756b33053ef68815af8f7d6cba5e00dd23068cfd723e3fba",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 2265,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 272651,
+    "lines": 30,
+    "more": true,
+    "offset": 2265,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "          id: `job_${Math.random().toString(36).slice(2, 9)}`,\n          file: adj,\n          state: \"queued\",\n          pct: 0,\n          stage: \"En cola\",\n        });\n        attached++;\n      }\n    } catch (err) {\n      toast(`No he podido leer «${file.name}»: ${(err && err.message) || \"formato no reconocido\"}`, \"bad\", 6000);\n    }\n  }\n\n  if (!saved && !attached) return null;\n\n  if (saved) {\n    toast(\n      `Guardado${saved === 1 ? \"\" : \"s\"} ${saved} correo${saved === 1 ? \"\" : \"s\"}${\n        attached ? ` y ${attached} adjunto${attached === 1 ? \"\" : \"s\"} en cola` : \"\"\n      }.`\n    );\n  }\n\n  if (attached) {\n    ui.route = \"importar\";\n    if (location.hash !== \"#/importar\") location.hash = \"#/importar\";\n    else render();\n    paintIngest();\n    runQueue();\n  } else {\n",
+    "total_lines": 6844
+  },
+  "summary": "views.js: lines 2266–2295 of 6844 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 6844,
+    "next_offset": 2295
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

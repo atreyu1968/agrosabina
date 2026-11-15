@@ -1,0 +1,54 @@
+{
+  "id": "ev_824618727c64e002aebf96c9f9b263cd19193a78059c0d3462020f25df8f1a1f",
+  "subject": {
+    "kind": "script",
+    "sha256": "c7354c4304a3218d2fdd79102cc1044647cc5d91ba73d12ee17fb118e6c31de3",
+    "name": "read.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 155,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\read.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 17330,
+    "lines": 30,
+    "more": true,
+    "offset": 155,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\read.js",
+    "replaced_sequences": 0,
+    "text": "  try {\n    doc.destroy();\n  } catch (_) {\n    /* nada */\n  }\n  return out.join(\"\\n\\n\");\n}\n\nasync function pdfScanCanvases(file, maxPages = 2) {\n  const pdfjs = await getPdfjs();\n  const data = new Uint8Array(await file.arrayBuffer());\n  const doc = await pdfjs.getDocument({ data, isEvalSupported: false }).promise;\n  const pages = Math.min(doc.numPages, maxPages);\n  const out = [];\n  for (let p = 1; p <= pages; p++) {\n    const page = await doc.getPage(p);\n    const base = page.getViewport({ scale: 1 });\n    // Más resolución que antes: el texto pequeño de una factura sale más nítido.\n    const targetWidth = 2100;\n    const scale = Math.min(3.6, Math.max(1.2, targetWidth / base.width));\n    const viewport = page.getViewport({ scale });\n    const canvas = document.createElement(\"canvas\");\n    canvas.width = Math.round(viewport.width);\n    canvas.height = Math.round(viewport.height);\n    const ctx = canvas.getContext(\"2d\", { willReadFrequently: true });\n    ctx.fillStyle = \"#fff\";\n    ctx.fillRect(0, 0, canvas.width, canvas.height);\n    await page.render({ canvasContext: ctx, viewport }).promise;\n    out.push(canvas);\n  }\n",
+    "total_lines": 513
+  },
+  "summary": "read.js: lines 156–185 of 513 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 513,
+    "next_offset": 185
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\read.js"
+    }
+  ],
+  "links": []
+}

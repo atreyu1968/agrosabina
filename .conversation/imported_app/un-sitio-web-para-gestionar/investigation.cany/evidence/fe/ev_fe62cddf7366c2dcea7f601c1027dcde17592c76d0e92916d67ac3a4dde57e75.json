@@ -1,0 +1,54 @@
+{
+  "id": "ev_fe62cddf7366c2dcea7f601c1027dcde17592c76d0e92916d67ac3a4dde57e75",
+  "subject": {
+    "kind": "script",
+    "sha256": "c0289682ae3319a39044d0d80d8b78f5ccb4f95e31dc988fa7e0b0fa47a5eacf",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 2586,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 277690,
+    "lines": 45,
+    "more": true,
+    "offset": 2586,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  runningQueue = true;\n  try {\n    for (;;) {\n      const job = ui.jobs.find((j) => j.state === \"queued\");\n      if (!job) break;\n      await runOne(job);\n    }\n  } finally {\n    runningQueue = false;\n    paintIngest();\n  }\n}\n\n/**\n * Lee un texto con el importador que le toca y, cuando el papel no tiene un\n * tipo propio claro (una factura, un justificante cualquiera), afina el tipo\n * con las reglas que el programa lleva dentro (model.js). Si esas reglas\n * nombran un tipo que tiene lector propio (nómina, liquidación, subvención…),\n * el documento se vuelve a leer entero con él, para que no salga a medias.\n *\n * Aquí no se llama a ninguna IA: el documento se lee solo con el programa, en\n * este ordenador, sin mandar el texto a ninguna parte.\n */\nasync function leerTextoDocumento(text, fileName) {\n  const opciones = { defaultRate: getState().settings.defaultRate, fileName };\n  let lectura = leerDocumento(text, opciones);\n  let cls = null;\n  if (!lectura.generico) return { lectura, cls };\n\n  cls = classifyLocal(text, { fileName });\n  if (cls.kind && cls.kind !== lectura.doc.kind) {\n    const otra = leerDocumento(text, { ...opciones, tipo: cls.kind });\n    if (otra.reconoce) return { lectura: otra, cls: null };\n    lectura.doc.kind = cls.kind;\n    lectura.doc.direction = cls.direction || directionOf(cls.kind);\n  }\n  lectura.doc.category = cls.category || lectura.doc.category;\n  lectura.doc.direction = cls.direction || lectura.doc.direction;\n  lectura.doc.classifyWhy = cls.why || \"\";\n  lectura.doc.classifyNote = cls.note || \"\";\n  return { lectura, cls };\n}\n\n/**\n * ¿Esta hoja es un papel con su propio total, o es la continuación del\n",
+    "total_lines": 6975
+  },
+  "summary": "views.js: lines 2587–2631 of 6975 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 6975,
+    "next_offset": 2631
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

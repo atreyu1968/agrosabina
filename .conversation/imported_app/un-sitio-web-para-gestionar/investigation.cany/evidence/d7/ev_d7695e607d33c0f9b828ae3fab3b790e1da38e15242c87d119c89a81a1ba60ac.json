@@ -1,0 +1,54 @@
+{
+  "id": "ev_d7695e607d33c0f9b828ae3fab3b790e1da38e15242c87d119c89a81a1ba60ac",
+  "subject": {
+    "kind": "script",
+    "sha256": "5424c53cadc6967fd41cb2d41f506ef1289ebd4290305ebd0dd21bd6dfeca4f8",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 22,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 23887,
+    "lines": 22,
+    "more": true,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "/*\n * Contabilidad de Agrosabina SL.\n *\n * De cada documento guardado (facturas, liquidaciones, subvenciones, cobros,\n * nóminas) sale un asiento, y de los asientos salen los cuatro libros que\n * pide la persona: diario, mayor, balance de sumas y saldos, balance de\n * situación y cuenta de pérdidas y ganancias. Los dos últimos se presentan\n * con los epígrafes del modelo oficial del Plan General de Contabilidad.\n *\n * Este fichero no toca la pantalla ni la base de datos: solo hace cuentas.\n * Todas las funciones son puras y devuelven datos listos para pintar.\n */\n\nimport { round2 } from \"./util.js\";\nimport { directionOf } from \"./model.js\";\n\n/* ------------------------------------------------------------------ */\n/* Plan de cuentas                                                    */\n/* ------------------------------------------------------------------ */\n\n/**\n * Las cuentas que usa el programa. `pl` dice en qué línea de la cuenta de\n",
+    "total_lines": 588
+  },
+  "summary": "accounting.js: lines 1–22 of 588 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 22,
+    "total": 588,
+    "next_offset": 22
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

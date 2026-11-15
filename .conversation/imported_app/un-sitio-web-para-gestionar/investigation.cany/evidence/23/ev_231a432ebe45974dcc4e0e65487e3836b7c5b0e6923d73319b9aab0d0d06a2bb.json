@@ -1,0 +1,42 @@
+{
+  "id": "ev_231a432ebe45974dcc4e0e65487e3836b7c5b0e6923d73319b9aab0d0d06a2bb",
+  "subject": {
+    "kind": "raw-binary",
+    "sha256": "65ff48b3338a4046f2360cf995f298b09a8a8f46035e6d1275ca213b05146bfd",
+    "name": "picture-1.png"
+  },
+  "operation": "native_bytes_show",
+  "params": {
+    "address": "0x10",
+    "length": 16
+  },
+  "result": {
+    "address": "0x10",
+    "ascii": ".............:.C",
+    "file_offset": 16,
+    "hex": "000001ad000000b308060000003afd43",
+    "length": 16
+  },
+  "summary": "16 bytes at 0x10.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 16,
+    "total": 16
+  },
+  "locations": [
+    {
+      "kind": "address",
+      "value": "0x10"
+    }
+  ],
+  "links": []
+}

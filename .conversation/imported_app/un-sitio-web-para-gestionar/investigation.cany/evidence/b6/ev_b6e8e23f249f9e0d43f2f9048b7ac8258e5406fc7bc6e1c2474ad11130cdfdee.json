@@ -1,0 +1,54 @@
+{
+  "id": "ev_b6e8e23f249f9e0d43f2f9048b7ac8258e5406fc7bc6e1c2474ad11130cdfdee",
+  "subject": {
+    "kind": "script",
+    "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 695,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24919,
+    "lines": 70,
+    "more": true,
+    "offset": 695,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "/* ------------------------------------------------------------------ */\n\nexport function updateSettings(patch) {\n  state.settings = Object.assign(state.settings, patch);\n  save();\n  return state.settings;\n}\n\nexport function clearAll() {\n  state = emptyState();\n  save();\n}\n\nexport function exportJSON() {\n  return JSON.stringify({ ...state, exportedAt: new Date().toISOString() }, null, 2);\n}\n\nexport function importJSON(text) {\n  const parsed = JSON.parse(text);\n  if (!parsed || (!Array.isArray(parsed.suppliers) && !Array.isArray(parsed.invoices))) {\n    throw new Error(\"El fichero no parece una copia de seguridad de este programa.\");\n  }\n  state = normalise(parsed);\n  save();\n  return state;\n}\n\n/** Datos de ejemplo, para que se vea cómo funciona sin tener que subir nada. */\nexport function seedDemo() {\n  const t = todayISO();\n  const y = Number(t.slice(0, 4));\n  const m = Number(t.slice(5, 7));\n  const stamp = (monthOffset, day) => {\n    const d = new Date(y, m - 1 - monthOffset, Math.min(day, 28));\n    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, \"0\")}-${String(d.getDate()).padStart(2, \"0\")}`;\n  };\n\n  const demo = [\n    {\n      supplier: \"Distribuciones Timanfaya S.L.\", nif: \"B38000111\",\n      rows: [\n        { number: \"2024/0184\", issueDate: stamp(0, 24), dueDate: stamp(-1, 24), base: 1240.5, rate: 7, status: STATUS.PENDING },\n        { number: \"2024/0151\", issueDate: stamp(1, 22), dueDate: stamp(0, 22), base: 986.2, rate: 7, status: STATUS.PAID },\n        { number: \"2024/0120\", issueDate: stamp(2, 18), dueDate: stamp(1, 18), base: 1102.75, rate: 7, status: STATUS.PAID },\n      ],\n    },\n    {\n      supplier: \"Ferretería El Cardón\", nif: \"B38000222\",\n      rows: [\n        { number: \"FC-1042\", issueDate: stamp(0, 20), dueDate: stamp(-1, 20), base: 318.4, rate: 7, status: STATUS.PENDING },\n        { number: \"FC-0988\", issueDate: stamp(1, 11), dueDate: stamp(0, 11), base: 254.15, rate: 7, status: STATUS.PAID },\n        { number: \"FC-0901\", issueDate: stamp(3, 3), dueDate: stamp(2, 3), base: 145.9, rate: 7, status: STATUS.PAID },\n      ],\n    },\n    {\n      supplier: \"Panificadora Artenara S.C.\", nif: \"G38000333\",\n      rows: [\n        { number: \"A/2024-0567\", issueDate: stamp(0, 15), dueDate: stamp(-1, 15), base: 642.3, rate: 3, status: STATUS.PENDING },\n        { number: \"A/2024-0488\", issueDate: stamp(1, 14), dueDate: stamp(0, 14), base: 588.75, rate: 3, status: STATUS.PAID },\n      ],\n    },\n    {\n      supplier: \"Suministros Añaza S.L.\", nif: \"B38000444\",\n      rows: [\n        { number: \"S-2024/0121\", issueDate: stamp(0, 8), dueDate: stamp(-1, 8), base: 2087.0, rate: 7, status: STATUS.PENDING },\n        { number: \"S-2024/0099\", issueDate: stamp(2, 6), dueDate: stamp(1, 6), base: 342.1, rate: 0, status: STATUS.PAID },\n      ],\n    },\n    {\n      supplier: \"Talleres Güímar S.L.\", nif: \"B38000555\",\n",
+    "total_lines": 789
+  },
+  "summary": "store.js: lines 696–765 of 789 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 789,
+    "next_offset": 765
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

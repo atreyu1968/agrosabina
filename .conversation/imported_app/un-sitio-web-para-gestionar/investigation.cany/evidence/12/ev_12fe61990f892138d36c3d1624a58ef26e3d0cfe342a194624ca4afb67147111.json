@@ -1,0 +1,98 @@
+{
+  "id": "ev_12fe61990f892138d36c3d1624a58ef26e3d0cfe342a194624ca4afb67147111",
+  "subject": {
+    "kind": "script",
+    "sha256": "a1ee7c60007b84998070ce6f9bbdcb1719dcd62ddf93548e4fb347a764ba9bcf",
+    "name": "nomina.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js",
+    "pattern": null,
+    "text": "465"
+  },
+  "result": {
+    "file_size": 10506,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "343635",
+        "file_offset": 810,
+        "file_offset_hex": "0x32a",
+        "length": 3,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "343635",
+        "file_offset": 963,
+        "file_offset_hex": "0x3c3",
+        "length": 3,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "343635",
+        "file_offset": 1260,
+        "file_offset_hex": "0x4ec",
+        "length": 3,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 3
+      },
+      {
+        "kind": "utf16le",
+        "length": 6
+      }
+    ],
+    "total_matches": 3
+  },
+  "summary": "3 match(es) for utf8 + utf16le in nomina.js; showing 3 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 3,
+    "total": 3
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x32a"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x3c3"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x4ec"
+    }
+  ],
+  "links": []
+}

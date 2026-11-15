@@ -1,0 +1,54 @@
+{
+  "id": "ev_6c3990eb93b78a42ac5b24b728da35f758928aca6fae0e504347186b38bd17d8",
+  "subject": {
+    "kind": "script",
+    "sha256": "aea2f632810a30a206bb5c03f817d42223cbbd6fc0a8616cce3c29f88a6f2449",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 85,
+    "offset": 440,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 29170,
+    "lines": 85,
+    "more": true,
+    "offset": 440,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "/* Libro mayor                                                        */\n/* ------------------------------------------------------------------ */\n\n/** Una fila por cuenta: lo que se ha movido y el saldo que queda. */\nexport function libroMayor(entries) {\n  const map = new Map();\n  for (const e of entries || []) {\n    for (const l of e.lines || []) {\n      let row = map.get(l.account);\n      if (!row) {\n        const c = cuenta(l.account);\n        row = {\n          code: l.account,\n          name: c.name,\n          balance: c.balance,\n          pl: c.pl,\n          debit: 0,\n          credit: 0,\n          moves: [],\n        };\n        map.set(l.account, row);\n      }\n      row.debit = round2(row.debit + (l.debit || 0));\n      row.credit = round2(row.credit + (l.credit || 0));\n      row.moves.push({\n        date: e.date,\n        number: e.number,\n        concept: e.concept,\n        debit: l.debit || 0,\n        credit: l.credit || 0,\n        running: 0,\n      });\n    }\n  }\n  const rows = [...map.values()];\n  for (const r of rows) {\n    let acc = 0;\n    for (const m of r.moves) {\n      acc = round2(acc + m.debit - m.credit);\n      m.running = acc;\n    }\n    r.saldo = round2(r.debit - r.credit);\n  }\n  rows.sort((a, b) => (a.code < b.code ? -1 : a.code > b.code ? 1 : 0));\n  return rows;\n}\n\n/* ------------------------------------------------------------------ */\n/* Balance de sumas y saldos                                          */\n/* ------------------------------------------------------------------ */\n\n/**\n * Sumas y saldos: por cuenta, cuánto se ha movido al debe y al haber y el\n * saldo que queda, deudor o acreedor. Las dos últimas columnas tienen que\n * sumar lo mismo: si no, algo se ha quedado fuera.\n */\nexport function balanceSumasYSaldos(mayor) {\n  const rows = (mayor || []).map((r) => ({\n    code: r.code,\n    name: r.name,\n    debit: r.debit,\n    credit: r.credit,\n    deudor: r.saldo > 0.004 ? r.saldo : 0,\n    acreedor: r.saldo < -0.004 ? round2(-r.saldo) : 0,\n  }));\n  const totals = rows.reduce(\n    (t, r) => ({\n      debit: round2(t.debit + r.debit),\n      credit: round2(t.credit + r.credit),\n      deudor: round2(t.deudor + r.deudor),\n      acreedor: round2(t.acreedor + r.acreedor),\n    }),\n    { debit: 0, credit: 0, deudor: 0, acreedor: 0 }\n  );\n  return { rows, totals, cuadra: Math.abs(totals.deudor - totals.acreedor) < 0.01 };\n}\n\n/* ------------------------------------------------------------------ */\n/* Cuenta de pérdidas y ganancias (modelo oficial)                    */\n/* ------------------------------------------------------------------ */\n\nexport const LINEAS_RESULTADOS = Object.freeze([\n  { key: \"1\", label: \"1. Importe neto de la cifra de negocios\" },\n  { key: \"2\", label: \"2. Variación de existencias de productos terminados y en curso de fabricación\" },\n  { key: \"3\", label: \"3. Trabajos realizados por la empresa para su activo\" },\n",
+    "total_lines": 732
+  },
+  "summary": "accounting.js: lines 441–525 of 732 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 85,
+    "total": 732,
+    "next_offset": 525
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

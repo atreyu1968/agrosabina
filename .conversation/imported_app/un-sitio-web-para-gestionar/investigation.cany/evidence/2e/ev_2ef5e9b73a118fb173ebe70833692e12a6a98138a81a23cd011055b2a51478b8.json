@@ -1,0 +1,54 @@
+{
+  "id": "ev_2ef5e9b73a118fb173ebe70833692e12a6a98138a81a23cd011055b2a51478b8",
+  "subject": {
+    "kind": "script",
+    "sha256": "cdc8a5fb97c8ef976ab08328772ed61e34b8b97993fa1bad5cd6c2a329fd6db5",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 95,
+    "offset": 3612,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 176893,
+    "lines": 95,
+    "more": true,
+    "offset": 3612,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      try {\n        again.setSelectionRange(pos, pos);\n      } catch (_) {\n        /* nada */\n      }\n    }\n  }\n}\n\nexport function onChange(event) {\n  const target = event.target;\n  if (!(target instanceof HTMLElement)) return;\n  if (target.id === \"accRange\") {\n    ui.conta.range = target.value;\n    if (ui.conta.range === \"custom\") {\n      if (!ui.conta.from) ui.conta.from = `${new Date().getFullYear()}-01-01`;\n      if (!ui.conta.to) ui.conta.to = todayISO();\n    }\n    render();\n    return;\n  }\n  if (target.id === \"accFrom\" || target.id === \"accTo\") {\n    ui.conta[target.id === \"accFrom\" ? \"from\" : \"to\"] = target.value;\n    render();\n    return;\n  }\n  if (target.id === \"salesRange\") {\n    ui.sales.range = target.value;\n    if (ui.sales.range === \"custom\") {\n      if (!ui.sales.from) ui.sales.from = `${new Date().getFullYear()}-01-01`;\n      if (!ui.sales.to) ui.sales.to = todayISO();\n    }\n    refreshSales();\n    return;\n  }\n  if (target.id === \"salesFrom\" || target.id === \"salesTo\") {\n    ui.sales[target.id === \"salesFrom\" ? \"from\" : \"to\"] = target.value;\n    refreshSales();\n    return;\n  }\n  if (target.matches(\"[data-filter-supplier]\")) {\n    ui.filters.supplier = target.value;\n    refreshInvoiceTable();\n  }\n}\n\nexport function onFilterButton(button) {\n  ui.filters.status = button.dataset.filterStatus;\n  refreshInvoiceTable();\n}\n\nexport function onDirectionButton(button) {\n  ui.filters.direction = button.dataset.filterDirection || \"all\";\n  document.querySelectorAll(\"[data-filter-direction]\").forEach((b) => {\n    b.classList.toggle(\"active\", b.dataset.filterDirection === ui.filters.direction);\n  });\n  refreshInvoiceTable();\n}\n\n/* ------------------------------------------------------------------ */\n/* Arrastrar y soltar                                                 */\n/* ------------------------------------------------------------------ */\n\nexport function wireDropzone() {\n  document.addEventListener(\"dragover\", (ev) => {\n    const dz = ev.target instanceof Element ? ev.target.closest(\"#dropzone, #mailDrop\") : null;\n    if (!dz) return;\n    ev.preventDefault();\n    dz.classList.add(\"drag\");\n  });\n  document.addEventListener(\"dragleave\", (ev) => {\n    const dz = ev.target instanceof Element ? ev.target.closest(\"#dropzone, #mailDrop\") : null;\n    if (dz) dz.classList.remove(\"drag\");\n  });\n  document.addEventListener(\"drop\", (ev) => {\n    const dz = ev.target instanceof Element ? ev.target.closest(\"#dropzone, #mailDrop\") : null;\n    if (!dz) return;\n    ev.preventDefault();\n    dz.classList.remove(\"drag\");\n    if (ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files.length) {\n      if (dz.id === \"mailDrop\") importEmails(ev.dataTransfer.files);\n      else queueFiles(ev.dataTransfer.files);\n    }\n  });\n}\n\nexport function hasJobs() {\n  return ui.jobs.length > 0;\n}\n\n/* ------------------------------------------------------------------ */\n/* Contabilidad                                                       */\n/* ------------------------------------------------------------------ */\n\nconst ACC_TABS = [\n",
+    "total_lines": 4615
+  },
+  "summary": "views.js: lines 3613–3707 of 4615 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 95,
+    "total": 4615,
+    "next_offset": 3707
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

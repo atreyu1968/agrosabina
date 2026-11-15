@@ -1,0 +1,54 @@
+{
+  "id": "ev_45276ff1db25818b4c0ff572928b6ae9925e3021a5f968ad1f631e01a1fd7760",
+  "subject": {
+    "kind": "script",
+    "sha256": "effbee695913dd70eb1d3b51952ecc8ed76c4969a93f6df5b3ddba29ce97f26c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 90,
+    "offset": 470,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 196170,
+    "lines": 90,
+    "more": true,
+    "offset": 470,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      <h3>Ningún documento con esos filtros</h3>\n      <p>Prueba a quitar la búsqueda, cambiar el periodo o mirar en todos los tipos.</p>\n      <div class=\"e-actions\"><button class=\"btn\" data-action=\"docs-reset\">Quitar los filtros</button></div>\n    </div>\n  </section>`;\n\n  return `\n    <section class=\"kpis\">\n      <article class=\"kpi\">\n        <div class=\"kpi-label\"><span class=\"dot\"></span>Documentos</div>\n        <div class=\"kpi-value\">${list.length}</div>\n        <div class=\"kpi-foot\">de ${todos} guardados</div>\n      </article>\n      <article class=\"kpi is-brand\">\n        <div class=\"kpi-label\"><span class=\"dot\"></span>Importe</div>\n        <div class=\"kpi-value\">${fmtEUR(t.total)}</div>\n        <div class=\"kpi-foot\">${fmtEUR(t.expense)} de gasto y ${fmtEUR(t.income)} de ingreso</div>\n      </article>\n      <article class=\"kpi is-paid\">\n        <div class=\"kpi-label\"><span class=\"dot\"></span>Pendiente</div>\n        <div class=\"kpi-value\">${fmtEUR(t.pending)}</div>\n        <div class=\"kpi-foot\">${t.pendingCount} ${t.pendingCount === 1 ? \"documento\" : \"documentos\"} sin cobrar o pagar</div>\n      </article>\n      <article class=\"kpi\">\n        <div class=\"kpi-label\"><span class=\"dot\"></span>IGIC</div>\n        <div class=\"kpi-value\">${fmtEUR(t.igic)}</div>\n        <div class=\"kpi-foot\">soportado y repercutido en estos documentos</div>\n      </article>\n    </section>\n    <section class=\"card\">\n      <div class=\"card-head\">\n        <div>\n          <h2>${list.length === 1 ? \"Un documento\" : `${list.length} documentos`}</h2>\n          <p>El folio abre lo que se leyó del documento; el lápiz, su ficha</p>\n        </div>\n        <div class=\"spacer\"></div>\n        <button class=\"btn sm ghost\" data-action=\"docs-export\">${icon(\"download\")}<span>Exportar índice</span></button>\n      </div>\n      ${list.length ? docTableHtml(list) : \"\"}\n    </section>\n    ${list.length ? \"\" : vacio}`;\n}\n\nfunction viewDocumentos() {\n  const state = getState();\n  if (!state.invoices.length) {\n    return `<section class=\"card\">\n      <div class=\"empty\">\n        <div class=\"e-icon\">${icon(\"folder\")}</div>\n        <h3>Todavía no hay documentos</h3>\n        <p>Sube una foto o un PDF y quedará archivado aquí, con su texto leído y sus importes.</p>\n        <div class=\"e-actions\">\n          <button class=\"btn primary\" data-action=\"import-files\">${icon(\"upload\")}<span>Subir documento</span></button>\n          <button class=\"btn\" data-action=\"new-invoice\">${icon(\"plus\")}<span>Añadir a mano</span></button>\n        </div>\n      </div>\n    </section>`;\n  }\n  return `\n    <div class=\"stack\">\n      <section class=\"card\">${docsFilters()}</section>\n      <div id=\"docResults\">${docResults()}</div>\n    </div>`;\n}\n\n/** Repinta solo la tabla, sin perder el foco del buscador. */\nfunction refreshDocResults() {\n  if (ui.route !== \"documentos\") return;\n  const box = document.getElementById(\"docResults\");\n  if (box) box.innerHTML = docResults();\n}\n\n/** La ventana con todo lo que se leyó de un documento. */\nfunction docPreviewModal(inv) {\n  const info = kindInfo(inv.kind || \"FACTURA\") || {};\n  const sup = docSupplier(inv) || {};\n  const isIn = docDirection(inv) === \"INGRESO\";\n  const lines = Array.isArray(inv.lines) ? inv.lines : [];\n  const liq = inv.liquidacion || null;\n  const liqNum = liquidacionNumbers(inv);\n  const notes = Array.isArray(inv.notes) ? inv.notes.join(\"\\n\") : String(inv.notes || \"\");\n  const raw = String(inv.rawText || \"\");\n\n  const filas = [\n    [\"Tipo\", esc(info.label || \"Documento\")],\n    [\"Sentido\", isIn ? \"Ingreso\" : \"Gasto\"],\n    [\"Proveedor\", esc(sup.name || \"Sin proveedor\")],\n    [\"NIF\", esc(sup.nif || \"—\")],\n    [\"Número\", esc(inv.number || \"—\")],\n    [\"Fecha\", inv.issueDate ? fmtDate(inv.issueDate) : \"—\"],\n",
+    "total_lines": 5107
+  },
+  "summary": "views.js: lines 471–560 of 5107 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 90,
+    "total": 5107,
+    "next_offset": 560
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

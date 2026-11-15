@@ -1,0 +1,54 @@
+{
+  "id": "ev_908827abb471d06f56508f86240909fa950be461f10f48ff84c3fbe02dfac31f",
+  "subject": {
+    "kind": "script",
+    "sha256": "aea2f632810a30a206bb5c03f817d42223cbbd6fc0a8616cce3c29f88a6f2449",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 140,
+    "offset": 120,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 29170,
+    "lines": 140,
+    "more": true,
+    "offset": 120,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "    code: String(s.code || \"\").trim(),\n    name: String(s.name || \"\").trim(),\n    key: String(s.key == null ? \"\" : s.key),\n    cuenta: String(s.cuenta || String(s.code || \"\").slice(0, 3)),\n  }));\n  const propias = (p.propias || []).map((c) => ({\n    code: String(c.code || \"\").trim(),\n    name: String(c.name || \"\").trim(),\n  }));\n  const firma = subcuentas.map((s) => `${s.code}=${s.name}`).join(\"|\") + \"#\" + propias.map((c) => `${c.code}=${c.name}`).join(\"|\");\n  const antes = PLANO.subcuentas.map((s) => `${s.code}=${s.name}`).join(\"|\") + \"#\" + PLANO.propias.map((c) => `${c.code}=${c.name}`).join(\"|\");\n  PLANO = { subcuentas, propias };\n  if (firma !== antes) CACHE_CUENTAS.clear();\n}\n\n/** La ficha de una cuenta: código, nombre, epígrafe de balance y línea de P&G. */\nexport function cuenta(code) {\n  const key = String(code == null ? \"\" : code).trim();\n  if (CACHE_CUENTAS.has(key)) return CACHE_CUENTAS.get(key);\n  const found = CUENTAS.find((c) => c.code === key);\n  let row;\n  if (found) {\n    row = {\n      code: key,\n      name: found.name,\n      balance: found.balance || balancePorDefecto(key),\n      pl: found.pl || \"\",\n    };\n  } else {\n    const propia = PLANO.propias.find((c) => c.code === key);\n    const sub = PLANO.subcuentas.find((s) => s.code === key);\n    const madre = pgcNombre(key);\n    const nombre = (propia && propia.name) || (sub && sub.name) || madre;\n    row = {\n      code: key,\n      name: nombre || `Cuenta ${key}`,\n      balance: balancePorDefecto(key),\n      pl: plPorDefecto(key),\n    };\n  }\n  CACHE_CUENTAS.set(key, row);\n  return row;\n}\n\n/* ------------------------------------------------------------------ */\n/* De documento a cuenta                                              */\n/* ------------------------------------------------------------------ */\n\nconst GASTO_POR_CONCEPTO = {\n  AGUA: \"628\",\n  ELECTRICIDAD: \"628\",\n  COMBUSTIBLE: \"628\",\n  SERVICIOS: \"623\",\n  FITOSANITARIOS: \"602\",\n  ABONOS: \"602\",\n  IMPUESTOS: \"631\",\n  LABORALES: \"640\",\n};\n\nconst INGRESO_POR_CONCEPTO = {\n  FRUTA: \"701\",\n  SUBVENCIONES: \"740\",\n};\n\n/** La cuenta de gasto o de ingreso que le toca a un documento. */\nexport function cuentaDeDocumento(inv) {\n  const kind = String((inv && inv.kind) || \"FACTURA\");\n  const cat = String((inv && inv.category) || \"\");\n  if (kind === \"LIQUIDACION\") return \"701\";\n  if (kind === \"SUBVENCION\") return \"740\";\n  if (kind === \"NOMINA\") return \"640\";\n  if (kind === \"COBRO\") return cat === \"SUBVENCIONES\" ? \"740\" : cat === \"FRUTA\" ? \"701\" : \"759\";\n  if (directionOf(kind) === \"INGRESO\") return INGRESO_POR_CONCEPTO[cat] || \"759\";\n  return GASTO_POR_CONCEPTO[cat] || \"629\";\n}\n\n/* ------------------------------------------------------------------ */\n/* Quién es el tercero: cada cliente y proveedor con su subcuenta     */\n/* ------------------------------------------------------------------ */\n\n/**\n * La clave con la que se reconoce a un cliente o a un proveedor: su nombre en\n * minúsculas y sin acentos, para que «Pérez, S.L.» y «perez sl» cuenten como\n * el mismo. Si el documento no trae nombre, se usa el del proveedor guardado.\n */\nexport function claveDeTercero(inv) {\n  const d = inv || {};\n  const bruto = String(d.party || d.supplierName || \"\").trim();\n  if (!bruto && d.supplierId != null) return `id:${d.supplierId}`;\n  const limpio = bruto\n    .toLowerCase()\n    .normalize(\"NFD\")\n    .replace(/[\\u0300-\\u036f]/g, \"\")\n    .replace(/[.,;:]/g, \" \")\n    .replace(/\\s+/g, \" \")\n    .trim();\n  return limpio || \"sin-nombre\";\n}\n\n/** La subcuenta que le toca a un tercero, si ya se le abrió una. */\nexport function cuentaTerceroPorClave(ingreso, clave) {\n  const prefijo = ingreso ? \"430\" : \"400\";\n  const buscada = String(clave == null ? \"\" : clave);\n  const found = PLANO.subcuentas.find((s) => s.cuenta === prefijo && s.key === buscada);\n  return found && found.code ? found.code : prefijo;\n}\n\n/** La subcuenta de un documento concreto: 430001, 400003… o la cuenta madre. */\nexport function cuentaTercero(inv, ingreso) {\n  return cuentaTerceroPorClave(ingreso, claveDeTercero(inv));\n}\n\n/** Base, cuota y total de un documento, cuadrados entre sí. */\nfunction importes(inv) {\n  let base = round2(Number(inv.base) || 0);\n  const igic = round2(Number(inv.igic) || 0);\n  let total = round2(Number(inv.total) || 0);\n  if (!total) total = round2(base + igic);\n  if (!total) return { base: 0, igic: 0, total: 0 };\n  if (!base) base = round2(total - igic);\n  // Si el total guardado no cuadra con base + cuota, manda el total del papel.\n  if (Math.abs(round2(base + igic) - total) > 0.02) base = round2(total - igic);\n  return { base, igic, total };\n}\n\n/**\n * Convierte una lista de [cuenta, importe] en renglones con debe y haber.\n * Un importe positivo va al debe; uno negativo, al haber. Si bailan céntimos,\n * se los lleva la cuenta de mayor importe para que el asiento cuadre.\n */\nexport function lineas(raw) {\n  const rows = (raw || [])\n    .map((pair) => ({ code: String(pair[0]), value: round2(Number(pair[1]) || 0) }))\n    .filter((r) => Math.abs(r.value) >= 0.005);\n  if (!rows.length) return [];\n  const suma = round2(rows.reduce((n, r) => n + r.value, 0));\n  if (suma !== 0) {\n    let biggest = rows[0];\n    for (const r of rows) if (Math.abs(r.value) > Math.abs(biggest.value)) biggest = r;\n    biggest.value = round2(biggest.value - suma);\n",
+    "total_lines": 732
+  },
+  "summary": "accounting.js: lines 121–260 of 732 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 140,
+    "total": 732,
+    "next_offset": 260
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

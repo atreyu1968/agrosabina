@@ -1,0 +1,15 @@
+{
+  "id": "unk_f072ca3f45c61649",
+  "revision": 1,
+  "question": "¿El lector nuevo acierta con las liquidaciones reales de la persona? Solo se ha comprobado sobre un modelo de liquidación escrito a mano (producto, categoría, «Kilos: 4.520», «Precio: 0,853 €/kg», bruto, descuentos y líquido): ningún documento real se ha leído todavía, y una liquidación con desglose por calibres o sin etiquetas podría caer en la línea de tabla o no leerse.",
+  "severity": "high",
+  "domain": "lectura",
+  "status": "open",
+  "probes": [
+    "Abrir la vista previa y soltar una liquidación real en PDF (o hacerle una foto) desde la pantalla Ventas.",
+    "Mirar el recuadro «Datos que voy a importar»: ¿los kilos y el €/kg son los del papel? ¿sale algún aviso de «No cuadra»?",
+    "Si el papel trae el desglose por calibres en vez de un solo precio, ver si el lector coge el precio medio o el de la primera línea."
+  ],
+  "evidence_for": [],
+  "evidence_against": []
+}

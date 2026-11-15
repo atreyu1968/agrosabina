@@ -1,0 +1,72 @@
+{
+  "id": "ev_1848675fc37f2d0e820238692811c5fd4b4f02c3c0de0c51f58c62f9184fa163",
+  "subject": {
+    "kind": "script",
+    "sha256": "d6e412398393ee9c7cb1b670cb1c0f0dbda6ee089707508e12ffdb35d5efa015",
+    "name": "accounting.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "pattern": null,
+    "text": "const linesPago = lineas("
+  },
+  "result": {
+    "file_size": 28292,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "636f6e7374206c696e65735061676f203d206c696e65617328",
+        "file_offset": 13780,
+        "file_offset_hex": "0x35d4",
+        "length": 25,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 25
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 in accounting.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x35d4"
+    }
+  ],
+  "links": []
+}

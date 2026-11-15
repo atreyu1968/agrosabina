@@ -1,0 +1,270 @@
+{
+  "id": "ev_84308121db65afa6e10cf90aa17718dc9c8aec91bc83a6e1629473382f742727",
+  "subject": {
+    "kind": "js-app",
+    "sha256": "9a1d2f4fc2b4a007b3bf0311b96195ec821018326f643baac2c77c8d473e69ab",
+    "name": "site"
+  },
+  "operation": "core_evidence_browse",
+  "params": {
+    "show": {
+      "fields": [
+        "label",
+        "line"
+      ],
+      "kind": "rows",
+      "limit": 200,
+      "list": "nodes",
+      "matching": {
+        "kind": "function",
+        "module": "assets/js/store.js"
+      }
+    },
+    "source": {
+      "evidence_id": "ev_117b679a5fd5fb43d697321817cdce278654098910877d936b27ff45e3d10cbd",
+      "kind": "saved"
+    }
+  },
+  "result": {
+    "coverage": {
+      "at_end": true,
+      "examined": 51,
+      "next_offset": null,
+      "status": "page",
+      "total": 51
+    },
+    "from_evidence": "ev_117b679a5fd5fb43d697321817cdce278654098910877d936b27ff45e3d10cbd",
+    "from_tool": "js_app_map",
+    "shown": {
+      "items": [
+        {
+          "label": "emptyState",
+          "line": 31
+        },
+        {
+          "label": "normaliseMessage",
+          "line": 49
+        },
+        {
+          "label": "normaliseLiquidacion",
+          "line": 81
+        },
+        {
+          "label": "n",
+          "line": 83
+        },
+        {
+          "label": "normaliseInvoice",
+          "line": 104
+        },
+        {
+          "label": "normalise",
+          "line": 154
+        },
+        {
+          "label": "normaliseSupplier",
+          "line": 170
+        },
+        {
+          "label": "load",
+          "line": 185
+        },
+        {
+          "label": "initStore",
+          "line": 203
+        },
+        {
+          "label": "save",
+          "line": 227
+        },
+        {
+          "label": "schedulePersist",
+          "line": 255
+        },
+        {
+          "label": "flush",
+          "line": 264
+        },
+        {
+          "label": "window.addEventListener(pagehide)",
+          "line": 281
+        },
+        {
+          "label": "document.addEventListener(visibilitychange)",
+          "line": 291
+        },
+        {
+          "label": "saveWorked",
+          "line": 298
+        },
+        {
+          "label": "storageInfo",
+          "line": 303
+        },
+        {
+          "label": "exportSqliteBytes",
+          "line": 317
+        },
+        {
+          "label": "sqliteIgicSummary",
+          "line": 322
+        },
+        {
+          "label": "subscribe",
+          "line": 326
+        },
+        {
+          "label": "emit",
+          "line": 331
+        },
+        {
+          "label": "getState",
+          "line": 341
+        },
+        {
+          "label": "nameBase",
+          "line": 349
+        },
+        {
+          "label": "findSupplierByNameOrNif",
+          "line": 357
+        },
+        {
+          "label": "ensureSupplier",
+          "line": 378
+        },
+        {
+          "label": "updateSupplier",
+          "line": 411
+        },
+        {
+          "label": "deleteSupplier",
+          "line": 419
+        },
+        {
+          "label": "supplierById",
+          "line": 425
+        },
+        {
+          "label": "invoiceNumbersMatch",
+          "line": 433
+        },
+        {
+          "label": "findDuplicate",
+          "line": 440
+        },
+        {
+          "label": "addInvoice",
+          "line": 453
+        },
+        {
+          "label": "updateInvoice",
+          "line": 492
+        },
+        {
+          "label": "deleteInvoice",
+          "line": 515
+        },
+        {
+          "label": "setInvoiceStatus",
+          "line": 520
+        },
+        {
+          "label": "toggleInvoiceStatus",
+          "line": 533
+        },
+        {
+          "label": "invoiceById",
+          "line": 539
+        },
+        {
+          "label": "numOrNull",
+          "line": 543
+        },
+        {
+          "label": "totals",
+          "line": 554
+        },
+        {
+          "label": "statsBySupplier",
+          "line": 623
+        },
+        {
+          "label": "messages",
+          "line": 647
+        },
+        {
+          "label": "messageById",
+          "line": 651
+        },
+        {
+          "label": "addMessage",
+          "line": 655
+        },
+        {
+          "label": "markMessageUsed",
+          "line": 668
+        },
+        {
+          "label": "deleteMessage",
+          "line": 676
+        },
+        {
+          "label": "invoicesOf",
+          "line": 681
+        },
+        {
+          "label": "sortedInvoices",
+          "line": 685
+        },
+        {
+          "label": "updateSettings",
+          "line": 698
+        },
+        {
+          "label": "clearAll",
+          "line": 704
+        },
+        {
+          "label": "exportJSON",
+          "line": 709
+        },
+        {
+          "label": "importJSON",
+          "line": 713
+        },
+        {
+          "label": "seedDemo",
+          "line": 724
+        },
+        {
+          "label": "stamp",
+          "line": 728
+        }
+      ],
+      "list": "nodes",
+      "list_total": 582,
+      "offset": 0,
+      "total": 51
+    }
+  },
+  "summary": "Part of js_app_map evidence (page).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 51,
+    "total": 51
+  },
+  "locations": [],
+  "links": [
+    "ev_117b679a5fd5fb43d697321817cdce278654098910877d936b27ff45e3d10cbd"
+  ]
+}

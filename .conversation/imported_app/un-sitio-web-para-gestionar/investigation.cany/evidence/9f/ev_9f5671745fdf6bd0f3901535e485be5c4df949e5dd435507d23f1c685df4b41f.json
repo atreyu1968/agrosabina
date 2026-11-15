@@ -1,0 +1,54 @@
+{
+  "id": "ev_9f5671745fdf6bd0f3901535e485be5c4df949e5dd435507d23f1c685df4b41f",
+  "subject": {
+    "kind": "script",
+    "sha256": "f1c93129d75ab0a38973e99e3a8c4949466f30cbe3354a6ee1afd671fb6d69c3",
+    "name": "ai.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 62,
+    "offset": 318,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 18104,
+    "lines": 62,
+    "more": true,
+    "offset": 318,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js",
+    "replaced_sequences": 0,
+    "text": "  const pics = onlyDataImages(images);\n  let content = \"\";\n  let leido = \"texto\";\n  let nota = \"\";\n\n  if (pics.length) {\n    try {\n      content = await requestContent(settings, {\n        system: EXTRACT_SYSTEM_PAPEL,\n        user: extractPromptPapel(text, pics),\n        timeoutMs: Math.max(timeoutMs, 90000),\n        temperature: 0,\n      });\n      leido = \"papel\";\n    } catch (err) {\n      nota = `La IA no ha leído el documento en imágenes (${\n        (err && err.message) || \"sin respuesta\"\n      }), así que le he mandado el texto que saqué del papel.`;\n      if (typeof onNote === \"function\") onNote(nota);\n      content = \"\";\n    }\n  }\n\n  if (!content) {\n    content = await requestContent(settings, {\n      system: EXTRACT_SYSTEM,\n      user: extractPrompt(text),\n      timeoutMs,\n      temperature: 0,\n    });\n    leido = \"texto\";\n  }\n\n  const json = parseJsonLoose(content);\n  if (!json || typeof json !== \"object\") throw new Error(\"La IA no ha devuelto los datos del documento.\");\n  const hojasLeidas = leido === \"papel\" ? pics.length : 0;\n\n  const kind = DOC_KINDS.some((k) => k.id === String(json.tipo || \"\").toUpperCase())\n    ? String(json.tipo).toUpperCase()\n    : \"\";\n  const catRaw = String(json.categoria || \"\").toUpperCase().trim();\n  const category = CATEGORIES.some((c) => c.id === catRaw) ? catRaw : \"\";\n\n  let liquidacion = null;\n  const liq = json.liquidacion;\n  if (liq && typeof liq === \"object\") {\n    const discounts = Array.isArray(liq.descuentos)\n      ? liq.descuentos\n          .map((d) => ({\n            label: String((d && (d.concepto || d.label)) || \"Descuento\").trim().slice(0, 60),\n            amount: toNum(d && (d.importe != null ? d.importe : d.amount)),\n          }))\n          .filter((d) => d.amount != null && d.amount !== 0)\n          .slice(0, 12)\n      : [];\n    const kg = toNum(liq.kilos != null ? liq.kilos : liq.kg);\n    const price = toNum(liq.precio != null ? liq.precio : liq.price);\n    const net = toNum(liq.liquido != null ? liq.liquido : liq.net);\n    if (kg != null || price != null || net != null) {\n      liquidacion = {\n        product: String(liq.producto || liq.product || \"\").trim().slice(0, 60),\n        category: String(liq.categoria || liq.category || \"\").trim().slice(0, 40),\n",
+    "total_lines": 488
+  },
+  "summary": "ai.js: lines 319–380 of 488 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 62,
+    "total": 488,
+    "next_offset": 380
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js"
+    }
+  ],
+  "links": []
+}

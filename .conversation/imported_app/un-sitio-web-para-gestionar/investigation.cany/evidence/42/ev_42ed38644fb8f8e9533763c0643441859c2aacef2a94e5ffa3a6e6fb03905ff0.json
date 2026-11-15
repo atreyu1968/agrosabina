@@ -1,0 +1,54 @@
+{
+  "id": "ev_42ed38644fb8f8e9533763c0643441859c2aacef2a94e5ffa3a6e6fb03905ff0",
+  "subject": {
+    "kind": "script",
+    "sha256": "06d436d756719d4e4a9e330419cfb3ce2e2e0a38558b5f93641f7b3aba58d107",
+    "name": "sqlite.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 375,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 19495,
+    "lines": 45,
+    "more": true,
+    "offset": 375,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js",
+    "replaced_sequences": 0,
+    "text": "  let messages = [];\n  try {\n    messages = rows(\n      \"SELECT id, de, asunto, fecha, texto, adjuntos, importado_en, usado_en FROM correos ORDER BY importado_en DESC\"\n    ).map((r) => {\n      let adjuntos = [];\n      try {\n        adjuntos = r.adjuntos ? JSON.parse(r.adjuntos) : [];\n      } catch (_) {\n        adjuntos = [];\n      }\n      return {\n        id: r.id,\n        from: r.de || \"\",\n        subject: r.asunto || \"\",\n        date: r.fecha || \"\",\n        text: r.texto || \"\",\n        attachments: Array.isArray(adjuntos) ? adjuntos : [],\n        importedAt: r.importado_en,\n        usedAt: r.usado_en || \"\",\n      };\n    });\n  } catch (err) {\n    console.warn(\"No se pudo leer el correo guardado:\", err);\n  }\n\n  if (!suppliers.length && !invoices.length && !messages.length && !Object.keys(settings).length) return null;\n  return { settings, suppliers, invoices, messages };\n}\n\n/** Escribe todos los datos en las tablas (en una sola transacción). */\nexport function writeState(state) {\n  if (!isAvailable() || !state) return false;\n  const settings = state.settings || {};\n  const suppliers = state.suppliers || [];\n  const invoices = state.invoices || [];\n  const messages = state.messages || [];\n\n  try {\n    exec(\"BEGIN\");\n    exec(\"DELETE FROM facturas\");\n    exec(\"DELETE FROM proveedores\");\n    exec(\"DELETE FROM ajustes\");\n    exec(\"DELETE FROM correos\");\n\n",
+    "total_lines": 584
+  },
+  "summary": "sqlite.js: lines 376–420 of 584 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 584,
+    "next_offset": 420
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+    }
+  ],
+  "links": []
+}

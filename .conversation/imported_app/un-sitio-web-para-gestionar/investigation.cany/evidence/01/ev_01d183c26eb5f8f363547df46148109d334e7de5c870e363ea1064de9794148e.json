@@ -1,0 +1,54 @@
+{
+  "id": "ev_01d183c26eb5f8f363547df46148109d334e7de5c870e363ea1064de9794148e",
+  "subject": {
+    "kind": "script",
+    "sha256": "b2e5934b5b5d5b0863dbcfd14ac048c613516ee3c6a204f3f3b2aac0c9263cae",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 42,
+    "offset": 3512,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 155982,
+    "lines": 42,
+    "more": true,
+    "offset": 3512,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    }\n    case \"acc-all\": {\n      ui.conta.range = \"all\";\n      ui.conta.from = \"\";\n      ui.conta.to = \"\";\n      render();\n      return;\n    }\n    case \"acc-apertura\":\n    case \"acc-settings\": {\n      accAperturaModal();\n      return;\n    }\n    case \"acc-save-apertura\": {\n      saveApertura();\n      return;\n    }\n    case \"export-acc-csv\": {\n      exportAccCsv();\n      return;\n    }\n    default:\n      return;\n  }\n}\n\n/* ------------------------------------------------------------------ */\n/* Buscadores                                                         */\n/* ------------------------------------------------------------------ */\n\nexport function onInput(event) {\n  const target = event.target;\n  if (!(target instanceof HTMLElement)) return;\n\n  if (target.id === \"invoiceSearch\") {\n    ui.filters.q = target.value;\n    refreshInvoiceTable();\n    return;\n  }\n  if (target.id === \"supplierSearch\") {\n    ui.supplierQuery = target.value;\n    const pos = target.selectionStart;\n",
+    "total_lines": 4117
+  },
+  "summary": "views.js: lines 3513–3554 of 4117 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 42,
+    "total": 4117,
+    "next_offset": 3554
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

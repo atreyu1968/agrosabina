@@ -1,0 +1,54 @@
+{
+  "id": "ev_cad31ec6aec0e3fa11579f0590a341d05a5a237914f918d3f850bc432c1d09fb",
+  "subject": {
+    "kind": "script",
+    "sha256": "92c3bd8a5ff49414728e649d8d210efbe5b8e0f69b993b1f22e574a8dc1b8003",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 80,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 205853,
+    "lines": 40,
+    "more": true,
+    "offset": 80,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  confirmDialog,\n  icon,\n  modalIsOpen,\n  openModal,\n  toast,\n} from \"./dom.js\";\n\n/* ------------------------------------------------------------------ */\n/* Estado de la interfaz                                              */\n/* ------------------------------------------------------------------ */\n\nexport const ui = {\n  route: \"resumen\",\n  filters: { status: \"all\", supplier: \"\", q: \"\", direction: \"all\" },\n  supplierQuery: \"\",\n  jobs: [],\n  // Pantalla de ventas: periodo elegido y fechas a mano.\n  sales: { range: \"year\", from: \"\", to: \"\" },\n  // Pantalla de contabilidad: qué libro se mira y de qué fechas. Empieza en «Todo lo\n  // registrado» para que se vea la contabilidad entera desde el primer momento.\n  conta: { tab: \"diario\", range: \"all\", from: \"\", to: \"\" },\n  // Pantalla de documentos: el archivo de todo lo guardado, con buscador y filtros.\n  docs: { q: \"\", kind: \"all\", dir: \"all\", status: \"all\", supplier: \"\", range: \"all\", from: \"\", to: \"\", sort: \"recent\" },\n};\n\nconst ROUTES = [\n  \"resumen\",\n  \"ventas\",\n  \"contabilidad\",\n  \"compras\",\n  \"proveedores\",\n  \"documentos\",\n  \"correo\",\n  \"importar\",\n];\n\n\n/* ------------------------------------------------------------------ */\n/* Utilidades de pintado                                              */\n/* ------------------------------------------------------------------ */\n",
+    "total_lines": 5298
+  },
+  "summary": "views.js: lines 81–120 of 5298 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 5298,
+    "next_offset": 120
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

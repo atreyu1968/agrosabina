@@ -1,0 +1,54 @@
+{
+  "id": "ev_1de8adc0572d407bc9eb416ed7c3e2ac55e5b01f28f79fa27b980ed51b5ca25b",
+  "subject": {
+    "kind": "script",
+    "sha256": "541490e3eff8168a9e14cc93b5e77452c051f14877f0709deb576be781a8cbe6",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 36,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 154931,
+    "lines": 36,
+    "more": true,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "/*\n * Las pantallas del sitio y lo que hace cada botón.\n */\n\nimport {\n  IGIC_RATES,\n  STATUS,\n  daysUntil,\n  downloadBytes,\n  downloadText,\n  esc,\n  fmtDate,\n  fmtEUR,\n  fmtNum,\n  initials,\n  lastMonths,\n  monthKey,\n  monthLabel,\n  parseAmount,\n  round2,\n  todayISO,\n} from \"./util.js\";\nimport {\n  addInvoice,\n  addMessage,\n  clearAll,\n  deleteInvoice,\n  deleteMessage,\n  deleteSupplier,\n  ensureSupplier,\n  exportJSON,\n  findDuplicate,\n  findSupplierByNameOrNif,\n  getState,\n  setInvoiceStatus,\n  importJSON,\n",
+    "total_lines": 4095
+  },
+  "summary": "views.js: lines 1–36 of 4095 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 36,
+    "total": 4095,
+    "next_offset": 36
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_6402a3da5116ec82f7d26f6737eb6b9c9062641b1efdc0057a1de901f3f0f6bb",
+  "subject": {
+    "kind": "script",
+    "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 444,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24919,
+    "lines": 45,
+    "more": true,
+    "offset": 444,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "    ) || null\n  );\n}\n\n/**\n * Guarda una factura. Crea el proveedor si hace falta.\n * @returns {{invoice: object, supplier: object, supplierCreated: boolean, duplicate: object|null}}\n */\nexport function addInvoice(data) {\n  const { supplier, created } = ensureSupplier(data.supplierName, data.supplierNif);\n  const duplicate = findDuplicate(supplier.id, data.number);\n\n  const complete = completeAmounts({\n    base: numOrNull(data.base),\n    igic: numOrNull(data.igic),\n    total: numOrNull(data.total),\n    rate: numOrNull(data.rate),\n  });\n\n  const invoice = normaliseInvoice({\n    supplierId: supplier.id,\n    number: data.number,\n    issueDate: data.issueDate,\n    dueDate: data.dueDate,\n    base: complete.base,\n    rate: complete.rate,\n    igic: complete.igic,\n    total: complete.total,\n    status: data.status,\n    kind: data.kind || \"FACTURA\",\n    category: data.category || \"\",\n    direction: data.direction === \"INGRESO\" ? \"INGRESO\" : \"GASTO\",\n    lines: data.lines || [],\n    liquidacion: data.liquidacion || null,\n    paidDate: data.status === STATUS.PAID ? data.paidDate || todayISO() : \"\",\n    source: data.source || \"manual\",\n    fileName: data.fileName || \"\",\n    rawText: data.rawText || \"\",\n    notes: data.notes || [],\n    confidence: data.confidence,\n  });\n\n  state.invoices.unshift(invoice);\n  save();\n  return { invoice, supplier, supplierCreated: created, duplicate };\n",
+    "total_lines": 789
+  },
+  "summary": "store.js: lines 445–489 of 789 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 789,
+    "next_offset": 489
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

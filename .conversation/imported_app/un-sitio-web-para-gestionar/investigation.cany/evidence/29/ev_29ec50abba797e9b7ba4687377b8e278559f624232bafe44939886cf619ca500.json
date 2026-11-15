@@ -1,0 +1,83 @@
+{
+  "id": "ev_29ec50abba797e9b7ba4687377b8e278559f624232bafe44939886cf619ca500",
+  "subject": {
+    "kind": "js-app",
+    "sha256": "50f33435b7b6b09abca6d9ed2531cf1b87bbdb55852a0a34af208aa617a1ca21",
+    "name": "app"
+  },
+  "operation": "core_evidence_browse",
+  "params": {
+    "show": {
+      "fields": [
+        "path",
+        "parse_mode",
+        "bytes",
+        "sha256"
+      ],
+      "kind": "rows",
+      "limit": 6,
+      "list": "modules",
+      "matching": {
+        "path": [
+          "assets/js/views.js",
+          "dist/assets/js/views.js"
+        ]
+      },
+      "offset": 0
+    },
+    "source": {
+      "evidence_id": "ev_cc376df63a80c4e6d597e23ef42924a14f0717e249c2ef79d6ed1654244f9cc2",
+      "kind": "saved"
+    }
+  },
+  "result": {
+    "coverage": {
+      "at_end": true,
+      "examined": 2,
+      "next_offset": null,
+      "status": "page",
+      "total": 2
+    },
+    "from_evidence": "ev_cc376df63a80c4e6d597e23ef42924a14f0717e249c2ef79d6ed1654244f9cc2",
+    "from_tool": "js_app_map",
+    "shown": {
+      "items": [
+        {
+          "bytes": 119171,
+          "parse_mode": "parsed",
+          "path": "assets/js/views.js",
+          "sha256": "d3429cdf47110ecd732d2fb98412f312890b35e1ceb799fe3800a1c8466fea32"
+        },
+        {
+          "bytes": 119171,
+          "parse_mode": "parsed",
+          "path": "dist/assets/js/views.js",
+          "sha256": "d3429cdf47110ecd732d2fb98412f312890b35e1ceb799fe3800a1c8466fea32"
+        }
+      ],
+      "list": "modules",
+      "list_total": 43,
+      "offset": 0,
+      "total": 2
+    }
+  },
+  "summary": "Part of js_app_map evidence (page).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [],
+  "links": [
+    "ev_cc376df63a80c4e6d597e23ef42924a14f0717e249c2ef79d6ed1654244f9cc2"
+  ]
+}

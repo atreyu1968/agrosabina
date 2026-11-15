@@ -1,0 +1,53 @@
+{
+  "id": "ev_773a0b4caef93e767515754a503bc6cbf89c10cd3aafdde6830e322580c8fb2e",
+  "subject": {
+    "kind": "script",
+    "sha256": "4d94e48f312f5b8cc077d06eb5eaeb7fd48048d94ab8e74a9e9d47a62fcad48c",
+    "name": "index.html"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 1,
+    "offset": 99999,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\index.html"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 5973,
+    "lines": 0,
+    "more": false,
+    "offset": 108,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\index.html",
+    "replaced_sequences": 0,
+    "text": "",
+    "total_lines": 108
+  },
+  "summary": "index.html has 108 line(s); none from line 100000.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 0,
+    "total": 108
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\index.html"
+    }
+  ],
+  "links": []
+}

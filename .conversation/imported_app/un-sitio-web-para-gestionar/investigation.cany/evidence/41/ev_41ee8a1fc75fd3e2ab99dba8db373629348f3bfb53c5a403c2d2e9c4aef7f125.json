@@ -1,0 +1,54 @@
+{
+  "id": "ev_41ee8a1fc75fd3e2ab99dba8db373629348f3bfb53c5a403c2d2e9c4aef7f125",
+  "subject": {
+    "kind": "script",
+    "sha256": "b41449fb56c9d4d259ae038cf945e139fa3e11a1282d034223566a9b4fe17c2b",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 86,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 244993,
+    "lines": 40,
+    "more": true,
+    "offset": 86,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  modalIsOpen,\n  openModal,\n  toast,\n} from \"./dom.js\";\n\n/* ------------------------------------------------------------------ */\n/* Estado de la interfaz                                              */\n/* ------------------------------------------------------------------ */\n\nexport const ui = {\n  route: \"resumen\",\n  filters: { status: \"all\", supplier: \"\", q: \"\", direction: \"all\" },\n  supplierQuery: \"\",\n  // Pantalla de terceros: si se miran los proveedores, los clientes o todos.\n  supplierRole: \"PROVEEDOR\",\n  jobs: [],\n  // Pantalla de ventas: periodo elegido y fechas a mano.\n  sales: { range: \"year\", from: \"\", to: \"\" },\n  // Pantalla de contabilidad: qué libro se mira y de qué fechas. Empieza en «Todo lo\n  // registrado» para que se vea la contabilidad entera desde el primer momento.\n  conta: { tab: \"diario\", range: \"all\", from: \"\", to: \"\", year: new Date().getFullYear() },\n  // Pantalla de documentos: el archivo de todo lo guardado, con buscador y filtros.\n  docs: { q: \"\", kind: \"all\", dir: \"all\", status: \"all\", supplier: \"\", range: \"all\", from: \"\", to: \"\", sort: \"recent\" },\n};\n\nconst ROUTES = [\n  \"resumen\",\n  \"ventas\",\n  \"nominas\",\n  \"contabilidad\",\n  \"compras\",\n  \"proveedores\",\n  \"documentos\",\n  \"correo\",\n  \"importar\",\n];\n\n\n/* ------------------------------------------------------------------ */\n/* Utilidades de pintado                                              */\n",
+    "total_lines": 6150
+  },
+  "summary": "views.js: lines 87–126 of 6150 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 6150,
+    "next_offset": 126
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

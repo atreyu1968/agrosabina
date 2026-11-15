@@ -1,0 +1,54 @@
+{
+  "id": "ev_dd6751efb349510f50cb3e911bad353dfdd222c7746e92ba13ab96b0c2a00370",
+  "subject": {
+    "kind": "script",
+    "sha256": "06d436d756719d4e4a9e330419cfb3ce2e2e0a38558b5f93641f7b3aba58d107",
+    "name": "sqlite.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 505,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 19495,
+    "lines": 40,
+    "more": true,
+    "offset": 505,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js",
+    "replaced_sequences": 0,
+    "text": "    }\n    return false;\n  }\n}\n\nfunction num(v) {\n  if (v === \"\" || v == null) return null;\n  const n = Number(v);\n  return Number.isFinite(n) ? n : null;\n}\n\n/** Guarda los bytes de la base de datos en IndexedDB. */\nexport async function persist() {\n  if (!isAvailable()) return false;\n  try {\n    const bytes = db.export();\n    await idbWrite(bytes);\n    lastPersist = Date.now();\n    return true;\n  } catch (err) {\n    console.warn(\"No se pudo guardar la base de datos:\", err);\n    return false;\n  }\n}\n\nexport function lastPersistAt() {\n  return lastPersist;\n}\n\n/** El fichero .sqlite tal cual, para descargarlo. */\nexport function exportBytes() {\n  if (!isAvailable()) return null;\n  try {\n    return db.export();\n  } catch (err) {\n    console.warn(\"No se pudo exportar la base de datos:\", err);\n    return null;\n  }\n}\n\n",
+    "total_lines": 584
+  },
+  "summary": "sqlite.js: lines 506–545 of 584 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 584,
+    "next_offset": 545
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+    }
+  ],
+  "links": []
+}

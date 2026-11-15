@@ -1,0 +1,54 @@
+{
+  "id": "ev_e92ae8dff648b8bee063977c0f99d17d503480c1bb7ddb31599607c2fffe4e19",
+  "subject": {
+    "kind": "script",
+    "sha256": "e77d2b067087936538d3d840a88e5abb36fb4b329936b321d8810b38a1692838",
+    "name": "util.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 12,
+    "offset": 44,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 7872,
+    "lines": 12,
+    "more": true,
+    "offset": 44,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js",
+    "replaced_sequences": 0,
+    "text": "  return new Intl.NumberFormat(\"es-ES\", {\n    minimumFractionDigits: digits,\n    maximumFractionDigits: digits,\n  }).format(v);\n}\n\nexport function round2(n) {\n  const v = Number(n);\n  if (!Number.isFinite(v)) return 0;\n  return Math.round((v + Number.EPSILON) * 100) / 100;\n}\n\n",
+    "total_lines": 249
+  },
+  "summary": "util.js: lines 45–56 of 249 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 12,
+    "total": 249,
+    "next_offset": 56
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js"
+    }
+  ],
+  "links": []
+}

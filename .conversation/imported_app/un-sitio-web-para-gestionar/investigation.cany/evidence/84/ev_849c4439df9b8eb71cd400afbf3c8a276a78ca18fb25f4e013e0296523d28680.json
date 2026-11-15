@@ -1,0 +1,54 @@
+{
+  "id": "ev_849c4439df9b8eb71cd400afbf3c8a276a78ca18fb25f4e013e0296523d28680",
+  "subject": {
+    "kind": "script",
+    "sha256": "f6a1d06b79ec482597c87d9b7b398324f12efdae05d9599009855a4d85517f35",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 32,
+    "offset": 186,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 203503,
+    "lines": 32,
+    "more": true,
+    "offset": 186,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "            acc.placeholder = banco ? \"Cuenta de La Caixa · ES91 2100 0418 4502 0005 1332\" : \"Caja general\";\n          }\n        };\n        if (seg) {\n          seg.querySelectorAll(\"[data-method]\").forEach((b) =>\n            b.addEventListener(\"click\", () => {\n              seg.dataset.value = b.dataset.method;\n              seg.querySelectorAll(\"[data-method]\").forEach((o) => o.classList.toggle(\"active\", o === b));\n              sync();\n            })\n          );\n        }\n        sync();\n        const go = () => {\n          const day = String((input && input.value) || \"\").slice(0, 10) || today;\n          const method = (seg && seg.dataset.value) || \"BANCO\";\n          const account = String((acc && acc.value) || \"\").trim();\n          closeModal();\n          onSave(day, { method, account });\n        };\n        wrap.querySelector(\"[data-ok]\").addEventListener(\"click\", go);\n        if (input) {\n          input.addEventListener(\"keydown\", (e) => {\n            if (e.key === \"Enter\") go();\n          });\n          setTimeout(() => input.focus(), 40);\n        }\n      },\n    }\n  );\n}\n\n",
+    "total_lines": 5257
+  },
+  "summary": "views.js: lines 187–218 of 5257 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 32,
+    "total": 5257,
+    "next_offset": 218
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

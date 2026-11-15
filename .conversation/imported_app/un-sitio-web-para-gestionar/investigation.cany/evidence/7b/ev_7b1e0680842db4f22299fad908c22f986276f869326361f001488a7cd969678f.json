@@ -1,0 +1,54 @@
+{
+  "id": "ev_7b1e0680842db4f22299fad908c22f986276f869326361f001488a7cd969678f",
+  "subject": {
+    "kind": "script",
+    "sha256": "6ec57842818ead8f65029f95b4b820488a6dbfbb6233142f78099083827d16c7",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 20,
+    "offset": 630,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177631,
+    "lines": 20,
+    "more": true,
+    "offset": 630,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "/* ------------------------------------------------------------------ */\n/* Ventas e ingresos                                                  */\n/* ------------------------------------------------------------------ */\n\nconst SALES_RANGES = [\n  { id: \"year\", label: \"Este año\" },\n  { id: \"quarter\", label: \"Este trimestre\" },\n  { id: \"month\", label: \"Este mes\" },\n  { id: \"campaign\", label: \"Últimos 12 meses\" },\n  { id: \"all\", label: \"Todo lo registrado\" },\n  { id: \"custom\", label: \"Elegir fechas\" },\n];\n\n/** El periodo que se está mirando: fechas desde/hasta y su nombre. */\nfunction salesWindow() {\n  return windowFor(ui.sales);\n}\n\n/** Lo mismo, para cualquier pantalla que elija un periodo. */\nfunction windowFor(state) {\n",
+    "total_lines": 4628
+  },
+  "summary": "views.js: lines 631–650 of 4628 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 20,
+    "total": 4628,
+    "next_offset": 650
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

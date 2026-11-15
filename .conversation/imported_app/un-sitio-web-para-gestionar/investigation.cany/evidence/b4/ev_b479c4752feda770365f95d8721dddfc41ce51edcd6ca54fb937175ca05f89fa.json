@@ -1,0 +1,54 @@
+{
+  "id": "ev_b479c4752feda770365f95d8721dddfc41ce51edcd6ca54fb937175ca05f89fa",
+  "subject": {
+    "kind": "script",
+    "sha256": "6ec57842818ead8f65029f95b4b820488a6dbfbb6233142f78099083827d16c7",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 55,
+    "offset": 2950,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177631,
+    "lines": 55,
+    "more": true,
+    "offset": 2950,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      <button class=\"btn sm\" data-action=\"export-sqlite\">${icon(\"download\")} Descargar base de datos (.sqlite)</button>\n    </div>\n    <p style=\"font-size:12px;color:var(--ink-3);margin-top:8px\">\n      Dentro están las tablas <code>proveedores</code>, <code>facturas</code> y <code>ajustes</code>,\n      y la vista <code>igic_por_proveedor</code> con los totales ya sumados.\n    </p>`;\n}\n\nfunction exportSqlite() {\n  const info = storageInfo();\n  if (!info.sqlite) {\n    toast(\"Este navegador no ha podido abrir SQLite, así que no hay fichero que descargar.\", \"bad\", 6500);\n    return;\n  }\n  const bytes = exportSqliteBytes();\n  if (!bytes) {\n    toast(\"No he podido preparar el fichero de la base de datos.\", \"bad\");\n    return;\n  }\n  downloadBytes(`facturas-igic-${todayISO()}.sqlite`, bytes, \"application/vnd.sqlite3\");\n  toast(\"Base de datos descargada. Se abre con DB Browser for SQLite o similar.\");\n}\n\nasync function reviewJob(job) {\n  const res = await openInvoiceModal({ mode: \"review\", job });\n  if (res) {\n    job.state = \"saved\";\n    job.savedLabel = `Guardada como ${res.invoice.number || \"sin número\"} · ${fmtEUR(res.invoice.total)}`;\n  } else {\n    job.state = \"skipped\";\n  }\n  paintIngest();\n}\n\n/* ------------------------------------------------------------------ */\n/* Pegar texto                                                        */\n/* ------------------------------------------------------------------ */\n\nexport function openPasteModal() {\n  openModal(\n    `<div class=\"modal-head\">\n      <div>\n        <h2>Pegar el texto de la factura</h2>\n        <p>Si tienes el texto (por ejemplo copiado de un correo), lo leo igual que una foto.</p>\n      </div>\n      <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"field\">\n        <label for=\"pasteArea\">Texto de la factura</label>\n        <textarea id=\"pasteArea\" rows=\"10\" placeholder=\"Proveedor: ...&#10;NIF: ...&#10;Factura nº: ...&#10;Base imponible: ...&#10;IGIC 7%: ...&#10;Total: ...\"></textarea>\n      </div>\n    </div>\n    <div class=\"modal-foot\">\n      <button class=\"btn primary\" data-read>Leer los datos</button>\n",
+    "total_lines": 4628
+  },
+  "summary": "views.js: lines 2951–3005 of 4628 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 55,
+    "total": 4628,
+    "next_offset": 3005
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

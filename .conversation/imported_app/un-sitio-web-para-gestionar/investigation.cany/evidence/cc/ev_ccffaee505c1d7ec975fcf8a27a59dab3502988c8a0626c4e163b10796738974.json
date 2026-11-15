@@ -1,0 +1,54 @@
+{
+  "id": "ev_ccffaee505c1d7ec975fcf8a27a59dab3502988c8a0626c4e163b10796738974",
+  "subject": {
+    "kind": "script",
+    "sha256": "7446b8ea7b393e04d26e3545f795cac917f2f35d924ca17ff8ad37982fc2aaf2",
+    "name": "ai.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 360,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 17998,
+    "lines": 30,
+    "more": true,
+    "offset": 360,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js",
+    "replaced_sequences": 0,
+    "text": "  const liq = json.liquidacion;\n  if (liq && typeof liq === \"object\") {\n    const discounts = Array.isArray(liq.descuentos)\n      ? liq.descuentos\n          .map((d) => ({\n            label: String((d && (d.concepto || d.label)) || \"Descuento\").trim().slice(0, 60),\n            amount: toNum(d && (d.importe != null ? d.importe : d.amount)),\n          }))\n          .filter((d) => d.amount != null && d.amount !== 0)\n          .slice(0, 12)\n      : [];\n    const kg = toNum(liq.kilos != null ? liq.kilos : liq.kg);\n    const price = toNum(liq.precio != null ? liq.precio : liq.price);\n    const net = toNum(liq.liquido != null ? liq.liquido : liq.net);\n    if (kg != null || price != null || net != null) {\n      liquidacion = {\n        product: String(liq.producto || liq.product || \"\").trim().slice(0, 60),\n        category: String(liq.categoria || liq.category || \"\").trim().slice(0, 40),\n        kg: kg != null && kg >= 0 ? kg : null,\n        price: price != null && price >= 0 && price < 100 ? price : null,\n        discounts,\n        net: net != null ? net : null,\n      };\n    }\n  }\n\n  const conf = Number(json.confianza);\n  return {\n    kind,\n    category,\n",
+    "total_lines": 486
+  },
+  "summary": "ai.js: lines 361–390 of 486 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 486,
+    "next_offset": 390
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js"
+    }
+  ],
+  "links": []
+}

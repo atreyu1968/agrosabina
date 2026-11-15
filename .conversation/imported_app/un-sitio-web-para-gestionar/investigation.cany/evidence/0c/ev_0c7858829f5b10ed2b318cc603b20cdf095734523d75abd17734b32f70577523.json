@@ -1,0 +1,72 @@
+{
+  "id": "ev_0c7858829f5b10ed2b318cc603b20cdf095734523d75abd17734b32f70577523",
+  "subject": {
+    "kind": "script",
+    "sha256": "e77d2b067087936538d3d840a88e5abb36fb4b329936b321d8810b38a1692838",
+    "name": "util.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js",
+    "pattern": null,
+    "text": "export function completeAmounts"
+  },
+  "result": {
+    "file_size": 7872,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6578706f72742066756e6374696f6e20636f6d706c657465416d6f756e7473",
+        "file_offset": 4667,
+        "file_offset_hex": "0x123b",
+        "length": 31,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 31
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 in util.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x123b"
+    }
+  ],
+  "links": []
+}

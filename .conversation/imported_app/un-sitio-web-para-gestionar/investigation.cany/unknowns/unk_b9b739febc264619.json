@@ -1,0 +1,17 @@
+{
+  "id": "unk_b9b739febc264619",
+  "revision": 1,
+  "question": "The site has never been run in a browser: the person declined opening it, so reading a real invoice, saving it and toggling PAGADO/PENDIENTE are confirmed only by static checks, not by observation.",
+  "severity": "high",
+  "domain": "build",
+  "status": "open",
+  "probes": [
+    "Open app/dist in the preview and read the browser console",
+    "Upload one real invoice photo and one text PDF and compare the filled fields with the paper",
+    "Reload the page and check the invoices are still there"
+  ],
+  "evidence_for": [
+    "ev_cbfb40e3bd32e3b074ce363f6bc9eb4ce05721fe39b8738081e78e4353d8f799"
+  ],
+  "evidence_against": []
+}

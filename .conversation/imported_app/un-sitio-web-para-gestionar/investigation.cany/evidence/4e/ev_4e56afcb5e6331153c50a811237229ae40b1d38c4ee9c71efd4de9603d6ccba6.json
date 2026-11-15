@@ -1,0 +1,91 @@
+{
+  "id": "ev_4e56afcb5e6331153c50a811237229ae40b1d38c4ee9c71efd4de9603d6ccba6",
+  "subject": {
+    "kind": "directory",
+    "sha256": "2d082fadf35c84c9e82781bfbe3b1a13569971d504146234773a5811528a4c25",
+    "name": "attachments"
+  },
+  "operation": "core_archive_show",
+  "params": {
+    "if_tampered": true,
+    "limit": 100,
+    "max_depth": 2,
+    "max_entries": 200000,
+    "max_total_bytes": 4294967296,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\attachments"
+  },
+  "result": {
+    "by_kind": {
+      "png": 4
+    },
+    "containers": [],
+    "content_id": "inv_2d082fadf35c84c9e82781bfbe3b1a13569971d504146234773a5811528a4c25",
+    "contradictions": [],
+    "entries": [
+      {
+        "depth": 0,
+        "kind": "png",
+        "path": "picture-1.png",
+        "sha256": "65ff48b3338a4046f2360cf995f298b09a8a8f46035e6d1275ca213b05146bfd",
+        "size": 13870
+      },
+      {
+        "depth": 0,
+        "kind": "png",
+        "path": "picture-2.png",
+        "sha256": "1b0b1d17f2d3d6443d4dec47bcd0ae7ad49ddbe6ebe21c5dbc9e800e95d3ed9d",
+        "size": 10401
+      },
+      {
+        "depth": 0,
+        "kind": "png",
+        "path": "picture-3.png",
+        "sha256": "bb3ff6c11b5fd5ae3a6e6ea5b6e209bccc5593c2103574893ce892a6b49e32e9",
+        "size": 143338
+      },
+      {
+        "depth": 0,
+        "kind": "png",
+        "path": "picture-4.png",
+        "sha256": "95cfdb30913f59539151a9d937651210eb18aa11b68fd0a90d78664ff2a0a0d4",
+        "size": 39446
+      }
+    ],
+    "entries_total": 4,
+    "files": 4,
+    "hashed_bytes": 207055,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\attachments",
+    "root": "attachments",
+    "root_kind": "directory",
+    "truncated": false,
+    "unopened_nested": 0
+  },
+  "summary": "attachments (directory) holds 4 files in 4 entries; 0 nested container(s).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "no_disk_images",
+      "message": "Disk images (DMG), installers (PKG/MSI) and compressed tarballs are listed as single files, not opened."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 4,
+    "total": 4
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\attachments"
+    }
+  ],
+  "links": []
+}

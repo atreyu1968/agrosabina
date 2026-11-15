@@ -1,0 +1,87 @@
+{
+  "id": "ev_2c3a232979e059d882b8cc6744a26db415af74fe74d3eeab36947ac3b73e5b4b",
+  "subject": {
+    "kind": "text",
+    "sha256": "0732d80eba07e3b565cc0fce5ce84a5096b845d9a4ee0b280ba473148b3d03b5",
+    "name": "styles.css"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "pattern": null,
+    "text": ".btn.ghost"
+  },
+  "result": {
+    "file_size": 43725,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "2e62746e2e67686f7374",
+        "file_offset": 5907,
+        "file_offset_hex": "0x1713",
+        "length": 10,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e62746e2e67686f7374",
+        "file_offset": 5995,
+        "file_offset_hex": "0x176b",
+        "length": 10,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 10
+      },
+      {
+        "kind": "utf16le",
+        "length": 20
+      }
+    ],
+    "total_matches": 2
+  },
+  "summary": "2 match(es) for utf8 + utf16le in styles.css; showing 2 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x1713"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x176b"
+    }
+  ],
+  "links": []
+}

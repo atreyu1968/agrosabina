@@ -1,0 +1,54 @@
+{
+  "id": "ev_1d861e1a9abcb2314af7cdacc153a40040f42d42aba2d495b294853ac0f71644",
+  "subject": {
+    "kind": "script",
+    "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 590,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24919,
+    "lines": 40,
+    "more": true,
+    "offset": 590,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "      if (inv.status !== STATUS.PAID) out.expensePending = round2(out.expensePending + total);\n    }\n    const cat = inv.category || \"SIN\";\n    const row = out.byCategory[cat] || { total: 0, count: 0, pending: 0, direction: isIncome ? \"INGRESO\" : \"GASTO\" };\n    row.total = round2(row.total + total);\n    row.count++;\n    if (inv.status !== STATUS.PAID) row.pending = round2(row.pending + total);\n    out.byCategory[cat] = row;\n    if (inv.status === STATUS.PAID) {\n      out.paid += total;\n      out.paidCount++;\n    } else {\n      out.pending += total;\n      out.igicPending += igic;\n      out.pendingCount++;\n      if (inv.dueDate && inv.dueDate < today) {\n        out.overdue += total;\n        out.overdueCount++;\n      }\n    }\n  }\n  out.base = round2(out.base);\n  out.igic = round2(out.igic);\n  out.total = round2(out.total);\n  out.paid = round2(out.paid);\n  out.pending = round2(out.pending);\n  out.igicPending = round2(out.igicPending);\n  out.overdue = round2(out.overdue);\n  return out;\n}\n\n/** Cifras por proveedor: { [supplierId]: {...} }. */\nexport function statsBySupplier() {\n  const map = new Map();\n  for (const s of state.suppliers) {\n    map.set(s.id, { count: 0, total: 0, pending: 0, lastDate: \"\", countPending: 0 });\n  }\n  for (const inv of state.invoices) {\n    if (!inv.supplierId) continue;\n    const row = map.get(inv.supplierId) || { count: 0, total: 0, pending: 0, lastDate: \"\", countPending: 0 };\n",
+    "total_lines": 789
+  },
+  "summary": "store.js: lines 591–630 of 789 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 789,
+    "next_offset": 630
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

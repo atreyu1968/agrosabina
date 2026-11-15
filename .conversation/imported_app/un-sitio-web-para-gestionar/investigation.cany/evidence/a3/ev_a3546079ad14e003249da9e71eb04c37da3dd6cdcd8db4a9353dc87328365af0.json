@@ -1,0 +1,54 @@
+{
+  "id": "ev_a3546079ad14e003249da9e71eb04c37da3dd6cdcd8db4a9353dc87328365af0",
+  "subject": {
+    "kind": "script",
+    "sha256": "f761a3ea0e1ffbd2066c94c483355b14253852fb45e4934dcac99243f48e45c8",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 55,
+    "offset": 3893,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 203220,
+    "lines": 55,
+    "more": true,
+    "offset": 3893,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      if (!ok) return;\n      importJSON(text);\n      toast(\"Copia restaurada.\");\n      closeModal();\n      render();\n    } catch (err) {\n      toast(err.message || \"No he podido leer esa copia.\", \"bad\");\n    }\n  });\n  input.click();\n}\n\n/* ------------------------------------------------------------------ */\n/* Acciones                                                           */\n/* ------------------------------------------------------------------ */\n\nexport async function onAction(action, el) {\n  const id = el.dataset.id;\n  switch (action) {\n    case \"new-sale\": {\n      openInvoiceModal({\n        mode: \"new\",\n        preset: { kind: \"LIQUIDACION\", direction: \"INGRESO\" },\n      });\n      return;\n    }\n    case \"export-sales-csv\": {\n      exportSalesCsv();\n      return;\n    }\n    case \"toggle-status\": {\n      const inv = getState().invoices.find((i) => i.id === id);\n      if (!inv) return;\n      const isIncome = directionOf(inv.kind) === \"INGRESO\";\n      // Si ya está cobrado o pagado, volver a pendiente borra la fecha y se dice.\n      if (inv.status === STATUS.PAID) {\n        setInvoiceStatus(id, STATUS.PENDING);\n        toast(\n          isIncome\n            ? \"Vuelve a estar por cobrar: se ha borrado la fecha de cobro.\"\n            : \"Vuelve a estar pendiente: se ha borrado la fecha de pago.\"\n        );\n        render();\n        return;\n      }\n      askPaidDate(inv, isIncome, (day) => {\n        setInvoiceStatus(id, STATUS.PAID, day);\n        toast(\n          isIncome\n            ? `Cobrado el ${fmtDate(day)}.`\n            : `Pagado el ${fmtDate(day)}.`\n        );\n        render();\n      });\n      return;\n",
+    "total_lines": 5250
+  },
+  "summary": "views.js: lines 3894–3948 of 5250 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 55,
+    "total": 5250,
+    "next_offset": 3948
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

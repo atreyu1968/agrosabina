@@ -1,0 +1,54 @@
+{
+  "id": "ev_55017158d8b23d709c33afdc7b85ea272275b85b4682278b548a1076c132921c",
+  "subject": {
+    "kind": "script",
+    "sha256": "6ec57842818ead8f65029f95b4b820488a6dbfbb6233142f78099083827d16c7",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 74,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177631,
+    "lines": 30,
+    "more": true,
+    "offset": 74,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "import { informeBalancePdf, informeResultadosPdf } from \"./reports.js\";\nimport {\n  closeModal,\n  confirmDialog,\n  icon,\n  modalIsOpen,\n  openModal,\n  toast,\n} from \"./dom.js\";\n\n/* ------------------------------------------------------------------ */\n/* Estado de la interfaz                                              */\n/* ------------------------------------------------------------------ */\n\nexport const ui = {\n  route: \"resumen\",\n  filters: { status: \"all\", supplier: \"\", q: \"\", direction: \"all\" },\n  supplierQuery: \"\",\n  jobs: [],\n  // Pantalla de ventas: periodo elegido y fechas a mano.\n  sales: { range: \"year\", from: \"\", to: \"\" },\n  // Pantalla de contabilidad: qué libro se mira y de qué fechas. Empieza en «Todo lo\n  // registrado» para que se vea la contabilidad entera desde el primer momento.\n  conta: { tab: \"diario\", range: \"all\", from: \"\", to: \"\" },\n};\n\nconst ROUTES = [\"resumen\", \"ventas\", \"contabilidad\", \"compras\", \"proveedores\", \"correo\", \"importar\"];\n\n\n/* ------------------------------------------------------------------ */\n",
+    "total_lines": 4628
+  },
+  "summary": "views.js: lines 75–104 of 4628 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 4628,
+    "next_offset": 104
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

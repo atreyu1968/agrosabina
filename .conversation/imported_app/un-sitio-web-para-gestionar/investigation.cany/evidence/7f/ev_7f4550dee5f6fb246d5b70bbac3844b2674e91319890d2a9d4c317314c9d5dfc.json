@@ -1,0 +1,54 @@
+{
+  "id": "ev_7f4550dee5f6fb246d5b70bbac3844b2674e91319890d2a9d4c317314c9d5dfc",
+  "subject": {
+    "kind": "script",
+    "sha256": "0cfddb6c2dbe5ce2890703e288edabb51dd9fadaf2e39b8fc3300e30a683809b",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 14,
+    "offset": 20,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 130442,
+    "lines": 14,
+    "more": true,
+    "offset": 20,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  todayISO,\n} from \"./util.js\";\nimport {\n  addInvoice,\n  addMessage,\n  clearAll,\n  deleteInvoice,\n  deleteMessage,\n  deleteSupplier,\n  ensureSupplier,\n  exportJSON,\n  findDuplicate,\n  findSupplierByNameOrNif,\n  getState,\n",
+    "total_lines": 3476
+  },
+  "summary": "views.js: lines 21–34 of 3476 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 14,
+    "total": 3476,
+    "next_offset": 34
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

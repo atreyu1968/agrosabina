@@ -1,0 +1,234 @@
+{
+  "id": "ev_286076c19a0af6b122ee6da5ade49a76856e95ea7dd8261293e74efc1d7b764c",
+  "subject": {
+    "kind": "script",
+    "sha256": "15be833a8f8dc331f357597916271adbd2a1fb9c01bd9f9e68544742774ea5b9",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 20,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "facturas"
+  },
+  "result": {
+    "file_size": 88016,
+    "limit": 20,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 1724,
+        "file_offset_hex": "0x6bc",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 3684,
+        "file_offset_hex": "0xe64",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 5315,
+        "file_offset_hex": "0x14c3",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 5949,
+        "file_offset_hex": "0x173d",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 6627,
+        "file_offset_hex": "0x19e3",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 6736,
+        "file_offset_hex": "0x1a50",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 7132,
+        "file_offset_hex": "0x1bdc",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 7330,
+        "file_offset_hex": "0x1ca2",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 7816,
+        "file_offset_hex": "0x1e88",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 10465,
+        "file_offset_hex": "0x28e1",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 10846,
+        "file_offset_hex": "0x2a5e",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 11212,
+        "file_offset_hex": "0x2bcc",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 11464,
+        "file_offset_hex": "0x2cc8",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 12628,
+        "file_offset_hex": "0x3154",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 12783,
+        "file_offset_hex": "0x31ef",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 14806,
+        "file_offset_hex": "0x39d6",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 16939,
+        "file_offset_hex": "0x422b",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 20153,
+        "file_offset_hex": "0x4eb9",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 21953,
+        "file_offset_hex": "0x55c1",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6661637475726173",
+        "file_offset": 24471,
+        "file_offset_hex": "0x5f97",
+        "length": 8,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 8
+      }
+    ],
+    "total_matches": 40
+  },
+  "summary": "40 match(es) for utf8 in views.js; showing 20 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 20,
+    "total": 40,
+    "next_offset": 20
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x6bc"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xe64"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x14c3"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x173d"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x19e3"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x1a50"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x1bdc"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x1ca2"
+    }
+  ],
+  "links": []
+}

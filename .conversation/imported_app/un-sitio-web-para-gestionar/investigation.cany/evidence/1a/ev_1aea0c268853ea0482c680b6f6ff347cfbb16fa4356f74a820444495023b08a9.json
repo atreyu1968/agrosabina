@@ -1,0 +1,54 @@
+{
+  "id": "ev_1aea0c268853ea0482c680b6f6ff347cfbb16fa4356f74a820444495023b08a9",
+  "subject": {
+    "kind": "script",
+    "sha256": "85a31d15e67d5803d1091aa6760b00d30b5030e2ed2bab1c23e1db2d49488411",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 742,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 28036,
+    "lines": 30,
+    "more": true,
+    "offset": 742,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "export function messageById(id) {\n  return state.messages.find((m) => m.id === id) || null;\n}\n\nexport function addMessage(raw) {\n  const msg = normaliseMessage(raw);\n  if (!msg) return null;\n  const same = state.messages.find(\n    (m) => m.subject === msg.subject && m.from === msg.from && m.text.slice(0, 200) === msg.text.slice(0, 200)\n  );\n  if (same) return same;\n  state.messages.unshift(msg);\n  if (state.messages.length > 200) state.messages.length = 200;\n  save();\n  return msg;\n}\n\nexport function markMessageUsed(id) {\n  const msg = messageById(id);\n  if (!msg) return null;\n  msg.usedAt = new Date().toISOString();\n  save();\n  return msg;\n}\n\nexport function deleteMessage(id) {\n  state.messages = state.messages.filter((m) => m.id !== id);\n  save();\n}\n\n",
+    "total_lines": 881
+  },
+  "summary": "store.js: lines 743–772 of 881 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 881,
+    "next_offset": 772
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

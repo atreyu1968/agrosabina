@@ -1,0 +1,54 @@
+{
+  "id": "ev_d6aaa52f087770885be6a8980664573147ec540faf71228a748b32d69fde941f",
+  "subject": {
+    "kind": "script",
+    "sha256": "5424c53cadc6967fd41cb2d41f506ef1289ebd4290305ebd0dd21bd6dfeca4f8",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 92,
+    "offset": 202,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 23887,
+    "lines": 92,
+    "more": true,
+    "offset": 202,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "        if (lines.length) {\n          out.push({\n            id: \"apertura\",\n            date: dia || from,\n            concept: \"Asiento de apertura\",\n            ref: \"\",\n            kind: \"apertura\",\n            lines,\n          });\n        }\n      }\n    }\n  }\n\n  for (const inv of invoices || []) {\n    if (!inv) continue;\n    const dia = String(inv.issueDate || inv.createdAt || \"\").slice(0, 10);\n    if (!dentro(dia)) continue;\n    const { base, igic, total } = importes(inv);\n    if (!total) continue;\n\n    const ingreso = directionOf(inv.kind) === \"INGRESO\";\n    const cuentaDoc = cuentaDeDocumento(inv);\n    const numero = String(inv.number || \"\").trim();\n    const quien = inv.party ? ` · ${String(inv.party)}` : \"\";\n    const tipo = ingreso ? \"Ingreso\" : \"Gasto\";\n    const concept = `${tipo}${numero ? ` ${numero}` : \"\"}${quien}`;\n    const raw = ingreso\n      ? [\n          [cuentaDoc, base],\n          [\"477\", igic],\n          [\"430\", -total],\n        ]\n      : [\n          [cuentaDoc, base],\n          [\"472\", igic],\n          [\"400\", -total],\n        ];\n    const lines = lineas(raw);\n    if (!lines.length) continue;\n    out.push({\n      id: `${inv.id}:devengo`,\n      date: dia,\n      concept,\n      ref: numero,\n      kind: \"devengo\",\n      docId: inv.id,\n      lines,\n    });\n\n    if (String(inv.status || \"\") === \"PAGADO\") {\n      const diaPago = String(inv.paidDate || \"\").slice(0, 10) || dia;\n      if (dentro(diaPago)) {\n        const linesPago = lineas(\n          ingreso\n            ? [\n                [\"572\", total],\n                [\"430\", -total],\n              ]\n            : [\n                [\"400\", total],\n                [\"572\", -total],\n              ]\n        );\n        if (linesPago.length) {\n          out.push({\n            id: `${inv.id}:${ingreso ? \"cobro\" : \"pago\"}`,\n            date: diaPago,\n            concept: `${ingreso ? \"Cobro\" : \"Pago\"}${numero ? ` ${numero}` : \"\"}${quien}`,\n            ref: numero,\n            kind: ingreso ? \"cobro\" : \"pago\",\n            docId: inv.id,\n            lines: linesPago,\n          });\n        }\n      }\n    }\n  }\n\n  out.sort((a, b) => {\n    if (a.date !== b.date) return a.date < b.date ? -1 : 1;\n    const oa = ORDEN[a.kind] == null ? 9 : ORDEN[a.kind];\n    const ob = ORDEN[b.kind] == null ? 9 : ORDEN[b.kind];\n    if (oa !== ob) return oa - ob;\n    return a.concept.localeCompare(b.concept);\n  });\n  out.forEach((e, i) => {\n    e.number = i + 1;\n    e.total = totalLineas(e.lines);\n  });\n  return out;\n}\n",
+    "total_lines": 588
+  },
+  "summary": "accounting.js: lines 203–294 of 588 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 92,
+    "total": 588,
+    "next_offset": 294
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

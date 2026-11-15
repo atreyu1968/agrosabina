@@ -1,0 +1,54 @@
+{
+  "id": "ev_4ead949a7f423dca579bb8dacb74dc2bbdea7241617a4fc23bef84ca126d62a8",
+  "subject": {
+    "kind": "script",
+    "sha256": "53d2c7aac45f69dd655079d212bc5064b59328526bfe1022da0ff6605887090c",
+    "name": "parse.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 100,
+    "offset": 330,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 18699,
+    "lines": 100,
+    "more": true,
+    "offset": 330,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js",
+    "replaced_sequences": 0,
+    "text": "        const v = moneyAfterLabel(line, CUOTA_LABEL);\n        if (v != null) igic = v;\n      } else if (/\\d\\s*%/.test(line) && !/base|total/i.test(line)) {\n        const v = cuotaFromLine(line);\n        if (v != null) igic = v;\n      }\n    }\n  }\n\n  if (total == null && totalWeak != null) total = totalWeak;\n\n  // Si el IGIC «encontrado» es en realidad la base o el total, no vale.\n  if (igic != null && base != null && Math.abs(igic - base) < 0.011) igic = null;\n  if (igic != null && total != null && Math.abs(igic - total) < 0.011) igic = null;\n\n  return { base, total, igic, rate };\n}\n\n/* ------------------------------------------------------------------ */\n/* Estado                                                             */\n/* ------------------------------------------------------------------ */\n\nfunction readStatus(text) {\n  const low = fold(text);\n  const pending = /\\b(pendiente|a pagar|por pagar|no pagad|sin pagar|vencid|impagad|deuda)\\b/.test(low);\n  const paid = /\\b(pagad[oa]|abonad[oa]|cobrad[oa]|recibo|transferencia realizada|liquidada)\\b/.test(low);\n\n  if (paid && !pending) return { status: STATUS.PAID, note: null };\n  if (pending && !paid) return { status: STATUS.PENDING, note: null };\n  if (paid && pending) {\n    return {\n      status: STATUS.PENDING,\n      note: \"El documento habla de pago y de pendiente a la vez. La he dejado como pendiente.\",\n    };\n  }\n  return { status: STATUS.PENDING, note: null };\n}\n\n/* ------------------------------------------------------------------ */\n/* Lectura completa                                                   */\n/* ------------------------------------------------------------------ */\n\n/**\n * Lee una factura a partir de su texto.\n * @param {string} rawText\n * @param {{ defaultRate?: number, fileName?: string, today?: string }} options\n */\nexport function parseInvoiceText(rawText, options = {}) {\n  const text = String(rawText || \"\").replace(/\\r/g, \"\");\n  const lines = text\n    .split(\"\\n\")\n    .map((l) => l.replace(/\\u00a0/g, \" \").replace(/[ \\t]+/g, \" \").trimEnd());\n\n  const nonEmpty = lines.filter((l) => l.trim().length > 0);\n  const flat = nonEmpty.join(\"\\n\");\n  const notes = [];\n  const today = options.today || todayISO();\n\n  /* --- proveedor --- */\n  const nifs = findNifs(lines);\n  const customerLines = new Set();\n  lines.forEach((line, i) => {\n    const low = fold(line);\n    if (CUSTOMER_WORDS.some((w) => low.includes(fold(w)))) {\n      for (let k = i; k <= i + 2 && k < lines.length; k++) customerLines.add(k);\n    }\n  });\n\n  const supplierNifHit =\n    nifs.find((h) => !customerLines.has(h.line) && SUPPLIER_WORDS.some((w) => fold(lines[h.line]).includes(fold(w)))) ||\n    nifs.find((h) => !customerLines.has(h.line)) ||\n    null;\n\n  const customerNif = nifs.find((h) => customerLines.has(h.line)) || null;\n  const supplierNif = supplierNifHit && supplierNifHit !== customerNif ? supplierNifHit.nif : null;\n\n  let supplierName = pickSupplierName(lines, supplierNifHit ? supplierNifHit.line : null);\n\n  if (!supplierName && options.fileName) {\n    const guess = String(options.fileName)\n      .replace(/\\.[a-z0-9]+$/i, \"\")\n      .replace(/[_-]+/g, \" \")\n      .replace(/\\b(factura|invoice|scan|img|foto|pdf)\\b/gi, \"\")\n      .replace(/\\d{2,}/g, \"\")\n      .replace(/\\s{2,}/g, \" \")\n      .trim();\n    if (guess.length >= 3) supplierName = guess;\n  }\n\n  if (!supplierNif) notes.push(\"No he visto el NIF del proveedor. Búscalo en la factura y escríbelo.\");\n  if (!supplierName) notes.push(\"No he reconocido el nombre del proveedor. Escribelo tú.\");\n\n  /* --- número --- */\n  const number = pickInvoiceNumber(nonEmpty);\n  if (!number) notes.push(\"No he encontrado el número de factura.\");\n\n  /* --- fechas --- */\n  let issueDate = null;\n  let dueDate = null;\n  const allDates = [];\n",
+    "total_lines": 513
+  },
+  "summary": "parse.js: lines 331–430 of 513 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 100,
+    "total": 513,
+    "next_offset": 430
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_b02553307a9cf34158420ece287329bbedeeb2233755444d9cd53644e6b6ff28",
+  "subject": {
+    "kind": "script",
+    "sha256": "effbee695913dd70eb1d3b51952ecc8ed76c4969a93f6df5b3ddba29ce97f26c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 50,
+    "offset": 4981,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 196170,
+    "lines": 50,
+    "more": true,
+    "offset": 4981,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    </tr>`;\n  };\n\n  const deTerceros = plan.subcuentas.map(fila).join(\"\");\n  const otras = usadas.filter((r) => !subCodes.has(String(r.code))).map(fila).join(\"\");\n\n  return `\n  <section class=\"card\">\n    <div class=\"card-head\">\n      <div>\n        <h2>Plan de cuentas</h2>\n        <p>${plan.subcuentas.length} ${plan.subcuentas.length === 1 ? \"subcuenta\" : \"subcuentas\"} de clientes y proveedores · se abren solas, con el primer número libre de su cuenta</p>\n      </div>\n      <div class=\"spacer\"></div>\n      ${guardadas < plan.subcuentas.length ? `<button class=\"btn sm ghost\" data-action=\"acc-plan-fix\">${icon(\"check\")}<span>Guardar las ${plan.subcuentas.length} subcuentas</span></button>` : \"\"}\n      <button class=\"btn sm\" data-action=\"acc-own-new\">${icon(\"plus\")}<span>Nueva cuenta</span></button>\n    </div>\n    <div class=\"table-wrap\">\n      <table class=\"data acc-table\">\n        <thead><tr><th>Cuenta</th><th>Nombre</th><th class=\"num\">Saldo</th><th class=\"num\"></th><th class=\"num\"></th></tr></thead>\n        <tbody>${deTerceros || '<tr><td colspan=\"5\" class=\"muted\">Todavía no hay ningún cliente ni proveedor con documentos.</td></tr>'}</tbody>\n      </table>\n    </div>\n    <p class=\"muted acc-note\">Cada cliente y cada proveedor tiene su propia subcuenta de 6 cifras (430001, 400002…) y el asiento los usa solo; el balance y las cuentas anuales los suman en «Clientes» y «Proveedores».</p>\n  </section>\n  <section class=\"card\">\n    <div class=\"card-head\">\n      <div>\n        <h2>Otras cuentas usadas</h2>\n        <p>Las que salen en el mayor del periodo elegido</p>\n      </div>\n    </div>\n    <div class=\"table-wrap\">\n      <table class=\"data acc-table\">\n        <thead><tr><th>Cuenta</th><th>Nombre</th><th class=\"num\">Saldo</th><th class=\"num\"></th><th class=\"num\"></th></tr></thead>\n        <tbody>${otras || '<tr><td colspan=\"5\" class=\"muted\">Ninguna todavía.</td></tr>'}</tbody>\n      </table>\n    </div>\n  </section>`;\n}\n\n/** Ventana para abrir o renombrar una cuenta. */\nfunction accOwnModal(existing) {\n  const c = existing || null;\n  accOwnEditing = c ? String(c.code) : \"\";\n  const plan = accPlan();\n  const sugerida = c ? c.code : siguienteSubcuenta(\"430\", plan.subcuentas.map((x) => x.code));\n  openModal(\n    `<div class=\"modal-head\">\n       <div>\n",
+    "total_lines": 5107
+  },
+  "summary": "views.js: lines 4982–5031 of 5107 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 50,
+    "total": 5107,
+    "next_offset": 5031
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

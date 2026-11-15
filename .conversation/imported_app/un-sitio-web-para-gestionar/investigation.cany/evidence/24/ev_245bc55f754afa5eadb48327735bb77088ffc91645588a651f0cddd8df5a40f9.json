@@ -1,0 +1,54 @@
+{
+  "id": "ev_245bc55f754afa5eadb48327735bb77088ffc91645588a651f0cddd8df5a40f9",
+  "subject": {
+    "kind": "script",
+    "sha256": "479c0b5d585ce4e340a01c8c964abd39b1b238cda327fbbccdc5214504c813c4",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 36,
+    "offset": 2694,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 246123,
+    "lines": 36,
+    "more": true,
+    "offset": 2694,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      p[key] = value;\n      filled.push(label);\n    }\n  };\n\n  // La IA propone el tipo, pero manda el papel: solo se cambia si el lector de\n  // ese tipo reconoce el documento. Así una nómina no se convierte en\n  // liquidación (ni al revés) porque el modelo vea «líquido a percibir».\n  if (ai.kind && ai.kind !== p.kind && (!p.kind || p.kind === \"OTRO\")) {\n    const otra = leerDocumento(text, { tipo: ai.kind });\n    if (otra.reconoce) {\n      Object.assign(p, otra.doc, {\n        rawText: p.rawText,\n        notes: [...(otra.doc.notes || []), ...(p.notes || [])],\n      });\n      filled.push(\"el tipo de documento\");\n    }\n  }\n  setIfEmpty(\"category\", ai.category, \"el concepto\");\n  setIfEmpty(\"supplierName\", ai.supplierName, \"el proveedor\");\n  setIfEmpty(\"supplierNif\", ai.supplierNif, \"el NIF\");\n  setIfEmpty(\"number\", ai.number, \"el número\");\n  setIfEmpty(\"issueDate\", ai.issueDate, \"la fecha\");\n  setIfEmpty(\"dueDate\", ai.dueDate, \"el vencimiento\");\n\n  // Los importes: solo si están a cero o sin leer, para no pisar la aritmética.\n  const noMoney = (v) => v == null || !Number.isFinite(Number(v)) || Number(v) === 0;\n  if (noMoney(p.base) && ai.base != null && ai.base !== 0) {\n    p.base = ai.base;\n    filled.push(\"la base\");\n  }\n  if (noMoney(p.igic) && ai.igic != null && !p.base && ai.igic !== 0) {\n    p.igic = ai.igic;\n    filled.push(\"la cuota de IGIC\");\n  }\n  if (noMoney(p.total) && ai.total != null && ai.total !== 0) {\n",
+    "total_lines": 6170
+  },
+  "summary": "views.js: lines 2695–2730 of 6170 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 36,
+    "total": 6170,
+    "next_offset": 2730
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

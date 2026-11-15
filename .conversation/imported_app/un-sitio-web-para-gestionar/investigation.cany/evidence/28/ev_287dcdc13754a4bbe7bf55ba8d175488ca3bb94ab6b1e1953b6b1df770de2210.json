@@ -1,0 +1,53 @@
+{
+  "id": "ev_287dcdc13754a4bbe7bf55ba8d175488ca3bb94ab6b1e1953b6b1df770de2210",
+  "subject": {
+    "kind": "script",
+    "sha256": "c15ac0adaf235ce3581c94efe38fd40425633ddbc5bab4a939965ea4cd9fee68",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 50,
+    "offset": 3553,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 135395,
+    "lines": 50,
+    "more": false,
+    "offset": 3553,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  }\n  if (target.matches(\"[data-filter-supplier]\")) {\n    ui.filters.supplier = target.value;\n    refreshInvoiceTable();\n  }\n}\n\nexport function onFilterButton(button) {\n  ui.filters.status = button.dataset.filterStatus;\n  refreshInvoiceTable();\n}\n\nexport function onDirectionButton(button) {\n  ui.filters.direction = button.dataset.filterDirection || \"all\";\n  document.querySelectorAll(\"[data-filter-direction]\").forEach((b) => {\n    b.classList.toggle(\"active\", b.dataset.filterDirection === ui.filters.direction);\n  });\n  refreshInvoiceTable();\n}\n\n/* ------------------------------------------------------------------ */\n/* Arrastrar y soltar                                                 */\n/* ------------------------------------------------------------------ */\n\nexport function wireDropzone() {\n  document.addEventListener(\"dragover\", (ev) => {\n    const dz = ev.target instanceof Element ? ev.target.closest(\"#dropzone, #mailDrop\") : null;\n    if (!dz) return;\n    ev.preventDefault();\n    dz.classList.add(\"drag\");\n  });\n  document.addEventListener(\"dragleave\", (ev) => {\n    const dz = ev.target instanceof Element ? ev.target.closest(\"#dropzone, #mailDrop\") : null;\n    if (dz) dz.classList.remove(\"drag\");\n  });\n  document.addEventListener(\"drop\", (ev) => {\n    const dz = ev.target instanceof Element ? ev.target.closest(\"#dropzone, #mailDrop\") : null;\n    if (!dz) return;\n    ev.preventDefault();\n    dz.classList.remove(\"drag\");\n    if (ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files.length) {\n      if (dz.id === \"mailDrop\") importEmails(ev.dataTransfer.files);\n      else queueFiles(ev.dataTransfer.files);\n    }\n  });\n}\n\nexport function hasJobs() {\n  return ui.jobs.length > 0;\n}\n",
+    "total_lines": 3603
+  },
+  "summary": "views.js: lines 3554–3603 of 3603 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 50,
+    "total": 3603
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

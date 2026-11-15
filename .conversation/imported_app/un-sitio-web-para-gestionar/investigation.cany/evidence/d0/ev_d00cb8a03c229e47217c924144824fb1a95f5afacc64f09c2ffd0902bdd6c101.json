@@ -1,0 +1,97 @@
+{
+  "id": "ev_d00cb8a03c229e47217c924144824fb1a95f5afacc64f09c2ffd0902bdd6c101",
+  "subject": {
+    "kind": "js-app",
+    "sha256": "9cdbd435e5b2be884419ceb21691520925e2805ec3c3b6689f9ece31259dd486",
+    "name": "app"
+  },
+  "operation": "core_evidence_browse",
+  "params": {
+    "show": {
+      "fields": [
+        "path",
+        "parse_mode",
+        "exports"
+      ],
+      "kind": "rows",
+      "limit": 2,
+      "list": "modules",
+      "matching": {
+        "path": "assets/js/util.js"
+      }
+    },
+    "source": {
+      "evidence_id": "ev_d89e4587d705420bba6cf51b8b0c834360671db6f7a7fff9ed309d69337f84cb",
+      "kind": "saved"
+    }
+  },
+  "result": {
+    "coverage": {
+      "at_end": true,
+      "examined": 1,
+      "next_offset": null,
+      "status": "page",
+      "total": 1
+    },
+    "from_evidence": "ev_d89e4587d705420bba6cf51b8b0c834360671db6f7a7fff9ed309d69337f84cb",
+    "from_tool": "js_app_map",
+    "shown": {
+      "items": [
+        {
+          "exports": {
+            "cjs": [],
+            "esm": [
+              "STATUS",
+              "IGIC_RATES",
+              "esc",
+              "fmtEUR",
+              "fmtNum",
+              "round2",
+              "fmtDate",
+              "todayISO",
+              "addDaysISO",
+              "daysUntil",
+              "uid",
+              "fold",
+              "nifKey",
+              "parseAmount",
+              "completeAmounts",
+              "amountsBalance",
+              "monthKey",
+              "monthLabel",
+              "lastMonths",
+              "initials",
+              "downloadBytes",
+              "downloadText"
+            ]
+          },
+          "parse_mode": "parsed",
+          "path": "assets/js/util.js"
+        }
+      ],
+      "list": "modules",
+      "list_total": 40,
+      "offset": 0,
+      "total": 1
+    }
+  },
+  "summary": "Part of js_app_map evidence (page).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [],
+  "links": [
+    "ev_d89e4587d705420bba6cf51b8b0c834360671db6f7a7fff9ed309d69337f84cb"
+  ]
+}

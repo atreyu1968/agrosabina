@@ -1,0 +1,87 @@
+{
+  "id": "ev_8acb6753f866376cc19c25c19aa37a4d43d729cf5cb97c9124b98400860907ce",
+  "subject": {
+    "kind": "script",
+    "sha256": "0068d1da022c853443cf919308e8206225d292b887b03115430446803e7ccca2",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "leerNomina("
+  },
+  "result": {
+    "file_size": 245116,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6c6565724e6f6d696e6128",
+        "file_offset": 104520,
+        "file_offset_hex": "0x19848",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c6565724e6f6d696e6128",
+        "file_offset": 158725,
+        "file_offset_hex": "0x26c05",
+        "length": 11,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 11
+      },
+      {
+        "kind": "utf16le",
+        "length": 22
+      }
+    ],
+    "total_matches": 2
+  },
+  "summary": "2 match(es) for utf8 + utf16le in views.js; showing 2 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x19848"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x26c05"
+    }
+  ],
+  "links": []
+}

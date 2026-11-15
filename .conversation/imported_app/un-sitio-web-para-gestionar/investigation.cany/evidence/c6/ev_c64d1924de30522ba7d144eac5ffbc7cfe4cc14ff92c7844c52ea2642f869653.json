@@ -1,0 +1,54 @@
+{
+  "id": "ev_c64d1924de30522ba7d144eac5ffbc7cfe4cc14ff92c7844c52ea2642f869653",
+  "subject": {
+    "kind": "script",
+    "sha256": "262b4cc0fec1c63dd19ee4b66cc00f2c01507df205de594c0168853e1e75ea0b",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 28,
+    "offset": 4120,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 207587,
+    "lines": 28,
+    "more": true,
+    "offset": 4120,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    case \"use-mail\":\n      useMail(id);\n      return;\n    case \"delete-mail\": {\n      const ok = await confirmDialog({\n        title: \"Borrar el correo\",\n        message: \"Se quita de la lista. Las facturas que ya hayas guardado desde él no se tocan.\",\n        confirm: \"Sí, borrar\",\n        danger: true,\n      });\n      if (!ok) return;\n      deleteMessage(id);\n      toast(\"Correo borrado.\");\n      render();\n      return;\n    }\n    case \"test-ai\":\n      testAi();\n      return;\n    case \"export-csv\":\n      exportCsv();\n      return;\n    case \"export-json\":\n      exportBackup();\n      return;\n    case \"import-json\":\n      askImportBackup();\n      return;\n",
+    "total_lines": 5328
+  },
+  "summary": "views.js: lines 4121–4148 of 5328 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 28,
+    "total": 5328,
+    "next_offset": 4148
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

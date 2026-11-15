@@ -1,0 +1,54 @@
+{
+  "id": "ev_244b17f487c1f1781ed1514310dac5b45a1da0643711ca423ab75e1deed0fcf9",
+  "subject": {
+    "kind": "script",
+    "sha256": "bb3aa035c3994d2f1e8ab0d3af4c1ddae3925f92c1bd023cdf50a999f52f0773",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 55,
+    "offset": 2696,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 267705,
+    "lines": 55,
+    "more": true,
+    "offset": 2696,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  }\n  ui.pruebas.busy = true;\n  try {\n    for (const file of files) {\n      const item = {\n        name: file.name || \"documento\",\n        kb: Math.max(1, Math.round((file.size || 0) / 1024)),\n        source: \"\",\n        pages: 1,\n        texto: \"\",\n        error: \"\",\n        lectura: null,\n        pendiente: true,\n      };\n      ui.pruebas.list.unshift(item);\n      setPruebaStatus(`Leyendo ${item.name}…`);\n      paintPruebas();\n      try {\n        const leido = await readFile(file, (stage, pct) => {\n          const p = Number.isFinite(pct) ? ` · ${Math.round(pct)} %` : \"\";\n          setPruebaStatus(`Leyendo ${item.name}: ${stage || \"un momento\"}${p}`);\n        });\n        item.source = leido.source || \"\";\n        item.pages = leido.pages || 1;\n        item.texto = String(leido.text || \"\");\n        if (!item.texto.trim()) {\n          item.error = \"No he podido sacar ni una letra de este fichero. Prueba con otra copia del PDF o con una foto más nítida.\";\n        } else {\n          // Se lee con el mismo camino que la importación de verdad\n          // (leerTextoDocumento): primero el lector que más se parece al papel\n          // y, si no hay ninguno claro, las reglas afinan el tipo. Si aquí se\n          // llamara solo a leerDocumento, la prueba diría «factura genérica»\n          // donde la aplicación acierta con la nómina, y no serviría de nada.\n          const { lectura, cls } = await leerTextoDocumento(item.texto, item.name);\n          item.lectura = lectura;\n          item.cls = cls || null;\n        }\n      } catch (err) {\n        item.error = err && err.message ? err.message : \"No he podido leer este fichero.\";\n      }\n      item.pendiente = false;\n      paintPruebas();\n    }\n  } finally {\n    ui.pruebas.busy = false;\n    const ultimo = ui.pruebas.list[0];\n    setPruebaStatus(\n      ultimo\n        ? `Ya está: ${ultimo.name}. Esto no se ha guardado en ningún sitio.`\n        : \"Ningún documento probado todavía.\"\n    );\n    // Se vuelve a pintar la pantalla entera para que aparezcan los botones de\n    // copiar y guardar el informe, que antes no hacían falta.\n    render();\n  }\n",
+    "total_lines": 6719
+  },
+  "summary": "views.js: lines 2697–2751 of 6719 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 55,
+    "total": 6719,
+    "next_offset": 2751
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

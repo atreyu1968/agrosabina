@@ -1,0 +1,54 @@
+{
+  "id": "ev_7e35bda064ed0ba5fb540ef66be87d8b0c7ebc819c3136785fadf685b35dda31",
+  "subject": {
+    "kind": "script",
+    "sha256": "4a72591d8a89979c3d6b62e9cdfe35dabca4ee489f839bc12901b4de840df127",
+    "name": "main.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 58,
+    "offset": 89,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 5344,
+    "lines": 58,
+    "more": true,
+    "offset": 89,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js",
+    "replaced_sequences": 0,
+    "text": "      if (!dbReady) {\n        views.renderLoading();\n        return;\n      }\n      views.render();\n    });\n\n  document.addEventListener(\"click\", (ev) => {\n    if (!(ev.target instanceof Element)) return;\n\n    const actionEl = ev.target.closest(\"[data-action]\");\n    if (actionEl) {\n      ev.preventDefault();\n      if (!dbReady) {\n        // Sin los datos cargados no se toca nada: se trabajaría sobre una lista vacía.\n        toast(\"Un momento: estoy abriendo tus datos.\", \"info\", 2500);\n        return;\n      }\n      views.onAction(actionEl.dataset.action, actionEl);\n      return;\n    }\n\n    const filterBtn = ev.target.closest(\"[data-filter-status]\");\n    if (filterBtn) {\n      ev.preventDefault();\n      views.onFilterButton(filterBtn);\n      return;\n    }\n\n    const dirBtn = ev.target.closest(\"[data-filter-direction]\");\n    if (dirBtn) {\n      ev.preventDefault();\n      views.onDirectionButton(dirBtn);\n    }\n  });\n\n    document.addEventListener(\"input\", views.onInput);\n    document.addEventListener(\"change\", views.onChange);\n  }\n\n  const filePicker = document.getElementById(\"filePicker\");\n  if (filePicker) {\n    filePicker.addEventListener(\"change\", () => {\n      if (filePicker.files && filePicker.files.length) views.queueFiles(filePicker.files);\n      filePicker.value = \"\";\n    });\n  }\n\n  const cameraPicker = document.getElementById(\"cameraPicker\");\n  if (cameraPicker) {\n    cameraPicker.addEventListener(\"change\", () => {\n      if (cameraPicker.files && cameraPicker.files.length) views.queueFiles(cameraPicker.files);\n      cameraPicker.value = \"\";\n    });\n  }\n\n  // Cualquier cambio en los datos vuelve a pintar la pantalla.\n  subscribe(() => views.render());\n",
+    "total_lines": 179
+  },
+  "summary": "main.js: lines 90–147 of 179 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 58,
+    "total": 179,
+    "next_offset": 147
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js"
+    }
+  ],
+  "links": []
+}

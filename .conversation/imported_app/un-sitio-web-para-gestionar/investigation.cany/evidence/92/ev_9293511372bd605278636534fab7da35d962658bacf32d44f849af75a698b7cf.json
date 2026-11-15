@@ -1,0 +1,54 @@
+{
+  "id": "ev_9293511372bd605278636534fab7da35d962658bacf32d44f849af75a698b7cf",
+  "subject": {
+    "kind": "script",
+    "sha256": "bd1a7c4db1d211c35d40bee0f35fdff38dc09caa217fb954d8985cac13e061de",
+    "name": "importers.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 110,
+    "offset": 170,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\importers.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 13151,
+    "lines": 110,
+    "more": true,
+    "offset": 170,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\importers.js",
+    "replaced_sequences": 0,
+    "text": "    if (l.kg != null && (l.price != null || l.net != null || l.gross != null)) return 70;\n    return puntuaMarcas(texto, [\n      [/l[ií]quidaci[oó]n/, 30],\n      [/€\\s*\\/\\s*kg|euros?\\s*(\\/|por)\\s*kilo/, 25],\n      [/kilos?\\b|\\bkg\\b/, 15],\n      [/\\b(extra|primera|segunda|destr[ií]o)\\b/, 15],\n      [/alh[oó]ndiga|cooperativa/, 20],\n      [/calibre|merma|categor[ií]a comercial/, 15],\n    ]);\n  },\n  leer(texto, opciones = {}) {\n    const l = parseLiquidacion(texto);\n    const doc = documentoVacio(\"LIQUIDACION\");\n    const id = identidad(texto, opciones);\n    doc.number = id.number;\n    doc.issueDate = id.issueDate;\n    doc.dueDate = id.dueDate;\n    doc.supplierName = id.supplierName;\n    doc.supplierNif = id.supplierNif;\n    doc.status = id.status;\n    doc.category = \"FRUTA\";\n    doc.direction = DIRECTIONS.IN;\n    doc.liquidacion = {\n      product: l.product || \"\",\n      category: l.category || \"\",\n      kg: l.kg,\n      price: l.price,\n      discounts: Array.isArray(l.discounts) ? l.discounts : [],\n    };\n    doc.liquidacionRead = {\n      kg: l.kg,\n      price: l.price,\n      gross: l.gross,\n      discounts: Array.isArray(l.discounts) ? l.discounts : [],\n      net: l.net,\n      rate: l.rate,\n      igic: l.igic,\n      partidas: l.partidas || [],\n      product: l.product || \"\",\n      category: l.category || \"\",\n      ok: !!l.ok,\n    };\n    // La base es el líquido a percibir; el IGIC, el que traiga el papel (si no\n    // trae ninguno, entra al 0 % en vez de inventarse uno).\n    const r = l.rate != null && Number.isFinite(Number(l.rate)) ? Number(l.rate) : 0;\n    const cuota = l.igic != null ? round2(l.igic) : round2(((l.net || 0) * r) / 100);\n    doc.rate = r;\n    doc.base = l.net != null ? l.net : l.gross;\n    doc.igic = l.net != null ? cuota : 0;\n    doc.total = l.net != null ? round2(l.net + cuota) : l.gross;\n    doc.confidence = l.ok ? 0.85 : 0.4;\n    doc.notes = Array.isArray(l.notes) ? l.notes.slice() : [];\n    doc.classifyNote = `Liquidación de fruta${\n      l.kg != null && l.price != null ? `: ${fmtNum(l.kg, 2)} kg a ${fmtNum(l.price, 3)} €/kg` : \"\"\n    }, líquido a percibir ${fmtEUR(l.net)}. Va como ingreso, con sus kilos y su precio por kilo.`;\n    return doc;\n  },\n};\n\n/* ------------------------------------------------------------------ */\n/* Factura recibida                                                   */\n/* ------------------------------------------------------------------ */\n\nfunction leerFactura(texto, opciones = {}) {\n  const base = parseInvoiceText(texto, opciones);\n  const doc = documentoVacio(\"FACTURA\");\n  doc.number = base.number || \"\";\n  doc.issueDate = base.issueDate || todayISO();\n  doc.dueDate = base.dueDate || \"\";\n  doc.supplierName = base.supplierName || \"\";\n  doc.supplierNif = base.supplierNif || \"\";\n  doc.base = base.base;\n  doc.rate = base.rate;\n  doc.igic = base.igic;\n  doc.total = base.total;\n  doc.status = base.status || STATUS.PENDING;\n  doc.confidence = base.confidence || 0;\n  doc.rawText = base.rawText || \"\";\n  doc.notes = Array.isArray(base.notes) ? base.notes.slice() : [];\n  return doc;\n}\n\nconst FACTURA = {\n  id: \"factura\",\n  label: \"Factura recibida\",\n  kinds: [\"FACTURA\"],\n  generico: true,\n  puntua(texto) {\n    const marcas = puntuaMarcas(texto, [\n      [/factura/, 25],\n      [/base imponible/, 20],\n      [/igic|\\biva\\b/, 18],\n      [/\\btotal\\b/, 15],\n      [/\\bcif\\b|\\bnif\\b/, 12],\n      [/n[uú]mero de factura|n[ºo] factura/, 20],\n      [/vencimiento|forma de pago/, 12],\n    ]);\n    return marcas;\n  },\n  leer(texto, opciones = {}) {\n    return leerFactura(texto, opciones);\n  },\n};\n\n/* ------------------------------------------------------------------ */\n/* Subvención, cobro y cualquier otro papel                           */\n/* ------------------------------------------------------------------ */\n\nconst SUBVENCION = {\n  id: \"subvencion\",\n",
+    "total_lines": 397
+  },
+  "summary": "importers.js: lines 171–280 of 397 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 110,
+    "total": 397,
+    "next_offset": 280
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\importers.js"
+    }
+  ],
+  "links": []
+}

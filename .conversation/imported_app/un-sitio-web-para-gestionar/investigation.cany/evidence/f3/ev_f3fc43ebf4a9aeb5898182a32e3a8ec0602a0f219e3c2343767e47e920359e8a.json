@@ -1,0 +1,83 @@
+{
+  "id": "ev_f3fc43ebf4a9aeb5898182a32e3a8ec0602a0f219e3c2343767e47e920359e8a",
+  "subject": {
+    "kind": "script",
+    "sha256": "1e585cc49b078fbe974665ab51132669cb2bc7c416a346bae7db13c338c2a41c",
+    "name": "ai.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 10,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js",
+    "pattern": null,
+    "text": "completionsUrl"
+  },
+  "result": {
+    "file_size": 13720,
+    "limit": 10,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "636f6d706c6574696f6e7355726c",
+        "file_offset": 2517,
+        "file_offset_hex": "0x9d5",
+        "length": 14,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "636f6d706c6574696f6e7355726c",
+        "file_offset": 4779,
+        "file_offset_hex": "0x12ab",
+        "length": 14,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 14
+      }
+    ],
+    "total_matches": 2
+  },
+  "summary": "2 match(es) for utf8 in ai.js; showing 2 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x9d5"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x12ab"
+    }
+  ],
+  "links": []
+}

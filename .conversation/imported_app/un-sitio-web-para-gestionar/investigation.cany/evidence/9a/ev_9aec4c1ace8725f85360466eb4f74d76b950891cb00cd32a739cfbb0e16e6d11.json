@@ -1,0 +1,54 @@
+{
+  "id": "ev_9aec4c1ace8725f85360466eb4f74d76b950891cb00cd32a739cfbb0e16e6d11",
+  "subject": {
+    "kind": "script",
+    "sha256": "07c31762a454b6be58a39fd6ff0babbd17c7da22919ba552752ed159e42ff7c1",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 3252,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 129963,
+    "lines": 45,
+    "more": true,
+    "offset": 3252,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    case \"edit-supplier\": {\n      const s = getState().suppliers.find((x) => x.id === id);\n      if (s) openSupplierModal(s);\n      return;\n    }\n    case \"delete-supplier\": {\n      const s = getState().suppliers.find((x) => x.id === id);\n      if (!s) return;\n      const n = invoicesOf(s.id).length;\n      const ok = await confirmDialog({\n        title: \"Borrar el proveedor\",\n        message: n\n          ? `Se borrará «${s.name}» y sus ${n} facturas. Esto no se puede deshacer.`\n          : `Se borrará «${s.name}». No tiene facturas.`,\n        confirm: \"Sí, borrarlo\",\n        danger: true,\n      });\n      if (!ok) return;\n      deleteSupplier(id);\n      toast(\"Proveedor borrado.\");\n      render();\n      return;\n    }\n    case \"filter-supplier\":\n      ui.filters.supplier = id;\n      ui.filters.status = \"all\";\n      location.hash = \"#/compras\";\n      render();\n      return;\n    case \"import-files\":\n      document.getElementById(\"filePicker\").click();\n      return;\n    case \"import-camera\":\n      importFromCamera();\n      return;\n    case \"export-sqlite\":\n      exportSqlite();\n      return;\n    case \"paste-text\":\n      openPasteModal();\n      return;\n    case \"import-email\":\n      pickEmails();\n      return;\n    case \"paste-mail\":\n",
+    "total_lines": 3467
+  },
+  "summary": "views.js: lines 3253–3297 of 3467 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 3467,
+    "next_offset": 3297
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

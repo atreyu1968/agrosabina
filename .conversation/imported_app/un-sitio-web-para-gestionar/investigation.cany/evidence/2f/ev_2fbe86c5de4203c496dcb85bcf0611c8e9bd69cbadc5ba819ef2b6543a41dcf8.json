@@ -1,0 +1,53 @@
+{
+  "id": "ev_2fbe86c5de4203c496dcb85bcf0611c8e9bd69cbadc5ba819ef2b6543a41dcf8",
+  "subject": {
+    "kind": "script",
+    "sha256": "a184588da01bbaaff7f7e9b3028b69a729173e09996373b78baeb039c091ccf7",
+    "name": "dom.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 34,
+    "offset": 120,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 9091,
+    "lines": 33,
+    "more": false,
+    "offset": 120,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js",
+    "replaced_sequences": 0,
+    "text": "        narrow: true,\n        onMount(wrap) {\n          wrap.querySelector(\"[data-confirm-yes]\").addEventListener(\"click\", () => {\n            answered = true;\n            closeModal();\n            resolve(true);\n          });\n          wrap.querySelectorAll(\"[data-modal-cancel]\").forEach((b) =>\n            b.addEventListener(\"click\", () => {\n              if (answered) return;\n              answered = true;\n              closeModal();\n              resolve(false);\n            })\n          );\n        },\n        onClose() {\n          if (!answered) resolve(false);\n        },\n      }\n    );\n  });\n}\n\nexport function escapeKeyCloses() {\n  document.addEventListener(\"keydown\", (ev) => {\n    if (ev.key !== \"Escape\") return;\n    if (!activeModal) return;\n    const cancel = activeModal.wrap.querySelector(\"[data-modal-cancel]\");\n    if (cancel) cancel.click();\n    else closeModal();\n  });\n}\n",
+    "total_lines": 153
+  },
+  "summary": "dom.js: lines 121–153 of 153 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 33,
+    "total": 153
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js"
+    }
+  ],
+  "links": []
+}

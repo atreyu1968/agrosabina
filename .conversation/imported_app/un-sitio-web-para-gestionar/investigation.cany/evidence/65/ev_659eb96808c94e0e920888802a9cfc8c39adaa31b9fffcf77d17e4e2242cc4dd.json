@@ -1,0 +1,54 @@
+{
+  "id": "ev_659eb96808c94e0e920888802a9cfc8c39adaa31b9fffcf77d17e4e2242cc4dd",
+  "subject": {
+    "kind": "script",
+    "sha256": "b9ab39a801c47c9b5e33f2a2861e6475c5bcaf6051fbb6b1c44bb92acc95ab3c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 3745,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 199775,
+    "lines": 70,
+    "more": true,
+    "offset": 3745,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "            if (chosen.endpoint) {\n              endpointInput.value = chosen.endpoint;\n              modelInput.value = chosen.model;\n            }\n          });\n        }\n\n        wrap.querySelector(\"[data-save]\").addEventListener(\"click\", () => {\n          updateSettings({\n            defaultRate: Number(wrap.querySelector(\"#set-rate\").value),\n            businessName: wrap.querySelector(\"#set-name\").value.trim(),\n            aiEnabled: wrap.querySelector(\"#set-ai-on\").checked,\n            aiEndpoint: wrap.querySelector(\"#set-ai-endpoint\").value.trim(),\n            aiModel: wrap.querySelector(\"#set-ai-model\").value.trim(),\n            aiKey: wrap.querySelector(\"#set-ai-key\").value.trim(),\n          });\n          toast(\"Ajustes guardados.\");\n          closeModal();\n          render();\n        });\n      },\n    }\n  );\n}\n\n/* ------------------------------------------------------------------ */\n/* Exportar                                                           */\n/* ------------------------------------------------------------------ */\n\nfunction csvCell(value) {\n  const s = value == null ? \"\" : String(value);\n  return `\"${s.replace(/\"/g, '\"\"')}\"`;\n}\n\nexport function exportCsv() {\n  const list = sortedInvoices(filteredInvoices());\n  if (!list.length) {\n    toast(\"No hay facturas que exportar.\", \"bad\");\n    return;\n  }\n  const headers = [\n    \"Proveedor\", \"NIF\", \"Nº factura\", \"Fecha\", \"Vencimiento\",\n    \"Base imponible\", \"Tipo IGIC (%)\", \"Cuota IGIC\", \"Total\",\n    \"Estado\", \"Fecha de pago\", \"Origen\",\n  ];\n  const rows = list.map((inv) => {\n    const sup = supplierById(inv.supplierId) || {};\n    return [\n      sup.name || \"\",\n      sup.nif || \"\",\n      inv.number || \"\",\n      fmtDate(inv.issueDate),\n      inv.dueDate ? fmtDate(inv.dueDate) : \"\",\n      fmtNum(inv.base),\n      inv.rate != null ? fmtNum(inv.rate, inv.rate % 1 === 0 ? 0 : 1) : \"\",\n      fmtNum(inv.igic),\n      fmtNum(inv.total),\n      inv.status === STATUS.PAID ? \"Pagado\" : \"Pendiente\",\n      inv.paidDate ? fmtDate(inv.paidDate) : \"\",\n      sourceLabel(inv.source),\n    ].map(csvCell).join(\";\");\n  });\n\n  const csv = \"\\ufeff\" + [headers.map(csvCell).join(\";\"), ...rows].join(\"\\r\\n\");\n  downloadText(`facturas-${todayISO()}.csv`, csv);\n  toast(`Exportadas ${list.length} facturas.`);\n}\n\nexport function exportBackup() {\n  downloadText(`copia-facturas-${todayISO()}.json`, exportJSON(), \"application/json\");\n",
+    "total_lines": 5190
+  },
+  "summary": "views.js: lines 3746–3815 of 5190 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 5190,
+    "next_offset": 3815
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

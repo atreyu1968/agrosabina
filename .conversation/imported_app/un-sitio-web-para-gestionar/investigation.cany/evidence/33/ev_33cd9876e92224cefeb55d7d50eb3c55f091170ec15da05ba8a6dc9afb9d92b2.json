@@ -1,0 +1,156 @@
+{
+  "id": "ev_33cd9876e92224cefeb55d7d50eb3c55f091170ec15da05ba8a6dc9afb9d92b2",
+  "subject": {
+    "kind": "script",
+    "sha256": "541490e3eff8168a9e14cc93b5e77452c051f14877f0709deb576be781a8cbe6",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "acc-tab"
+  },
+  "result": {
+    "file_size": 154931,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6163632d746162",
+        "file_offset": 132480,
+        "file_offset_hex": "0x20580",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6163632d746162",
+        "file_offset": 139061,
+        "file_offset_hex": "0x21f35",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6163632d746162",
+        "file_offset": 139145,
+        "file_offset_hex": "0x21f89",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6163632d746162",
+        "file_offset": 139205,
+        "file_offset_hex": "0x21fc5",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6163632d746162",
+        "file_offset": 141418,
+        "file_offset_hex": "0x2286a",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6163632d746162",
+        "file_offset": 142781,
+        "file_offset_hex": "0x22dbd",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6163632d746162",
+        "file_offset": 144482,
+        "file_offset_hex": "0x23462",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6163632d746162",
+        "file_offset": 147193,
+        "file_offset_hex": "0x23ef9",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6163632d746162",
+        "file_offset": 148675,
+        "file_offset_hex": "0x244c3",
+        "length": 7,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 7
+      }
+    ],
+    "total_matches": 9
+  },
+  "summary": "9 match(es) for utf8 in views.js; showing 9 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 9,
+    "total": 9
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x20580"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x21f35"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x21f89"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x21fc5"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x2286a"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x22dbd"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x23462"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x23ef9"
+    }
+  ],
+  "links": []
+}

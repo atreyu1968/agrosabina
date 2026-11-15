@@ -1,0 +1,53 @@
+{
+  "id": "ev_46215756511bb63466ac8944f2ef53f5e4cf8975df80b358a6325e3c25ca9c0e",
+  "subject": {
+    "kind": "script",
+    "sha256": "8827e4f1203ec19b1e5eaa76aafd4ca1e81e0c182b727e78910c7f90c1a97a42",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 1,
+    "offset": 99999,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24643,
+    "lines": 0,
+    "more": false,
+    "offset": 614,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "",
+    "total_lines": 614
+  },
+  "summary": "accounting.js has 614 line(s); none from line 100000.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 0,
+    "total": 614
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

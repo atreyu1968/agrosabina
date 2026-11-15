@@ -1,0 +1,53 @@
+{
+  "id": "ev_d38af87f8c53df1ca5107562214d4899ae2e552414f0cc84898e8c2b871e0803",
+  "subject": {
+    "kind": "script",
+    "sha256": "53d2c7aac45f69dd655079d212bc5064b59328526bfe1022da0ff6605887090c",
+    "name": "parse.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 85,
+    "offset": 430,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 18699,
+    "lines": 83,
+    "more": false,
+    "offset": 430,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js",
+    "replaced_sequences": 0,
+    "text": "\n  nonEmpty.forEach((line) => {\n    const low = fold(line);\n    const dates = datesIn(line);\n    if (!dates.length) return;\n    allDates.push(...dates);\n    if (/vencim|vence|fecha de pago|pago hasta|plazo/.test(low) && !dueDate) dueDate = dates[0];\n    else if (/fecha|emision|expedicion|factura/.test(low) && !issueDate) issueDate = dates[0];\n  });\n\n  if (!issueDate && allDates.length) issueDate = allDates.slice().sort()[0];\n  if (!issueDate) {\n    issueDate = today;\n    notes.push(\"No he encontrado la fecha de la factura: he puesto la de hoy.\");\n  }\n  if (dueDate && dueDate < issueDate) dueDate = null;\n\n  /* --- importes --- */\n  const raw = readAmounts(nonEmpty);\n  const complete = completeAmounts({\n    base: raw.base,\n    rate: raw.rate ?? (raw.igic != null || raw.base != null || raw.total != null ? options.defaultRate ?? null : null),\n    igic: raw.igic,\n    total: raw.total,\n  });\n\n  if (complete.total == null) notes.push(\"No he encontrado el total. Escribelo tú y el IGIC se calcula solo.\");\n  if (complete.base == null && complete.total != null) notes.push(\"No he encontrado la base imponible; la he calculado.\");\n  if (complete.rate == null) notes.push(\"No he visto el tipo de IGIC: he puesto el que tengas por defecto.\");\n\n  const balanced = complete.base != null && complete.igic != null && complete.total != null\n    ? Math.abs(round2(complete.base + complete.igic) - round2(complete.total)) <= 0.05\n    : true;\n  if (!balanced) {\n    notes.push(\n      `Los importes no cuadran del todo: base + IGIC no da el total (${(complete.base + complete.igic).toFixed(2)} frente a ${complete.total.toFixed(2)}).`\n    );\n  }\n\n  /* --- estado --- */\n  const st = readStatus(flat);\n  if (st.note) notes.push(st.note);\n\n  /* --- confianza --- */\n  let score = 0;\n  if (supplierName) score += 0.22;\n  if (supplierNif) score += 0.22;\n  if (number) score += 0.16;\n  if (issueDate) score += 0.12;\n  if (complete.total != null && !complete.derived.includes(\"total\")) score += 0.2;\n  if (raw.rate != null) score += 0.05;\n  if (raw.base != null) score += 0.03;\n  if (balanced) score += 0.06;\n\n  const confidence = Math.max(0, Math.min(1, score));\n\n  return {\n    supplierName: supplierName || \"\",\n    supplierNif: supplierNif || \"\",\n    number: number || \"\",\n    issueDate,\n    dueDate: dueDate || \"\",\n    base: complete.base,\n    rate: complete.rate,\n    igic: complete.igic,\n    total: complete.total,\n    derived: complete.derived,\n    status: st.status,\n    confidence,\n    balanced,\n    notes,\n    rawText: flat.slice(0, 6000),\n  };\n}\n\n/** ¿Parece una factura? Sirve para avisar cuando se cuela otro documento. */\nexport function looksLikeInvoice(text) {\n  const low = fold(text);\n  const hits = [\n    /factura/, /total/, /base imponible/, /igic|iva/, /\\d{1,3}[.,]\\d{2}/, /cif|nif/,\n  ].filter((re) => re.test(low)).length;\n  return hits >= 3;\n}\n",
+    "total_lines": 513
+  },
+  "summary": "parse.js: lines 431–513 of 513 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 83,
+    "total": 513
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+    }
+  ],
+  "links": []
+}

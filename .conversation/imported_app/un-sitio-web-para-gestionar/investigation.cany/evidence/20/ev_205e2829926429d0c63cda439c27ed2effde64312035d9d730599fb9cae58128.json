@@ -1,0 +1,54 @@
+{
+  "id": "ev_205e2829926429d0c63cda439c27ed2effde64312035d9d730599fb9cae58128",
+  "subject": {
+    "kind": "script",
+    "sha256": "972b1b7be9bc1577cb6086bdfd834369effd809ab3790f15ed31e98a92be3786",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 2760,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 200323,
+    "lines": 45,
+    "more": true,
+    "offset": 2760,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    <div class=\"field span-2\">\n      <label>Estado</label>\n      <div class=\"segmented\" id=\"f-status-seg\" data-value=\"${v.status === STATUS.PAID ? STATUS.PAID : STATUS.PENDING}\">\n        <button type=\"button\" data-status=\"${STATUS.PENDING}\" class=\"${v.status !== STATUS.PAID ? \"active\" : \"\"}\">Pendiente</button>\n        <button type=\"button\" data-status=\"${STATUS.PAID}\" class=\"${v.status === STATUS.PAID ? \"active\" : \"\"}\">${directionOf(kind) === \"INGRESO\" ? \"Cobrado\" : \"Pagado\"}</button>\n      </div>\n      <div class=\"field\" id=\"f-paid\" style=\"margin-top:12px\" ${v.status === STATUS.PAID ? \"\" : \"hidden\"}>\n        <label for=\"f-paid-date\">Fecha ${directionOf(kind) === \"INGRESO\" ? \"del cobro\" : \"del pago\"}</label>\n        <input id=\"f-paid-date\" type=\"date\" value=\"${esc(v.paidDate || \"\")}\">\n        <span class=\"hint\">Si la dejas vacía, se guarda la de hoy. Sale en la ficha y en los listados.</span>\n      </div>\n    </div>\n  </div>`;\n}\n\nfunction notesHtml(notes) {\n  if (!notes || !notes.length) return \"\";\n  return `<div class=\"summary-box warn\" style=\"margin-bottom:14px\">\n    ${icon(\"alert\")}\n    <div>\n      ${notes.map((n) => `<div>${esc(n)}</div>`).join(\"\")}\n    </div>\n  </div>`;\n}\n\nexport function openInvoiceModal({ mode = \"new\", invoice = null, job = null, preset = null } = {}) {\n  const editing = mode === \"edit\" && invoice;\n  const values = editing\n    ? {\n        supplierName: supplierName(invoice.supplierId),\n        supplierNif: (supplierById(invoice.supplierId) || {}).nif || \"\",\n        number: invoice.number,\n        issueDate: invoice.issueDate,\n        dueDate: invoice.dueDate,\n        base: invoice.base,\n        rate: invoice.rate,\n        igic: invoice.igic,\n        total: invoice.total,\n        status: invoice.status,\n        paidDate: invoice.paidDate || \"\",\n        kind: invoice.kind || \"FACTURA\",\n        category: invoice.category || \"\",\n        direction: invoice.direction || directionOf(invoice.kind || \"FACTURA\"),\n        lines: invoice.lines || [],\n        liquidacion: invoice.liquidacion || null,\n",
+    "total_lines": 5201
+  },
+  "summary": "views.js: lines 2761–2805 of 5201 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 5201,
+    "next_offset": 2805
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

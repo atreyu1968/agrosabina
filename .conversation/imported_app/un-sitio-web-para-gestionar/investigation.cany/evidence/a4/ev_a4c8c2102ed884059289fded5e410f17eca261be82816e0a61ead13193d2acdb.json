@@ -1,0 +1,54 @@
+{
+  "id": "ev_a4c8c2102ed884059289fded5e410f17eca261be82816e0a61ead13193d2acdb",
+  "subject": {
+    "kind": "script",
+    "sha256": "dce5715426f363eda41a5e86d8aca69716de8b9e5f03038cae3689841a53368b",
+    "name": "nomina.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 50,
+    "offset": 150,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 10720,
+    "lines": 50,
+    "more": true,
+    "offset": 150,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js",
+    "replaced_sequences": 0,
+    "text": "  const liquido = String(cuentaLiquido || CUENTAS_NOMINA.liquido);\n  const raw = [];\n  if (c.bruto == null || c.bruto <= 0) return raw;\n  raw.push([CUENTAS_NOMINA.sueldos, c.bruto]);\n  if (c.ssEmpresa) raw.push([CUENTAS_NOMINA.ssEmpresa, c.ssEmpresa]);\n  if (c.totalSS) raw.push([CUENTAS_NOMINA.ssPagar, -c.totalSS]);\n  if (c.irpf) raw.push([CUENTAS_NOMINA.irpf, -c.irpf]);\n  if (c.neto) raw.push([liquido, -c.neto]);\n  return raw;\n}\n\n/* ------------------------------------------------------------------ */\n/* El lector                                                          */\n/* ------------------------------------------------------------------ */\n\n/**\n * Lee un recibo de salarios del texto que ya ha sacado el lector de PDF,\n * fotos o correo. Devuelve los mismos campos que `calcularNomina` más\n * `notas` (lo que conviene revisar) y `ok` (si ha encontrado el bruto).\n */\nexport function leerNomina(textoCrudo) {\n  const lls = lineasDe(textoCrudo);\n  const plano = String(textoCrudo || \"\");\n  const notas = [];\n  const base = { devengos: [] };\n\n  /* Trabajador: va en una línea con su etiqueta. */\n  for (const l of lls) {\n    const m = l.match(/^(?:trabajador|nombre y apellidos|apellidos y nombre|empleado)\\s*[:\\-]?\\s*(.+)$/i);\n    if (!m) continue;\n    const valor = m[1]\n      .replace(/\\b(?:nif|dni|n\\.?\\s*[ºo]\\s*afiliaci[oó]n|n\\.?a\\.?f)\\b.*$/i, \"\")\n      .replace(/[|;].*$/, \"\")\n      .trim();\n    if (valor.length >= 3 && !base.trabajador) base.trabajador = valor;\n  }\n  if (!base.trabajador) {\n    const m = plano.match(/(?:trabajador|empleado)\\s*[:\\-]\\s*([A-ZÁÉÍÓÚÑ][^\\n,;]{3,60})/i);\n    if (m) base.trabajador = texto(m[1]);\n  }\n\n  const nif = plano.match(/\\b(\\d{8}[A-Z])\\b/);\n  if (nif) base.nif = nif[1];\n\n  const periodo =\n    plano.match(/(?:per[ií]odo|periodo)[^\\n]{0,40}?(\\d{2}\\/\\d{2}\\/\\d{4})\\s*(?:a|al|-|–|\\/)\\s*(\\d{2}\\/\\d{2}\\/\\d{4})/i) ||\n    plano.match(/(\\d{2}\\/\\d{2}\\/\\d{4})\\s*(?:a|al|-|–)\\s*(\\d{2}\\/\\d{2}\\/\\d{4})/);\n  if (periodo) base.periodo = `${periodo[1]} a ${periodo[2]}`;\n\n  const dias = plano.match(/(\\d{1,2})\\s*d[ií]as/i);\n",
+    "total_lines": 288
+  },
+  "summary": "nomina.js: lines 151–200 of 288 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 50,
+    "total": 288,
+    "next_offset": 200
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js"
+    }
+  ],
+  "links": []
+}

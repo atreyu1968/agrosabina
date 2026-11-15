@@ -1,0 +1,53 @@
+{
+  "id": "ev_cf8795ebe0000aa213e5980b17b637e194f389d31b13275523c920884b096f39",
+  "subject": {
+    "kind": "script",
+    "sha256": "97b27bb6247123652e4032fe0a5662b48b2f5f4c04d1bf9ab7da212828ff108c",
+    "name": "index.html"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 104,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\index.html"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 5615,
+    "lines": 104,
+    "more": false,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\index.html",
+    "replaced_sequences": 0,
+    "text": "<!doctype html>\n<html lang=\"es\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>Agrosabina SL · Compras, proveedores e IGIC</title>\n<meta name=\"description\" content=\"Programa contable de Agrosabina SL: las compras y las liquidaciones se leen desde una foto o un PDF, la base de proveedores se crea sola y quedan controlados lo pagado, lo pendiente y el IGIC de cada tipo.\">\n<meta name=\"theme-color\" content=\"#11665c\">\n<link rel=\"icon\" href=\"assets/img/agrosabina.png\" type=\"image/png\">\n<link rel=\"apple-touch-icon\" href=\"assets/img/agrosabina.png\">\n<link rel=\"stylesheet\" href=\"assets/styles.css\">\n</head>\n<body>\n<a class=\"skip\" href=\"#view\">Saltar al contenido</a>\n\n<aside class=\"sidebar\">\n  <div class=\"brand\">\n    <a class=\"brand-mark\" href=\"#/resumen\" aria-label=\"Agrosabina SL, ir al resumen\">\n      <img src=\"assets/img/agrosabina.png\" alt=\"Agrosabina SL\" width=\"429\" height=\"179\">\n    </a>\n    <span class=\"brand-text\">\n      <small>Compras, liquidaciones e IGIC</small>\n    </span>\n  </div>\n\n  <nav class=\"nav\" aria-label=\"Secciones\">\n    <a href=\"#/resumen\" data-route=\"resumen\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"1.6\"/><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"4.5\" rx=\"1.6\"/><rect x=\"13.5\" y=\"11\" width=\"7\" height=\"9.5\" rx=\"1.6\"/><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"1.6\"/></svg>\n      <span>Resumen</span>\n    </a>\n    <a href=\"#/ventas\" data-route=\"ventas\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 19.5V12\"/><path d=\"M10 19.5V6.5\"/><path d=\"M16 19.5v-5\"/><path d=\"M21 19.5H3\"/><path d=\"M13.6 4.2 18 2.6l1.6 4.2\"/></svg>\n      <span>Ventas</span>\n    </a>\n    <a href=\"#/compras\" data-route=\"compras\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 6.5h2.1l2.3 9.7h9.2l2-7.2H7.1\"/><circle cx=\"9.4\" cy=\"19.2\" r=\"1.5\"/><circle cx=\"17.4\" cy=\"19.2\" r=\"1.5\"/></svg>\n      <span>Compras</span>\n      <span class=\"nav-count\" id=\"navPending\" hidden>0</span>\n    </a>\n    <a href=\"#/proveedores\" data-route=\"proveedores\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3.6 8.4h8.2v10.2H3.6z\"/><path d=\"M11.8 11.6h4.4l4.2 3v4h-8.6z\"/><circle cx=\"7\" cy=\"19.6\" r=\"1.6\"/><circle cx=\"16.4\" cy=\"19.6\" r=\"1.6\"/><path d=\"M3.6 8.4 6.4 4.4h7l1.4 4\"/></svg>\n      <span>Proveedores</span>\n    </a>\n    <a href=\"#/correo\" data-route=\"correo\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"3\" y=\"5.5\" width=\"18\" height=\"13\" rx=\"2\"/><path d=\"m3.8 6.6 8.2 6 8.2-6\"/></svg>\n      <span>Correo</span>\n    </a>\n    <a href=\"#/importar\" data-route=\"importar\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 15.5V3.8\"/><path d=\"M7.4 8.2 12 3.6l4.6 4.6\"/><path d=\"M4 15v3.4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V15\"/></svg>\n      <span>Importar</span>\n    </a>\n  </nav>\n\n  <div class=\"sidebar-foot\">\n    <div class=\"foot-box\">\n      <strong>Agrosabina SL</strong>\n      <p>Programa contable de la empresa. Se guarda en este navegador: ni las facturas ni los importes se envían a ningún sitio.</p>\n    </div>\n  </div>\n</aside>\n\n<div class=\"shell\">\n  <header class=\"topbar\">\n    <div class=\"topbar-titles\">\n      <h1 id=\"viewTitle\">Resumen</h1>\n      <p id=\"viewSub\">Cargando…</p>\n    </div>\n    <div class=\"topbar-actions\" id=\"topActions\"></div>\n  </header>\n  <main id=\"view\" tabindex=\"-1\"></main>\n</div>\n\n<div id=\"toasts\" class=\"toasts\" aria-live=\"polite\" aria-atomic=\"false\"></div>\n<div id=\"modalRoot\"></div>\n<input id=\"filePicker\" type=\"file\" accept=\"image/*,application/pdf\" multiple hidden>\n<input id=\"cameraPicker\" type=\"file\" accept=\"image/*\" capture=\"environment\" hidden>\n\n<script type=\"module\" src=\"assets/js/main.js\"></script>\n\n<script>\n/* Red de seguridad. Si el navegador no deja arrancar el programa (por ejemplo\n   porque el archivo se abrió con doble clic desde el disco y los módulos\n   quedan bloqueados), avisamos con un mensaje claro en vez de dejar la\n   pantalla vacía. Cuando todo va bien, no se ve nada de esto. */\nwindow.setTimeout(function () {\n  if (window.__appBooted) return;\n  var sub = document.getElementById(\"viewSub\");\n  if (sub) sub.textContent = \"No he podido arrancar\";\n  var view = document.getElementById(\"view\");\n  if (!view) return;\n  view.innerHTML =\n    '<div class=\"card\"><div class=\"card-body\">' +\n    \"<h2>No he podido arrancar la aplicación</h2>\" +\n    \"<p>Este navegador ha bloqueado el programa. Pasa cuando el archivo se abre con doble clic desde el disco: por seguridad, el navegador no deja cargar el código así.</p>\" +\n    \"<p><strong>Ábrela desde la vista previa de la aplicación</strong> (o desde cualquier servidor web), no con doble clic en el archivo. Tus datos siguen guardados en este navegador.</p>\" +\n    '<p><button class=\"btn\" onclick=\"location.reload()\">Reintentar</button></p>' +\n    \"</div></div>\";\n}, 2500);\n</script>\n<noscript>\n  <p style=\"padding:24px\">Para usar esta aplicación, activa JavaScript en el navegador.</p>\n</noscript>\n</body>\n</html>\n",
+    "total_lines": 104
+  },
+  "summary": "index.html: lines 1–104 of 104 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 104,
+    "total": 104
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\index.html"
+    }
+  ],
+  "links": []
+}

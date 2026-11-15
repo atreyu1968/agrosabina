@@ -1,0 +1,54 @@
+{
+  "id": "ev_0b03452938e2b7ab3949c8c827b33244e33ec83237d9de87c86d03a2353adc14",
+  "subject": {
+    "kind": "script",
+    "sha256": "b2e5934b5b5d5b0863dbcfd14ac048c613516ee3c6a204f3f3b2aac0c9263cae",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 3668,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 155982,
+    "lines": 40,
+    "more": true,
+    "offset": 3668,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  const names = new Map((state.suppliers || []).map((s) => [s.id, s.name]));\n  return (state.invoices || []).map((inv) =>\n    Object.assign({}, inv, { party: names.get(inv.supplierId) || \"\" })\n  );\n}\n\n/** El asiento de apertura, si ya se han dicho el capital y el saldo de bancos. */\nfunction accApertura() {\n  const s = getState().settings || {};\n  const capital = Number(s.openingCapital) || 0;\n  const tesoreria = Number(s.openingCash) || 0;\n  if (!capital && !tesoreria) return null;\n  return { capital, tesoreria, fecha: String(s.openingDate || \"\").slice(0, 10) };\n}\n\n/** Los asientos del periodo elegido. */\nfunction asientosContables(w) {\n  const win = w || contaWindow();\n  return asientosDe(accDocs(), { from: win.from, to: win.to, apertura: accApertura() });\n}\n\n/** Un número escrito a mano: vale «1.234,56» y «1234.56». */\nfunction accNum(value) {\n  const txt = String(value == null ? \"\" : value).replace(/[€\\s]/g, \"\");\n  if (!txt) return 0;\n  const last = Math.max(txt.lastIndexOf(\",\"), txt.lastIndexOf(\".\"));\n  const clean =\n    last > -1 && txt.length - last <= 3 && txt.indexOf(\",\", last + 1) === -1\n      ? txt.slice(0, last).replace(/[.,]/g, \"\") + \".\" + txt.slice(last + 1)\n      : txt.replace(/[.,]/g, \"\");\n  const n = Number(clean);\n  return Number.isFinite(n) ? round2(n) : 0;\n}\n\nfunction accRangeBar(w) {\n  return `\n    <div class=\"filters\">\n      <select id=\"accRange\" aria-label=\"Elegir el periodo\">\n        ${SALES_RANGES.map((r) => `<option value=\"${r.id}\"${ui.conta.range === r.id ? \" selected\" : \"\"}>${r.label}</option>`).join(\"\")}\n      </select>\n",
+    "total_lines": 4117
+  },
+  "summary": "views.js: lines 3669–3708 of 4117 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 4117,
+    "next_offset": 3708
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,53 @@
+{
+  "id": "ev_4f1fca493301eebda3d5a66dc70640719b8bf38faeb87ca9ee86723de639b818",
+  "subject": {
+    "kind": "text",
+    "sha256": "00d9a50785c633ee6b9b8815fafc03b48f91314167e84536979c41959284a367",
+    "name": "styles.css"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 1450,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 34331,
+    "lines": 0,
+    "more": false,
+    "offset": 1255,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "replaced_sequences": 0,
+    "text": "",
+    "total_lines": 1255
+  },
+  "summary": "styles.css has 1255 line(s); none from line 1451.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 0,
+    "total": 1255
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+    }
+  ],
+  "links": []
+}

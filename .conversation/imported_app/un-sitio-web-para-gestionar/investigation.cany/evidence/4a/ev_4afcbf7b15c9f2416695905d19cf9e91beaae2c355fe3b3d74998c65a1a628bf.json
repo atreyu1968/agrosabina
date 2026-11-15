@@ -1,0 +1,83 @@
+{
+  "id": "ev_4afcbf7b15c9f2416695905d19cf9e91beaae2c355fe3b3d74998c65a1a628bf",
+  "subject": {
+    "kind": "script",
+    "sha256": "6ec57842818ead8f65029f95b4b820488a6dbfbb6233142f78099083827d16c7",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "route === \"correo\""
+  },
+  "result": {
+    "file_size": 177631,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "726f757465203d3d3d2022636f7272656f22",
+        "file_offset": 9222,
+        "file_offset_hex": "0x2406",
+        "length": 18,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "726f757465203d3d3d2022636f7272656f22",
+        "file_offset": 12999,
+        "file_offset_hex": "0x32c7",
+        "length": 18,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 18
+      }
+    ],
+    "total_matches": 2
+  },
+  "summary": "2 match(es) for utf8 in views.js; showing 2 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x2406"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x32c7"
+    }
+  ],
+  "links": []
+}

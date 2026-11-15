@@ -1,0 +1,54 @@
+{
+  "id": "ev_b2522bfad90c35fd5910e5559fed5cb7e1cbeb62790e11546d7843e81103ea9e",
+  "subject": {
+    "kind": "script",
+    "sha256": "1348a02c5f56b54cbf7b68221c1d1547ed28e1a55404725183e93b183c744e0a",
+    "name": "main.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 72,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 4134,
+    "lines": 72,
+    "more": true,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js",
+    "replaced_sequences": 0,
+    "text": "/*\n * Arranque: enrutador por hash, eventos globales y avisos iniciales.\n */\n\nimport { flush, getState, initStore, save, storageInfo, subscribe } from \"./store.js\";\nimport { escapeKeyCloses, toast } from \"./dom.js\";\nimport * as views from \"./views.js\";\n\nconst ROUTES = [\"resumen\", \"ventas\", \"contabilidad\", \"compras\", \"proveedores\", \"correo\", \"importar\"];\n\n// La sección se llamaba «facturas»: los enlaces antiguos (#/facturas) siguen valiendo.\nconst ROUTE_ALIASES = { facturas: \"compras\" };\n\nfunction routeFromHash() {\n  const raw = String(location.hash || \"\").replace(/^#\\/?/, \"\").split(\"?\")[0];\n  const name = ROUTE_ALIASES[raw] || raw;\n  return ROUTES.includes(name) ? name : \"resumen\";\n}\n\nfunction storageWorks() {\n  try {\n    const key = \"__probe__\";\n    localStorage.setItem(key, \"1\");\n    localStorage.removeItem(key);\n    return true;\n  } catch (_) {\n    return false;\n  }\n}\n\nasync function boot() {\n  window.__appBooted = true; // el aviso de «no arranca» de index.html ya no hace falta\n\n  views.ui.route = routeFromHash();\n  views.renderLoading(); // mientras se abre la base de datos\n\n  // Antes de nada: abrir la base de datos SQLite y traer los datos.\n  try {\n    await initStore();\n  } catch (err) {\n    console.error(\"No se pudo arrancar el almacén de datos:\", err);\n  }\n\n  views.render();\n  escapeKeyCloses();\n  views.wireDropzone();\n\n  const info = storageInfo();\n  if (info.engine === \"local\") {\n    setTimeout(\n      () =>\n        toast(\n          \"No he podido abrir la base de datos SQLite en este navegador, así que guardo los datos de la forma anterior. Todo funciona igual.\",\n          \"bad\",\n          9000\n        ),\n      1200\n    );\n  }\n\n  window.addEventListener(\"hashchange\", () => {\n    // El enlace «Saltar al contenido» usa #view: no es una sección, no se repinta.\n    if (location.hash && !location.hash.startsWith(\"#/\")) return;\n    views.ui.route = routeFromHash();\n    window.scrollTo(0, 0);\n    views.render();\n  });\n\n  document.addEventListener(\"click\", (ev) => {\n    if (!(ev.target instanceof Element)) return;\n\n    const actionEl = ev.target.closest(\"[data-action]\");\n",
+    "total_lines": 144
+  },
+  "summary": "main.js: lines 1–72 of 144 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 72,
+    "total": 144,
+    "next_offset": 72
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js"
+    }
+  ],
+  "links": []
+}

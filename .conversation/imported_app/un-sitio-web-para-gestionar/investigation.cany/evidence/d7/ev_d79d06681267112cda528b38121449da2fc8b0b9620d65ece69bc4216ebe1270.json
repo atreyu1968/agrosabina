@@ -1,0 +1,54 @@
+{
+  "id": "ev_d79d06681267112cda528b38121449da2fc8b0b9620d65ece69bc4216ebe1270",
+  "subject": {
+    "kind": "script",
+    "sha256": "28c69e5cfe3a6682b9f586624246c04d71ce42d6f4020fdc67a6a67650b50b22",
+    "name": "util.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 7518,
+    "lines": 45,
+    "more": true,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js",
+    "replaced_sequences": 0,
+    "text": "/* Utilidades compartidas: importes, fechas, IGIC, texto. */\n\nexport const STATUS = Object.freeze({\n  PENDING: \"PENDIENTE\",\n  PAID: \"PAGADO\",\n});\n\n/** Tipos de IGIC que se usan en Canarias. */\nexport const IGIC_RATES = [\n  { value: 0, label: \"0 % — tipo cero / exento\" },\n  { value: 3, label: \"3 % — reducido\" },\n  { value: 7, label: \"7 % — general\" },\n  { value: 9.5, label: \"9,5 % — incrementado\" },\n  { value: 15, label: \"15 % — especial\" },\n  { value: 20, label: \"20 % — especial\" },\n];\n\nconst eurFmt = new Intl.NumberFormat(\"es-ES\", {\n  style: \"currency\",\n  currency: \"EUR\",\n  minimumFractionDigits: 2,\n  maximumFractionDigits: 2,\n});\n\nconst numFmt = new Intl.NumberFormat(\"es-ES\", {\n  minimumFractionDigits: 2,\n  maximumFractionDigits: 2,\n});\n\nconst escMap = { \"&\": \"&amp;\", \"<\": \"&lt;\", \">\": \"&gt;\", '\"': \"&quot;\", \"'\": \"&#39;\" };\n\nexport function esc(value) {\n  return String(value == null ? \"\" : value).replace(/[&<>\"']/g, (c) => escMap[c]);\n}\n\nexport function fmtEUR(n) {\n  const v = Number(n);\n  return eurFmt.format(Number.isFinite(v) ? v : 0);\n}\n\nexport function fmtNum(n, digits = 2) {\n  const v = Number(n);\n  if (!Number.isFinite(v)) return \"—\";\n  if (digits === 2) return numFmt.format(v);\n  return new Intl.NumberFormat(\"es-ES\", {\n",
+    "total_lines": 243
+  },
+  "summary": "util.js: lines 1–45 of 243 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 243,
+    "next_offset": 45
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_08f4e41b9d39525e0c6c769a473e249b70433833fe7e0b13ff0392c1d868eeb1",
+  "subject": {
+    "kind": "script",
+    "sha256": "b84d0e310427f5a590c835487798125eb8fcb1ba2d47fb3f0abdfdf761bb2f8e",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 22,
+    "offset": 2113,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 133974,
+    "lines": 22,
+    "more": true,
+    "offset": 2113,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      <select id=\"f-kind\">${kindOptions(kind)}</select>\n    </div>\n    <div class=\"field\">\n      <label for=\"f-cat\">Concepto</label>\n      <select id=\"f-cat\">${categoryOptions(v.category, direction)}</select>\n    </div>\n    ${v.classifyWhy || v.classifyNote ? `<div class=\"classify-why span-2\" id=\"f-why\">${icon(\"sparkle\")}<span>${esc(\n      [v.classifyWhy, v.classifyNote].filter(Boolean).join(\" · \")\n    )}</span></div>` : `<div class=\"classify-why span-2\" id=\"f-why\" hidden></div>`}\n    ${liquidacionReadHtml(v)}\n    <div class=\"field span-2\">\n      <label for=\"f-name\">Proveedor <span class=\"tag\" id=\"supplierHint\" hidden></span></label>\n      <input id=\"f-name\" type=\"text\" list=\"supplierNames\" autocomplete=\"off\" value=\"${esc(v.supplierName || \"\")}\" placeholder=\"Nombre del proveedor\">\n      <datalist id=\"supplierNames\">\n        ${state.suppliers.map((s) => `<option value=\"${esc(s.name)}\">`).join(\"\")}\n      </datalist>\n    </div>\n    <div class=\"field\">\n      <label for=\"f-nif\">NIF / CIF</label>\n      <input id=\"f-nif\" type=\"text\" autocomplete=\"off\" value=\"${esc(v.supplierNif || \"\")}\" placeholder=\"B12345678\">\n    </div>\n    <div class=\"field\">\n",
+    "total_lines": 3563
+  },
+  "summary": "views.js: lines 2114–2135 of 3563 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 22,
+    "total": 3563,
+    "next_offset": 2135
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

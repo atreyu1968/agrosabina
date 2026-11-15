@@ -1,0 +1,54 @@
+{
+  "id": "ev_e41a859c750f41db0901eabd9ee6f40d1d3d0b54ab5ba7ec57c87ed4231cb00d",
+  "subject": {
+    "kind": "script",
+    "sha256": "c48ded4f9cf5041b482b33ee217b0c9019182ba5922a959fb68cfe1f038baa21",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 28,
+    "offset": 916,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 246388,
+    "lines": 28,
+    "more": true,
+    "offset": 916,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    }\n    case \"importar\":\n      return {\n        title: \"Importar documentos\",\n        sub: \"Sube una foto o un PDF y yo relleno los datos\",\n      };\n    default: {\n      const who = (getState().settings.businessName || \"Agrosabina SL\").trim();\n      const pending =\n        t.pendingCount > 0\n          ? `Tienes ${fmtEUR(t.pending)} pendientes de pago`\n          : \"Todo al día. Nada pendiente de pago.\";\n      return {\n        title: \"Resumen\",\n        sub: `${who} · ${pending}`,\n      };\n    }\n  }\n}\n\nfunction topActions(route) {\n  if (route === \"ventas\") {\n    return `\n      <button class=\"btn\" data-action=\"export-sales-csv\">${icon(\"download\")}<span>Exportar</span></button>\n      <button class=\"btn\" data-action=\"new-sale\">${icon(\"edit\")}<span>Añadir a mano</span></button>\n      <button class=\"btn primary\" data-action=\"import-files\">${icon(\"upload\")}<span>Subir liquidación</span></button>`;\n  }\n  if (route === \"contabilidad\") {\n",
+    "total_lines": 6175
+  },
+  "summary": "views.js: lines 917–944 of 6175 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 28,
+    "total": 6175,
+    "next_offset": 944
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

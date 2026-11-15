@@ -1,0 +1,54 @@
+{
+  "id": "ev_a9e69d824759d041a500cf9795033325b20f87fd84bbbf714b4959033f28f6fd",
+  "subject": {
+    "kind": "script",
+    "sha256": "06d436d756719d4e4a9e330419cfb3ce2e2e0a38558b5f93641f7b3aba58d107",
+    "name": "sqlite.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 355,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 19495,
+    "lines": 30,
+    "more": true,
+    "offset": 355,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js",
+    "replaced_sequences": 0,
+    "text": "      status: r.estado === \"PAGADO\" ? \"PAGADO\" : \"PENDIENTE\",\n      paidDate: r.fecha_pago || \"\",\n      payMethod: r.medio_pago === \"CAJA\" ? \"CAJA\" : r.medio_pago === \"BANCO\" ? \"BANCO\" : \"\",\n      payAccount: r.cuenta_corriente || \"\",\n      kind: r.tipo || \"FACTURA\",\n      category: r.categoria || \"\",\n      direction: r.sentido === \"INGRESO\" ? \"INGRESO\" : \"GASTO\",\n      lines: Array.isArray(lines) ? lines : [],\n      liquidacion: liquidacion && typeof liquidacion === \"object\" ? liquidacion : null,\n      source: r.origen || \"manual\",\n      fileName: r.fichero || \"\",\n      original: original && typeof original === \"object\" ? original : null,\n      rawText: r.texto || \"\",\n      notes: Array.isArray(notes) ? notes : [],\n      confidence: r.confianza == null ? null : Number(r.confianza),\n      createdAt: r.creado_en,\n      updatedAt: r.actualizado_en,\n    };\n  });\n\n  let messages = [];\n  try {\n    messages = rows(\n      \"SELECT id, de, asunto, fecha, texto, adjuntos, importado_en, usado_en FROM correos ORDER BY importado_en DESC\"\n    ).map((r) => {\n      let adjuntos = [];\n      try {\n        adjuntos = r.adjuntos ? JSON.parse(r.adjuntos) : [];\n      } catch (_) {\n        adjuntos = [];\n",
+    "total_lines": 584
+  },
+  "summary": "sqlite.js: lines 356–385 of 584 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 584,
+    "next_offset": 385
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+    }
+  ],
+  "links": []
+}

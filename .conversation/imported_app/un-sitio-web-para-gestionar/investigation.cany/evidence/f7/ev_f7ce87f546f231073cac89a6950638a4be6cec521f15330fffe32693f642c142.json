@@ -1,0 +1,54 @@
+{
+  "id": "ev_f7ce87f546f231073cac89a6950638a4be6cec521f15330fffe32693f642c142",
+  "subject": {
+    "kind": "script",
+    "sha256": "cd72c4a0be9f6e196bf8bef6dc7dd3bb00aba0b531f44f9710bdb6816465224f",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 1440,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 99337,
+    "lines": 45,
+    "more": true,
+    "offset": 1440,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    <div>\n      ${notes.map((n) => `<div>${esc(n)}</div>`).join(\"\")}\n    </div>\n  </div>`;\n}\n\nexport function openInvoiceModal({ mode = \"new\", invoice = null, job = null } = {}) {\n  const editing = mode === \"edit\" && invoice;\n  const values = editing\n    ? {\n        supplierName: supplierName(invoice.supplierId),\n        supplierNif: (supplierById(invoice.supplierId) || {}).nif || \"\",\n        number: invoice.number,\n        issueDate: invoice.issueDate,\n        dueDate: invoice.dueDate,\n        base: invoice.base,\n        rate: invoice.rate,\n        igic: invoice.igic,\n        total: invoice.total,\n        status: invoice.status,\n        kind: invoice.kind || \"FACTURA\",\n        category: invoice.category || \"\",\n        direction: invoice.direction || directionOf(invoice.kind || \"FACTURA\"),\n      }\n    : job\n      ? { ...job.parsed }\n      : {\n          supplierName: \"\",\n          supplierNif: \"\",\n          number: \"\",\n          issueDate: todayISO(),\n          dueDate: \"\",\n          base: null,\n          rate: getState().settings.defaultRate,\n          igic: null,\n          total: null,\n          status: STATUS.PENDING,\n          kind: \"FACTURA\",\n          category: \"\",\n          direction: \"GASTO\",\n        };\n\n  const title = editing ? \"Editar factura\" : job ? \"Revisa lo que he leído\" : \"Nueva factura\";\n  const sub = editing\n    ? \"Cambia lo que haga falta y guarda.\"\n",
+    "total_lines": 2660
+  },
+  "summary": "views.js: lines 1441–1485 of 2660 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 2660,
+    "next_offset": 1485
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

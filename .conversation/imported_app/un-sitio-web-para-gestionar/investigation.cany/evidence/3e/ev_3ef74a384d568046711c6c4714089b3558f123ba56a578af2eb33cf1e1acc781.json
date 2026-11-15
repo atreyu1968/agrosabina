@@ -1,0 +1,54 @@
+{
+  "id": "ev_3ef74a384d568046711c6c4714089b3558f123ba56a578af2eb33cf1e1acc781",
+  "subject": {
+    "kind": "script",
+    "sha256": "186ecf8dc7c12156c9c6a960993d635775bc93fc0c93fc1f02056ccca93908d2",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 1898,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177030,
+    "lines": 45,
+    "more": true,
+    "offset": 1898,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      // hubiera elegido el lector de facturas.\n      if (liq.net != null && liq.ok) {\n        // Si el papel dice que el IGIC es 0 %, se respeta.\n        if (/\\bigic\\b[^\\n]{0,24}0\\s*%/i.test(text) || /\\biva\\b[^\\n]{0,24}0\\s*%/i.test(text)) {\n          job.parsed.rate = 0;\n        }\n        const r = Number(job.parsed.rate);\n        const cuota = Number.isFinite(r) ? round2((liq.net * r) / 100) : 0;\n        job.parsed.base = liq.net;\n        job.parsed.igic = cuota;\n        job.parsed.total = round2(liq.net + cuota);\n      }\n    }\n\n    // La IA, si está encendida en Ajustes, repasa el texto y rellena lo que\n    // falte. Solo le llega este texto: nunca la foto ni el PDF.\n    await applyAiReading(job, text);\n\n    job.state = \"parsed\";\n    paintIngest();\n    if (cls.note) toast(cls.note, \"warn\", 6000);\n    await reviewJob(job);\n  } catch (err) {\n    job.state = \"error\";\n    job.error = err && err.message ? err.message : \"No he podido leer el archivo.\";\n    paintIngest();\n  }\n}\n\n/* ------------------------------------------------------------------ */\n/* La IA como segundo par de ojos                                     */\n/* ------------------------------------------------------------------ */\n\n/**\n * Pide a la IA que interprete el texto del documento y rellena SOLO lo que\n * las reglas no han sabido leer (o una liquidación que no cuadraba). Las\n * reglas siempre mandan; si la IA falla, se sigue con lo leído y queda una\n * nota explicándolo. Devuelve la lista de lo que ha rellenado.\n */\nasync function applyAiReading(job, text) {\n  const settings = getState().settings;\n  if (!aiConfigured(settings) || !String(text || \"\").trim()) return [];\n\n  const model = String(settings.aiModel || AI_DEFAULTS.aiModel);\n  let ai;\n",
+    "total_lines": 4618
+  },
+  "summary": "views.js: lines 1899–1943 of 4618 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 4618,
+    "next_offset": 1943
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

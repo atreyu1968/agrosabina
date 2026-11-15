@@ -1,0 +1,2854 @@
+{
+  "id": "ev_dfdf887ae3be748d77c185e8b09bfab6c63fba41b081f2b8603639538cb57fe6",
+  "subject": {
+    "kind": "script",
+    "sha256": "842896ff0bae5ef41bc84641c43f1c5581b238709c618fed8ce95b3d6a8ebf87",
+    "name": "store.js"
+  },
+  "operation": "js_app_map",
+  "params": {
+    "include_node_modules": false,
+    "input_path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\store.js",
+    "limit": 1,
+    "max_nodes": 25000,
+    "offset": 0,
+    "source_paths": []
+  },
+  "result": {
+    "api_operations": [],
+    "app_kind": "unknown",
+    "bundlers": [],
+    "edges": [
+      {
+        "from": "event:store.js#document:visibilitychange",
+        "kind": "handled-by",
+        "to": "fn:store.js#document.addEventListener(visibilitychange)@416"
+      },
+      {
+        "from": "event:store.js#window:pagehide",
+        "kind": "handled-by",
+        "to": "fn:store.js#window.addEventListener(pagehide)@406"
+      },
+      {
+        "from": "fn:store.js#addInvoice@586",
+        "kind": "calls",
+        "to": "fn:store.js#direccionDeDocumento@246"
+      },
+      {
+        "from": "fn:store.js#addInvoice@586",
+        "kind": "calls",
+        "to": "fn:store.js#ensureSupplier@503"
+      },
+      {
+        "from": "fn:store.js#addInvoice@586",
+        "kind": "calls",
+        "to": "fn:store.js#findDuplicate@573"
+      },
+      {
+        "from": "fn:store.js#addInvoice@586",
+        "kind": "calls",
+        "to": "fn:store.js#normaliseInvoice@164"
+      },
+      {
+        "from": "fn:store.js#addInvoice@586",
+        "kind": "calls",
+        "to": "fn:store.js#normaliseMedio@255"
+      },
+      {
+        "from": "fn:store.js#addInvoice@586",
+        "kind": "calls",
+        "to": "fn:store.js#numOrNull@773"
+      },
+      {
+        "from": "fn:store.js#addInvoice@586",
+        "kind": "calls",
+        "to": "fn:store.js#rolDeDocumento@263"
+      },
+      {
+        "from": "fn:store.js#addInvoice@586",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "fn:store.js#addMessage@885",
+        "kind": "calls",
+        "to": "fn:store.js#normaliseMessage@53"
+      },
+      {
+        "from": "fn:store.js#addMessage@885",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "fn:store.js#clearAll@934",
+        "kind": "calls",
+        "to": "fn:store.js#emptyState@32"
+      },
+      {
+        "from": "fn:store.js#clearAll@934",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "fn:store.js#deleteInvoice@663",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "fn:store.js#deleteMessage@906",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "fn:store.js#deleteSupplier@552",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "fn:store.js#document.addEventListener(visibilitychange)@416",
+        "kind": "calls",
+        "to": "fn:store.js#flush@389"
+      },
+      {
+        "from": "fn:store.js#emptyState@32",
+        "kind": "mentions",
+        "to": "endpoint:https://api.openai.com/v1"
+      },
+      {
+        "from": "fn:store.js#ensureSupplier@503",
+        "kind": "calls",
+        "to": "fn:store.js#emit@456"
+      },
+      {
+        "from": "fn:store.js#ensureSupplier@503",
+        "kind": "calls",
+        "to": "fn:store.js#findSupplierByNameOrNif@482"
+      },
+      {
+        "from": "fn:store.js#ensureSupplier@503",
+        "kind": "calls",
+        "to": "fn:store.js#juntarRoles@268"
+      },
+      {
+        "from": "fn:store.js#ensureSupplier@503",
+        "kind": "calls",
+        "to": "fn:store.js#rolValido@240"
+      },
+      {
+        "from": "fn:store.js#ensureSupplier@503",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "fn:store.js#findSupplierByNameOrNif@482",
+        "kind": "calls",
+        "to": "fn:store.js#nameBase@474"
+      },
+      {
+        "from": "fn:store.js#importJSON@945",
+        "kind": "calls",
+        "to": "fn:store.js#normalise@221"
+      },
+      {
+        "from": "fn:store.js#importJSON@945",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "fn:store.js#initStore@328",
+        "kind": "calls",
+        "to": "fn:store.js#emit@456"
+      },
+      {
+        "from": "fn:store.js#initStore@328",
+        "kind": "calls",
+        "to": "fn:store.js#load@310"
+      },
+      {
+        "from": "fn:store.js#initStore@328",
+        "kind": "calls",
+        "to": "fn:store.js#normalise@221"
+      },
+      {
+        "from": "fn:store.js#juntarRoles@268",
+        "kind": "calls",
+        "to": "fn:store.js#rolValido@240"
+      },
+      {
+        "from": "fn:store.js#keepInvoiceOriginal@714",
+        "kind": "calls",
+        "to": "fn:store.js#invoiceById@700"
+      },
+      {
+        "from": "fn:store.js#keepInvoiceOriginal@714",
+        "kind": "calls",
+        "to": "fn:store.js#normaliseOriginal@127"
+      },
+      {
+        "from": "fn:store.js#keepInvoiceOriginal@714",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "fn:store.js#load@310",
+        "kind": "calls",
+        "to": "fn:store.js#emptyState@32"
+      },
+      {
+        "from": "fn:store.js#load@310",
+        "kind": "calls",
+        "to": "fn:store.js#normalise@221"
+      },
+      {
+        "from": "fn:store.js#load@310",
+        "kind": "uses",
+        "to": "storage:localStorage.getItem facturas.igic.v1"
+      },
+      {
+        "from": "fn:store.js#marcarRoles@281",
+        "kind": "calls",
+        "to": "fn:store.js#juntarRoles@268"
+      },
+      {
+        "from": "fn:store.js#marcarRoles@281",
+        "kind": "calls",
+        "to": "fn:store.js#rolDeDocumento@263"
+      },
+      {
+        "from": "fn:store.js#marcarRoles@281",
+        "kind": "calls",
+        "to": "fn:store.js#rolValido@240"
+      },
+      {
+        "from": "fn:store.js#markMessageUsed@898",
+        "kind": "calls",
+        "to": "fn:store.js#messageById@881"
+      },
+      {
+        "from": "fn:store.js#markMessageUsed@898",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "fn:store.js#normalise@221",
+        "kind": "calls",
+        "to": "fn:store.js#emptyState@32"
+      },
+      {
+        "from": "fn:store.js#normalise@221",
+        "kind": "calls",
+        "to": "fn:store.js#marcarRoles@281"
+      },
+      {
+        "from": "fn:store.js#normaliseInvoice@164",
+        "kind": "calls",
+        "to": "fn:store.js#normaliseLiquidacion@85"
+      },
+      {
+        "from": "fn:store.js#normaliseInvoice@164",
+        "kind": "calls",
+        "to": "fn:store.js#normaliseMedio@255"
+      },
+      {
+        "from": "fn:store.js#normaliseInvoice@164",
+        "kind": "calls",
+        "to": "fn:store.js#normaliseNomina@144"
+      },
+      {
+        "from": "fn:store.js#normaliseInvoice@164",
+        "kind": "calls",
+        "to": "fn:store.js#normaliseOriginal@127"
+      },
+      {
+        "from": "fn:store.js#normaliseLiquidacion@85",
+        "kind": "calls",
+        "to": "fn:store.js#n@87"
+      },
+      {
+        "from": "fn:store.js#normaliseNomina@144",
+        "kind": "calls",
+        "to": "fn:store.js#num@146"
+      },
+      {
+        "from": "fn:store.js#normaliseNomina@144",
+        "kind": "calls",
+        "to": "fn:store.js#txt@147"
+      },
+      {
+        "from": "fn:store.js#normaliseSupplier@293",
+        "kind": "calls",
+        "to": "fn:store.js#rolValido@240"
+      },
+      {
+        "from": "fn:store.js#removeInvoiceOriginal@747",
+        "kind": "calls",
+        "to": "fn:store.js#invoiceById@700"
+      },
+      {
+        "from": "fn:store.js#removeInvoiceOriginal@747",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "fn:store.js#rolDeDocumento@263",
+        "kind": "calls",
+        "to": "fn:store.js#direccionDeDocumento@246"
+      },
+      {
+        "from": "fn:store.js#save@352",
+        "kind": "calls",
+        "to": "fn:store.js#emit@456"
+      },
+      {
+        "from": "fn:store.js#save@352",
+        "kind": "calls",
+        "to": "fn:store.js#schedulePersist@380"
+      },
+      {
+        "from": "fn:store.js#save@352",
+        "kind": "uses",
+        "to": "storage:localStorage.setItem facturas.igic.v1"
+      },
+      {
+        "from": "fn:store.js#seedDemo@956",
+        "kind": "calls",
+        "to": "fn:store.js#addInvoice@586"
+      },
+      {
+        "from": "fn:store.js#seedDemo@956",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "fn:store.js#seedDemo@956",
+        "kind": "calls",
+        "to": "fn:store.js#stamp@960"
+      },
+      {
+        "from": "fn:store.js#setInvoiceStatus@670",
+        "kind": "calls",
+        "to": "fn:store.js#normaliseMedio@255"
+      },
+      {
+        "from": "fn:store.js#setInvoiceStatus@670",
+        "kind": "calls",
+        "to": "fn:store.js#updateInvoice@632"
+      },
+      {
+        "from": "fn:store.js#toggleInvoiceStatus@689",
+        "kind": "calls",
+        "to": "fn:store.js#setInvoiceStatus@670"
+      },
+      {
+        "from": "fn:store.js#updateInvoice@632",
+        "kind": "calls",
+        "to": "fn:store.js#normaliseInvoice@164"
+      },
+      {
+        "from": "fn:store.js#updateInvoice@632",
+        "kind": "calls",
+        "to": "fn:store.js#normaliseLiquidacion@85"
+      },
+      {
+        "from": "fn:store.js#updateInvoice@632",
+        "kind": "calls",
+        "to": "fn:store.js#normaliseMedio@255"
+      },
+      {
+        "from": "fn:store.js#updateInvoice@632",
+        "kind": "calls",
+        "to": "fn:store.js#normaliseOriginal@127"
+      },
+      {
+        "from": "fn:store.js#updateInvoice@632",
+        "kind": "calls",
+        "to": "fn:store.js#numOrNull@773"
+      },
+      {
+        "from": "fn:store.js#updateInvoice@632",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "fn:store.js#updateSettings@928",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "fn:store.js#updateSupplier@544",
+        "kind": "calls",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "listens",
+        "to": "event:store.js#document:visibilitychange"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "listens",
+        "to": "event:store.js#window:pagehide"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#addInvoice@586"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#addMessage@885"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#clearAll@934"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#deleteInvoice@663"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#deleteMessage@906"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#deleteSupplier@552"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#direccionDeDocumento@246"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#document.addEventListener(visibilitychange)@416"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#emit@456"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#emptyState@32"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#ensureSupplier@503"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#exportJSON@941"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#exportSqliteBytes@442"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#findDuplicate@573"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#findSupplierByNameOrNif@482"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#flush@389"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#getState@466"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#importJSON@945"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#initStore@328"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#invoiceById@700"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#invoiceNumbersMatch@566"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#invoiceOriginalBody@737"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#invoicesOf@911"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#juntarRoles@268"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#keepInvoiceOriginal@714"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#load@310"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#marcarRoles@281"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#markMessageUsed@898"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#messageById@881"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#messages@877"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#n@87"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#nameBase@474"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#normalise@221"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#normaliseInvoice@164"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#normaliseLiquidacion@85"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#normaliseMedio@255"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#normaliseMessage@53"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#normaliseNomina@144"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#normaliseOriginal@127"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#normaliseSupplier@293"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#num@146"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#numOrNull@773"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#originalsUsage@764"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#removeInvoiceOriginal@747"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#rolDeDocumento@263"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#rolValido@240"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#save@352"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#saveWorked@423"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#schedulePersist@380"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#seedDemo@956"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#setInvoiceStatus@670"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#sortedInvoices@915"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#sqliteIgicSummary@447"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#stamp@960"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#statsBySupplier@853"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#storageInfo@428"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#subscribe@451"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#supplierById@558"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#toggleInvoiceStatus@689"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#totals@784"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#txt@147"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#updateInvoice@632"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#updateSettings@928"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#updateSupplier@544"
+      },
+      {
+        "from": "module:store.js",
+        "kind": "defines",
+        "to": "fn:store.js#window.addEventListener(pagehide)@406"
+      }
+    ],
+    "effects": [],
+    "endpoints": [
+      {
+        "api": "literal",
+        "function": "emptyState",
+        "line": 42,
+        "literal": true,
+        "method": null,
+        "module": "store.js",
+        "role": "unknown",
+        "url": "https://api.openai.com/v1"
+      }
+    ],
+    "entry_points": {
+      "pages": [],
+      "preloads": [],
+      "renderers": [],
+      "workers": []
+    },
+    "exposed": [],
+    "graph_id": "ag_090aec820c29c4ced83248efb98152ad20bc464269a664a8c81069e6837f1863",
+    "input_format": "file",
+    "ipc": [],
+    "label": "store.js",
+    "limitations": [],
+    "modules": [
+      {
+        "bundle_modules": [],
+        "bundlers": [],
+        "bytes": 33657,
+        "chunk_ids": [],
+        "exports": {
+          "cjs": [],
+          "esm": [
+            "normaliseMedio",
+            "juntarRoles",
+            "initStore",
+            "save",
+            "flush",
+            "saveWorked",
+            "storageInfo",
+            "exportSqliteBytes",
+            "sqliteIgicSummary",
+            "subscribe",
+            "getState",
+            "findSupplierByNameOrNif",
+            "ensureSupplier",
+            "updateSupplier",
+            "deleteSupplier",
+            "supplierById",
+            "findDuplicate",
+            "addInvoice",
+            "updateInvoice",
+            "deleteInvoice",
+            "setInvoiceStatus",
+            "toggleInvoiceStatus",
+            "invoiceById",
+            "keepInvoiceOriginal",
+            "invoiceOriginalBody",
+            "removeInvoiceOriginal",
+            "originalsUsage",
+            "totals",
+            "statsBySupplier",
+            "messages",
+            "messageById",
+            "addMessage",
+            "markMessageUsed",
+            "deleteMessage",
+            "invoicesOf",
+            "sortedInvoices",
+            "updateSettings",
+            "clearAll",
+            "exportJSON",
+            "importJSON",
+            "seedDemo"
+          ]
+        },
+        "fingerprint": "c44e5dfe2b570bb278efdce84da6665ea9e99523b38e936918cbcae683c8b3a7",
+        "functions": [
+          "emptyState",
+          "normaliseMessage",
+          "normaliseLiquidacion",
+          "n",
+          "normaliseOriginal",
+          "normaliseNomina",
+          "num",
+          "txt",
+          "normaliseInvoice",
+          "normalise",
+          "rolValido",
+          "direccionDeDocumento",
+          "normaliseMedio",
+          "rolDeDocumento",
+          "juntarRoles",
+          "marcarRoles",
+          "normaliseSupplier",
+          "load",
+          "initStore",
+          "save",
+          "schedulePersist",
+          "flush",
+          "window.addEventListener(pagehide)",
+          "document.addEventListener(visibilitychange)",
+          "saveWorked",
+          "storageInfo",
+          "exportSqliteBytes",
+          "sqliteIgicSummary",
+          "subscribe",
+          "emit",
+          "getState",
+          "nameBase",
+          "findSupplierByNameOrNif",
+          "ensureSupplier",
+          "updateSupplier",
+          "deleteSupplier",
+          "supplierById",
+          "invoiceNumbersMatch",
+          "findDuplicate",
+          "addInvoice",
+          "updateInvoice",
+          "deleteInvoice",
+          "setInvoiceStatus",
+          "toggleInvoiceStatus",
+          "invoiceById",
+          "keepInvoiceOriginal",
+          "invoiceOriginalBody",
+          "removeInvoiceOriginal",
+          "originalsUsage",
+          "numOrNull",
+          "totals",
+          "statsBySupplier",
+          "messages",
+          "messageById",
+          "addMessage",
+          "markMessageUsed",
+          "deleteMessage",
+          "invoicesOf",
+          "sortedInvoices",
+          "updateSettings",
+          "clearAll",
+          "exportJSON",
+          "importJSON",
+          "seedDemo",
+          "stamp"
+        ],
+        "imports": [
+          {
+            "kind": "import",
+            "line": 8,
+            "specifier": "./util.js"
+          },
+          {
+            "kind": "import",
+            "line": 17,
+            "specifier": "./sqlite.js"
+          },
+          {
+            "kind": "import",
+            "line": 18,
+            "specifier": "./files.js"
+          }
+        ],
+        "kind": "script",
+        "parse_mode": "parsed",
+        "path": "store.js",
+        "role": "unknown",
+        "sha256": "842896ff0bae5ef41bc84641c43f1c5581b238709c618fed8ce95b3d6a8ebf87",
+        "strings": [
+          "facturas.igic.v1",
+          "local",
+          "Agrosabina SL",
+          "Caja general",
+          "https://api.openai.com/v1",
+          "gpt-4o-mini",
+          "object",
+          "msg",
+          "(sin asunto)",
+          "string",
+          "adjunto",
+          "documento",
+          " ",
+          "inv",
+          "FACTURA",
+          "INGRESO",
+          "GASTO",
+          "LIQUIDACION",
+          "SUBVENCION",
+          "COBRO",
+          "manual",
+          "CLIENTE",
+          "PROVEEDOR",
+          "AMBOS",
+          "VENTA",
+          "CAJA",
+          "EFECTIVO",
+          "METALICO",
+          "METÁLICO",
+          "BANCO",
+          "TRANSFERENCIA",
+          "CUENTA",
+          "TARJETA",
+          "sup",
+          "Proveedor",
+          "No se pudieron leer los datos guardados:",
+          "sqlite",
+          "No se pudo escribir en SQLite:",
+          "No se pudo guardar la copia en texto:",
+          "No se pudo volcar la base de datos:",
+          "undefined",
+          "pagehide",
+          "visibilitychange",
+          "hidden",
+          "Proveedor sin nombre",
+          "No se pudo guardar el original del documento:",
+          "No se pudo leer el original del documento:",
+          "No se pudo borrar el original del documento:",
+          "SIN",
+          "El fichero no parece una copia de seguridad de este programa.",
+          "0",
+          "Distribuciones Timanfaya S.L.",
+          "B38000111",
+          "2024/0184",
+          "2024/0151",
+          "2024/0120",
+          "Ferretería El Cardón",
+          "B38000222",
+          "FC-1042",
+          "FC-0988",
+          "FC-0901",
+          "Panificadora Artenara S.C.",
+          "G38000333",
+          "A/2024-0567",
+          "A/2024-0488",
+          "Suministros Añaza S.L.",
+          "B38000444",
+          "S-2024/0121",
+          "S-2024/0099",
+          "Talleres Güímar S.L.",
+          "B38000555",
+          "TG-2210"
+        ]
+      }
+    ],
+    "modules_total": 1,
+    "native_modules": [],
+    "nodes": [
+      {
+        "id": "module:store.js",
+        "kind": "module",
+        "label": "store.js",
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "new Date"
+          ],
+          "end": 1297,
+          "end_line": 51,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 821,
+          "strings": [
+            "Agrosabina SL",
+            "Caja general",
+            "https://api.openai.com/v1",
+            "gpt-4o-mini"
+          ]
+        },
+        "id": "fn:store.js#emptyState@32",
+        "kind": "function",
+        "label": "emptyState",
+        "line": 32,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim",
+            "String",
+            "String().slice",
+            "./util.js.uid",
+            "Array.isArray",
+            "m.attachments.slice().map",
+            "m.attachments.slice",
+            "new Date"
+          ],
+          "end": 2294,
+          "end_line": 79,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "m"
+          ],
+          "parent": null,
+          "start": 1299,
+          "strings": [
+            "object",
+            "msg",
+            "(sin asunto)"
+          ]
+        },
+        "id": "fn:store.js#normaliseMessage@53",
+        "kind": "function",
+        "label": "normaliseMessage",
+        "line": 53,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "n",
+            "String().trim().slice",
+            "String().trim",
+            "String",
+            "Array.isArray",
+            "liq.discounts.map().filter().slice",
+            "liq.discounts.map().filter",
+            "liq.discounts.map",
+            "liq.partidas.map().filter().slice",
+            "liq.partidas.map().filter",
+            "liq.partidas.map"
+          ],
+          "end": 3973,
+          "end_line": 120,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "liq"
+          ],
+          "parent": null,
+          "start": 2446,
+          "strings": [
+            "object"
+          ]
+        },
+        "id": "fn:store.js#normaliseLiquidacion@85",
+        "kind": "function",
+        "label": "normaliseLiquidacion",
+        "line": 85,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Number.isFinite"
+          ],
+          "end": 2613,
+          "end_line": 87,
+          "exported": false,
+          "kind": "arrow",
+          "params": [
+            "v"
+          ],
+          "parent": "normaliseLiquidacion",
+          "start": 2547,
+          "strings": []
+        },
+        "id": "fn:store.js#n@87",
+        "kind": "function",
+        "label": "n",
+        "line": 87,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim().slice",
+            "String().trim",
+            "String",
+            "Number",
+            "Number.isFinite",
+            "String().slice"
+          ],
+          "end": 4658,
+          "end_line": 138,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "orig"
+          ],
+          "parent": null,
+          "start": 4201,
+          "strings": [
+            "object",
+            "documento"
+          ]
+        },
+        "id": "fn:store.js#normaliseOriginal@127",
+        "kind": "function",
+        "label": "normaliseOriginal",
+        "line": 127,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "txt",
+            "num",
+            "Object.keys().some",
+            "Object.keys"
+          ],
+          "end": 5506,
+          "end_line": 162,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "nom"
+          ],
+          "parent": null,
+          "start": 4822,
+          "strings": [
+            "object"
+          ]
+        },
+        "id": "fn:store.js#normaliseNomina@144",
+        "kind": "function",
+        "label": "normaliseNomina",
+        "line": 144,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Number.isFinite"
+          ],
+          "end": 4986,
+          "end_line": 146,
+          "exported": false,
+          "kind": "arrow",
+          "params": [
+            "v"
+          ],
+          "parent": "normaliseNomina",
+          "start": 4920,
+          "strings": []
+        },
+        "id": "fn:store.js#num@146",
+        "kind": "function",
+        "label": "num",
+        "line": 146,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().replace().trim().slice",
+            "String().replace().trim",
+            "String().replace",
+            "String"
+          ],
+          "end": 5077,
+          "end_line": 147,
+          "exported": false,
+          "kind": "arrow",
+          "params": [
+            "v"
+          ],
+          "parent": "normaliseNomina",
+          "start": 5002,
+          "strings": [
+            " "
+          ]
+        },
+        "id": "fn:store.js#txt@147",
+        "kind": "function",
+        "label": "txt",
+        "line": 147,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Number.isFinite",
+            "./util.js.completeAmounts",
+            "./util.js.uid",
+            "String().trim",
+            "String",
+            "String().slice",
+            "normaliseMedio",
+            "String().trim().slice",
+            "Array.isArray",
+            "inv.lines.map().filter",
+            "inv.lines.map",
+            "normaliseLiquidacion",
+            "normaliseNomina",
+            "normaliseOriginal",
+            "new Date"
+          ],
+          "end": 8266,
+          "end_line": 219,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "inv"
+          ],
+          "parent": null,
+          "start": 5508,
+          "strings": [
+            "inv",
+            "FACTURA",
+            "INGRESO",
+            "GASTO",
+            "LIQUIDACION",
+            "SUBVENCION",
+            "COBRO",
+            "manual"
+          ]
+        },
+        "id": "fn:store.js#normaliseInvoice@164",
+        "kind": "function",
+        "label": "normaliseInvoice",
+        "line": 164,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "emptyState",
+            "Object.assign",
+            "Array.isArray",
+            "raw.suppliers.map().filter",
+            "raw.suppliers.map",
+            "raw.invoices.map",
+            "raw.messages.map().filter",
+            "raw.messages.map",
+            "new Set",
+            "out.suppliers.map",
+            "out.invoices.filter",
+            "marcarRoles"
+          ],
+          "end": 9133,
+          "end_line": 237,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "raw"
+          ],
+          "parent": null,
+          "start": 8268,
+          "strings": [
+            "object"
+          ]
+        },
+        "id": "fn:store.js#normalise@221",
+        "kind": "function",
+        "label": "normalise",
+        "line": 221,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim().toUpperCase",
+            "String().trim",
+            "String"
+          ],
+          "end": 9390,
+          "end_line": 243,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "valor"
+          ],
+          "parent": null,
+          "start": 9209,
+          "strings": [
+            "CLIENTE",
+            "PROVEEDOR",
+            "AMBOS"
+          ]
+        },
+        "id": "fn:store.js#rolValido@240",
+        "kind": "function",
+        "label": "rolValido",
+        "line": 240,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().toUpperCase",
+            "String"
+          ],
+          "end": 9775,
+          "end_line": 252,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "doc"
+          ],
+          "parent": null,
+          "start": 9470,
+          "strings": [
+            "INGRESO",
+            "GASTO",
+            "LIQUIDACION",
+            "SUBVENCION",
+            "COBRO",
+            "VENTA"
+          ]
+        },
+        "id": "fn:store.js#direccionDeDocumento@246",
+        "kind": "function",
+        "label": "direccionDeDocumento",
+        "line": 246,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim().toUpperCase",
+            "String().trim",
+            "String"
+          ],
+          "end": 10140,
+          "end_line": 260,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "valor"
+          ],
+          "parent": null,
+          "start": 9861,
+          "strings": [
+            "CAJA",
+            "EFECTIVO",
+            "METALICO",
+            "METÁLICO",
+            "BANCO",
+            "TRANSFERENCIA",
+            "CUENTA",
+            "TARJETA"
+          ]
+        },
+        "id": "fn:store.js#normaliseMedio@255",
+        "kind": "function",
+        "label": "normaliseMedio",
+        "line": 255,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "direccionDeDocumento"
+          ],
+          "end": 10308,
+          "end_line": 265,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "doc"
+          ],
+          "parent": null,
+          "start": 10200,
+          "strings": [
+            "INGRESO",
+            "CLIENTE",
+            "PROVEEDOR"
+          ]
+        },
+        "id": "fn:store.js#rolDeDocumento@263",
+        "kind": "function",
+        "label": "rolDeDocumento",
+        "line": 263,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "rolValido"
+          ],
+          "end": 10570,
+          "end_line": 274,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "uno",
+            "otro"
+          ],
+          "parent": null,
+          "start": 10406,
+          "strings": [
+            "AMBOS"
+          ]
+        },
+        "id": "fn:store.js#juntarRoles@268",
+        "kind": "function",
+        "label": "juntarRoles",
+        "line": 268,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "new Map",
+            "vistos.set",
+            "juntarRoles",
+            "vistos.get",
+            "rolDeDocumento",
+            "rolValido"
+          ],
+          "end": 11221,
+          "end_line": 291,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "suppliers",
+            "invoices"
+          ],
+          "parent": null,
+          "start": 10819,
+          "strings": [
+            "PROVEEDOR"
+          ]
+        },
+        "id": "fn:store.js#marcarRoles@281",
+        "kind": "function",
+        "label": "marcarRoles",
+        "line": 281,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim",
+            "String",
+            "./util.js.uid",
+            "rolValido",
+            "new Date"
+          ],
+          "end": 11796,
+          "end_line": 308,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "s"
+          ],
+          "parent": null,
+          "start": 11223,
+          "strings": [
+            "object",
+            "sup",
+            "Proveedor"
+          ]
+        },
+        "id": "fn:store.js#normaliseSupplier@293",
+        "kind": "function",
+        "label": "normaliseSupplier",
+        "line": 293,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "localStorage.getItem",
+            "emptyState",
+            "normalise",
+            "JSON.parse",
+            "console.warn"
+          ],
+          "end": 12056,
+          "end_line": 319,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 11798,
+          "strings": [
+            "No se pudieron leer los datos guardados:"
+          ]
+        },
+        "id": "fn:store.js#load@310",
+        "kind": "function",
+        "label": "load",
+        "line": 310,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./sqlite.js.init",
+            "./sqlite.js.readState",
+            "normalise",
+            "load",
+            "./sqlite.js.writeState",
+            "./sqlite.js.persist",
+            "emit"
+          ],
+          "end": 12831,
+          "end_line": 349,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 12393,
+          "strings": [
+            "sqlite",
+            "local"
+          ]
+        },
+        "id": "fn:store.js#initStore@328",
+        "kind": "function",
+        "label": "initStore",
+        "line": 328,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./sqlite.js.isAvailable",
+            "./sqlite.js.writeState",
+            "schedulePersist",
+            "console.warn",
+            "localStorage.setItem",
+            "JSON.stringify",
+            "emit"
+          ],
+          "end": 13508,
+          "end_line": 377,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 12917,
+          "strings": [
+            "sqlite",
+            "No se pudo escribir en SQLite:",
+            "No se pudo guardar la copia en texto:"
+          ]
+        },
+        "id": "fn:store.js#save@352",
+        "kind": "function",
+        "label": "save",
+        "line": 352,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "clearTimeout",
+            "setTimeout"
+          ],
+          "end": 13780,
+          "end_line": 386,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 13592,
+          "strings": []
+        },
+        "id": "fn:store.js#schedulePersist@380",
+        "kind": "function",
+        "label": "schedulePersist",
+        "line": 380,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "clearTimeout",
+            "./sqlite.js.isAvailable",
+            "./sqlite.js.writeState",
+            "./sqlite.js.persist",
+            "console.warn"
+          ],
+          "end": 14211,
+          "end_line": 403,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 13860,
+          "strings": [
+            "sqlite",
+            "No se pudo volcar la base de datos:"
+          ]
+        },
+        "id": "fn:store.js#flush@389",
+        "kind": "function",
+        "label": "flush",
+        "line": 389,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./sqlite.js.isAvailable",
+            "./sqlite.js.writeState",
+            "./sqlite.js.persist"
+          ],
+          "end": 14497,
+          "end_line": 415,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": null,
+          "start": 14288,
+          "strings": [
+            "sqlite"
+          ]
+        },
+        "id": "fn:store.js#window.addEventListener(pagehide)@406",
+        "kind": "function",
+        "label": "window.addEventListener(pagehide)",
+        "line": 406,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "flush"
+          ],
+          "end": 14645,
+          "end_line": 420,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": null,
+          "start": 14548,
+          "strings": [
+            "hidden"
+          ]
+        },
+        "id": "fn:store.js#document.addEventListener(visibilitychange)@416",
+        "kind": "function",
+        "label": "document.addEventListener(visibilitychange)",
+        "line": 416,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [],
+          "end": 14704,
+          "end_line": 425,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 14658,
+          "strings": []
+        },
+        "id": "fn:store.js#saveWorked@423",
+        "kind": "function",
+        "label": "saveWorked",
+        "line": 423,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./sqlite.js.counts",
+            "./sqlite.js.isAvailable",
+            "./sqlite.js.why",
+            "./sqlite.js.lastPersistAt"
+          ],
+          "end": 15052,
+          "end_line": 439,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 14779,
+          "strings": []
+        },
+        "id": "fn:store.js#storageInfo@428",
+        "kind": "function",
+        "label": "storageInfo",
+        "line": 428,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./sqlite.js.exportBytes"
+          ],
+          "end": 15204,
+          "end_line": 444,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 15141,
+          "strings": []
+        },
+        "id": "fn:store.js#exportSqliteBytes@442",
+        "kind": "function",
+        "label": "exportSqliteBytes",
+        "line": 442,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./sqlite.js.igicSummary"
+          ],
+          "end": 15346,
+          "end_line": 449,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 15283,
+          "strings": []
+        },
+        "id": "fn:store.js#sqliteIgicSummary@447",
+        "kind": "function",
+        "label": "sqliteIgicSummary",
+        "line": 447,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "listeners.add"
+          ],
+          "end": 15439,
+          "end_line": 454,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "fn"
+          ],
+          "parent": null,
+          "start": 15355,
+          "strings": []
+        },
+        "id": "fn:store.js#subscribe@451",
+        "kind": "function",
+        "label": "subscribe",
+        "line": 451,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "fn",
+            "console.error"
+          ],
+          "end": 15575,
+          "end_line": 464,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 15441,
+          "strings": []
+        },
+        "id": "fn:store.js#emit@456",
+        "kind": "function",
+        "label": "emit",
+        "line": 456,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [],
+          "end": 15623,
+          "end_line": 468,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 15584,
+          "strings": []
+        },
+        "id": "fn:store.js#getState@466",
+        "kind": "function",
+        "label": "getState",
+        "line": 466,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.fold().replace().replace().trim",
+            "./util.js.fold().replace().replace",
+            "./util.js.fold().replace",
+            "./util.js.fold"
+          ],
+          "end": 16043,
+          "end_line": 479,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "name"
+          ],
+          "parent": null,
+          "start": 15845,
+          "strings": [
+            " "
+          ]
+        },
+        "id": "fn:store.js#nameBase@474",
+        "kind": "function",
+        "label": "nameBase",
+        "line": 474,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.nifKey",
+            "state.suppliers.find",
+            "nameBase"
+          ],
+          "end": 16759,
+          "end_line": 500,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "name",
+            "nif"
+          ],
+          "parent": null,
+          "start": 16145,
+          "strings": []
+        },
+        "id": "fn:store.js#findSupplierByNameOrNif@482",
+        "kind": "function",
+        "label": "findSupplierByNameOrNif",
+        "line": 482,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim",
+            "String",
+            "String().trim().toUpperCase",
+            "rolValido",
+            "findSupplierByNameOrNif",
+            "juntarRoles",
+            "save",
+            "./util.js.uid",
+            "new Date",
+            "state.suppliers.push",
+            "emit"
+          ],
+          "end": 17999,
+          "end_line": 542,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "name",
+            "nif",
+            "role"
+          ],
+          "parent": null,
+          "start": 16851,
+          "strings": [
+            "sup",
+            "Proveedor sin nombre",
+            "PROVEEDOR"
+          ]
+        },
+        "id": "fn:store.js#ensureSupplier@503",
+        "kind": "function",
+        "label": "ensureSupplier",
+        "line": 503,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "state.suppliers.find",
+            "Object.assign",
+            "save"
+          ],
+          "end": 18172,
+          "end_line": 550,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "id",
+            "patch"
+          ],
+          "parent": null,
+          "start": 18008,
+          "strings": []
+        },
+        "id": "fn:store.js#updateSupplier@544",
+        "kind": "function",
+        "label": "updateSupplier",
+        "line": 544,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "state.suppliers.filter",
+            "state.invoices.filter",
+            "save"
+          ],
+          "end": 18360,
+          "end_line": 556,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "id"
+          ],
+          "parent": null,
+          "start": 18181,
+          "strings": []
+        },
+        "id": "fn:store.js#deleteSupplier@552",
+        "kind": "function",
+        "label": "deleteSupplier",
+        "line": 552,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "state.suppliers.find"
+          ],
+          "end": 18457,
+          "end_line": 560,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "id"
+          ],
+          "parent": null,
+          "start": 18369,
+          "strings": []
+        },
+        "id": "fn:store.js#supplierById@558",
+        "kind": "function",
+        "label": "supplierById",
+        "line": 558,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.fold().replace",
+            "./util.js.fold"
+          ],
+          "end": 18831,
+          "end_line": 570,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "a",
+            "b"
+          ],
+          "parent": null,
+          "start": 18679,
+          "strings": []
+        },
+        "id": "fn:store.js#invoiceNumbersMatch@566",
+        "kind": "function",
+        "label": "invoiceNumbersMatch",
+        "line": 566,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "state.invoices.find"
+          ],
+          "end": 19124,
+          "end_line": 580,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "supplierId",
+            "number"
+          ],
+          "parent": null,
+          "start": 18907,
+          "strings": []
+        },
+        "id": "fn:store.js#findDuplicate@573",
+        "kind": "function",
+        "label": "findDuplicate",
+        "line": 573,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "ensureSupplier",
+            "rolDeDocumento",
+            "findDuplicate",
+            "./util.js.completeAmounts",
+            "numOrNull",
+            "normaliseInvoice",
+            "direccionDeDocumento",
+            "./util.js.todayISO",
+            "normaliseMedio",
+            "String().slice",
+            "String",
+            "state.invoices.unshift",
+            "save"
+          ],
+          "end": 20726,
+          "end_line": 630,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "data"
+          ],
+          "parent": null,
+          "start": 19297,
+          "strings": [
+            "FACTURA",
+            "manual"
+          ]
+        },
+        "id": "fn:store.js#addInvoice@586",
+        "kind": "function",
+        "label": "addInvoice",
+        "line": 586,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "state.invoices.find",
+            "Object.assign",
+            "./util.js.completeAmounts",
+            "numOrNull",
+            "normaliseInvoice",
+            "normaliseLiquidacion",
+            "normaliseOriginal",
+            "normaliseMedio",
+            "String().trim().slice",
+            "String().trim",
+            "String",
+            "./util.js.todayISO",
+            "new Date",
+            "save"
+          ],
+          "end": 21778,
+          "end_line": 661,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "id",
+            "patch"
+          ],
+          "parent": null,
+          "start": 20735,
+          "strings": []
+        },
+        "id": "fn:store.js#updateInvoice@632",
+        "kind": "function",
+        "label": "updateInvoice",
+        "line": 632,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "state.invoices.filter",
+            "./files.js.dropOriginal().catch",
+            "./files.js.dropOriginal",
+            "save"
+          ],
+          "end": 21980,
+          "end_line": 668,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "id"
+          ],
+          "parent": null,
+          "start": 21787,
+          "strings": []
+        },
+        "id": "fn:store.js#deleteInvoice@663",
+        "kind": "function",
+        "label": "deleteInvoice",
+        "line": 663,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().slice",
+            "String",
+            "normaliseMedio",
+            "updateInvoice"
+          ],
+          "end": 22734,
+          "end_line": 687,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "id",
+            "status",
+            "paidDate",
+            "pay"
+          ],
+          "parent": null,
+          "start": 21989,
+          "strings": []
+        },
+        "id": "fn:store.js#setInvoiceStatus@670",
+        "kind": "function",
+        "label": "setInvoiceStatus",
+        "line": 670,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "state.invoices.find",
+            "setInvoiceStatus"
+          ],
+          "end": 22999,
+          "end_line": 698,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "id",
+            "paidDate",
+            "pay"
+          ],
+          "parent": null,
+          "start": 22743,
+          "strings": []
+        },
+        "id": "fn:store.js#toggleInvoiceStatus@689",
+        "kind": "function",
+        "label": "toggleInvoiceStatus",
+        "line": 689,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "state.invoices.find"
+          ],
+          "end": 23094,
+          "end_line": 702,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "id"
+          ],
+          "parent": null,
+          "start": 23008,
+          "strings": []
+        },
+        "id": "fn:store.js#invoiceById@700",
+        "kind": "function",
+        "label": "invoiceById",
+        "line": 700,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "invoiceById",
+            "Number",
+            "./files.js.keepOriginal",
+            "normaliseOriginal",
+            "new Date",
+            "save",
+            "console.warn"
+          ],
+          "end": 24345,
+          "end_line": 734,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "id",
+            "blob"
+          ],
+          "parent": null,
+          "start": 23617,
+          "strings": [
+            "undefined",
+            "documento",
+            "No se pudo guardar el original del documento:"
+          ]
+        },
+        "id": "fn:store.js#keepInvoiceOriginal@714",
+        "kind": "function",
+        "label": "keepInvoiceOriginal",
+        "line": 714,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./files.js.originalOf",
+            "console.warn"
+          ],
+          "end": 24621,
+          "end_line": 744,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "id"
+          ],
+          "parent": null,
+          "start": 24424,
+          "strings": [
+            "No se pudo leer el original del documento:"
+          ]
+        },
+        "id": "fn:store.js#invoiceOriginalBody@737",
+        "kind": "function",
+        "label": "invoiceOriginalBody",
+        "line": 737,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "invoiceById",
+            "./files.js.dropOriginal",
+            "console.warn",
+            "new Date",
+            "save"
+          ],
+          "end": 25058,
+          "end_line": 761,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "id"
+          ],
+          "parent": null,
+          "start": 24709,
+          "strings": [
+            "No se pudo borrar el original del documento:"
+          ]
+        },
+        "id": "fn:store.js#removeInvoiceOriginal@747",
+        "kind": "function",
+        "label": "removeInvoiceOriginal",
+        "line": 747,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./files.js.filesSupported",
+            "./files.js.originalsUsed"
+          ],
+          "end": 25343,
+          "end_line": 771,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 25147,
+          "strings": []
+        },
+        "id": "fn:store.js#originalsUsage@764",
+        "kind": "function",
+        "label": "originalsUsage",
+        "line": 764,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Number",
+            "Number.isFinite"
+          ],
+          "end": 25475,
+          "end_line": 777,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "v"
+          ],
+          "parent": null,
+          "start": 25345,
+          "strings": []
+        },
+        "id": "fn:store.js#numOrNull@773",
+        "kind": "function",
+        "label": "numOrNull",
+        "line": 773,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.todayISO",
+            "Number",
+            "./util.js.round2"
+          ],
+          "end": 27695,
+          "end_line": 850,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "invoices"
+          ],
+          "parent": null,
+          "start": 25747,
+          "strings": [
+            "INGRESO",
+            "SIN",
+            "GASTO"
+          ]
+        },
+        "id": "fn:store.js#totals@784",
+        "kind": "function",
+        "label": "totals",
+        "line": 784,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "new Map",
+            "map.set",
+            "map.get",
+            "./util.js.round2",
+            "Number"
+          ],
+          "end": 28477,
+          "end_line": 871,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 27758,
+          "strings": []
+        },
+        "id": "fn:store.js#statsBySupplier@853",
+        "kind": "function",
+        "label": "statsBySupplier",
+        "line": 853,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [],
+          "end": 28754,
+          "end_line": 879,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 28706,
+          "strings": []
+        },
+        "id": "fn:store.js#messages@877",
+        "kind": "function",
+        "label": "messages",
+        "line": 877,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "state.messages.find"
+          ],
+          "end": 28849,
+          "end_line": 883,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "id"
+          ],
+          "parent": null,
+          "start": 28763,
+          "strings": []
+        },
+        "id": "fn:store.js#messageById@881",
+        "kind": "function",
+        "label": "messageById",
+        "line": 881,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "normaliseMessage",
+            "state.messages.find",
+            "state.messages.unshift",
+            "save"
+          ],
+          "end": 29244,
+          "end_line": 896,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "raw"
+          ],
+          "parent": null,
+          "start": 28858,
+          "strings": []
+        },
+        "id": "fn:store.js#addMessage@885",
+        "kind": "function",
+        "label": "addMessage",
+        "line": 885,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "messageById",
+            "new Date",
+            "save"
+          ],
+          "end": 29406,
+          "end_line": 904,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "id"
+          ],
+          "parent": null,
+          "start": 29253,
+          "strings": []
+        },
+        "id": "fn:store.js#markMessageUsed@898",
+        "kind": "function",
+        "label": "markMessageUsed",
+        "line": 898,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "state.messages.filter",
+            "save"
+          ],
+          "end": 29517,
+          "end_line": 909,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "id"
+          ],
+          "parent": null,
+          "start": 29415,
+          "strings": []
+        },
+        "id": "fn:store.js#deleteMessage@906",
+        "kind": "function",
+        "label": "deleteMessage",
+        "line": 906,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "state.invoices.filter"
+          ],
+          "end": 29629,
+          "end_line": 913,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "supplierId"
+          ],
+          "parent": null,
+          "start": 29526,
+          "strings": []
+        },
+        "id": "fn:store.js#invoicesOf@911",
+        "kind": "function",
+        "label": "invoicesOf",
+        "line": 911,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "list.slice().sort",
+            "list.slice"
+          ],
+          "end": 29944,
+          "end_line": 922,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "list"
+          ],
+          "parent": null,
+          "start": 29638,
+          "strings": []
+        },
+        "id": "fn:store.js#sortedInvoices@915",
+        "kind": "function",
+        "label": "sortedInvoices",
+        "line": 915,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Object.assign",
+            "save"
+          ],
+          "end": 30299,
+          "end_line": 932,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "patch"
+          ],
+          "parent": null,
+          "start": 30173,
+          "strings": []
+        },
+        "id": "fn:store.js#updateSettings@928",
+        "kind": "function",
+        "label": "updateSettings",
+        "line": 928,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "emptyState",
+            "./files.js.forgetAllOriginals().catch",
+            "./files.js.forgetAllOriginals",
+            "save"
+          ],
+          "end": 30496,
+          "end_line": 939,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 30308,
+          "strings": []
+        },
+        "id": "fn:store.js#clearAll@934",
+        "kind": "function",
+        "label": "clearAll",
+        "line": 934,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "JSON.stringify",
+            "new Date"
+          ],
+          "end": 30616,
+          "end_line": 943,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 30505,
+          "strings": []
+        },
+        "id": "fn:store.js#exportJSON@941",
+        "kind": "function",
+        "label": "exportJSON",
+        "line": 941,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "JSON.parse",
+            "Array.isArray",
+            "new Error",
+            "normalise",
+            "save"
+          ],
+          "end": 30924,
+          "end_line": 953,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 30625,
+          "strings": [
+            "El fichero no parece una copia de seguridad de este programa."
+          ]
+        },
+        "id": "fn:store.js#importJSON@945",
+        "kind": "function",
+        "label": "importJSON",
+        "line": 945,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.todayISO",
+            "Number",
+            "./util.js.todayISO().slice",
+            "stamp",
+            "addInvoice",
+            "save"
+          ],
+          "end": 33656,
+          "end_line": 1021,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 31015,
+          "strings": [
+            "Distribuciones Timanfaya S.L.",
+            "B38000111",
+            "2024/0184",
+            "2024/0151",
+            "2024/0120",
+            "Ferretería El Cardón",
+            "B38000222",
+            "FC-1042",
+            "FC-0988",
+            "FC-0901",
+            "Panificadora Artenara S.C.",
+            "G38000333",
+            "A/2024-0567",
+            "A/2024-0488",
+            "Suministros Añaza S.L.",
+            "B38000444",
+            "S-2024/0121",
+            "S-2024/0099",
+            "Talleres Güímar S.L.",
+            "B38000555",
+            "TG-2210",
+            "manual"
+          ]
+        },
+        "id": "fn:store.js#seedDemo@956",
+        "kind": "function",
+        "label": "seedDemo",
+        "line": 956,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "new Date",
+            "Math.min",
+            "d.getFullYear",
+            "String().padStart",
+            "String",
+            "d.getMonth",
+            "d.getDate"
+          ],
+          "end": 31359,
+          "end_line": 963,
+          "exported": false,
+          "kind": "arrow",
+          "params": [
+            "monthOffset",
+            "day"
+          ],
+          "parent": "seedDemo",
+          "start": 31147,
+          "strings": [
+            "0"
+          ]
+        },
+        "id": "fn:store.js#stamp@960",
+        "kind": "function",
+        "label": "stamp",
+        "line": 960,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "api": "literal",
+          "literal": true
+        },
+        "id": "endpoint:https://api.openai.com/v1",
+        "kind": "endpoint",
+        "label": "https://api.openai.com/v1"
+      },
+      {
+        "id": "storage:localStorage.getItem facturas.igic.v1",
+        "kind": "storage",
+        "label": "localStorage.getItem facturas.igic.v1"
+      },
+      {
+        "id": "storage:localStorage.setItem facturas.igic.v1",
+        "kind": "storage",
+        "label": "localStorage.setItem facturas.igic.v1"
+      },
+      {
+        "id": "event:store.js#window:pagehide",
+        "kind": "event",
+        "label": "window:pagehide",
+        "line": 406,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:store.js#document:visibilitychange",
+        "kind": "event",
+        "label": "document:visibilitychange",
+        "line": 416,
+        "module": "store.js",
+        "role": "unknown"
+      }
+    ],
+    "package": null,
+    "routes": [],
+    "source_maps": [],
+    "stats": {
+      "api_operations": 0,
+      "bundle_modules": 0,
+      "edges": 139,
+      "endpoints": 1,
+      "files": 1,
+      "functions": 65,
+      "ipc_channels": 0,
+      "listed": 1,
+      "modules": 1,
+      "nodes": 71,
+      "paired_channels": 0
+    },
+    "storage": [
+      {
+        "api": "localStorage.getItem",
+        "arg": "facturas.igic.v1",
+        "function": "load",
+        "line": 312,
+        "module": "store.js",
+        "role": "unknown"
+      },
+      {
+        "api": "localStorage.setItem",
+        "arg": "facturas.igic.v1",
+        "function": "save",
+        "line": 368,
+        "module": "store.js",
+        "role": "unknown"
+      }
+    ],
+    "summary": "JavaScript code store.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+    "vendors": [],
+    "windows": []
+  },
+  "summary": "JavaScript code store.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "static_only",
+      "message": "Static reading only: code built at run time (eval, computed requires, remote content) is invisible; IPC pairs need literal channel names."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

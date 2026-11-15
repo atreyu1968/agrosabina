@@ -1,0 +1,54 @@
+{
+  "id": "ev_14de359c213d430f5be2ef64af466d2fdfbe1e154e0d7c98d6881ed5ca4ed9a9",
+  "subject": {
+    "kind": "script",
+    "sha256": "186ecf8dc7c12156c9c6a960993d635775bc93fc0c93fc1f02056ccca93908d2",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 130,
+    "offset": 1890,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177030,
+    "lines": 130,
+    "more": true,
+    "offset": 1890,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "        job.parsed.direction = \"INGRESO\";\n        job.parsed.classifyNote = `Trae kilos y precio por kilo (${fmtNum(liq.kg, 2)} kg a ${fmtNum(\n          liq.price,\n          3\n        )} €/kg), así que lo he tratado como liquidación de fruta.`;\n      }\n\n      // La base del documento es el líquido a percibir, no el importe que\n      // hubiera elegido el lector de facturas.\n      if (liq.net != null && liq.ok) {\n        // Si el papel dice que el IGIC es 0 %, se respeta.\n        if (/\\bigic\\b[^\\n]{0,24}0\\s*%/i.test(text) || /\\biva\\b[^\\n]{0,24}0\\s*%/i.test(text)) {\n          job.parsed.rate = 0;\n        }\n        const r = Number(job.parsed.rate);\n        const cuota = Number.isFinite(r) ? round2((liq.net * r) / 100) : 0;\n        job.parsed.base = liq.net;\n        job.parsed.igic = cuota;\n        job.parsed.total = round2(liq.net + cuota);\n      }\n    }\n\n    // La IA, si está encendida en Ajustes, repasa el texto y rellena lo que\n    // falte. Solo le llega este texto: nunca la foto ni el PDF.\n    await applyAiReading(job, text);\n\n    job.state = \"parsed\";\n    paintIngest();\n    if (cls.note) toast(cls.note, \"warn\", 6000);\n    await reviewJob(job);\n  } catch (err) {\n    job.state = \"error\";\n    job.error = err && err.message ? err.message : \"No he podido leer el archivo.\";\n    paintIngest();\n  }\n}\n\n/* ------------------------------------------------------------------ */\n/* La IA como segundo par de ojos                                     */\n/* ------------------------------------------------------------------ */\n\n/**\n * Pide a la IA que interprete el texto del documento y rellena SOLO lo que\n * las reglas no han sabido leer (o una liquidación que no cuadraba). Las\n * reglas siempre mandan; si la IA falla, se sigue con lo leído y queda una\n * nota explicándolo. Devuelve la lista de lo que ha rellenado.\n */\nasync function applyAiReading(job, text) {\n  const settings = getState().settings;\n  if (!aiConfigured(settings) || !String(text || \"\").trim()) return [];\n\n  const model = String(settings.aiModel || AI_DEFAULTS.aiModel);\n  let ai;\n  try {\n    job.stage = `Preguntando a la IA (${model})…`;\n    paintIngest();\n    ai = await aiExtract(text, settings);\n  } catch (err) {\n    const why = err && err.message ? err.message : \"no ha contestado\";\n    job.parsed.notes.push(`La IA no ha podido ayudar (${why}). Se queda lo que he leído yo.`);\n    return [];\n  }\n\n  const p = job.parsed;\n  const filled = [];\n\n  const setIfEmpty = (key, value, label) => {\n    const current = p[key];\n    const empty =\n      current == null || current === \"\" || (typeof current === \"number\" && !Number.isFinite(current));\n    if (empty && value != null && value !== \"\") {\n      p[key] = value;\n      filled.push(label);\n    }\n  };\n\n  if (ai.kind && (!p.kind || p.kind === \"OTRO\")) {\n    p.kind = ai.kind;\n    p.direction = directionOf(ai.kind);\n    filled.push(\"el tipo de documento\");\n  }\n  setIfEmpty(\"category\", ai.category, \"el concepto\");\n  setIfEmpty(\"supplierName\", ai.supplierName, \"el proveedor\");\n  setIfEmpty(\"supplierNif\", ai.supplierNif, \"el NIF\");\n  setIfEmpty(\"number\", ai.number, \"el número\");\n  setIfEmpty(\"issueDate\", ai.issueDate, \"la fecha\");\n  setIfEmpty(\"dueDate\", ai.dueDate, \"el vencimiento\");\n\n  // Los importes: solo si están a cero o sin leer, para no pisar la aritmética.\n  const noMoney = (v) => v == null || !Number.isFinite(Number(v)) || Number(v) === 0;\n  if (noMoney(p.base) && ai.base != null && ai.base !== 0) {\n    p.base = ai.base;\n    filled.push(\"la base\");\n  }\n  if (noMoney(p.igic) && ai.igic != null && !p.base && ai.igic !== 0) {\n    p.igic = ai.igic;\n    filled.push(\"la cuota de IGIC\");\n  }\n  if (noMoney(p.total) && ai.total != null && ai.total !== 0) {\n    p.total = ai.total;\n    filled.push(\"el total\");\n  }\n\n  // La liquidación: manda la IA solo si las reglas no encontraron nada o si\n  // lo que encontraron no cuadraba (kilos × precio ≠ bruto).\n  const rulesFailed = !p.liquidacion || (p.liquidacionRead && p.liquidacionRead.ok === false);\n  if (ai.liquidacion && rulesFailed) {\n    const liqAI = ai.liquidacion;\n    const kg = liqAI.kg;\n    const price = liqAI.price;\n    const discounts = liqAI.discounts || [];\n    const gross = kg != null && price != null ? round2(kg * price) : null;\n    const dtoSum = round2(discounts.reduce((sum, d) => sum + d.amount, 0));\n    const net = liqAI.net != null ? liqAI.net : gross != null ? round2(gross - dtoSum) : null;\n\n    p.liquidacion = {\n      product: liqAI.product || (p.liquidacion && p.liquidacion.product) || \"\",\n      category: liqAI.category || (p.liquidacion && p.liquidacion.category) || \"\",\n      kg,\n      price,\n      discounts,\n    };\n    p.liquidacionRead = {\n      kg,\n      price,\n      gross,\n      discounts,\n      net,\n      product: p.liquidacion.product,\n      category: p.liquidacion.category,\n",
+    "total_lines": 4618
+  },
+  "summary": "views.js: lines 1891–2020 of 4618 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 130,
+    "total": 4618,
+    "next_offset": 2020
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

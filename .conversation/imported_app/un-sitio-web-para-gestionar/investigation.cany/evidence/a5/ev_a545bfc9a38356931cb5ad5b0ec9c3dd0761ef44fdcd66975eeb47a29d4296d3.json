@@ -1,0 +1,54 @@
+{
+  "id": "ev_a545bfc9a38356931cb5ad5b0ec9c3dd0761ef44fdcd66975eeb47a29d4296d3",
+  "subject": {
+    "kind": "script",
+    "sha256": "e9cd0bd3d4849ad6b25454ee01aeef3ad1ec43ae9f977bc6c5683ce70cc49d3a",
+    "name": "sqlite.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 418,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 18265,
+    "lines": 70,
+    "more": true,
+    "offset": 418,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js",
+    "replaced_sequences": 0,
+    "text": "          s.phone || \"\",\n          s.note || \"\",\n          s.createdAt || new Date().toISOString(),\n        ]\n      );\n    }\n\n    for (const inv of invoices) {\n      exec(\n        `INSERT INTO facturas (id, proveedor_id, numero, fecha, vencimiento, base, tipo_igic,\n                               cuota_igic, total, estado, fecha_pago, tipo, categoria, sentido,\n                               lineas, liquidacion, origen, fichero, texto, notas, confianza,\n                               creado_en, actualizado_en)\n         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,\n        [\n          inv.id,\n          inv.supplierId || null,\n          inv.number || \"\",\n          inv.issueDate || \"\",\n          inv.dueDate || \"\",\n          num(inv.base),\n          num(inv.rate),\n          num(inv.igic),\n          num(inv.total),\n          inv.status === \"PAGADO\" ? \"PAGADO\" : \"PENDIENTE\",\n          inv.paidDate || \"\",\n          inv.kind || \"FACTURA\",\n          inv.category || \"\",\n          inv.direction === \"INGRESO\" ? \"INGRESO\" : \"GASTO\",\n          JSON.stringify(Array.isArray(inv.lines) ? inv.lines : []),\n          JSON.stringify(inv.liquidacion || null),\n          inv.source || \"manual\",\n          inv.fileName || \"\",\n          String(inv.rawText || \"\").slice(0, 8000),\n          JSON.stringify(inv.notes || []),\n          num(inv.confidence),\n          inv.createdAt || new Date().toISOString(),\n          inv.updatedAt || inv.createdAt || new Date().toISOString(),\n        ]\n      );\n    }\n\n    for (const m of messages) {\n      exec(\n        `INSERT INTO correos (id, de, asunto, fecha, texto, adjuntos, importado_en, usado_en)\n         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,\n        [\n          m.id,\n          m.from || \"\",\n          m.subject || \"(sin asunto)\",\n          m.date || \"\",\n          String(m.text || \"\").slice(0, 20000),\n          JSON.stringify(m.attachments || []),\n          m.importedAt || new Date().toISOString(),\n          m.usedAt || \"\",\n        ]\n      );\n    }\n\n    exec(\"COMMIT\");\n    return true;\n  } catch (err) {\n    console.error(\"No se pudo escribir en SQLite:\", err);\n    try {\n      exec(\"ROLLBACK\");\n    } catch (_) {\n      /* nada */\n    }\n    return false;\n  }\n",
+    "total_lines": 564
+  },
+  "summary": "sqlite.js: lines 419–488 of 564 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 564,
+    "next_offset": 488
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+    }
+  ],
+  "links": []
+}

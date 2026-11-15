@@ -1,0 +1,54 @@
+{
+  "id": "ev_49f408f3f4ce1e8ee9e4b4aaaefc9f85902ca540485bb76db717cb1ba5d0ba01",
+  "subject": {
+    "kind": "script",
+    "sha256": "6238b99ab8c1c0f10ce834ae43fb81a8055d05a8f9b20d7043327b18867475d9",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 50,
+    "offset": 3096,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 134368,
+    "lines": 50,
+    "more": true,
+    "offset": 3096,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "        <div class=\"field\">\n          <label for=\"set-rate\">IGIC por defecto</label>\n          <select id=\"set-rate\">\n            ${IGIC_RATES.map((r) => `<option value=\"${r.value}\" ${Number(s.defaultRate) === r.value ? \"selected\" : \"\"}>${rateText(r.value)} — ${r.label.split(\"—\")[1].trim()}</option>`).join(\"\")}\n          </select>\n        </div>\n        <div class=\"field\">\n          <label for=\"set-name\">Nombre de la empresa</label>\n          <input id=\"set-name\" type=\"text\" value=\"${esc(s.businessName || \"\")}\" placeholder=\"Agrosabina SL\">\n        </div>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Copia de seguridad</h3>\n      <p style=\"font-size:13px;color:var(--ink-3);margin-bottom:12px\">\n        Los datos viven en este navegador. Si limpias el historial o cambias de ordenador, se pierden:\n        descarga una copia de vez en cuando.\n      </p>\n      <div class=\"row wrap\">\n        <button class=\"btn sm\" data-action=\"export-json\">${icon(\"download\")} Descargar copia</button>\n        <button class=\"btn sm\" data-action=\"import-json\">${icon(\"upload\")} Restaurar copia</button>\n        <div class=\"spacer\"></div>\n        <button class=\"btn sm danger\" data-action=\"clear-all\">${icon(\"trash\")} Borrar todo</button>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Interpretación con IA <span class=\"tag\">opcional</span></h3>\n      <p style=\"font-size:13px;color:var(--ink-3);margin-bottom:12px\">\n        Con esto encendido, la IA ayuda a leer los documentos: de qué tipo son, en qué concepto entran y, si es\n        una liquidación, los kilos, el precio por kilo y los descuentos. A la IA solo le llega\n        <strong>el texto ya leído</strong>, nunca la foto ni el PDF, y solo si tú escribes tu clave. Las reglas del\n        programa siempre van primero: si la IA no contesta, se sigue con ellas.\n      </p>\n      <label style=\"display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;margin-bottom:12px\">\n        <input type=\"checkbox\" id=\"set-ai-on\" ${s.aiEnabled ? \"checked\" : \"\"}> Usar una IA para leer los documentos\n      </label>\n      <div class=\"form-grid\">\n        <div class=\"field span-2\">\n          <label for=\"set-ai-provider\">Servicio</label>\n          <select id=\"set-ai-provider\">\n            ${AI_PROVIDERS.map(\n              (p) => `<option value=\"${p.id}\" ${provider.id === p.id ? \"selected\" : \"\"}>${p.label}</option>`\n            ).join(\"\")}\n          </select>\n          <span class=\"hint\" id=\"set-ai-provider-hint\">${esc(provider.hint)}</span>\n        </div>\n        <div class=\"field span-2\">\n          <label for=\"set-ai-endpoint\">Dirección del servicio</label>\n",
+    "total_lines": 3575
+  },
+  "summary": "views.js: lines 3097–3146 of 3575 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 50,
+    "total": 3575,
+    "next_offset": 3146
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

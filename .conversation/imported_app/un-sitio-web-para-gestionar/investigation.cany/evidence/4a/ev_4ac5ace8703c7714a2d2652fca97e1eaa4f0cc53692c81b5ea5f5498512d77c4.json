@@ -1,0 +1,54 @@
+{
+  "id": "ev_4ac5ace8703c7714a2d2652fca97e1eaa4f0cc53692c81b5ea5f5498512d77c4",
+  "subject": {
+    "kind": "script",
+    "sha256": "b2e5934b5b5d5b0863dbcfd14ac048c613516ee3c6a204f3f3b2aac0c9263cae",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 3908,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 155982,
+    "lines": 40,
+    "more": true,
+    "offset": 3908,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      </div>`;\n  return `\n  <section class=\"card\">\n    <div class=\"card-head\">\n      <div>\n        <h2>Balance de situación</h2>\n        <p>Modelo oficial del Plan General de Contabilidad · resultado del periodo ${fmtEUR(resultado)}</p>\n      </div>\n      <div class=\"spacer\"></div>\n      <button class=\"btn sm ghost\" data-action=\"export-acc-csv\">${icon(\"download\")}<span>Exportar CSV</span></button>\n    </div>\n    <div class=\"table-wrap\">\n      <table class=\"data acc-table acc-balance\">\n        <thead><tr><th>Epígrafe</th><th class=\"num\">Importe</th></tr></thead>\n        <tbody>${rows.join(\"\")}</tbody>\n        <tfoot><tr>\n          <td>Comprobación: activo − (patrimonio neto + pasivo)</td>\n          <td class=\"num\">${fmtEUR(bal.descuadre)}</td>\n        </tr></tfoot>\n      </table>\n    </div>\n    ${aviso}\n  </section>`;\n}\n\n/** Cuenta de pérdidas y ganancias, también con el modelo oficial. */\nfunction accResultadosHtml(pyg) {\n  const rows = pyg.lines.map((l) => {\n    const shown = l.total ? fmtEUR(l.value) : l.value ? fmtEUR(l.value) : '<span class=\"muted\">—</span>';\n    return `<tr class=\"acc-row ${l.total ? \"acc-total\" : \"\"}\">\n      <td class=\"acc-label\">${esc(l.label)}</td>\n      <td class=\"num\">${shown}</td>\n    </tr>`;\n  });\n  const aviso = pyg.sinClasificar\n    ? `<div class=\"acc-warn\">Hay ${fmtEUR(Math.abs(pyg.sinClasificar))} en cuentas de gasto o ingreso que no he sabido colocar en ninguna línea del modelo. Revisa el concepto de esos documentos.</div>`\n    : \"\";\n  return `\n  <section class=\"card\">\n    <div class=\"card-head\">\n",
+    "total_lines": 4117
+  },
+  "summary": "views.js: lines 3909–3948 of 4117 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 4117,
+    "next_offset": 3948
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

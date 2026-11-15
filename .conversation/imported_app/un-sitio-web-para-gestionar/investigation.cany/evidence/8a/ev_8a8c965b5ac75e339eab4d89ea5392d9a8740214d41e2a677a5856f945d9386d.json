@@ -1,0 +1,54 @@
+{
+  "id": "ev_8a8c965b5ac75e339eab4d89ea5392d9a8740214d41e2a677a5856f945d9386d",
+  "subject": {
+    "kind": "script",
+    "sha256": "fdfb4ef8d169876d44e4ac64d2ab6cc507c1a80689142dba4cb96daacc9d6ecb",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 90,
+    "offset": 5290,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 288128,
+    "lines": 90,
+    "more": true,
+    "offset": 5290,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      <button class=\"btn primary\" data-save>Guardar ajustes</button>\n      <button class=\"btn ghost\" data-modal-cancel>Cerrar</button>\n    </div>`,\n    {\n      onMount(wrap) {\n        wrap.querySelectorAll(\"[data-modal-cancel]\").forEach((b) =>\n          b.addEventListener(\"click\", () => closeModal())\n        );\n\n        // Elegir el servicio rellena la dirección y el modelo; después se\n        // pueden cambiar a mano si el servicio usa otros nombres.\n        const providerSel = wrap.querySelector(\"#set-ai-provider\");\n        const endpointInput = wrap.querySelector(\"#set-ai-endpoint\");\n        const modelInput = wrap.querySelector(\"#set-ai-model\");\n        const providerHint = wrap.querySelector(\"#set-ai-provider-hint\");\n        if (providerSel) {\n          providerSel.addEventListener(\"change\", () => {\n            const chosen = AI_PROVIDERS.find((p) => p.id === providerSel.value);\n            if (!chosen) return;\n            if (providerHint) providerHint.textContent = chosen.hint;\n            if (chosen.endpoint) {\n              endpointInput.value = chosen.endpoint;\n              modelInput.value = chosen.model;\n            }\n          });\n        }\n\n        // Cuánto ocupan los originales guardados (se cuenta al abrir Ajustes).\n        originalsUsage()\n          .then((u) => {\n            const el = wrap.querySelector(\"#origUsage\");\n            if (!el) return;\n            el.textContent = u.count\n              ? `Guardados ${u.count} original${u.count === 1 ? \"\" : \"es\"} · ${originalSizeText(u.bytes)} en este navegador.`\n              : \"Todavía no hay ningún original guardado: se guardan al dar de alta un documento con foto, PDF o correo.\";\n          })\n          .catch(() => {});\n\n        wrap.querySelector(\"[data-save]\").addEventListener(\"click\", () => {\n          updateSettings({\n            defaultRate: Number(wrap.querySelector(\"#set-rate\").value),\n            businessName: wrap.querySelector(\"#set-name\").value.trim(),\n            cashAccount: wrap.querySelector(\"#set-cash\").value.trim() || \"Caja general\",\n            bankAccounts: wrap\n              .querySelector(\"#set-banks\")\n              .value.split(\"\\n\")\n              .map((t) => t.trim())\n              .filter(Boolean)\n              .slice(0, 12),\n            aiEnabled: wrap.querySelector(\"#set-ai-on\").checked,\n            aiEndpoint: wrap.querySelector(\"#set-ai-endpoint\").value.trim(),\n            aiModel: wrap.querySelector(\"#set-ai-model\").value.trim(),\n            aiKey: wrap.querySelector(\"#set-ai-key\").value.trim(),\n          });\n          toast(\"Ajustes guardados.\");\n          closeModal();\n          render();\n        });\n      },\n    }\n  );\n}\n\n/* ------------------------------------------------------------------ */\n/* Exportar                                                           */\n/* ------------------------------------------------------------------ */\n\nfunction csvCell(value) {\n  const s = value == null ? \"\" : String(value);\n  return `\"${s.replace(/\"/g, '\"\"')}\"`;\n}\n\nexport function exportCsv() {\n  const list = sortedInvoices(filteredInvoices());\n  if (!list.length) {\n    toast(\"No hay facturas que exportar.\", \"bad\");\n    return;\n  }\n  const headers = [\n    \"Proveedor\", \"NIF\", \"Nº factura\", \"Fecha\", \"Vencimiento\",\n    \"Base imponible\", \"Tipo IGIC (%)\", \"Cuota IGIC\", \"Total\",\n    \"Estado\", \"Fecha de pago\", \"Origen\",\n  ];\n  const rows = list.map((inv) => {\n    const sup = supplierById(inv.supplierId) || {};\n    return [\n      sup.name || \"\",\n      sup.nif || \"\",\n      inv.number || \"\",\n      fmtDate(inv.issueDate),\n",
+    "total_lines": 7256
+  },
+  "summary": "views.js: lines 5291–5380 of 7256 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 90,
+    "total": 7256,
+    "next_offset": 5380
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

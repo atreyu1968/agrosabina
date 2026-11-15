@@ -1,0 +1,136 @@
+{
+  "id": "ev_a59bd62ef7cdc9035eea3b678d95d151d229411411fe81c5aaeabe8da6aca71e",
+  "subject": {
+    "kind": "text",
+    "sha256": "aa895d925a00529c13792762ec59efeec8aa7d8653a7fd0232ccf06ff62dd241",
+    "name": "styles.css"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 6,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "pattern": null,
+    "text": ".brand"
+  },
+  "result": {
+    "file_size": 32385,
+    "limit": 6,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "2e6272616e64",
+        "file_offset": 2130,
+        "file_offset_hex": "0x852",
+        "length": 6,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6272616e64",
+        "file_offset": 2410,
+        "file_offset_hex": "0x96a",
+        "length": 6,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6272616e64",
+        "file_offset": 2517,
+        "file_offset_hex": "0x9d5",
+        "length": 6,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6272616e64",
+        "file_offset": 2690,
+        "file_offset_hex": "0xa82",
+        "length": 6,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6272616e64",
+        "file_offset": 2772,
+        "file_offset_hex": "0xad4",
+        "length": 6,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6272616e64",
+        "file_offset": 2836,
+        "file_offset_hex": "0xb14",
+        "length": 6,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 6
+      }
+    ],
+    "total_matches": 10
+  },
+  "summary": "10 match(es) for utf8 in styles.css; showing 6 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 6,
+    "total": 10,
+    "next_offset": 6
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x852"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x96a"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x9d5"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xa82"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xad4"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xb14"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x6418"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x6441"
+    }
+  ],
+  "links": []
+}

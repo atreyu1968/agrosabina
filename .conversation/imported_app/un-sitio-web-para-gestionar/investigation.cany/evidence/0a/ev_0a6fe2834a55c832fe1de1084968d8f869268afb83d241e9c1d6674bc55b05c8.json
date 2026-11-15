@@ -1,0 +1,76 @@
+{
+  "id": "ev_0a6fe2834a55c832fe1de1084968d8f869268afb83d241e9c1d6674bc55b05c8",
+  "subject": {
+    "kind": "script",
+    "sha256": "42a37257a971551448a3328769fcc11af9754687e95350cd67a9b633511709e8",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "async function runOne(job) {"
+  },
+  "result": {
+    "file_size": 287668,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6173796e632066756e6374696f6e2072756e4f6e65286a6f6229207b",
+        "file_offset": 107966,
+        "file_offset_hex": "0x1a5be",
+        "length": 28,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 28
+      },
+      {
+        "kind": "utf16le",
+        "length": 56
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 + utf16le in views.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x1a5be"
+    }
+  ],
+  "links": []
+}

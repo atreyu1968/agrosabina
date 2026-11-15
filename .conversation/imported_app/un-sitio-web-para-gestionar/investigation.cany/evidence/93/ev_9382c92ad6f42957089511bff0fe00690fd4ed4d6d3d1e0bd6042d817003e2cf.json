@@ -1,0 +1,54 @@
+{
+  "id": "ev_9382c92ad6f42957089511bff0fe00690fd4ed4d6d3d1e0bd6042d817003e2cf",
+  "subject": {
+    "kind": "script",
+    "sha256": "6ec57842818ead8f65029f95b4b820488a6dbfbb6233142f78099083827d16c7",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 1140,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177631,
+    "lines": 45,
+    "more": true,
+    "offset": 1140,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      <div class=\"e-actions\">\n        <button class=\"btn primary\" data-action=\"import-files\">${icon(\"upload\")} Subir documento</button>\n        <button class=\"btn\" data-action=\"new-invoice\">${icon(\"plus\")} Añadir a mano</button>\n      </div>\n    </div></section>`;\n  }\n\n  return `\n  <section class=\"card\">\n    <div class=\"filters\">\n      <div class=\"segmented\" data-filter-group=\"status\">\n        <button data-filter-status=\"all\" class=\"${ui.filters.status === \"all\" ? \"active\" : \"\"}\">Todas</button>\n        <button data-filter-status=\"pending\" class=\"${ui.filters.status === \"pending\" ? \"active\" : \"\"}\">Pendientes</button>\n        <button data-filter-status=\"paid\" class=\"${ui.filters.status === \"paid\" ? \"active\" : \"\"}\">Pagadas</button>\n      </div>\n      <div class=\"segmented\" data-filter-group=\"direction\">\n        <button data-filter-direction=\"all\" class=\"${ui.filters.direction === \"all\" ? \"active\" : \"\"}\">Todo</button>\n        <button data-filter-direction=\"GASTO\" class=\"${ui.filters.direction === \"GASTO\" ? \"active\" : \"\"}\">Compras</button>\n        <button data-filter-direction=\"INGRESO\" class=\"${ui.filters.direction === \"INGRESO\" ? \"active\" : \"\"}\">Ingresos</button>\n      </div>\n      <select data-filter-supplier aria-label=\"Filtrar por proveedor\">\n        <option value=\"\">Todos los proveedores</option>\n        ${state.suppliers.map((s) => `<option value=\"${s.id}\" ${ui.filters.supplier === s.id ? \"selected\" : \"\"}>${esc(s.name)}</option>`).join(\"\")}\n      </select>\n      <label class=\"search\">\n        ${icon(\"search\")}\n        <input type=\"search\" id=\"invoiceSearch\" placeholder=\"Buscar por número o proveedor\" value=\"${esc(ui.filters.q)}\" aria-label=\"Buscar documentos\">\n      </label>\n    </div>\n    <div id=\"invoiceTableWrap\">${invoiceTable()}</div>\n  </section>`;\n}\n\nfunction invoiceTable() {\n  const list = filteredInvoices();\n  const t = totals(list);\n  const today = todayISO();\n\n  if (!list.length) {\n    return `<div class=\"empty\">\n      <div class=\"e-icon\">${icon(\"search\")}</div>\n      <h3>Ningún documento con esos filtros</h3>\n      <p>Prueba a quitar la búsqueda o a mirar en todas.</p>\n    </div>`;\n  }\n",
+    "total_lines": 4628
+  },
+  "summary": "views.js: lines 1141–1185 of 4628 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 4628,
+    "next_offset": 1185
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

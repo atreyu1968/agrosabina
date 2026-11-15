@@ -1,0 +1,63 @@
+{
+  "id": "ev_4afebd651010ffd223578af42013a9d7bfe1842591656ddc82e9df56019c96ce",
+  "subject": {
+    "kind": "script",
+    "sha256": "ff18e5b799a73a7458bf6755f4bc34a407e5ac2c08ba99b982f25cc7e2745eaa",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "fileJobsHtml"
+  },
+  "result": {
+    "file_size": 244963,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 12
+      },
+      {
+        "kind": "utf16le",
+        "length": 24
+      }
+    ],
+    "total_matches": 0
+  },
+  "summary": "0 match(es) for utf8 + utf16le in views.js.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 0,
+    "total": 0
+  },
+  "locations": [],
+  "links": []
+}

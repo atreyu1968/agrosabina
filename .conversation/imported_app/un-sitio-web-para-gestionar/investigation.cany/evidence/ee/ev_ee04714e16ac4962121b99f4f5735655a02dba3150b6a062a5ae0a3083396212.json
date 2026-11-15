@@ -1,0 +1,109 @@
+{
+  "id": "ev_ee04714e16ac4962121b99f4f5735655a02dba3150b6a062a5ae0a3083396212",
+  "subject": {
+    "kind": "script",
+    "sha256": "5c13e1c272c5468a87bdc4589f60d353b6c4d3503905eaedea3e0f1d3ba09a75",
+    "name": "parse.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js",
+    "pattern": null,
+    "text": "CAPTURA"
+  },
+  "result": {
+    "file_size": 44656,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "43415054555241",
+        "file_offset": 19871,
+        "file_offset_hex": "0x4d9f",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "43415054555241",
+        "file_offset": 19920,
+        "file_offset_hex": "0x4dd0",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "43415054555241",
+        "file_offset": 20457,
+        "file_offset_hex": "0x4fe9",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "43415054555241",
+        "file_offset": 20613,
+        "file_offset_hex": "0x5085",
+        "length": 7,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 7
+      },
+      {
+        "kind": "utf16le",
+        "length": 14
+      }
+    ],
+    "total_matches": 4
+  },
+  "summary": "4 match(es) for utf8 + utf16le in parse.js; showing 4 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 4,
+    "total": 4
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x4d9f"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x4dd0"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x4fe9"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x5085"
+    }
+  ],
+  "links": []
+}

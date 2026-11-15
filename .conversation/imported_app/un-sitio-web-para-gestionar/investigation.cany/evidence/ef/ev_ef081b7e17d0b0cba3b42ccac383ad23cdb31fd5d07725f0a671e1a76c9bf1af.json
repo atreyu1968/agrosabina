@@ -1,0 +1,352 @@
+{
+  "id": "ev_ef081b7e17d0b0cba3b42ccac383ad23cdb31fd5d07725f0a671e1a76c9bf1af",
+  "subject": {
+    "kind": "artifact-pair",
+    "name": "site vs app"
+  },
+  "operation": "core_archives_compare",
+  "params": {
+    "left": "inv_8ffbb81d4a301391c7a26e589ffa1fceb4184c78e84a26bb8595936a606b7735",
+    "right": "inv_bf90b604056a6d85d24d0299900be59e331021f045dab14593c297ce21c33bff"
+  },
+  "result": {
+    "added": [
+      {
+        "kind": "text",
+        "path": "README.md",
+        "size": 17398
+      },
+      {
+        "kind": "json",
+        "path": "_check2/manifest.json",
+        "size": 538
+      },
+      {
+        "kind": "javascript",
+        "path": "_check2/pretty/views.js",
+        "size": 148623
+      },
+      {
+        "kind": "json",
+        "path": "_check3/manifest.json",
+        "size": 5075
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/accounting.js",
+        "size": 23521
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/ai.js",
+        "size": 13094
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/camera.js",
+        "size": 8410
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/dom.js",
+        "size": 9229
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/mail.js",
+        "size": 7866
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/main.js",
+        "size": 4826
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/model.js",
+        "size": 10395
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/parse.js",
+        "size": 28096
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/read.js",
+        "size": 16160
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/sqlite.js",
+        "size": 16726
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/store.js",
+        "size": 23891
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/util.js",
+        "size": 7671
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/views.js",
+        "size": 149630
+      },
+      {
+        "kind": "json",
+        "path": "_check4/manifest.json",
+        "size": 6205
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/accounting.js",
+        "size": 28622
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/ai.js",
+        "size": 13094
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/camera.js",
+        "size": 8410
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/dom.js",
+        "size": 9229
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/mail.js",
+        "size": 7866
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/main.js",
+        "size": 4826
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/model.js",
+        "size": 10395
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/parse.js",
+        "size": 28096
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/pdf.js",
+        "size": 10748
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/pgc.js",
+        "size": 12876
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/read.js",
+        "size": 16160
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/reports.js",
+        "size": 5373
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/sqlite.js",
+        "size": 16726
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/store.js",
+        "size": 23891
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/util.js",
+        "size": 7671
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/views.js",
+        "size": 170009
+      },
+      {
+        "kind": "text",
+        "path": "build.bat",
+        "size": 919
+      },
+      {
+        "kind": "svg",
+        "path": "dist/assets/favicon.svg",
+        "size": 601
+      },
+      {
+        "kind": "png",
+        "path": "dist/assets/img/agrosabina.png",
+        "size": 13870
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/accounting.js",
+        "size": 29170
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/ai.js",
+        "size": 13720
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/camera.js",
+        "size": 9227
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/dom.js",
+        "size": 9091
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/mail.js",
+        "size": 8279
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/main.js",
+        "size": 5344
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/model.js",
+        "size": 10340
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/parse.js",
+        "size": 29113
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/pdf.js",
+        "size": 11337
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/pgc.js",
+        "size": 13147
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/read.js",
+        "size": 17330
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/reports.js",
+        "size": 5508
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/sqlite.js",
+        "size": 17820
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/store.js",
+        "size": 24919
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/util.js",
+        "size": 7872
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/views.js",
+        "size": 176893
+      },
+      {
+        "kind": "css",
+        "path": "dist/assets/styles.css",
+        "size": 40935
+      },
+      {
+        "kind": "html",
+        "path": "dist/index.html",
+        "size": 6050
+      },
+      {
+        "kind": "text",
+        "path": "npm.cmd",
+        "size": 2556
+      },
+      {
+        "kind": "json",
+        "path": "package.reference.json",
+        "size": 339
+      },
+      {
+        "kind": "svg",
+        "path": "site/assets/favicon.svg",
+        "size": 601
+      },
+      {
+        "kind": "png",
+        "path": "site/assets/img/agrosabina.png",
+        "size": 13870
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/accounting.js",
+        "size": 29170
+      }
+    ],
+    "changed": [],
+    "counts": {
+      "added": 81,
+      "changed": 0,
+      "moved": 0,
+      "removed": 0,
+      "unchanged": 20
+    },
+    "identical": false,
+    "left": {
+      "content_id": "inv_8ffbb81d4a301391c7a26e589ffa1fceb4184c78e84a26bb8595936a606b7735",
+      "files": 20,
+      "root": "site"
+    },
+    "moved": [],
+    "removed": [],
+    "right": {
+      "content_id": "inv_bf90b604056a6d85d24d0299900be59e331021f045dab14593c297ce21c33bff",
+      "files": 101,
+      "root": "app"
+    }
+  },
+  "summary": "site → app: 81 added, 0 removed, 0 changed, 0 moved, 20 unchanged.",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "unknown"
+  },
+  "locations": [],
+  "links": []
+}

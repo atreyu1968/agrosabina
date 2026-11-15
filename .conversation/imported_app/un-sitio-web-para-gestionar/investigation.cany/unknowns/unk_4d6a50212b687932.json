@@ -1,0 +1,15 @@
+{
+  "id": "unk_4d6a50212b687932",
+  "revision": 1,
+  "question": "¿Cargan de verdad sql.js, la cámara y las pasadas extra de OCR en un navegador? Nada de esto se ha ejecutado todavía: el sitio nunca se ha abierto en un navegador y el análisis es solo lectura estática.",
+  "severity": "high",
+  "domain": "runtime",
+  "status": "open",
+  "probes": [
+    "Abrir el sitio servido en localhost y mirar en Ajustes si pone «SQLite» y las filas; recargar y comprobar que siguen",
+    "Conceder permiso de cámara y hacer una foto; comprobar que la cola de lectura la procesa",
+    "Descargar el .sqlite y abrirlo con DB Browser for SQLite para ver las tablas"
+  ],
+  "evidence_for": [],
+  "evidence_against": []
+}

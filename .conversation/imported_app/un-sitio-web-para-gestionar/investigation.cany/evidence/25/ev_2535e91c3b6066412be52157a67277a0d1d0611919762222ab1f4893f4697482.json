@@ -1,0 +1,54 @@
+{
+  "id": "ev_2535e91c3b6066412be52157a67277a0d1d0611919762222ab1f4893f4697482",
+  "subject": {
+    "kind": "script",
+    "sha256": "cd48c5cf20b87e39095de591bed9b4aadd07c9211f3a562a2f958858a55644b0",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 362,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 123883,
+    "lines": 70,
+    "more": true,
+    "offset": 362,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      </article>\n      <article class=\"kpi\">\n        <div class=\"kpi-label\"><span class=\"dot\"></span>Resultado</div>\n        <div class=\"kpi-value\">${fmtEUR(round2(t.income - t.expense))}</div>\n        <div class=\"kpi-foot\">Ingresos menos gastos de lo registrado</div>\n      </article>\n    </section>\n\n    ${categoryCard(t)}\n\n    <div class=\"two-col\">\n      <section class=\"card\">\n        <div class=\"card-head\">\n          <div>\n            <h2>Últimos documentos</h2>\n            <p>Lo último que ha entrado</p>\n          </div>\n          <div class=\"spacer\"></div>\n          <a class=\"btn sm ghost\" href=\"#/compras\">Ver todas ${icon(\"arrow\")}</a>\n        </div>\n        <div class=\"table-wrap\">\n          <table class=\"data\">\n            <thead>\n              <tr>\n                <th>Proveedor</th><th>Factura</th><th>Fecha</th>\n                <th class=\"num\">Total</th><th>Estado</th>\n              </tr>\n            </thead>\n            <tbody>\n              ${latest.map((inv) => `\n                <tr data-id=\"${inv.id}\">\n                  <td><div class=\"cell-main\"><span class=\"name\">${esc(supplierName(inv.supplierId))}</span></div></td>\n                  <td class=\"mono\">${esc(inv.number || \"—\")}</td>\n                  <td class=\"num\">${fmtDate(inv.issueDate)}</td>\n                  <td class=\"num strong\">${fmtEUR(inv.total)}</td>\n                  <td>${statusPill(inv)}</td>\n                </tr>`).join(\"\")}\n            </tbody>\n          </table>\n        </div>\n      </section>\n\n      <div class=\"stack\">\n        <section class=\"card\">\n          <div class=\"card-head\">\n            <div>\n              <h2>Próximos vencimientos</h2>\n              <p>Lo que toca pagar antes</p>\n            </div>\n          </div>\n          ${upcoming.length ? `<div class=\"mini-list\">\n            ${upcoming.map((inv) => {\n              const d = daysUntil(inv.dueDate);\n              const when = inv.dueDate\n                ? d < 0\n                  ? `Vencida hace ${Math.abs(d)} días`\n                  : d === 0\n                    ? \"Vence hoy\"\n                    : `Vence en ${d} días`\n                : `Emitida el ${fmtDate(inv.issueDate)}`;\n              return `<div class=\"mini-row\">\n                <div class=\"m-main\">\n                  <div class=\"t\">${esc(supplierName(inv.supplierId))}</div>\n                  <div class=\"s\">${esc(when)}</div>\n                </div>\n                <div class=\"num\">${fmtEUR(inv.total)}</div>\n              </div>`;\n            }).join(\"\")}\n          </div>` : `<div class=\"empty\" style=\"padding:30px 18px\">\n            <h3>Nada pendiente</h3>\n",
+    "total_lines": 3310
+  },
+  "summary": "views.js: lines 363–432 of 3310 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 3310,
+    "next_offset": 432
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

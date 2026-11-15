@@ -1,0 +1,72 @@
+{
+  "id": "ev_5257bcb3d768ec8d649969a15c4a104b3a83236dcf59e164369db155aa20d35f",
+  "subject": {
+    "kind": "script",
+    "sha256": "f36e9b09ab1993b81a3e4fd5f97a70d30c2c4fc620419a3545e3be06cda89cc3",
+    "name": "main.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js",
+    "pattern": null,
+    "text": "let dbReady = false;"
+  },
+  "result": {
+    "file_size": 5344,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6c65742064625265616479203d2066616c73653b",
+        "file_offset": 1252,
+        "file_offset_hex": "0x4e4",
+        "length": 20,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 20
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 in main.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x4e4"
+    }
+  ],
+  "links": []
+}

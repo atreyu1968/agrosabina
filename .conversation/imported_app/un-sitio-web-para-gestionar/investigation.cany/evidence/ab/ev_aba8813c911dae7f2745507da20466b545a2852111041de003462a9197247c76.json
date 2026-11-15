@@ -1,0 +1,83 @@
+{
+  "id": "ev_aba8813c911dae7f2745507da20466b545a2852111041de003462a9197247c76",
+  "subject": {
+    "kind": "script",
+    "sha256": "effbee695913dd70eb1d3b51952ecc8ed76c4969a93f6df5b3ddba29ce97f26c",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "accTab"
+  },
+  "result": {
+    "file_size": 196170,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "616363546162",
+        "file_offset": 162737,
+        "file_offset_hex": "0x27bb1",
+        "length": 6,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "616363546162",
+        "file_offset": 175349,
+        "file_offset_hex": "0x2acf5",
+        "length": 6,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 6
+      }
+    ],
+    "total_matches": 2
+  },
+  "summary": "2 match(es) for utf8 in views.js; showing 2 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x27bb1"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x2acf5"
+    }
+  ],
+  "links": []
+}

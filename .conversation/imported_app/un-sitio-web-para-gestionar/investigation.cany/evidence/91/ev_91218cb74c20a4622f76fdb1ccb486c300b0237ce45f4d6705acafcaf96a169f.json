@@ -1,0 +1,54 @@
+{
+  "id": "ev_91218cb74c20a4622f76fdb1ccb486c300b0237ce45f4d6705acafcaf96a169f",
+  "subject": {
+    "kind": "script",
+    "sha256": "3cd2505212512ecfcfb515b9a2ac3878a3a8364ff6bc57b84d020dc66232e269",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 90,
+    "offset": 25,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 23210,
+    "lines": 90,
+    "more": true,
+    "offset": 25,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "\n/* ------------------------------------------------------------------ */\n/* Carga y guardado                                                   */\n/* ------------------------------------------------------------------ */\n\nfunction emptyState() {\n  return {\n    version: 1,\n    settings: {\n      defaultRate: 7,\n      businessName: \"Agrosabina SL\",\n      aiEnabled: false,\n      aiEndpoint: \"https://api.openai.com/v1\",\n      aiModel: \"gpt-4o-mini\",\n      aiKey: \"\",\n      createdAt: new Date().toISOString(),\n    },\n    suppliers: [],\n    invoices: [],\n    messages: [],\n  };\n}\n\nfunction normaliseMessage(m) {\n  if (!m || typeof m !== \"object\") return null;\n  const subject = String(m.subject || \"\").trim();\n  const text = String(m.text || \"\").slice(0, 20000);\n  if (!subject && !text) return null;\n  return {\n    id: m.id || uid(\"msg\"),\n    from: String(m.from || \"\").trim(),\n    subject: subject || \"(sin asunto)\",\n    date: String(m.date || \"\").trim(),\n    text,\n    attachments: Array.isArray(m.attachments)\n      ? m.attachments.slice(0, 30).map((a) => {\n          if (typeof a === \"string\") return { name: a, type: \"\", readable: false, size: 0 };\n          const bytes = a && a.bytes;\n          return {\n            name: String((a && a.name) || \"adjunto\"),\n            type: String((a && a.type) || \"\"),\n            readable: !!(a && a.readable),\n            size: Number((a && a.size) || 0) || (bytes && bytes.length ? bytes.length : 0),\n          };\n        })\n      : [],\n    importedAt: m.importedAt || new Date().toISOString(),\n    usedAt: m.usedAt || \"\",\n  };\n}\n\nfunction normaliseInvoice(inv) {\n  const base = Number.isFinite(+inv.base) && inv.base !== null && inv.base !== \"\" ? +inv.base : null;\n  const igic = Number.isFinite(+inv.igic) && inv.igic !== null && inv.igic !== \"\" ? +inv.igic : null;\n  const total = Number.isFinite(+inv.total) && inv.total !== null && inv.total !== \"\" ? +inv.total : null;\n  const rate = Number.isFinite(+inv.rate) && inv.rate !== null && inv.rate !== \"\" ? +inv.rate : null;\n  const complete = completeAmounts({ base, igic, total, rate });\n  return {\n    id: inv.id || uid(\"inv\"),\n    supplierId: inv.supplierId || null,\n    number: String(inv.number || \"\").trim(),\n    issueDate: inv.issueDate || \"\",\n    dueDate: inv.dueDate || \"\",\n    base: complete.base,\n    rate: complete.rate,\n    igic: complete.igic,\n    total: complete.total,\n    status: inv.status === STATUS.PAID ? STATUS.PAID : STATUS.PENDING,\n    paidDate: inv.paidDate || \"\",\n    kind: String(inv.kind || \"FACTURA\"),\n    category: String(inv.category || \"\"),\n    direction:\n      inv.direction === \"INGRESO\"\n        ? \"INGRESO\"\n        : inv.direction === \"GASTO\"\n          ? \"GASTO\"\n          : [\"LIQUIDACION\", \"SUBVENCION\", \"COBRO\"].includes(String(inv.kind || \"\"))\n            ? \"INGRESO\"\n            : \"GASTO\",\n    // Un documento puede llevar varios tipos de IGIC: cada línea guarda su base y su tipo.\n    lines: Array.isArray(inv.lines)\n      ? inv.lines\n          .map((l) => {\n            const lb = Number.isFinite(+l.base) && l.base !== null && l.base !== \"\" ? +l.base : null;\n            const lr = Number.isFinite(+l.rate) && l.rate !== null && l.rate !== \"\" ? +l.rate : null;\n            return lb == null || lr == null ? null : { base: lb, rate: lr };\n          })\n          .filter(Boolean)\n      : [],\n    source: inv.source || \"manual\",\n",
+    "total_lines": 749
+  },
+  "summary": "store.js: lines 26–115 of 749 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 90,
+    "total": 749,
+    "next_offset": 115
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

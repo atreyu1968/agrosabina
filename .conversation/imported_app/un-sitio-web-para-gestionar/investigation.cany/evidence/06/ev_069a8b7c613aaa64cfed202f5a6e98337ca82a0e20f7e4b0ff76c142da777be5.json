@@ -1,0 +1,98 @@
+{
+  "id": "ev_069a8b7c613aaa64cfed202f5a6e98337ca82a0e20f7e4b0ff76c142da777be5",
+  "subject": {
+    "kind": "script",
+    "sha256": "c0289682ae3319a39044d0d80d8b78f5ccb4f95e31dc988fa7e0b0fa47a5eacf",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "trocearPorPaginas"
+  },
+  "result": {
+    "file_size": 277690,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "74726f63656172506f72506167696e6173",
+        "file_offset": 104594,
+        "file_offset_hex": "0x19892",
+        "length": 17,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "74726f63656172506f72506167696e6173",
+        "file_offset": 106385,
+        "file_offset_hex": "0x19f91",
+        "length": 17,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "74726f63656172506f72506167696e6173",
+        "file_offset": 111119,
+        "file_offset_hex": "0x1b20f",
+        "length": 17,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 17
+      },
+      {
+        "kind": "utf16le",
+        "length": 34
+      }
+    ],
+    "total_matches": 3
+  },
+  "summary": "3 match(es) for utf8 + utf16le in views.js; showing 3 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 3,
+    "total": 3
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x19892"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x19f91"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x1b20f"
+    }
+  ],
+  "links": []
+}

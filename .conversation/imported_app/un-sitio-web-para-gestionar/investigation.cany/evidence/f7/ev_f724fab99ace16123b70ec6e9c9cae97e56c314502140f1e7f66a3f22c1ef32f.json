@@ -1,0 +1,59 @@
+{
+  "id": "ev_f724fab99ace16123b70ec6e9c9cae97e56c314502140f1e7f66a3f22c1ef32f",
+  "subject": {
+    "kind": "pe",
+    "sha256": "5937c281c36ddce51370684c3c01383508fc1e014597ace35bc6014a9d529656",
+    "name": "craft-anything.exe"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 20,
+    "offset": 0,
+    "path": "C:\\Program Files\\Craft Anything\\craft-anything.exe",
+    "pattern": null,
+    "text": "has no build"
+  },
+  "result": {
+    "file_size": 106616704,
+    "limit": 20,
+    "match_cap_reached": false,
+    "matches": [],
+    "native_container": "pe",
+    "offset": 0,
+    "path": "C:\\Program Files\\Craft Anything\\craft-anything.exe",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 12
+      }
+    ],
+    "total_matches": 0
+  },
+  "summary": "0 match(es) for utf8 in craft-anything.exe.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "unmapped_regions",
+      "message": "Matches in headers, overlays or debug data that are not loaded into memory have no virtual address."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 0,
+    "total": 0
+  },
+  "locations": [],
+  "links": []
+}

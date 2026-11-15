@@ -1,0 +1,54 @@
+{
+  "id": "ev_8137fe1c269dd0eccc4830725cc1d7a5a3e25e6607df316367c7c7ed94966dad",
+  "subject": {
+    "kind": "script",
+    "sha256": "74d04d86a9e267ad2036e387eae84d9dac1474b696d523baafcaae4fd6496266",
+    "name": "sqlite.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 130,
+    "offset": 251,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 17820,
+    "lines": 130,
+    "more": true,
+    "offset": 251,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js",
+    "replaced_sequences": 0,
+    "text": "    return false;\n  }\n}\n\nexport function isAvailable() {\n  return available && !!db;\n}\n\nexport function why() {\n  return failReason;\n}\n\n/* ------------------------------------------------------------------ */\n/* Leer y escribir los datos                                          */\n/* ------------------------------------------------------------------ */\n\nfunction settingsFromDb() {\n  const out = {};\n  for (const row of rows(\"SELECT clave, valor FROM ajustes\")) {\n    try {\n      out[row.clave] = JSON.parse(row.valor);\n    } catch (_) {\n      out[row.clave] = row.valor;\n    }\n  }\n  return out;\n}\n\n/**\n * Devuelve los datos como { settings, suppliers, invoices }, o null si la base\n * de datos está recién creada y todavía no tiene nada.\n */\nexport function readState() {\n  if (!isAvailable()) return null;\n\n  const settings = settingsFromDb();\n  const suppliers = rows(\n    \"SELECT id, nombre, nif, email, telefono, nota, creado_en FROM proveedores ORDER BY creado_en\"\n  ).map((r) => ({\n    id: r.id,\n    name: r.nombre,\n    nif: r.nif || \"\",\n    email: r.email || \"\",\n    phone: r.telefono || \"\",\n    note: r.nota || \"\",\n    createdAt: r.creado_en,\n  }));\n\n  const invoices = rows(\n    `SELECT id, proveedor_id, numero, fecha, vencimiento, base, tipo_igic, cuota_igic, total,\n            estado, fecha_pago, tipo, categoria, sentido, lineas, liquidacion, origen, fichero,\n            texto, notas, confianza, creado_en, actualizado_en\n       FROM facturas ORDER BY creado_en DESC`\n  ).map((r) => {\n    let notes = [];\n    try {\n      notes = r.notas ? JSON.parse(r.notas) : [];\n    } catch (_) {\n      notes = [];\n    }\n    let lines = [];\n    try {\n      lines = r.lineas ? JSON.parse(r.lineas) : [];\n    } catch (_) {\n      lines = [];\n    }\n    let liquidacion = null;\n    try {\n      liquidacion = r.liquidacion ? JSON.parse(r.liquidacion) : null;\n    } catch (_) {\n      liquidacion = null;\n    }\n    return {\n      id: r.id,\n      supplierId: r.proveedor_id || null,\n      number: r.numero || \"\",\n      issueDate: r.fecha || \"\",\n      dueDate: r.vencimiento || \"\",\n      base: r.base,\n      rate: r.tipo_igic,\n      igic: r.cuota_igic,\n      total: r.total,\n      status: r.estado === \"PAGADO\" ? \"PAGADO\" : \"PENDIENTE\",\n      paidDate: r.fecha_pago || \"\",\n      kind: r.tipo || \"FACTURA\",\n      category: r.categoria || \"\",\n      direction: r.sentido === \"INGRESO\" ? \"INGRESO\" : \"GASTO\",\n      lines: Array.isArray(lines) ? lines : [],\n      liquidacion: liquidacion && typeof liquidacion === \"object\" ? liquidacion : null,\n      source: r.origen || \"manual\",\n      fileName: r.fichero || \"\",\n      rawText: r.texto || \"\",\n      notes: Array.isArray(notes) ? notes : [],\n      confidence: r.confianza == null ? null : Number(r.confianza),\n      createdAt: r.creado_en,\n      updatedAt: r.actualizado_en,\n    };\n  });\n\n  let messages = [];\n  try {\n    messages = rows(\n      \"SELECT id, de, asunto, fecha, texto, adjuntos, importado_en, usado_en FROM correos ORDER BY importado_en DESC\"\n    ).map((r) => {\n      let adjuntos = [];\n      try {\n        adjuntos = r.adjuntos ? JSON.parse(r.adjuntos) : [];\n      } catch (_) {\n        adjuntos = [];\n      }\n      return {\n        id: r.id,\n        from: r.de || \"\",\n        subject: r.asunto || \"\",\n        date: r.fecha || \"\",\n        text: r.texto || \"\",\n        attachments: Array.isArray(adjuntos) ? adjuntos : [],\n        importedAt: r.importado_en,\n        usedAt: r.usado_en || \"\",\n      };\n    });\n  } catch (err) {\n    console.warn(\"No se pudo leer el correo guardado:\", err);\n  }\n\n  if (!suppliers.length && !invoices.length && !messages.length && !Object.keys(settings).length) return null;\n  return { settings, suppliers, invoices, messages };\n}\n\n/** Escribe todos los datos en las tablas (en una sola transacción). */\n",
+    "total_lines": 554
+  },
+  "summary": "sqlite.js: lines 252–381 of 554 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 130,
+    "total": 554,
+    "next_offset": 381
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+    }
+  ],
+  "links": []
+}

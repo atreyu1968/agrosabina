@@ -1,0 +1,54 @@
+{
+  "id": "ev_2f207f4c2dae62b0c265d5e09950b520cb6210e5a8a22403c1347fb34f86517d",
+  "subject": {
+    "kind": "script",
+    "sha256": "186ecf8dc7c12156c9c6a960993d635775bc93fc0c93fc1f02056ccca93908d2",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 1855,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177030,
+    "lines": 45,
+    "more": true,
+    "offset": 1855,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    const cls = await classifyDocument(text, getState().settings, { fileName: job.file.name });\n    job.parsed.kind = cls.kind || \"FACTURA\";\n    job.parsed.category = cls.category || \"\";\n    job.parsed.direction = cls.direction || directionOf(job.parsed.kind);\n    job.parsed.classifyWhy = cls.why || \"\";\n    job.parsed.classifyNote = cls.note || \"\";\n\n    /* Liquidación de fruta: kilos, precio por kilo, descuentos y líquido.\n       Se lee del texto entero (no del recorte que se guarda) y se revisa que\n       los números del papel cuadren antes de enseñarlos. */\n    const liq = parseLiquidacion(text);\n    if (liq.kg != null || liq.price != null || liq.discounts.length || liq.net != null) {\n      job.parsed.liquidacion = {\n        product: liq.product,\n        category: liq.category,\n        kg: liq.kg,\n        price: liq.price,\n        discounts: liq.discounts,\n      };\n      job.parsed.liquidacionRead = {\n        kg: liq.kg,\n        price: liq.price,\n        gross: liq.gross,\n        discounts: liq.discounts,\n        net: liq.net,\n        product: liq.product,\n        category: liq.category,\n        ok: liq.ok,\n      };\n      for (const n of liq.notes) job.parsed.notes.push(n);\n\n      // Si trae kilos y precio por kilo pero venía clasificada como factura,\n      // es una liquidación: se cambia el tipo para que salga su bloque.\n      if (liq.ok && job.parsed.kind === \"FACTURA\") {\n        job.parsed.kind = \"LIQUIDACION\";\n        job.parsed.direction = \"INGRESO\";\n        job.parsed.classifyNote = `Trae kilos y precio por kilo (${fmtNum(liq.kg, 2)} kg a ${fmtNum(\n          liq.price,\n          3\n        )} €/kg), así que lo he tratado como liquidación de fruta.`;\n      }\n\n      // La base del documento es el líquido a percibir, no el importe que\n      // hubiera elegido el lector de facturas.\n      if (liq.net != null && liq.ok) {\n",
+    "total_lines": 4618
+  },
+  "summary": "views.js: lines 1856–1900 of 4618 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 4618,
+    "next_offset": 1900
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

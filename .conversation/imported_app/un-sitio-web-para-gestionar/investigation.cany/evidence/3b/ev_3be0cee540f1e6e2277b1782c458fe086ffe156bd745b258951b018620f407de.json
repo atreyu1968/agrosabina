@@ -1,0 +1,83 @@
+{
+  "id": "ev_3be0cee540f1e6e2277b1782c458fe086ffe156bd745b258951b018620f407de",
+  "subject": {
+    "kind": "text",
+    "sha256": "72b06e296b6662d207d7e4ff01c0d0fab001826345c816a2454d526776bd5473",
+    "name": "styles.css"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 3,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\styles.css",
+    "pattern": null,
+    "text": "overscroll-behavior: contain"
+  },
+  "result": {
+    "file_size": 36019,
+    "limit": 3,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6f7665727363726f6c6c2d6265686176696f723a20636f6e7461696e",
+        "file_offset": 16513,
+        "file_offset_hex": "0x4081",
+        "length": 28,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6f7665727363726f6c6c2d6265686176696f723a20636f6e7461696e",
+        "file_offset": 17387,
+        "file_offset_hex": "0x43eb",
+        "length": 28,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\styles.css",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 28
+      }
+    ],
+    "total_matches": 2
+  },
+  "summary": "2 match(es) for utf8 in styles.css; showing 2 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x4081"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x43eb"
+    }
+  ],
+  "links": []
+}

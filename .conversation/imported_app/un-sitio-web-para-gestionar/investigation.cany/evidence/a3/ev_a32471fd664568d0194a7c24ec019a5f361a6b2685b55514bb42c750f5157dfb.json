@@ -1,0 +1,134 @@
+{
+  "id": "ev_a32471fd664568d0194a7c24ec019a5f361a6b2685b55514bb42c750f5157dfb",
+  "subject": {
+    "kind": "js-app",
+    "sha256": "dcb6082cb231e93fdaa89d7fc4ddb22aefd08954689f7af60110ce7d6ab8ed63",
+    "name": "app"
+  },
+  "operation": "core_evidence_browse",
+  "params": {
+    "show": {
+      "fields": [
+        "url",
+        "module",
+        "kind"
+      ],
+      "kind": "rows",
+      "limit": 20,
+      "list": "endpoints"
+    },
+    "source": {
+      "evidence_id": "ev_027ac7b94237c43e1c2900e189ed442214452a6677c95b558ce87d101175ca94",
+      "kind": "saved"
+    }
+  },
+  "result": {
+    "coverage": {
+      "at_end": true,
+      "examined": 18,
+      "next_offset": null,
+      "status": "page",
+      "total": 18
+    },
+    "from_evidence": "ev_027ac7b94237c43e1c2900e189ed442214452a6677c95b558ce87d101175ca94",
+    "from_tool": "js_app_map",
+    "shown": {
+      "items": [
+        {
+          "module": "assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs"
+        },
+        {
+          "module": "assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.min.mjs"
+        },
+        {
+          "module": "assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js"
+        },
+        {
+          "module": "assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0"
+        },
+        {
+          "module": "assets/js/read.js",
+          "url": "https://tessdata.projectnaptha.com/4.0.0"
+        },
+        {
+          "module": "assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/worker.min.js"
+        },
+        {
+          "module": "dist/assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs"
+        },
+        {
+          "module": "dist/assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.min.mjs"
+        },
+        {
+          "module": "dist/assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js"
+        },
+        {
+          "module": "dist/assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0"
+        },
+        {
+          "module": "dist/assets/js/read.js",
+          "url": "https://tessdata.projectnaptha.com/4.0.0"
+        },
+        {
+          "module": "dist/assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/worker.min.js"
+        },
+        {
+          "module": "site/assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs"
+        },
+        {
+          "module": "site/assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.min.mjs"
+        },
+        {
+          "module": "site/assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js"
+        },
+        {
+          "module": "site/assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0"
+        },
+        {
+          "module": "site/assets/js/read.js",
+          "url": "https://tessdata.projectnaptha.com/4.0.0"
+        },
+        {
+          "module": "site/assets/js/read.js",
+          "url": "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/worker.min.js"
+        }
+      ],
+      "list": "endpoints",
+      "offset": 0,
+      "total": 18
+    }
+  },
+  "summary": "Part of js_app_map evidence (page).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 18,
+    "total": 18
+  },
+  "locations": [],
+  "links": [
+    "ev_027ac7b94237c43e1c2900e189ed442214452a6677c95b558ce87d101175ca94"
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_5ab5154609bce7d700a79bf51be1a7e03598116fe25bfd7b08bef528cb5ce90e",
+  "subject": {
+    "kind": "script",
+    "sha256": "dcba6981e7e12348cbc51179c1c41a6ce6831863b65f798a694ec109b2b6a95b",
+    "name": "sqlite.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 300,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 19010,
+    "lines": 70,
+    "more": true,
+    "offset": 300,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js",
+    "replaced_sequences": 0,
+    "text": "  const settings = settingsFromDb();\n  const suppliers = rows(\n    \"SELECT id, nombre, nif, email, telefono, nota, rol, creado_en FROM proveedores ORDER BY creado_en\"\n  ).map((r) => ({\n    id: r.id,\n    name: r.nombre,\n    nif: r.nif || \"\",\n    email: r.email || \"\",\n    phone: r.telefono || \"\",\n    note: r.nota || \"\",\n    role: r.rol || \"\",\n    createdAt: r.creado_en,\n  }));\n\n  const invoices = rows(\n    `SELECT id, proveedor_id, numero, fecha, vencimiento, base, tipo_igic, cuota_igic, total,\n            estado, fecha_pago, tipo, categoria, sentido, lineas, liquidacion, origen, fichero, original,\n            texto, notas, confianza, creado_en, actualizado_en\n       FROM facturas ORDER BY creado_en DESC`\n  ).map((r) => {\n    let notes = [];\n    try {\n      notes = r.notas ? JSON.parse(r.notas) : [];\n    } catch (_) {\n      notes = [];\n    }\n    let lines = [];\n    try {\n      lines = r.lineas ? JSON.parse(r.lineas) : [];\n    } catch (_) {\n      lines = [];\n    }\n    let liquidacion = null;\n    try {\n      liquidacion = r.liquidacion ? JSON.parse(r.liquidacion) : null;\n    } catch (_) {\n      liquidacion = null;\n    }\n    let original = null;\n    try {\n      original = r.original ? JSON.parse(r.original) : null;\n    } catch (_) {\n      original = null;\n    }\n    return {\n      id: r.id,\n      supplierId: r.proveedor_id || null,\n      number: r.numero || \"\",\n      issueDate: r.fecha || \"\",\n      dueDate: r.vencimiento || \"\",\n      base: r.base,\n      rate: r.tipo_igic,\n      igic: r.cuota_igic,\n      total: r.total,\n      status: r.estado === \"PAGADO\" ? \"PAGADO\" : \"PENDIENTE\",\n      paidDate: r.fecha_pago || \"\",\n      kind: r.tipo || \"FACTURA\",\n      category: r.categoria || \"\",\n      direction: r.sentido === \"INGRESO\" ? \"INGRESO\" : \"GASTO\",\n      lines: Array.isArray(lines) ? lines : [],\n      liquidacion: liquidacion && typeof liquidacion === \"object\" ? liquidacion : null,\n      source: r.origen || \"manual\",\n      fileName: r.fichero || \"\",\n      original: original && typeof original === \"object\" ? original : null,\n      rawText: r.texto || \"\",\n      notes: Array.isArray(notes) ? notes : [],\n      confidence: r.confianza == null ? null : Number(r.confianza),\n      createdAt: r.creado_en,\n      updatedAt: r.actualizado_en,\n    };\n",
+    "total_lines": 577
+  },
+  "summary": "sqlite.js: lines 301–370 of 577 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 577,
+    "next_offset": 370
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+    }
+  ],
+  "links": []
+}

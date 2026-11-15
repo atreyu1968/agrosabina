@@ -1,0 +1,54 @@
+{
+  "id": "ev_bc2c1e93c2c3c1b254b29ef442138d745235da21ce16604a17533e81a7b38dd0",
+  "subject": {
+    "kind": "script",
+    "sha256": "5424c53cadc6967fd41cb2d41f506ef1289ebd4290305ebd0dd21bd6dfeca4f8",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 160,
+    "offset": 22,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 23887,
+    "lines": 160,
+    "more": true,
+    "offset": 22,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": " * pérdidas y ganancias va; `balance`, en qué epígrafe del balance. Las de\n * gastos e ingresos no van al balance (su saldo acaba en el resultado).\n */\nexport const CUENTAS = Object.freeze([\n  { code: \"100\", name: \"Capital social\", balance: \"PN_I\" },\n  { code: \"113\", name: \"Reservas voluntarias\", balance: \"PN_III\" },\n  { code: \"121\", name: \"Resultados negativos de ejercicios anteriores\", balance: \"PN_V\" },\n  { code: \"400\", name: \"Proveedores\", balance: \"PC_V\" },\n  { code: \"430\", name: \"Clientes\", balance: \"AC_III\" },\n  { code: \"472\", name: \"Hacienda Pública, IGIC soportado\", balance: \"AC_III\" },\n  { code: \"477\", name: \"Hacienda Pública, IGIC repercutido\", balance: \"PC_V\" },\n  { code: \"570\", name: \"Caja\", balance: \"AC_VII\" },\n  { code: \"572\", name: \"Bancos e instituciones de crédito c/c\", balance: \"AC_VII\" },\n  { code: \"602\", name: \"Compras de otros aprovisionamientos\", pl: \"4\" },\n  { code: \"623\", name: \"Servicios de profesionales independientes\", pl: \"7\" },\n  { code: \"628\", name: \"Suministros\", pl: \"7\" },\n  { code: \"629\", name: \"Otros servicios\", pl: \"7\" },\n  { code: \"630\", name: \"Impuesto sobre beneficios\", pl: \"17\" },\n  { code: \"631\", name: \"Otros tributos\", pl: \"7\" },\n  { code: \"640\", name: \"Sueldos y salarios\", pl: \"6\" },\n  { code: \"642\", name: \"Seguridad Social a cargo de la empresa\", pl: \"6\" },\n  { code: \"701\", name: \"Ventas de productos terminados\", pl: \"1\" },\n  { code: \"740\", name: \"Subvenciones a la explotación\", pl: \"5\" },\n  { code: \"759\", name: \"Ingresos por servicios diversos\", pl: \"5\" },\n]);\n\n/** Epígrafe de balance que le toca a una cuenta que no está en la lista. */\nfunction balancePorDefecto(code) {\n  const c = String(code || \"\");\n  const first = c.charAt(0);\n  if (first === \"1\") return \"PN_V\";\n  if (first === \"2\") return \"AN_II\";\n  if (first === \"3\") return \"AC_II\";\n  if (first === \"4\") return c < \"450\" ? \"PC_V\" : \"AC_III\";\n  if (first === \"5\") return c < \"560\" ? \"PC_III\" : \"AC_VII\";\n  return \"\";\n}\n\nconst CACHE_CUENTAS = new Map();\n\n/** La ficha de una cuenta: código, nombre, epígrafe de balance y línea de P&G. */\nexport function cuenta(code) {\n  const key = String(code || \"\");\n  if (CACHE_CUENTAS.has(key)) return CACHE_CUENTAS.get(key);\n  const found = CUENTAS.find((c) => c.code === key);\n  const row = found\n    ? {\n        code: key,\n        name: found.name,\n        balance: found.balance || balancePorDefecto(key),\n        pl: found.pl || \"\",\n      }\n    : {\n        code: key,\n        name: `Cuenta ${key}`,\n        balance: balancePorDefecto(key),\n        pl: \"\",\n      };\n  CACHE_CUENTAS.set(key, row);\n  return row;\n}\n\n/* ------------------------------------------------------------------ */\n/* De documento a cuenta                                              */\n/* ------------------------------------------------------------------ */\n\nconst GASTO_POR_CONCEPTO = {\n  AGUA: \"628\",\n  ELECTRICIDAD: \"628\",\n  COMBUSTIBLE: \"628\",\n  SERVICIOS: \"623\",\n  FITOSANITARIOS: \"602\",\n  ABONOS: \"602\",\n  IMPUESTOS: \"631\",\n  LABORALES: \"640\",\n};\n\nconst INGRESO_POR_CONCEPTO = {\n  FRUTA: \"701\",\n  SUBVENCIONES: \"740\",\n};\n\n/** La cuenta de gasto o de ingreso que le toca a un documento. */\nexport function cuentaDeDocumento(inv) {\n  const kind = String((inv && inv.kind) || \"FACTURA\");\n  const cat = String((inv && inv.category) || \"\");\n  if (kind === \"LIQUIDACION\") return \"701\";\n  if (kind === \"SUBVENCION\") return \"740\";\n  if (kind === \"NOMINA\") return \"640\";\n  if (kind === \"COBRO\") return cat === \"SUBVENCIONES\" ? \"740\" : cat === \"FRUTA\" ? \"701\" : \"759\";\n  if (directionOf(kind) === \"INGRESO\") return INGRESO_POR_CONCEPTO[cat] || \"759\";\n  return GASTO_POR_CONCEPTO[cat] || \"629\";\n}\n\n/** Base, cuota y total de un documento, cuadrados entre sí. */\nfunction importes(inv) {\n  let base = round2(Number(inv.base) || 0);\n  const igic = round2(Number(inv.igic) || 0);\n  let total = round2(Number(inv.total) || 0);\n  if (!total) total = round2(base + igic);\n  if (!total) return { base: 0, igic: 0, total: 0 };\n  if (!base) base = round2(total - igic);\n  // Si el total guardado no cuadra con base + cuota, manda el total del papel.\n  if (Math.abs(round2(base + igic) - total) > 0.02) base = round2(total - igic);\n  return { base, igic, total };\n}\n\n/**\n * Convierte una lista de [cuenta, importe] en renglones con debe y haber.\n * Un importe positivo va al debe; uno negativo, al haber. Si bailan céntimos,\n * se los lleva la cuenta de mayor importe para que el asiento cuadre.\n */\nexport function lineas(raw) {\n  const rows = (raw || [])\n    .map((pair) => ({ code: String(pair[0]), value: round2(Number(pair[1]) || 0) }))\n    .filter((r) => Math.abs(r.value) >= 0.005);\n  if (!rows.length) return [];\n  const suma = round2(rows.reduce((n, r) => n + r.value, 0));\n  if (suma !== 0) {\n    let biggest = rows[0];\n    for (const r of rows) if (Math.abs(r.value) > Math.abs(biggest.value)) biggest = r;\n    biggest.value = round2(biggest.value - suma);\n  }\n  return rows\n    .filter((r) => Math.abs(r.value) >= 0.005)\n    .map((r) => ({\n      account: r.code,\n      name: cuenta(r.code).name,\n      debit: r.value > 0 ? r.value : 0,\n      credit: r.value < 0 ? Math.abs(r.value) : 0,\n    }));\n}\n\nfunction totalLineas(lines) {\n  return round2((lines || []).reduce((n, l) => n + l.debit, 0));\n}\n\n/* ------------------------------------------------------------------ */\n/* Asientos                                                           */\n/* ------------------------------------------------------------------ */\n\nconst ORDEN = { apertura: 0, devengo: 1, cobro: 2, pago: 3 };\n\n/**\n * Los asientos del periodo. Uno por documento (cuando se emite) y, si está\n * cobrado o pagado, otro por el movimiento de tesorería. Más el asiento de\n * apertura, si se han dicho el capital y el saldo de bancos.\n *\n * `invoices` son los documentos guardados; se les puede añadir `party` con el\n * nombre del proveedor o del comprador para que salga en el concepto.\n */\nexport function asientosDe(invoices, opts = {}) {\n  const from = String(opts.from || \"\").slice(0, 10);\n  const to = String(opts.to || \"\").slice(0, 10);\n  const dentro = (day) => {\n    const d = String(day || \"\").slice(0, 10);\n    if (!d) return false;\n    if (from && d < from) return false;\n    if (to && d > to) return false;\n    return true;\n",
+    "total_lines": 588
+  },
+  "summary": "accounting.js: lines 23–182 of 588 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 160,
+    "total": 588,
+    "next_offset": 182
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

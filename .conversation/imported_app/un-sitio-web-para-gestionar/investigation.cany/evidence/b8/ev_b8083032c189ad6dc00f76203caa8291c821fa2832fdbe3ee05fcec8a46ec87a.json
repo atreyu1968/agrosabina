@@ -1,0 +1,54 @@
+{
+  "id": "ev_b8083032c189ad6dc00f76203caa8291c821fa2832fdbe3ee05fcec8a46ec87a",
+  "subject": {
+    "kind": "text",
+    "sha256": "1c11888f5ec682be7664f14ad58330bc74656eec5143a1d8c0380507ff7b36d4",
+    "name": "styles.css"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 42052,
+    "lines": 60,
+    "more": true,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "replaced_sequences": 0,
+    "text": "/* ==========================================================================\n   Facturas · Proveedores e IGIC\n   Hoja de estilos única, sin dependencias.\n   ========================================================================== */\n\n:root {\n  --bg: #f6f5f1;\n  --surface: #ffffff;\n  --surface-2: #fbfaf6;\n  --surface-3: #f2f0e9;\n  --line: #e7e3d9;\n  --line-strong: #d8d2c4;\n  --ink: #17211d;\n  --ink-2: #4d5852;\n  --ink-3: #7d867f;\n  --brand: #11665c;\n  --brand-2: #0b4a43;\n  --brand-soft: #e3f0ed;\n  --brand-soft-2: #cfe6e1;\n  --ok: #15693f;\n  --ok-soft: #e6f4ec;\n  --warn: #8f4c07;\n  --warn-soft: #fdf0dd;\n  --danger: #a8342a;\n  --danger-soft: #fbeae8;\n  --radius: 14px;\n  --radius-sm: 10px;\n  --shadow-sm: 0 1px 2px rgba(23, 33, 29, .05);\n  --shadow-md: 0 10px 30px -12px rgba(23, 33, 29, .18), 0 2px 6px rgba(23, 33, 29, .04);\n  --shadow-lg: 0 30px 70px -20px rgba(23, 33, 29, .35);\n  --font: ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif;\n  --mono: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n}\n\n* { box-sizing: border-box; }\n\nhtml, body { height: 100%; }\n\nbody {\n  margin: 0;\n  font-family: var(--font);\n  font-size: 15px;\n  line-height: 1.5;\n  color: var(--ink);\n  background: var(--bg);\n  -webkit-font-smoothing: antialiased;\n  display: flex;\n  min-height: 100vh;\n}\n\nh1, h2, h3, h4, p, figure { margin: 0; }\n\nbutton, input, select, textarea { font: inherit; color: inherit; }\n\na { color: var(--brand); text-decoration: none; }\n\nsvg { display: block; }\n\n.skip {\n  position: absolute;\n",
+    "total_lines": 1558
+  },
+  "summary": "styles.css: lines 1–60 of 1558 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 1558,
+    "next_offset": 60
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+    }
+  ],
+  "links": []
+}

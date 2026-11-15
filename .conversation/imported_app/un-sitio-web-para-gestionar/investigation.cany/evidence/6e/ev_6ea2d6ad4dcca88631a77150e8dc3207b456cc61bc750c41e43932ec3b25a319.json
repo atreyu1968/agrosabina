@@ -1,0 +1,54 @@
+{
+  "id": "ev_6ea2d6ad4dcca88631a77150e8dc3207b456cc61bc750c41e43932ec3b25a319",
+  "subject": {
+    "kind": "script",
+    "sha256": "15378b8e4cc65c2c961168c1a4aaa24775a3f28dca4e9b43a6a508d5f821564b",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 1030,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 133873,
+    "lines": 40,
+    "more": true,
+    "offset": 1030,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    \"Tipo\",\n    \"Producto\",\n    \"Categoría\",\n    \"Kilos\",\n    \"Precio €/kg\",\n    \"Bruto\",\n    \"Descuentos\",\n    \"Líquido\",\n    \"Total documento\",\n    \"Estado\",\n  ];\n  const rows = list.map((inv) => {\n    const num = liquidacionNumbers(inv);\n    const liq = inv.liquidacion || {};\n    const sup = supplierById(inv.supplierId) || {};\n    return [\n      inv.issueDate || \"\",\n      supplierName(inv.supplierId),\n      sup.nif || \"\",\n      inv.number || \"\",\n      kindInfo(inv.kind).label,\n      liq.product || \"\",\n      liq.category || \"\",\n      num.kg ? fmtNum(num.kg) : \"\",\n      num.price ? fmtNum(num.price, 3) : \"\",\n      num.gross ? fmtNum(num.gross) : \"\",\n      num.discounts ? fmtNum(num.discounts) : \"\",\n      fmtNum(num.net),\n      fmtNum(inv.total),\n      inv.status === STATUS.PAID ? \"Cobrado\" : \"Por cobrar\",\n    ].map(csvCell).join(\";\");\n  });\n  const csv = \"\\ufeff\" + [headers.map(csvCell).join(\";\"), ...rows].join(\"\\r\\n\");\n  downloadText(`ventas-${w.from || \"todo\"}-${todayISO()}.csv`, csv);\n  toast(`Exportadas ${list.length} ${list.length === 1 ? \"venta\" : \"ventas\"} del periodo.`);\n}\n\n/* ------------------------------------------------------------------ */\n/* Facturas                                                           */\n/* ------------------------------------------------------------------ */\n",
+    "total_lines": 3561
+  },
+  "summary": "views.js: lines 1031–1070 of 3561 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 3561,
+    "next_offset": 1070
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,123 @@
+{
+  "id": "ev_eb39152ef7b680426dfe0e5b4c773f2049bfaaac72954c1cfe21f0ebf127ce99",
+  "subject": {
+    "kind": "js-app",
+    "name": "dist"
+  },
+  "operation": "js_function_explain",
+  "params": {
+    "graph_id": "ag_8b88c1fde3a720c077dd11d0d1dce858cb620cba12b87c56610b4d7bf73c7206",
+    "max_depth": 1,
+    "seed": "windowFor"
+  },
+  "result": {
+    "functions": [
+      {
+        "callee_tree": [
+          {
+            "depth": 1,
+            "from": "fn:assets/js/views.js#windowFor@641",
+            "function": "two",
+            "node": "fn:assets/js/views.js#two@644"
+          }
+        ],
+        "callers": [
+          {
+            "function": "fn:assets/js/views.js#contaWindow@3650",
+            "how": "resolved"
+          },
+          {
+            "function": "fn:assets/js/views.js#salesWindow@636",
+            "how": "resolved"
+          }
+        ],
+        "calls": [
+          {
+            "callee": "new Date",
+            "resolved": null
+          },
+          {
+            "callee": "now.getFullYear",
+            "resolved": null
+          },
+          {
+            "callee": "./util.js.todayISO",
+            "resolved": null
+          },
+          {
+            "callee": "two",
+            "resolved": "fn:assets/js/views.js#two@644"
+          },
+          {
+            "callee": "now.getMonth",
+            "resolved": null
+          },
+          {
+            "callee": "Math.floor",
+            "resolved": null
+          },
+          {
+            "callee": "now.getDate",
+            "resolved": null
+          },
+          {
+            "callee": "./util.js.fmtDate",
+            "resolved": null
+          }
+        ],
+        "exported": false,
+        "line": 641,
+        "module": "assets/js/views.js",
+        "name": "windowFor",
+        "node": "fn:assets/js/views.js#windowFor@641",
+        "params": [
+          "state"
+        ],
+        "role": "page",
+        "strings": [
+          "month",
+          "Este mes",
+          "quarter",
+          "Este trimestre",
+          "campaign",
+          "Últimos 12 meses",
+          "all",
+          "Todo lo registrado",
+          "custom",
+          "Elige las fechas",
+          "year",
+          "Este año"
+        ],
+        "touches": []
+      }
+    ],
+    "seed_functions": 1,
+    "unresolved_calls": [
+      "new Date"
+    ]
+  },
+  "summary": "windowFor (assets/js/views.js:641) calls 8 function(s), has 2 caller(s) and touches 0 thing(s).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "no_dataflow",
+      "message": "Calls and touches are read from syntax; values flowing between functions are not tracked."
+    },
+    {
+      "code": "inferred_callers",
+      "message": "Callers marked 'same name (inferred)' match by name only and may be wrong."
+    }
+  ],
+  "coverage": {
+    "status": "unknown"
+  },
+  "locations": [],
+  "links": []
+}

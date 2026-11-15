@@ -1,0 +1,54 @@
+{
+  "id": "ev_4ab57b5902dcc040170bf7e7fb77f85f6adff06f49dd698bae763f64e81ee28e",
+  "subject": {
+    "kind": "script",
+    "sha256": "95ac2e5c4bec09c962bd87a3d7b4b2a6fddec11eadda8255eee762d54df4edea",
+    "name": "parse.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 200,
+    "offset": 470,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 29113,
+    "lines": 200,
+    "more": true,
+    "offset": 470,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js",
+    "replaced_sequences": 0,
+    "text": "\n  /* --- estado --- */\n  const st = readStatus(flat);\n  if (st.note) notes.push(st.note);\n\n  /* --- confianza --- */\n  let score = 0;\n  if (supplierName) score += 0.22;\n  if (supplierNif) score += 0.22;\n  if (number) score += 0.16;\n  if (issueDate) score += 0.12;\n  if (complete.total != null && !complete.derived.includes(\"total\")) score += 0.2;\n  if (raw.rate != null) score += 0.05;\n  if (raw.base != null) score += 0.03;\n  if (balanced) score += 0.06;\n\n  const confidence = Math.max(0, Math.min(1, score));\n\n  return {\n    supplierName: supplierName || \"\",\n    supplierNif: supplierNif || \"\",\n    number: number || \"\",\n    issueDate,\n    dueDate: dueDate || \"\",\n    base: complete.base,\n    rate: complete.rate,\n    igic: complete.igic,\n    total: complete.total,\n    derived: complete.derived,\n    status: st.status,\n    confidence,\n    balanced,\n    notes,\n    rawText: flat.slice(0, 6000),\n  };\n}\n\n/** ¿Parece una factura? Sirve para avisar cuando se cuela otro documento. */\nexport function looksLikeInvoice(text) {\n  const low = fold(text);\n  const hits = [\n    /factura/, /total/, /base imponible/, /igic|iva/, /\\d{1,3}[.,]\\d{2}/, /cif|nif/,\n  ].filter((re) => re.test(low)).length;\n  return hits >= 3;\n}\n\n/* ------------------------------------------------------------------ */\n/* Liquidaciones de fruta                                             */\n/* ------------------------------------------------------------------ */\n\n/*\n * Una liquidación no es una factura: trae kilos, un precio por kilo, unos\n * descuentos y un líquido a percibir. El lector de facturas se queda con los\n * importes gordos, se come los precios de tres decimales («0,853» → 0,85) y\n * confunde la base con el líquido. Aquí van reglas propias.\n */\n\n/* Un número de una casilla de liquidación. Admite hasta cuatro decimales,\n * porque un precio por kilo se escribe con tres. */\nconst LIQ_NUM = String.raw`-?\\d{1,3}(?:[.\\s]\\d{3})+(?:,\\d{1,4})?|-?\\d+(?:[.,]\\d{1,4})?`;\n\nconst RE_LIQ_KG =\n  /(?:kilos?|kgs?\\.?|kilogramos?|peso\\s*(?:neto|bruto|total)|netos?|cantidad(?:\\s*entregada)?|entregad[oa]s?|total\\s*(?:de\\s*)?kilos)/i;\nconst RE_LIQ_PRICE =\n  /(?:precio\\s*(?:de\\s*)?(?:\\/\\s*kgs?|por\\s*kgs?|kilo|unidad|unitario|medio|compra)?|p\\.?\\s?v\\.?\\s?p\\.?|a\\s*raz[óo]n\\s*de)/i;\nconst RE_LIQ_EURKG = /(?:€|euros?|eur)\\s*(?:\\/|por|la)?\\s*(?:kgs?|kilos?|kilogramos?)/i;\nconst RE_LIQ_GROSS =\n  /(?:importe\\s*bruto|total\\s*bruto|bruto|valor\\s*(?:de\\s*la\\s*)?(?:fruta|mercanc[íi]a))/i;\nconst RE_LIQ_NET =\n  /(?:l[íi]quido\\s*(?:a\\s*percibir|total|neto)?|total\\s*l[íi]quido|neto\\s*a\\s*percibir|a\\s*percibir|l[íi]quido|total\\s*(?:a\\s*)?(?:percibir|cobrar))/i;\nconst RE_LIQ_DTO =\n  /(descuento|deducci|gasto|retenci|manipulaci|envase|comisi|transport|flete|anticipo|merma|c[aá]non|seguro|calibre|cuota|limpieza|confecci|palet|descarga)/i;\n\nconst LIQ_FRUITS = [\n  [\"platano\", \"Plátano\"], [\"aguacate\", \"Aguacate\"], [\"tomate\", \"Tomate\"],\n  [\"mango\", \"Mango\"], [\"papaya\", \"Papaya\"], [\"pepino\", \"Pepino\"],\n  [\"calabacin\", \"Calabacín\"], [\"naranja\", \"Naranja\"], [\"mandarina\", \"Mandarina\"],\n  [\"limon\", \"Limón\"], [\"uva\", \"Uva\"], [\"melon\", \"Melón\"], [\"sandia\", \"Sandía\"],\n  [\"pina\", \"Piña\"], [\"chirimoya\", \"Chirimoya\"], [\"granadilla\", \"Granadilla\"],\n  [\"higo\", \"Higo\"], [\"pimiento\", \"Pimiento\"], [\"judia\", \"Judía\"],\n  [\"batata\", \"Batata\"], [\"boniato\", \"Boniato\"], [\"aguacates\", \"Aguacate\"],\n];\nconst LIQ_CATEGORIES = [\"Extra\", \"Primera\", \"Segunda\", \"Tercera\", \"Destrío\"];\n\n/**\n * Kilos. Aquí el punto casi siempre separa miles («4.520» → 4.520), salvo\n * cuando empieza por cero («0,500» → medio kilo).\n */\nexport function parseKg(raw) {\n  if (raw == null) return null;\n  if (typeof raw === \"number\") return Number.isFinite(raw) ? raw : null;\n  let s = String(raw).replace(/[^\\d.,-]/g, \"\");\n  if (!s) return null;\n  const neg = s.startsWith(\"-\");\n  s = s.replace(/-/g, \"\");\n  const lastComma = s.lastIndexOf(\",\");\n  const lastDot = s.lastIndexOf(\".\");\n  if (lastComma > -1 && lastDot > -1) {\n    s = lastComma > lastDot ? s.replace(/\\./g, \"\").replace(\",\", \".\") : s.replace(/,/g, \"\");\n  } else if (lastComma > -1) {\n    const d = s.length - lastComma - 1;\n    const entero = s.slice(0, lastComma);\n    s = d === 3 && entero !== \"0\" ? s.replace(/,/g, \"\") : s.replace(\",\", \".\");\n  } else if (lastDot > -1) {\n    const d = s.length - lastDot - 1;\n    const entero = s.slice(0, lastDot);\n    if (d === 3 && entero !== \"0\") s = s.replace(/\\./g, \"\");\n  }\n  const n = Number(s);\n  if (!Number.isFinite(n)) return null;\n  return neg ? -n : n;\n}\n\n/**\n * Precio por kilo. Aquí es al revés: «0,853» y «0.853» son 0,853 €/kg, y un\n * punto suelto siempre es decimal, porque nadie paga 1.234 euros por kilo.\n */\nexport function parsePrice(raw) {\n  if (raw == null) return null;\n  if (typeof raw === \"number\") return Number.isFinite(raw) ? raw : null;\n  let s = String(raw).replace(/[^\\d.,-]/g, \"\");\n  if (!s) return null;\n  const neg = s.startsWith(\"-\");\n  s = s.replace(/-/g, \"\");\n  const lastComma = s.lastIndexOf(\",\");\n  const lastDot = s.lastIndexOf(\".\");\n  if (lastComma > -1 && lastDot > -1) {\n    s = lastComma > lastDot ? s.replace(/\\./g, \"\").replace(\",\", \".\") : s.replace(/,/g, \"\");\n  } else if (lastComma > -1) {\n    s = s.replace(\",\", \".\");\n  }\n  const n = Number(s);\n  if (!Number.isFinite(n)) return null;\n  return neg ? -n : n;\n}\n\n/** El primer número que hay después de una etiqueta. */\nfunction numAfter(text, labelRe) {\n  const look = new RegExp(`(?:${labelRe.source})[^0-9%\\\\-]{0,40}?(${LIQ_NUM})`, \"i\");\n  const m = look.exec(text);\n  return m ? m[1] : null;\n}\n\n/** El número que hay justo antes de una unidad o etiqueta. */\nfunction numBefore(text, labelRe) {\n  const look = new RegExp(`(${LIQ_NUM})\\\\s*(?:${labelRe.source})`, \"i\");\n  const m = look.exec(text);\n  return m ? m[1] : null;\n}\n\n/** Un nombre para la persona («plátano» → «Plátano»). */\nfunction properCase(word) {\n  const w = String(word || \"\").trim();\n  if (!w) return \"\";\n  return w.charAt(0).toUpperCase() + w.slice(1);\n}\n\nfunction liquidacionProduct(text) {\n  const labelled = new RegExp(\n    `(?:producto|art[íi]culo|mercanc[íi]a|variedad|fruta)\\\\s*[:\\\\-]?\\\\s*([A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{3,32})`,\n    \"i\"\n  ).exec(text);\n  if (labelled) {\n    const name = labelled[1].replace(/\\s+/g, \" \").trim();\n    const key = fold(name);\n    const hit = LIQ_FRUITS.find(([k]) => key.includes(k));\n    if (hit) return hit[1];\n  }\n  const low = fold(text);\n  for (const [key, name] of LIQ_FRUITS) {\n    if (new RegExp(String.raw`\\b` + key + String.raw`s?\\b`).test(low)) return name;\n  }\n  return \"\";\n}\n\nfunction liquidacionCategory(text) {\n  const low = fold(text);\n  for (const c of LIQ_CATEGORIES) {\n    if (new RegExp(String.raw`\\b` + fold(c) + String.raw`\\b`).test(low)) return c;\n  }\n  return \"\";\n}\n\n/** Una línea con kilos, precio e importe que cuadra (kilos × precio ≈ importe). */\nfunction liquidacionFromTable(text) {\n  for (const line of String(text || \"\").split(/\\r?\\n/)) {\n    const nums = line.match(new RegExp(LIQ_NUM, \"g\")) || [];\n    if (nums.length !== 3) continue;\n    const kg = parseKg(nums[0]);\n    const price = parsePrice(nums[1]);\n    const gross = parseAmount(nums[2]);\n    if (!(kg > 0 && price > 0 && gross > 0)) continue;\n    if (price > 100) continue;\n    if (Math.abs(kg * price - gross) / gross <= 0.02) return { kg, price, gross };\n  }\n  return null;\n}\n\n/** Los descuentos, uno por línea, con su nombre y su importe. */\nfunction liquidacionDiscounts(text) {\n",
+    "total_lines": 781
+  },
+  "summary": "parse.js: lines 471–670 of 781 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 200,
+    "total": 781,
+    "next_offset": 670
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+    }
+  ],
+  "links": []
+}

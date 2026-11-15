@@ -1,0 +1,219 @@
+{
+  "format": "craft-anything-recovery",
+  "inputs": [
+    {
+      "bytes": 29170,
+      "input": "js/accounting.js",
+      "input_index": 0,
+      "sha256": "aea2f632810a30a206bb5c03f817d42223cbbd6fc0a8616cce3c29f88a6f2449"
+    },
+    {
+      "bytes": 13720,
+      "input": "js/ai.js",
+      "input_index": 1,
+      "sha256": "1e585cc49b078fbe974665ab51132669cb2bc7c416a346bae7db13c338c2a41c"
+    },
+    {
+      "bytes": 9227,
+      "input": "js/camera.js",
+      "input_index": 2,
+      "sha256": "ba282a08876e06a9ae4092e28b8c58fe5ef83b9d824ecfec6c0f3a7d3c33f354"
+    },
+    {
+      "bytes": 9091,
+      "input": "js/dom.js",
+      "input_index": 3,
+      "sha256": "a184588da01bbaaff7f7e9b3028b69a729173e09996373b78baeb039c091ccf7"
+    },
+    {
+      "bytes": 8279,
+      "input": "js/mail.js",
+      "input_index": 4,
+      "sha256": "f520ccdd5a3ab0549aa7f45c8a8057ba1b299d1917f99fbffddca35f3afdcd77"
+    },
+    {
+      "bytes": 5344,
+      "input": "js/main.js",
+      "input_index": 5,
+      "sha256": "f36e9b09ab1993b81a3e4fd5f97a70d30c2c4fc620419a3545e3be06cda89cc3"
+    },
+    {
+      "bytes": 10340,
+      "input": "js/model.js",
+      "input_index": 6,
+      "sha256": "95cfec9262b76d4a06e9da1f5aa03517b468bd8e6341b387341adabc3c2d11cb"
+    },
+    {
+      "bytes": 29113,
+      "input": "js/parse.js",
+      "input_index": 7,
+      "sha256": "95ac2e5c4bec09c962bd87a3d7b4b2a6fddec11eadda8255eee762d54df4edea"
+    },
+    {
+      "bytes": 11337,
+      "input": "js/pdf.js",
+      "input_index": 8,
+      "sha256": "220dcfdbc6a049f4299ace4ac37018a447379c05ada086f3f97c6084e4723b5b"
+    },
+    {
+      "bytes": 13147,
+      "input": "js/pgc.js",
+      "input_index": 9,
+      "sha256": "cb4be4f191b16cd0c1314e4c0f2ca0fcc3eedd081a0430d450dcf4f846bae80e"
+    },
+    {
+      "bytes": 17330,
+      "input": "js/read.js",
+      "input_index": 10,
+      "sha256": "c7354c4304a3218d2fdd79102cc1044647cc5d91ba73d12ee17fb118e6c31de3"
+    },
+    {
+      "bytes": 5508,
+      "input": "js/reports.js",
+      "input_index": 11,
+      "sha256": "3cef45174f6a52395d625097c1b39b52ab6d4e2dd916c2e5f0eb65b7b1704fc9"
+    },
+    {
+      "bytes": 17820,
+      "input": "js/sqlite.js",
+      "input_index": 12,
+      "sha256": "74d04d86a9e267ad2036e387eae84d9dac1474b696d523baafcaae4fd6496266"
+    },
+    {
+      "bytes": 24919,
+      "input": "js/store.js",
+      "input_index": 13,
+      "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b"
+    },
+    {
+      "bytes": 7872,
+      "input": "js/util.js",
+      "input_index": 14,
+      "sha256": "e77d2b067087936538d3d840a88e5abb36fb4b329936b321d8810b38a1692838"
+    },
+    {
+      "bytes": 176893,
+      "input": "js/views.js",
+      "input_index": 15,
+      "sha256": "cdc8a5fb97c8ef976ab08328772ed61e34b8b97993fa1bad5cd6c2a329fd6db5"
+    }
+  ],
+  "notes": [],
+  "originals_truncated": false,
+  "outputs": [
+    {
+      "from": "js/accounting.js",
+      "kind": "pretty",
+      "path": "pretty/js/accounting.js",
+      "rewrites": 0,
+      "sha256": "26867b2999d91eeb393892b6469a027dc44cae934b6b35bb4a8272f24dcdb4e9"
+    },
+    {
+      "from": "js/ai.js",
+      "kind": "pretty",
+      "path": "pretty/js/ai.js",
+      "rewrites": 0,
+      "sha256": "a784037e8d090a7b7ab1feac2f8e3b740c005128eca64903565a111cdb46bb2a"
+    },
+    {
+      "from": "js/camera.js",
+      "kind": "pretty",
+      "path": "pretty/js/camera.js",
+      "rewrites": 0,
+      "sha256": "87e4ef062cdb74167d1adf0eb7f9b27be3cc55a7036f571a8189cef4b8ece0c4"
+    },
+    {
+      "from": "js/dom.js",
+      "kind": "pretty",
+      "path": "pretty/js/dom.js",
+      "rewrites": 0,
+      "sha256": "b1df7628670b62cf22aa65e690da8133dbf76cdc12d5f43775dd47b945a77ad0"
+    },
+    {
+      "from": "js/mail.js",
+      "kind": "pretty",
+      "path": "pretty/js/mail.js",
+      "rewrites": 0,
+      "sha256": "9235ff11c9e1d061c049c302f67950aeed3bbaeac7bd897575cbd00321774b3a"
+    },
+    {
+      "from": "js/main.js",
+      "kind": "pretty",
+      "path": "pretty/js/main.js",
+      "rewrites": 0,
+      "sha256": "f1a58f0469b11ce967e546da509de42ffbfd702e126dd66a39eedecad77be9e9"
+    },
+    {
+      "from": "js/model.js",
+      "kind": "pretty",
+      "path": "pretty/js/model.js",
+      "rewrites": 0,
+      "sha256": "5ee1e4a1273584c201b5dbc8788a99d84fb2869d692137196512af3372a6ebb5"
+    },
+    {
+      "from": "js/parse.js",
+      "kind": "pretty",
+      "path": "pretty/js/parse.js",
+      "rewrites": 0,
+      "sha256": "d1ce3cd5899a89d0d6022d31aa3ac2236f79b541c52a410e7e541622aceb02df"
+    },
+    {
+      "from": "js/pdf.js",
+      "kind": "pretty",
+      "path": "pretty/js/pdf.js",
+      "rewrites": 0,
+      "sha256": "a15ea7c201815ed45d39abc5de3ec840c2e849b23d1b8853f5e33bbd02963105"
+    },
+    {
+      "from": "js/pgc.js",
+      "kind": "pretty",
+      "path": "pretty/js/pgc.js",
+      "rewrites": 0,
+      "sha256": "2f2fe5c2ae171b830561e349bc3df8479b0ef1af2c96601e712bc01ca0035089"
+    },
+    {
+      "from": "js/read.js",
+      "kind": "pretty",
+      "path": "pretty/js/read.js",
+      "rewrites": 0,
+      "sha256": "69d7685e8c014b046b5e14163088f88b3081ffbaab040710ed532a2c3cd17a89"
+    },
+    {
+      "from": "js/reports.js",
+      "kind": "pretty",
+      "path": "pretty/js/reports.js",
+      "rewrites": 0,
+      "sha256": "563e95c4235f7f067e729087a6c144f11532581c0608486234209eff6de9b168"
+    },
+    {
+      "from": "js/sqlite.js",
+      "kind": "pretty",
+      "path": "pretty/js/sqlite.js",
+      "rewrites": 0,
+      "sha256": "d11d356eec9352fbd1ccd32c37cf8fa96a25aaee4859f887dfb6762070a510be"
+    },
+    {
+      "from": "js/store.js",
+      "kind": "pretty",
+      "path": "pretty/js/store.js",
+      "rewrites": 0,
+      "sha256": "eb13ad1c9be059197ae6bf5511c03c119a31bcb79e1cf572363121d6c0b27117"
+    },
+    {
+      "from": "js/util.js",
+      "kind": "pretty",
+      "path": "pretty/js/util.js",
+      "rewrites": 0,
+      "sha256": "aea50d2855db0a9e1961247a08e817abfa7e1cab4d915d9751c10c29b5722d88"
+    },
+    {
+      "from": "js/views.js",
+      "kind": "pretty",
+      "path": "pretty/js/views.js",
+      "rewrites": 0,
+      "sha256": "061ee6a8e4044d3ecc0a3172f736ad6b0736286a6bd358fea8d7720dfd5e9f98"
+    }
+  ],
+  "rewrite_level": "none",
+  "version": 1
+}

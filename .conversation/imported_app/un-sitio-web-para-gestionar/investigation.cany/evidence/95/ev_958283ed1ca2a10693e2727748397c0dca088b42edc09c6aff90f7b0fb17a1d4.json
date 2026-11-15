@@ -1,0 +1,54 @@
+{
+  "id": "ev_958283ed1ca2a10693e2727748397c0dca088b42edc09c6aff90f7b0fb17a1d4",
+  "subject": {
+    "kind": "script",
+    "sha256": "aea2f632810a30a206bb5c03f817d42223cbbd6fc0a8616cce3c29f88a6f2449",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 55,
+    "offset": 70,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 29170,
+    "lines": 55,
+    "more": true,
+    "offset": 70,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "  }\n  return \"\";\n}\n\n/**\n * Línea de la cuenta de pérdidas y ganancias para una cuenta que no está en\n * la lista. Solo para las de gasto (6) e ingreso (7): así un asiento manual\n * con una cuenta nueva no se queda fuera del modelo.\n */\nfunction plPorDefecto(code) {\n  const c = String(code || \"\");\n  if (c.charAt(0) === \"6\") {\n    const sub = c.slice(0, 2);\n    if (sub === \"60\" || sub === \"61\") return \"4\";\n    if (sub === \"62\" || sub === \"63\") return \"7\";\n    if (sub === \"64\") return \"6\";\n    if (sub === \"66\") return \"13\";\n    if (sub === \"68\") return \"8\";\n    if (sub === \"69\") return \"11\";\n    return \"\";\n  }\n  if (c.charAt(0) === \"7\") {\n    const sub = c.slice(0, 2);\n    if (sub === \"70\") return \"1\";\n    if (sub === \"71\") return \"2\";\n    if (sub === \"73\") return \"3\";\n    if (sub === \"74\" || sub === \"75\") return \"5\";\n    if (sub === \"76\") return \"12\";\n    return \"\";\n  }\n  return \"\";\n}\n\nconst CACHE_CUENTAS = new Map();\n\n/**\n * Las subcuentas y las cuentas propias que la persona ha dado de alta, para\n * que su nombre salga en el diario y en el mayor. Se las dice la pantalla con\n * setPlanDeCuentas(); este fichero no las guarda él mismo.\n */\nlet PLANO = { subcuentas: [], propias: [] };\n\n/**\n * Le pasa a la contabilidad las subcuentas abiertas (a cada cliente, a cada\n * proveedor, a cada banco) y las cuentas propias. Si cambian, se olvida de los\n * nombres que tenía apuntados para volver a leerlos.\n */\nexport function setPlanDeCuentas(plan) {\n  const p = plan || {};\n  const subcuentas = (p.subcuentas || []).map((s) => ({\n    code: String(s.code || \"\").trim(),\n    name: String(s.name || \"\").trim(),\n    key: String(s.key == null ? \"\" : s.key),\n    cuenta: String(s.cuenta || String(s.code || \"\").slice(0, 3)),\n  }));\n",
+    "total_lines": 732
+  },
+  "summary": "accounting.js: lines 71–125 of 732 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 55,
+    "total": 732,
+    "next_offset": 125
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

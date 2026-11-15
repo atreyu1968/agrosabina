@@ -1,0 +1,54 @@
+{
+  "id": "ev_93101a90cf8fabe7f1624fabcb3c5a02bc2fdb5150f0e08b2c4209663b030ee7",
+  "subject": {
+    "kind": "script",
+    "sha256": "220dcfdbc6a049f4299ace4ac37018a447379c05ada086f3f97c6084e4723b5b",
+    "name": "pdf.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 288,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\pdf.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 11337,
+    "lines": 30,
+    "more": true,
+    "offset": 288,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\pdf.js",
+    "replaced_sequences": 0,
+    "text": "      const cabecera = () => {\n        rect(izq, y - 16, ancho, 16, 0.9);\n        columnas.forEach((c, i) => {\n          const t = recorta(c.label || \"\", anchos[i] - 8, dim, true);\n          const x =\n            c.align === \"right\" ? xs[i] + anchos[i] - 4 - anchoTexto(t, dim, true) : xs[i] + 4;\n          texto(t, x, y - 11.5, dim, true);\n        });\n        y -= 16;\n      };\n\n      sitio(46);\n      cabecera();\n\n      for (const fila of bloque.rows || []) {\n        const celdas = Array.isArray(fila) ? fila : fila.cells || [];\n        const negrita = !Array.isArray(fila) && !!fila.bold;\n        const sombra = !Array.isArray(fila) && !!fila.shade;\n        if (y - alto < abajo) {\n          salto();\n          cabecera();\n        }\n        if (sombra) rect(izq, y - alto, ancho, alto, 0.955);\n        columnas.forEach((c, i) => {\n          const bruto = celdas[i];\n          const t = recorta(bruto == null ? \"\" : String(bruto), anchos[i] - 8, dim, negrita);\n          const x =\n            c.align === \"right\"\n              ? xs[i] + anchos[i] - 4 - anchoTexto(t, dim, negrita)\n              : xs[i] + 4;\n",
+    "total_lines": 370
+  },
+  "summary": "pdf.js: lines 289–318 of 370 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 370,
+    "next_offset": 318
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\pdf.js"
+    }
+  ],
+  "links": []
+}

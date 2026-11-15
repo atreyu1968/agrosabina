@@ -1,0 +1,54 @@
+{
+  "id": "ev_2ad22ec30005ad5005bf096e7c11692aa1913de5d3d7066a290e0195760b65b0",
+  "subject": {
+    "kind": "script",
+    "sha256": "effbee695913dd70eb1d3b51952ecc8ed76c4969a93f6df5b3ddba29ce97f26c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 28,
+    "offset": 4333,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 196170,
+    "lines": 28,
+    "more": true,
+    "offset": 4333,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    ${ACC_TABS.map(([id, label]) =>\n      `<button class=\"acc-tab${ui.conta.tab === id ? \" is-on\" : \"\"}\" data-action=\"acc-tab\" data-id=\"${id}\" role=\"tab\" aria-selected=\"${ui.conta.tab === id}\">${label}</button>`\n    ).join(\"\")}\n  </div>`;\n}\n\nfunction accEmpty(text) {\n  const docs = getState().invoices || [];\n  const fuera = docs.length > 0 && ui.conta.range !== \"all\";\n  const sinFecha = docs.filter((d) => !String(d.issueDate || d.createdAt || \"\").slice(0, 10)).length;\n  let titulo = \"Todavía no hay nada que contabilizar\";\n  let motivo =\n    text ||\n    \"Los asientos salen solos de lo que ya tienes guardado: facturas, liquidaciones, subvenciones y nóminas. En cuanto haya un documento con fecha e importe, aparece aquí.\";\n  if (fuera) {\n    titulo = \"Ningún asiento en estas fechas\";\n    motivo = `Tienes ${docs.length} ${docs.length === 1 ? \"documento guardado\" : \"documentos guardados\"}, pero ninguno con fecha dentro de «${contaWindow().label}».`;\n  } else if (sinFecha) {\n    titulo = \"Faltan fechas\";\n    motivo = `Hay ${sinFecha} ${sinFecha === 1 ? \"documento\" : \"documentos\"} sin fecha. En cuanto les pongas la fecha, aparecen aquí como asientos.`;\n  }\n  return `<section class=\"card\"><div class=\"empty\">\n    <div class=\"e-icon\">${icon(\"file\")}</div>\n    <h3>${titulo}</h3>\n    <p>${esc(motivo)}</p>\n    <div class=\"e-actions\">\n      ${fuera ? `<button class=\"btn primary\" data-action=\"acc-all\">${icon(\"arrow\")} Ver todo lo registrado</button>` : \"\"}\n      <a class=\"btn${fuera ? \"\" : \" primary\"}\" href=\"#/compras\">${icon(\"plus\")} Ir a compras</a>\n",
+    "total_lines": 5107
+  },
+  "summary": "views.js: lines 4334–4361 of 5107 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 28,
+    "total": 5107,
+    "next_offset": 4361
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_c3ea719f2b3cc045bd53e4a3f934dd4f9d715e9d0f670633825aade56dd825a7",
+  "subject": {
+    "kind": "script",
+    "sha256": "8897cc079f520cbcf2fd0296001ceb42c35cb7a3d888239e7067ed8871cb74dc",
+    "name": "main.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 60,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\main.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 5426,
+    "lines": 45,
+    "more": true,
+    "offset": 60,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\main.js",
+    "replaced_sequences": 0,
+    "text": "  } catch (err) {\n    console.error(\"No se pudo arrancar el almacén de datos:\", err);\n  }\n\n  views.render();\n  if (!dbReady) {\n    setTimeout(\n      () =>\n        toast(\n          \"La base de datos está tardando en abrir. Sigo con la copia que hay guardada en este navegador.\",\n          \"bad\",\n          9000\n        ),\n      900\n    );\n  }\n  escapeKeyCloses();\n  views.wireDropzone();\n\n  const info = storageInfo();\n  if (info.engine === \"local\") {\n    setTimeout(\n      () =>\n        toast(\n          \"No he podido abrir la base de datos SQLite en este navegador, así que guardo los datos de la forma anterior. Todo funciona igual.\",\n          \"bad\",\n          9000\n        ),\n      1200\n    );\n  }\n\n  function wireGlobalEvents() {\n    window.addEventListener(\"hashchange\", () => {\n      // El enlace «Saltar al contenido» usa #view: no es una sección, no se repinta.\n      if (location.hash && !location.hash.startsWith(\"#/\")) return;\n      views.ui.route = routeFromHash();\n      window.scrollTo(0, 0);\n      if (!dbReady) {\n        views.renderLoading();\n        return;\n      }\n      views.render();\n    });\n\n",
+    "total_lines": 188
+  },
+  "summary": "main.js: lines 61–105 of 188 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 188,
+    "next_offset": 105
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\main.js"
+    }
+  ],
+  "links": []
+}

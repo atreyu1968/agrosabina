@@ -1,0 +1,54 @@
+{
+  "id": "ev_2246e5f0e14ce39069f0853b5be87d65733c3057d7bf04e8efd25cc84683972b",
+  "subject": {
+    "kind": "script",
+    "sha256": "74d04d86a9e267ad2036e387eae84d9dac1474b696d523baafcaae4fd6496266",
+    "name": "sqlite.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 14,
+    "offset": 308,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 17820,
+    "lines": 14,
+    "more": true,
+    "offset": 308,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js",
+    "replaced_sequences": 0,
+    "text": "    } catch (_) {\n      notes = [];\n    }\n    let lines = [];\n    try {\n      lines = r.lineas ? JSON.parse(r.lineas) : [];\n    } catch (_) {\n      lines = [];\n    }\n    let liquidacion = null;\n    try {\n      liquidacion = r.liquidacion ? JSON.parse(r.liquidacion) : null;\n    } catch (_) {\n      liquidacion = null;\n",
+    "total_lines": 554
+  },
+  "summary": "sqlite.js: lines 309–322 of 554 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 14,
+    "total": 554,
+    "next_offset": 322
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+    }
+  ],
+  "links": []
+}

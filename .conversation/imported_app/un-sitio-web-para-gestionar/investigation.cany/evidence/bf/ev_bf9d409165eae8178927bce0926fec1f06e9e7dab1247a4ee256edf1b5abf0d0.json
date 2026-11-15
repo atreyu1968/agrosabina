@@ -1,0 +1,54 @@
+{
+  "id": "ev_bf9d409165eae8178927bce0926fec1f06e9e7dab1247a4ee256edf1b5abf0d0",
+  "subject": {
+    "kind": "script",
+    "sha256": "88be6e3dff8fc26bcc76f04b90e1db18661f2b7004a8d5f704b043113873abf7",
+    "name": "parse.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 505,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 40608,
+    "lines": 70,
+    "more": true,
+    "offset": 505,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js",
+    "replaced_sequences": 0,
+    "text": "    );\n  }\n\n  /* --- estado --- */\n  const st = readStatus(flat);\n  if (st.note) notes.push(st.note);\n\n  /* --- confianza --- */\n  let score = 0;\n  if (supplierName) score += 0.22;\n  if (supplierNif) score += 0.22;\n  if (number) score += 0.16;\n  if (issueDate) score += 0.12;\n  if (complete.total != null && !complete.derived.includes(\"total\")) score += 0.2;\n  if (raw.rate != null) score += 0.05;\n  if (raw.base != null) score += 0.03;\n  if (balanced) score += 0.06;\n\n  const confidence = Math.max(0, Math.min(1, score));\n\n  return {\n    supplierName: supplierName || \"\",\n    supplierNif: supplierNif || \"\",\n    number: number || \"\",\n    issueDate,\n    dueDate: dueDate || \"\",\n    base: complete.base,\n    rate: complete.rate,\n    igic: complete.igic,\n    total: complete.total,\n    derived: complete.derived,\n    status: st.status,\n    confidence,\n    balanced,\n    notes,\n    rawText: flat.slice(0, 6000),\n  };\n}\n\n/** ¿Parece una factura? Sirve para avisar cuando se cuela otro documento. */\nexport function looksLikeInvoice(text) {\n  const low = fold(text);\n  const hits = [\n    /factura/, /total/, /base imponible/, /igic|iva/, /\\d{1,3}[.,]\\d{2}/, /cif|nif/,\n  ].filter((re) => re.test(low)).length;\n  return hits >= 3;\n}\n\n/* ------------------------------------------------------------------ */\n/* Liquidaciones de fruta                                             */\n/* ------------------------------------------------------------------ */\n\n/*\n * Una liquidación no es una factura: trae kilos, un precio por kilo, unos\n * descuentos y un líquido a percibir. El lector de facturas se queda con los\n * importes gordos, se come los precios de tres decimales («0,853» → 0,85) y\n * confunde la base con el líquido. Aquí van reglas propias.\n */\n\n/* Un número de una casilla de liquidación. Admite hasta cuatro decimales,\n * porque un precio por kilo se escribe con tres. */\nconst LIQ_NUM = String.raw`-?\\d{1,3}(?:[.\\s]\\d{3})+(?:,\\d{1,4})?|-?\\d+(?:[.,]\\d{1,4})?`;\n\nconst RE_LIQ_KG =\n  /(?:kilos?|kgs?\\.?|kilogramos?|peso\\s*(?:neto|bruto|total)|netos?|cantidad(?:\\s*entregada)?|entregad[oa]s?|total\\s*(?:de\\s*)?kilos)/i;\nconst RE_LIQ_PRICE =\n  /(?:precio\\s*(?:de\\s*)?(?:\\/\\s*kgs?|por\\s*kgs?|kilo|unidad|unitario|medio|compra)?|p\\.?\\s?v\\.?\\s?p\\.?|a\\s*raz[óo]n\\s*de)/i;\nconst RE_LIQ_EURKG = /(?:€|euros?|eur)\\s*(?:\\/|por|la)?\\s*(?:kgs?|kilos?|kilogramos?)/i;\nconst RE_LIQ_GROSS =\n  /(?:importe\\s*bruto|total\\s*bruto|bruto|valor\\s*(?:de\\s*la\\s*)?(?:fruta|mercanc[íi]a))/i;\n",
+    "total_lines": 1076
+  },
+  "summary": "parse.js: lines 506–575 of 1076 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 1076,
+    "next_offset": 575
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+    }
+  ],
+  "links": []
+}

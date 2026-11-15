@@ -1,0 +1,70 @@
+{
+  "id": "ev_cc63942e6f38edf778907c6f0664fc647565391fb97b1c0bbe7a7f05ec2c6a30",
+  "subject": {
+    "kind": "javascript",
+    "name": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "operation": "js_sources_restore",
+  "params": {
+    "additional_paths": [],
+    "extraction_mode": "inspection",
+    "output_directory": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\_check2",
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "rewrite_level": "none"
+  },
+  "result": {
+    "inputs": [
+      {
+        "bytes": 154931,
+        "input": "views.js",
+        "input_index": 0,
+        "sha256": "541490e3eff8168a9e14cc93b5e77452c051f14877f0709deb576be781a8cbe6"
+      }
+    ],
+    "manifest": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\_check2\\manifest.json",
+    "notes": [],
+    "originals_truncated": false,
+    "output_directory": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\_check2",
+    "outputs": [
+      {
+        "from": "views.js",
+        "kind": "pretty",
+        "path": "pretty/views.js",
+        "rewrites": 0,
+        "sha256": "be853450f11cafe7bf045b5baafb9d554816903ae397ac7b248f15571661eb55"
+      }
+    ],
+    "outputs_total": 1
+  },
+  "summary": "Recovered 1 input(s) into C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\_check2: 1 pretty-printed, 0 bundle module file(s), 0 original source(s) from maps.",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "rewrites_conservative",
+      "message": "Only rewrites that provably keep meaning are applied; local variable names stay minified."
+    },
+    {
+      "code": "scope_hoisted",
+      "message": "Rollup/Vite production chunks merge modules into one scope; they are pretty-printed but not split."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\_check2"
+    }
+  ],
+  "links": []
+}

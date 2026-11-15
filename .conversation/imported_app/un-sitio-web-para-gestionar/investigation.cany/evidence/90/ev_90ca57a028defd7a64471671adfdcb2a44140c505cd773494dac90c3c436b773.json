@@ -1,0 +1,1412 @@
+{
+  "id": "ev_90ca57a028defd7a64471671adfdcb2a44140c505cd773494dac90c3c436b773",
+  "subject": {
+    "kind": "script",
+    "sha256": "109a740b4833101eb06da233acf482b9795e7d492908398e6b18f982dc295507",
+    "name": "accounting.js"
+  },
+  "operation": "js_app_map",
+  "params": {
+    "include_node_modules": false,
+    "input_path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\accounting.js",
+    "limit": 1,
+    "max_nodes": 25000,
+    "offset": 0,
+    "source_paths": []
+  },
+  "result": {
+    "api_operations": [],
+    "app_kind": "unknown",
+    "bundlers": [],
+    "edges": [
+      {
+        "from": "fn:accounting.js#asientosDe@310",
+        "kind": "calls",
+        "to": "fn:accounting.js#cuentaDeDocumento@186"
+      },
+      {
+        "from": "fn:accounting.js#asientosDe@310",
+        "kind": "calls",
+        "to": "fn:accounting.js#cuentaDeTesoreria@238"
+      },
+      {
+        "from": "fn:accounting.js#asientosDe@310",
+        "kind": "calls",
+        "to": "fn:accounting.js#cuentaTercero@229"
+      },
+      {
+        "from": "fn:accounting.js#asientosDe@310",
+        "kind": "calls",
+        "to": "fn:accounting.js#dentro@313"
+      },
+      {
+        "from": "fn:accounting.js#asientosDe@310",
+        "kind": "calls",
+        "to": "fn:accounting.js#importes@254"
+      },
+      {
+        "from": "fn:accounting.js#asientosDe@310",
+        "kind": "calls",
+        "to": "fn:accounting.js#lineas@271"
+      },
+      {
+        "from": "fn:accounting.js#asientosDe@310",
+        "kind": "calls",
+        "to": "fn:accounting.js#medioDePagoTexto@244"
+      },
+      {
+        "from": "fn:accounting.js#balanceSituacion@707",
+        "kind": "calls",
+        "to": "fn:accounting.js#cuenta@137"
+      },
+      {
+        "from": "fn:accounting.js#balanceSituacion@707",
+        "kind": "calls",
+        "to": "fn:accounting.js#suma@719"
+      },
+      {
+        "from": "fn:accounting.js#balanceSituacion@707",
+        "kind": "calls",
+        "to": "fn:accounting.js#v@718"
+      },
+      {
+        "from": "fn:accounting.js#cuenta@137",
+        "kind": "calls",
+        "to": "fn:accounting.js#balancePorDefecto@55"
+      },
+      {
+        "from": "fn:accounting.js#cuenta@137",
+        "kind": "calls",
+        "to": "fn:accounting.js#plPorDefecto@80"
+      },
+      {
+        "from": "fn:accounting.js#cuentaResultados@594",
+        "kind": "calls",
+        "to": "fn:accounting.js#cuenta@137"
+      },
+      {
+        "from": "fn:accounting.js#cuentaResultados@594",
+        "kind": "calls",
+        "to": "fn:accounting.js#valor@608"
+      },
+      {
+        "from": "fn:accounting.js#cuentaTercero@229",
+        "kind": "calls",
+        "to": "fn:accounting.js#claveDeTercero@206"
+      },
+      {
+        "from": "fn:accounting.js#cuentaTercero@229",
+        "kind": "calls",
+        "to": "fn:accounting.js#cuentaTerceroPorClave@221"
+      },
+      {
+        "from": "fn:accounting.js#libroMayor@475",
+        "kind": "calls",
+        "to": "fn:accounting.js#cuenta@137"
+      },
+      {
+        "from": "fn:accounting.js#libros@755",
+        "kind": "calls",
+        "to": "fn:accounting.js#asientosDe@310"
+      },
+      {
+        "from": "fn:accounting.js#libros@755",
+        "kind": "calls",
+        "to": "fn:accounting.js#balanceSituacion@707"
+      },
+      {
+        "from": "fn:accounting.js#libros@755",
+        "kind": "calls",
+        "to": "fn:accounting.js#balanceSumasYSaldos@527"
+      },
+      {
+        "from": "fn:accounting.js#libros@755",
+        "kind": "calls",
+        "to": "fn:accounting.js#cuentaResultados@594"
+      },
+      {
+        "from": "fn:accounting.js#libros@755",
+        "kind": "calls",
+        "to": "fn:accounting.js#libroMayor@475"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#asientosDe@310"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#balancePorDefecto@55"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#balanceSituacion@707"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#balanceSumasYSaldos@527"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#claveDeTercero@206"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#cuenta@137"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#cuentaDeDocumento@186"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#cuentaDeTesoreria@238"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#cuentaResultados@594"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#cuentaTercero@229"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#cuentaTerceroPorClave@221"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#dentro@313"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#importes@254"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#libroMayor@475"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#libros@755"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#lineas@271"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#medioDePagoTexto@244"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#plPorDefecto@80"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#resultadoEjercicio@580"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#setPlanDeCuentas@118"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#suma@719"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#totalLineas@292"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#v@718"
+      },
+      {
+        "from": "module:accounting.js",
+        "kind": "defines",
+        "to": "fn:accounting.js#valor@608"
+      }
+    ],
+    "effects": [],
+    "endpoints": [],
+    "entry_points": {
+      "pages": [],
+      "preloads": [],
+      "renderers": [],
+      "workers": []
+    },
+    "exposed": [],
+    "graph_id": "ag_9f11967b84196338f4340719e265b762164e08ce5f7109f79c110f5f0e54a240",
+    "input_format": "file",
+    "ipc": [],
+    "label": "accounting.js",
+    "limitations": [],
+    "modules": [
+      {
+        "bundle_modules": [],
+        "bundlers": [],
+        "bytes": 30512,
+        "chunk_ids": [],
+        "exports": {
+          "cjs": [],
+          "esm": [
+            "CUENTAS",
+            "setPlanDeCuentas",
+            "cuenta",
+            "cuentaDeDocumento",
+            "claveDeTercero",
+            "cuentaTerceroPorClave",
+            "cuentaTercero",
+            "cuentaDeTesoreria",
+            "medioDePagoTexto",
+            "lineas",
+            "asientosDe",
+            "libroMayor",
+            "balanceSumasYSaldos",
+            "LINEAS_RESULTADOS",
+            "resultadoEjercicio",
+            "cuentaResultados",
+            "EPIGRAFES",
+            "balanceSituacion",
+            "libros"
+          ]
+        },
+        "fingerprint": "57836ea3072f3134a5b3c2d9fdef61af3b9b416a8f78e98f64c4a7564746d03d",
+        "functions": [
+          "balancePorDefecto",
+          "plPorDefecto",
+          "setPlanDeCuentas",
+          "cuenta",
+          "cuentaDeDocumento",
+          "claveDeTercero",
+          "cuentaTerceroPorClave",
+          "cuentaTercero",
+          "cuentaDeTesoreria",
+          "medioDePagoTexto",
+          "importes",
+          "lineas",
+          "totalLineas",
+          "asientosDe",
+          "dentro",
+          "libroMayor",
+          "balanceSumasYSaldos",
+          "resultadoEjercicio",
+          "cuentaResultados",
+          "valor",
+          "balanceSituacion",
+          "v",
+          "suma",
+          "libros"
+        ],
+        "imports": [
+          {
+            "kind": "import",
+            "line": 14,
+            "specifier": "./util.js"
+          },
+          {
+            "kind": "import",
+            "line": 15,
+            "specifier": "./model.js"
+          },
+          {
+            "kind": "import",
+            "line": 16,
+            "specifier": "./pgc.js"
+          }
+        ],
+        "kind": "script",
+        "parse_mode": "parsed",
+        "path": "accounting.js",
+        "role": "unknown",
+        "sha256": "109a740b4833101eb06da233acf482b9795e7d492908398e6b18f982dc295507",
+        "strings": [
+          "100",
+          "Capital social",
+          "PN_I",
+          "113",
+          "Reservas voluntarias",
+          "PN_III",
+          "121",
+          "Resultados negativos de ejercicios anteriores",
+          "PN_V",
+          "400",
+          "Proveedores",
+          "PC_V",
+          "430",
+          "Clientes",
+          "AC_III",
+          "472",
+          "Hacienda Pública, IGIC soportado",
+          "477",
+          "Hacienda Pública, IGIC repercutido",
+          "570",
+          "Caja",
+          "AC_VII",
+          "572",
+          "Bancos e instituciones de crédito c/c",
+          "602",
+          "Compras de otros aprovisionamientos",
+          "4",
+          "623",
+          "Servicios de profesionales independientes",
+          "7",
+          "628",
+          "Suministros",
+          "629",
+          "Otros servicios",
+          "630",
+          "Impuesto sobre beneficios",
+          "17",
+          "631",
+          "Otros tributos",
+          "640",
+          "Sueldos y salarios",
+          "6",
+          "642",
+          "Seguridad Social a cargo de la empresa",
+          "701",
+          "Ventas de productos terminados",
+          "1",
+          "740",
+          "Subvenciones a la explotación",
+          "5",
+          "759",
+          "Ingresos por servicios diversos",
+          "2",
+          "AN_II",
+          "3",
+          "AC_II",
+          "449",
+          "470",
+          "474",
+          "480",
+          "489",
+          "500",
+          "509",
+          "PC_II",
+          "520",
+          "559",
+          "PC_III",
+          "60",
+          "61",
+          "62",
+          "63",
+          "64",
+          "66",
+          "13",
+          "68",
+          "8",
+          "69",
+          "11",
+          "70",
+          "71",
+          "73",
+          "74",
+          "75",
+          "76",
+          "12",
+          "|",
+          "#",
+          "FACTURA",
+          "LIQUIDACION",
+          "SUBVENCION",
+          "NOMINA",
+          "COBRO",
+          "SUBVENCIONES",
+          "FRUTA",
+          "INGRESO",
+          "NFD",
+          " ",
+          "sin-nombre",
+          "CAJA",
+          "BANCO",
+          "Banco",
+          "apertura",
+          "Asiento de apertura",
+          "Ingreso",
+          "Gasto",
+          "devengo",
+          "PAGADO",
+          "cobro",
+          "pago",
+          "Cobro",
+          "Pago",
+          "Asiento manual",
+          "manual",
+          "1. Importe neto de la cifra de negocios",
+          "2. Variación de existencias de productos terminados y en curso de fabricación",
+          "3. Trabajos realizados por la empresa para su activo",
+          "4. Aprovisionamientos",
+          "5. Otros ingresos de explotación",
+          "6. Gastos de personal",
+          "7. Otros gastos de explotación",
+          "8. Amortización del inmovilizado",
+          "9",
+          "9. Imputación de subvenciones de inmovilizado no financiero y otras",
+          "10",
+          "10. Excesos de provisiones",
+          "11. Deterioro y resultado por enajenaciones del inmovilizado",
+          "A",
+          "A) RESULTADO DE EXPLOTACIÓN (1+2+3+4+5+6+7+8+9+10+11)",
+          "12. Ingresos financieros",
+          "13. Gastos financieros",
+          "14",
+          "14. Variación de valor razonable en instrumentos financieros",
+          "15",
+          "15. Diferencias de cambio",
+          "16",
+          "16. Deterioro y resultado por enajenaciones de instrumentos financieros",
+          "B",
+          "B) RESULTADO FINANCIERO (12+13+14+15+16)",
+          "C",
+          "C) RESULTADO ANTES DE IMPUESTOS (A + B)",
+          "17. Impuestos sobre beneficios",
+          "D",
+          "D) RESULTADO DEL EJERCICIO (C + 17)",
+          "AN",
+          "head",
+          "A) ACTIVO NO CORRIENTE",
+          "AN_I",
+          "line",
+          "I. Inmovilizado intangible",
+          "II. Inmovilizado material",
+          "AN_III",
+          "III. Inversiones inmobiliarias",
+          "AN_IV",
+          "IV. Inversiones en empresas del grupo y asociadas a largo plazo",
+          "AN_V",
+          "V. Inversiones financieras a largo plazo",
+          "AN_VI",
+          "VI. Activos por impuesto diferido",
+          "AN_T",
+          "total",
+          "TOTAL ACTIVO NO CORRIENTE (A)",
+          "AC",
+          "B) ACTIVO CORRIENTE",
+          "AC_I",
+          "I. Activos no corrientes mantenidos para la venta",
+          "II. Existencias",
+          "III. Deudores comerciales y otras cuentas a cobrar",
+          "AC_IV",
+          "IV. Inversiones en empresas del grupo y asociadas a corto plazo",
+          "AC_V",
+          "V. Inversiones financieras a corto plazo",
+          "AC_VI",
+          "VI. Periodificaciones a corto plazo",
+          "VII. Efectivo y otros activos líquidos equivalentes",
+          "AC_T",
+          "TOTAL ACTIVO CORRIENTE (B)",
+          "ACTIVO",
+          "grand",
+          "TOTAL ACTIVO (A + B)",
+          "PN",
+          "A) PATRIMONIO NETO",
+          "PN_A1",
+          "sub",
+          "A-1) Fondos propios",
+          "I. Capital",
+          "PN_II",
+          "II. Prima de emisión",
+          "III. Reservas",
+          "PN_IV",
+          "IV. (Acciones y participaciones en patrimonio propias)",
+          "V. Resultados de ejercicios anteriores",
+          "PN_VI",
+          "VI. Otras aportaciones de socios",
+          "PN_VII",
+          "VII. Resultado del ejercicio",
+          "PN_VIII",
+          "VIII. (Dividendo a cuenta)",
+          "PN_IX",
+          "IX. Otros instrumentos de patrimonio neto",
+          "PN_A1_T",
+          "TOTAL FONDOS PROPIOS (A-1)",
+          "PN_A2",
+          "A-2) Ajustes por cambios de valor",
+          "PN_A2_I",
+          "I. Activos financieros disponibles para la venta",
+          "PN_A2_II",
+          "II. Operaciones de cobertura",
+          "PN_A2_III",
+          "III. Otros",
+          "PN_A2_T",
+          "TOTAL AJUSTES POR CAMBIOS DE VALOR (A-2)",
+          "PN_A3",
+          "A-3) Subvenciones, donaciones y legados recibidos",
+          "PN_T",
+          "TOTAL PATRIMONIO NETO (A)",
+          "PNC",
+          "B) PASIVO NO CORRIENTE",
+          "PNC_I",
+          "I. Provisiones a largo plazo",
+          "PNC_II",
+          "II. Deudas a largo plazo",
+          "PNC_III",
+          "III. Deudas con empresas del grupo y asociadas a largo plazo",
+          "PNC_IV",
+          "IV. Pasivos por impuesto diferido",
+          "PNC_V",
+          "V. Periodificaciones a largo plazo",
+          "PNC_T",
+          "TOTAL PASIVO NO CORRIENTE (B)",
+          "PC",
+          "C) PASIVO CORRIENTE",
+          "PC_I",
+          "I. Pasivos vinculados con activos no corrientes mantenidos para la venta",
+          "II. Provisiones a corto plazo",
+          "III. Deudas a corto plazo",
+          "PC_IV",
+          "IV. Deudas con empresas del grupo y asociadas a corto plazo",
+          "V. Acreedores comerciales y otras cuentas a pagar",
+          "PC_VI",
+          "PC_T",
+          "TOTAL PASIVO CORRIENTE (C)",
+          "PNYP",
+          "TOTAL PATRIMONIO NETO Y PASIVO (A + B + C)",
+          "AN_",
+          "AC_"
+        ]
+      }
+    ],
+    "modules_total": 1,
+    "native_modules": [],
+    "nodes": [
+      {
+        "id": "module:accounting.js",
+        "kind": "module",
+        "label": "accounting.js",
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().slice",
+            "String",
+            "c.charAt"
+          ],
+          "end": 3352,
+          "end_line": 73,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "code"
+          ],
+          "parent": null,
+          "start": 2772,
+          "strings": [
+            "1",
+            "PN_V",
+            "2",
+            "AN_II",
+            "3",
+            "AC_II",
+            "4",
+            "430",
+            "449",
+            "AC_III",
+            "470",
+            "474",
+            "480",
+            "489",
+            "PC_V",
+            "5",
+            "500",
+            "509",
+            "PC_II",
+            "520",
+            "559",
+            "PC_III",
+            "AC_VII"
+          ]
+        },
+        "id": "fn:accounting.js#balancePorDefecto@55",
+        "kind": "function",
+        "label": "balancePorDefecto",
+        "line": 55,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String",
+            "c.charAt",
+            "c.slice"
+          ],
+          "end": 4233,
+          "end_line": 102,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "code"
+          ],
+          "parent": null,
+          "start": 3574,
+          "strings": [
+            "6",
+            "60",
+            "61",
+            "4",
+            "62",
+            "63",
+            "7",
+            "64",
+            "66",
+            "13",
+            "68",
+            "8",
+            "69",
+            "11",
+            "70",
+            "1",
+            "71",
+            "2",
+            "73",
+            "3",
+            "74",
+            "75",
+            "5",
+            "76",
+            "12"
+          ]
+        },
+        "id": "fn:accounting.js#plPorDefecto@80",
+        "kind": "function",
+        "label": "plPorDefecto",
+        "line": 80,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "subcuentas.map().join",
+            "subcuentas.map",
+            "propias.map().join",
+            "propias.map",
+            "PLANO.subcuentas.map().join",
+            "PLANO.subcuentas.map",
+            "PLANO.propias.map().join",
+            "PLANO.propias.map",
+            "CACHE_CUENTAS.clear"
+          ],
+          "end": 5570,
+          "end_line": 134,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "plan"
+          ],
+          "parent": null,
+          "start": 4767,
+          "strings": [
+            "|",
+            "#"
+          ]
+        },
+        "id": "fn:accounting.js#setPlanDeCuentas@118",
+        "kind": "function",
+        "label": "setPlanDeCuentas",
+        "line": 118,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim",
+            "String",
+            "CACHE_CUENTAS.has",
+            "CACHE_CUENTAS.get",
+            "CUENTAS.find",
+            "balancePorDefecto",
+            "PLANO.propias.find",
+            "PLANO.subcuentas.find",
+            "./pgc.js.pgcNombre",
+            "plPorDefecto",
+            "CACHE_CUENTAS.set"
+          ],
+          "end": 6462,
+          "end_line": 163,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "code"
+          ],
+          "parent": null,
+          "start": 5665,
+          "strings": []
+        },
+        "id": "fn:accounting.js#cuenta@137",
+        "kind": "function",
+        "label": "cuenta",
+        "line": 137,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String",
+            "./model.js.directionOf"
+          ],
+          "end": 7516,
+          "end_line": 195,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "inv"
+          ],
+          "parent": null,
+          "start": 7027,
+          "strings": [
+            "FACTURA",
+            "LIQUIDACION",
+            "701",
+            "SUBVENCION",
+            "740",
+            "NOMINA",
+            "640",
+            "COBRO",
+            "SUBVENCIONES",
+            "FRUTA",
+            "759",
+            "INGRESO",
+            "629"
+          ]
+        },
+        "id": "fn:accounting.js#cuentaDeDocumento@186",
+        "kind": "function",
+        "label": "cuentaDeDocumento",
+        "line": 186,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim",
+            "String",
+            "bruto.toLowerCase().normalize(NFD).replace().replace().replace().trim",
+            "bruto.toLowerCase().normalize(NFD).replace().replace().replace",
+            "bruto.toLowerCase().normalize(NFD).replace().replace",
+            "bruto.toLowerCase().normalize(NFD).replace",
+            "bruto.toLowerCase().normalize",
+            "bruto.toLowerCase"
+          ],
+          "end": 8384,
+          "end_line": 218,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "inv"
+          ],
+          "parent": null,
+          "start": 7996,
+          "strings": [
+            "NFD",
+            " ",
+            "sin-nombre"
+          ]
+        },
+        "id": "fn:accounting.js#claveDeTercero@206",
+        "kind": "function",
+        "label": "claveDeTercero",
+        "line": 206,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String",
+            "PLANO.subcuentas.find"
+          ],
+          "end": 8752,
+          "end_line": 226,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "ingreso",
+            "clave"
+          ],
+          "parent": null,
+          "start": 8463,
+          "strings": [
+            "430",
+            "400"
+          ]
+        },
+        "id": "fn:accounting.js#cuentaTerceroPorClave@221",
+        "kind": "function",
+        "label": "cuentaTerceroPorClave",
+        "line": 221,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "cuentaTerceroPorClave",
+            "claveDeTercero"
+          ],
+          "end": 8946,
+          "end_line": 231,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "inv",
+            "ingreso"
+          ],
+          "parent": null,
+          "start": 8844,
+          "strings": []
+        },
+        "id": "fn:accounting.js#cuentaTercero@229",
+        "kind": "function",
+        "label": "cuentaTercero",
+        "line": 229,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().toUpperCase",
+            "String"
+          ],
+          "end": 9325,
+          "end_line": 241,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "inv"
+          ],
+          "parent": null,
+          "start": 9190,
+          "strings": [
+            "CAJA",
+            "570",
+            "572"
+          ]
+        },
+        "id": "fn:accounting.js#cuentaDeTesoreria@238",
+        "kind": "function",
+        "label": "cuentaDeTesoreria",
+        "line": 238,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().toUpperCase",
+            "String",
+            "String().trim"
+          ],
+          "end": 9735,
+          "end_line": 251,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "inv"
+          ],
+          "parent": null,
+          "start": 9409,
+          "strings": [
+            "CAJA",
+            "Caja",
+            "BANCO",
+            "Banco"
+          ]
+        },
+        "id": "fn:accounting.js#medioDePagoTexto@244",
+        "kind": "function",
+        "label": "medioDePagoTexto",
+        "line": 244,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.round2",
+            "Number",
+            "Math.abs"
+          ],
+          "end": 10295,
+          "end_line": 264,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "inv"
+          ],
+          "parent": null,
+          "start": 9802,
+          "strings": []
+        },
+        "id": "fn:accounting.js#importes@254",
+        "kind": "function",
+        "label": "importes",
+        "line": 254,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.round2",
+            "rows.reduce",
+            "Math.abs",
+            "rows.filter().map",
+            "rows.filter"
+          ],
+          "end": 11240,
+          "end_line": 290,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "raw"
+          ],
+          "parent": null,
+          "start": 10538,
+          "strings": []
+        },
+        "id": "fn:accounting.js#lineas@271",
+        "kind": "function",
+        "label": "lineas",
+        "line": 271,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.round2"
+          ],
+          "end": 11338,
+          "end_line": 294,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "lines"
+          ],
+          "parent": null,
+          "start": 11242,
+          "strings": []
+        },
+        "id": "fn:accounting.js#totalLineas@292",
+        "kind": "function",
+        "label": "totalLineas",
+        "line": 292,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().slice",
+            "String",
+            "./util.js.round2",
+            "Number",
+            "new Date",
+            "lineas",
+            "out.push",
+            "importes",
+            "./model.js.directionOf",
+            "cuentaDeDocumento",
+            "cuentaTercero",
+            "String().trim",
+            "dentro",
+            "cuentaDeTesoreria",
+            "medioDePagoTexto",
+            "raw.push",
+            "out.sort",
+            "out.forEach"
+          ],
+          "end": 17042,
+          "end_line": 468,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "invoices",
+            "opts"
+          ],
+          "parent": null,
+          "start": 12020,
+          "strings": [
+            "572",
+            "100",
+            "113",
+            "121",
+            "apertura",
+            "Asiento de apertura",
+            "INGRESO",
+            "Ingreso",
+            "Gasto",
+            "477",
+            "472",
+            "devengo",
+            "PAGADO",
+            "cobro",
+            "pago",
+            "Cobro",
+            "Pago",
+            "Asiento manual",
+            "manual"
+          ]
+        },
+        "id": "fn:accounting.js#asientosDe@310",
+        "kind": "function",
+        "label": "asientosDe",
+        "line": 310,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().slice",
+            "String"
+          ],
+          "end": 12361,
+          "end_line": 319,
+          "exported": false,
+          "kind": "arrow",
+          "params": [
+            "day"
+          ],
+          "parent": "asientosDe",
+          "start": 12182,
+          "strings": []
+        },
+        "id": "fn:accounting.js#dentro@313",
+        "kind": "function",
+        "label": "dentro",
+        "line": 313,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "new Map",
+            "map.get",
+            "cuenta",
+            "map.set",
+            "./util.js.round2",
+            "row.moves.push",
+            "map.values",
+            "rows.sort"
+          ],
+          "end": 18419,
+          "end_line": 516,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "entries"
+          ],
+          "parent": null,
+          "start": 17341,
+          "strings": []
+        },
+        "id": "fn:accounting.js#libroMayor@475",
+        "kind": "function",
+        "label": "libroMayor",
+        "line": 475,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "rows.reduce",
+            "Math.abs"
+          ],
+          "end": 19497,
+          "end_line": 546,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "mayor"
+          ],
+          "parent": null,
+          "start": 18860,
+          "strings": []
+        },
+        "id": "fn:accounting.js#balanceSumasYSaldos@527",
+        "kind": "function",
+        "label": "balanceSumasYSaldos",
+        "line": 527,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().charAt",
+            "String",
+            "./util.js.round2"
+          ],
+          "end": 21706,
+          "end_line": 587,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "mayor"
+          ],
+          "parent": null,
+          "start": 21481,
+          "strings": [
+            "6",
+            "7"
+          ]
+        },
+        "id": "fn:accounting.js#resultadoEjercicio@580",
+        "kind": "function",
+        "label": "resultadoEjercicio",
+        "line": 580,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().charAt",
+            "String",
+            "./util.js.round2",
+            "cuenta",
+            "EXPLOTACION.reduce",
+            "FINANCIERO.reduce",
+            "valor",
+            "LINEAS_RESULTADOS.map"
+          ],
+          "end": 23126,
+          "end_line": 623,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "mayor"
+          ],
+          "parent": null,
+          "start": 21941,
+          "strings": [
+            "6",
+            "7",
+            "17"
+          ]
+        },
+        "id": "fn:accounting.js#cuentaResultados@594",
+        "kind": "function",
+        "label": "cuentaResultados",
+        "line": 594,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.round2"
+          ],
+          "end": 22422,
+          "end_line": 608,
+          "exported": false,
+          "kind": "arrow",
+          "params": [
+            "k"
+          ],
+          "parent": "cuentaResultados",
+          "start": 22391,
+          "strings": []
+        },
+        "id": "fn:accounting.js#valor@608",
+        "kind": "function",
+        "label": "valor",
+        "line": 608,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "cuenta",
+            "key.indexOf",
+            "./util.js.round2",
+            "suma",
+            "v",
+            "EPIGRAFES.map",
+            "Math.abs"
+          ],
+          "end": 29815,
+          "end_line": 745,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "mayor",
+            "resultado"
+          ],
+          "parent": null,
+          "start": 28558,
+          "strings": [
+            "AN_",
+            "AC_",
+            "PN_A3"
+          ]
+        },
+        "id": "fn:accounting.js#balanceSituacion@707",
+        "kind": "function",
+        "label": "balanceSituacion",
+        "line": 707,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.round2"
+          ],
+          "end": 28997,
+          "end_line": 718,
+          "exported": false,
+          "kind": "arrow",
+          "params": [
+            "k"
+          ],
+          "parent": "balanceSituacion",
+          "start": 28967,
+          "strings": []
+        },
+        "id": "fn:accounting.js#v@718",
+        "kind": "function",
+        "label": "v",
+        "line": 718,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.round2",
+            "keys.reduce"
+          ],
+          "end": 29066,
+          "end_line": 719,
+          "exported": false,
+          "kind": "arrow",
+          "params": [
+            "keys"
+          ],
+          "parent": "balanceSituacion",
+          "start": 29014,
+          "strings": []
+        },
+        "id": "fn:accounting.js#suma@719",
+        "kind": "function",
+        "label": "suma",
+        "line": 719,
+        "module": "accounting.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "asientosDe",
+            "libroMayor",
+            "balanceSumasYSaldos",
+            "cuentaResultados",
+            "balanceSituacion"
+          ],
+          "end": 30511,
+          "end_line": 762,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "invoices",
+            "opts"
+          ],
+          "parent": null,
+          "start": 30197,
+          "strings": []
+        },
+        "id": "fn:accounting.js#libros@755",
+        "kind": "function",
+        "label": "libros",
+        "line": 755,
+        "module": "accounting.js",
+        "role": "unknown"
+      }
+    ],
+    "package": null,
+    "routes": [],
+    "source_maps": [],
+    "stats": {
+      "api_operations": 0,
+      "bundle_modules": 0,
+      "edges": 46,
+      "endpoints": 0,
+      "files": 1,
+      "functions": 24,
+      "ipc_channels": 0,
+      "listed": 1,
+      "modules": 1,
+      "nodes": 25,
+      "paired_channels": 0
+    },
+    "storage": [],
+    "summary": "JavaScript code accounting.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+    "vendors": [],
+    "windows": []
+  },
+  "summary": "JavaScript code accounting.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "static_only",
+      "message": "Static reading only: code built at run time (eval, computed requires, remote content) is invisible; IPC pairs need literal channel names."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

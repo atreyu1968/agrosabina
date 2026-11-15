@@ -1,0 +1,54 @@
+{
+  "id": "ev_75de15cfe729c061e3bbaa93c30ccb76b34a82aafd2befceabcbf6f24dc24377",
+  "subject": {
+    "kind": "script",
+    "sha256": "1646bca31b06d335d7c422a1c498fc0224b6f304ed17f100b522747630692d8f",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 62,
+    "offset": 3777,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 154128,
+    "lines": 62,
+    "more": true,
+    "offset": 3777,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "function accMayorHtml(mayor) {\n  if (!mayor.length) return accEmpty();\n  return `\n  <div class=\"acc-toolbar-note\">\n    <span class=\"tag kind\">${mayor.length} ${mayor.length === 1 ? \"cuenta\" : \"cuentas\"} con movimiento</span>\n    <button class=\"btn sm ghost\" data-action=\"export-acc-csv\">${icon(\"download\")}<span>Exportar CSV</span></button>\n  </div>\n  <div class=\"stack\">\n  ${mayor.map((r) => `\n    <section class=\"card acc-account\">\n      <div class=\"card-head\">\n        <div>\n          <h2><span class=\"mono\">${esc(r.code)}</span> ${esc(r.name)}</h2>\n          <p>${r.moves.length} ${r.moves.length === 1 ? \"movimiento\" : \"movimientos\"} · saldo ${r.saldo >= 0 ? \"deudor\" : \"acreedor\"} ${fmtEUR(Math.abs(r.saldo))}</p>\n        </div>\n      </div>\n      <div class=\"table-wrap\">\n        <table class=\"data acc-table\">\n          <thead><tr>\n            <th>Fecha</th><th class=\"num\">Asiento</th><th>Concepto</th>\n            <th class=\"num\">Debe</th><th class=\"num\">Haber</th><th class=\"num\">Saldo</th>\n          </tr></thead>\n          <tbody>\n            ${r.moves.map((m) => `<tr class=\"acc-row\">\n              <td class=\"num\">${fmtDate(m.date)}</td>\n              <td class=\"num\">${m.number}</td>\n              <td><span class=\"acc-name\">${esc(m.concept)}</span></td>\n              <td class=\"num\">${m.debit ? fmtEUR(m.debit) : \"\"}</td>\n              <td class=\"num\">${m.credit ? fmtEUR(m.credit) : \"\"}</td>\n              <td class=\"num strong\">${fmtEUR(m.running)}</td>\n            </tr>`).join(\"\")}\n          </tbody>\n          <tfoot><tr>\n            <td colspan=\"3\">Sumas y saldo</td>\n            <td class=\"num\">${fmtEUR(r.debit)}</td>\n            <td class=\"num\">${fmtEUR(r.credit)}</td>\n            <td class=\"num\">${fmtEUR(r.saldo)}</td>\n          </tr></tfoot>\n        </table>\n      </div>\n    </section>`).join(\"\")}\n  </div>`;\n}\n\n/** Balance de sumas y saldos: lo que se ha movido en cada cuenta y lo que queda. */\nfunction accSumasHtml(sumas) {\n  if (!sumas.rows.length) return accEmpty();\n  return `\n  <section class=\"card\">\n    <div class=\"card-head\">\n      <div>\n        <h2>Balance de sumas y saldos</h2>\n        <p>${sumas.rows.length} ${sumas.rows.length === 1 ? \"cuenta\" : \"cuentas\"} · ${sumas.cuadra ? \"los saldos cuadran\" : \"los saldos no cuadran\"}</p>\n      </div>\n      <div class=\"spacer\"></div>\n      <button class=\"btn sm ghost\" data-action=\"export-acc-csv\">${icon(\"download\")}<span>Exportar CSV</span></button>\n    </div>\n    <div class=\"table-wrap\">\n      <table class=\"data acc-table\">\n        <thead><tr>\n          <th>Cuenta</th><th>Nombre</th>\n          <th class=\"num\">Suma debe</th><th class=\"num\">Suma haber</th>\n",
+    "total_lines": 4068
+  },
+  "summary": "views.js: lines 3778–3839 of 4068 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 62,
+    "total": 4068,
+    "next_offset": 3839
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

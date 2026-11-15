@@ -1,0 +1,1656 @@
+{
+  "id": "ev_62fabc8f4ce5e3e80c2a19f6765f5abdac8e50ef1e2c14f83d6c2650b583936b",
+  "subject": {
+    "kind": "script",
+    "sha256": "52be3e62c432d5fb6a02651299443d291b04749028c2d9225bdf44dd91f8dca5",
+    "name": "sqlite.js"
+  },
+  "operation": "js_app_map",
+  "params": {
+    "include_node_modules": false,
+    "input_path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\sqlite.js",
+    "limit": 1,
+    "max_nodes": 25000,
+    "offset": 0,
+    "source_paths": []
+  },
+  "result": {
+    "api_operations": [],
+    "app_kind": "unknown",
+    "bundlers": [],
+    "edges": [
+      {
+        "from": "event:sqlite.js#el:error",
+        "kind": "handled-by",
+        "to": "fn:sqlite.js#el.addEventListener(error)@53"
+      },
+      {
+        "from": "event:sqlite.js#el:load",
+        "kind": "handled-by",
+        "to": "fn:sqlite.js#el.addEventListener(load)@49"
+      },
+      {
+        "from": "event:sqlite.js#prev:error",
+        "kind": "handled-by",
+        "to": "fn:sqlite.js#prev.addEventListener(error)@40"
+      },
+      {
+        "from": "event:sqlite.js#prev:load",
+        "kind": "handled-by",
+        "to": "fn:sqlite.js#prev.addEventListener(load)@39"
+      },
+      {
+        "from": "event:sqlite.js#req:error",
+        "kind": "handled-by",
+        "to": "fn:sqlite.js#req.onerror@90"
+      },
+      {
+        "from": "event:sqlite.js#req:success",
+        "kind": "handled-by",
+        "to": "fn:sqlite.js#req.onsuccess@89"
+      },
+      {
+        "from": "event:sqlite.js#req:upgradeneeded",
+        "kind": "handled-by",
+        "to": "fn:sqlite.js#req.onupgradeneeded@85"
+      },
+      {
+        "from": "event:sqlite.js#rq:error",
+        "kind": "handled-by",
+        "to": "fn:sqlite.js#rq.onerror@101"
+      },
+      {
+        "from": "event:sqlite.js#rq:success",
+        "kind": "handled-by",
+        "to": "fn:sqlite.js#rq.onsuccess@100"
+      },
+      {
+        "from": "event:sqlite.js#tx:abort",
+        "kind": "handled-by",
+        "to": "fn:sqlite.js#tx.onabort@116"
+      },
+      {
+        "from": "event:sqlite.js#tx:complete",
+        "kind": "handled-by",
+        "to": "fn:sqlite.js#tx.oncomplete@114"
+      },
+      {
+        "from": "event:sqlite.js#tx:error",
+        "kind": "handled-by",
+        "to": "fn:sqlite.js#tx.onerror@115"
+      },
+      {
+        "from": "fn:sqlite.js#<anonymous@82>@82",
+        "kind": "listens",
+        "to": "event:sqlite.js#req:error"
+      },
+      {
+        "from": "fn:sqlite.js#<anonymous@82>@82",
+        "kind": "listens",
+        "to": "event:sqlite.js#req:success"
+      },
+      {
+        "from": "fn:sqlite.js#<anonymous@82>@82",
+        "kind": "listens",
+        "to": "event:sqlite.js#req:upgradeneeded"
+      },
+      {
+        "from": "fn:sqlite.js#<anonymous@82>@82",
+        "kind": "uses",
+        "to": "storage:indexedDB.open facturas.igic"
+      },
+      {
+        "from": "fn:sqlite.js#addMissingColumns@224",
+        "kind": "calls",
+        "to": "fn:sqlite.js#exec@202"
+      },
+      {
+        "from": "fn:sqlite.js#addMissingColumns@224",
+        "kind": "calls",
+        "to": "fn:sqlite.js#rows@208"
+      },
+      {
+        "from": "fn:sqlite.js#counts@528",
+        "kind": "calls",
+        "to": "fn:sqlite.js#isAvailable@259"
+      },
+      {
+        "from": "fn:sqlite.js#counts@528",
+        "kind": "calls",
+        "to": "fn:sqlite.js#one@531"
+      },
+      {
+        "from": "fn:sqlite.js#counts@528",
+        "kind": "calls",
+        "to": "fn:sqlite.js#rows@208"
+      },
+      {
+        "from": "fn:sqlite.js#exportBytes@517",
+        "kind": "calls",
+        "to": "fn:sqlite.js#isAvailable@259"
+      },
+      {
+        "from": "fn:sqlite.js#idbRead@94",
+        "kind": "calls",
+        "to": "fn:sqlite.js#openIdb@81"
+      },
+      {
+        "from": "fn:sqlite.js#idbWrite@108",
+        "kind": "calls",
+        "to": "fn:sqlite.js#openIdb@81"
+      },
+      {
+        "from": "fn:sqlite.js#igicSummary@554",
+        "kind": "calls",
+        "to": "fn:sqlite.js#isAvailable@259"
+      },
+      {
+        "from": "fn:sqlite.js#igicSummary@554",
+        "kind": "calls",
+        "to": "fn:sqlite.js#rows@208"
+      },
+      {
+        "from": "fn:sqlite.js#init@240",
+        "kind": "calls",
+        "to": "fn:sqlite.js#addMissingColumns@224"
+      },
+      {
+        "from": "fn:sqlite.js#init@240",
+        "kind": "calls",
+        "to": "fn:sqlite.js#idbRead@94"
+      },
+      {
+        "from": "fn:sqlite.js#init@240",
+        "kind": "calls",
+        "to": "fn:sqlite.js#loadSqlJs@61"
+      },
+      {
+        "from": "fn:sqlite.js#loadSqlJs@61",
+        "kind": "calls",
+        "to": "fn:sqlite.js#loadScriptOnce@33"
+      },
+      {
+        "from": "fn:sqlite.js#one@531",
+        "kind": "calls",
+        "to": "fn:sqlite.js#rows@208"
+      },
+      {
+        "from": "fn:sqlite.js#persist@499",
+        "kind": "calls",
+        "to": "fn:sqlite.js#idbWrite@108"
+      },
+      {
+        "from": "fn:sqlite.js#persist@499",
+        "kind": "calls",
+        "to": "fn:sqlite.js#isAvailable@259"
+      },
+      {
+        "from": "fn:sqlite.js#readState@287",
+        "kind": "calls",
+        "to": "fn:sqlite.js#isAvailable@259"
+      },
+      {
+        "from": "fn:sqlite.js#readState@287",
+        "kind": "calls",
+        "to": "fn:sqlite.js#rows@208"
+      },
+      {
+        "from": "fn:sqlite.js#readState@287",
+        "kind": "calls",
+        "to": "fn:sqlite.js#settingsFromDb@271"
+      },
+      {
+        "from": "fn:sqlite.js#settingsFromDb@271",
+        "kind": "calls",
+        "to": "fn:sqlite.js#rows@208"
+      },
+      {
+        "from": "fn:sqlite.js#writeState@392",
+        "kind": "calls",
+        "to": "fn:sqlite.js#exec@202"
+      },
+      {
+        "from": "fn:sqlite.js#writeState@392",
+        "kind": "calls",
+        "to": "fn:sqlite.js#isAvailable@259"
+      },
+      {
+        "from": "fn:sqlite.js#writeState@392",
+        "kind": "calls",
+        "to": "fn:sqlite.js#num@492"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "listens",
+        "to": "event:sqlite.js#el:error"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "listens",
+        "to": "event:sqlite.js#el:load"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "listens",
+        "to": "event:sqlite.js#prev:error"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "listens",
+        "to": "event:sqlite.js#prev:load"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "listens",
+        "to": "event:sqlite.js#rq:error"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "listens",
+        "to": "event:sqlite.js#rq:success"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "listens",
+        "to": "event:sqlite.js#tx:abort"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "listens",
+        "to": "event:sqlite.js#tx:complete"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "listens",
+        "to": "event:sqlite.js#tx:error"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#<anonymous@82>@82"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#addMissingColumns@224"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#counts@528"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#el.addEventListener(error)@53"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#el.addEventListener(load)@49"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#exec@202"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#exportBytes@517"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#idbRead@94"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#idbWrite@108"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#igicSummary@554"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#init@240"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#isAvailable@259"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#lastPersistAt@512"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#loadScriptOnce@33"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#loadSqlJs@61"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#locateFile@68"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#num@492"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#one@531"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#openIdb@81"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#persist@499"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#prev.addEventListener(error)@40"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#prev.addEventListener(load)@39"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#readState@287"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#req.onerror@90"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#req.onsuccess@89"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#req.onupgradeneeded@85"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#rows@208"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#rq.onerror@101"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#rq.onsuccess@100"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#settingsFromDb@271"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#tx.onabort@116"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#tx.oncomplete@114"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#tx.onerror@115"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#why@263"
+      },
+      {
+        "from": "module:sqlite.js",
+        "kind": "defines",
+        "to": "fn:sqlite.js#writeState@392"
+      }
+    ],
+    "effects": [],
+    "endpoints": [],
+    "entry_points": {
+      "pages": [],
+      "preloads": [],
+      "renderers": [],
+      "workers": []
+    },
+    "exposed": [],
+    "graph_id": "ag_54b17f2e0e3d9d52217b69f14af80303cdd039453fba171f8734863811f65ac6",
+    "input_format": "file",
+    "ipc": [],
+    "label": "sqlite.js",
+    "limitations": [],
+    "modules": [
+      {
+        "bundle_modules": [],
+        "bundlers": [],
+        "bytes": 18326,
+        "chunk_ids": [],
+        "exports": {
+          "cjs": [],
+          "esm": [
+            "init",
+            "isAvailable",
+            "why",
+            "readState",
+            "writeState",
+            "persist",
+            "lastPersistAt",
+            "exportBytes",
+            "counts",
+            "igicSummary"
+          ]
+        },
+        "fingerprint": "11031c7ed031aac0d3b70fb2854f069e8ac7e0eddd2fb369a040234dadb49f36",
+        "functions": [
+          "loadScriptOnce",
+          "prev.addEventListener(load)",
+          "prev.addEventListener(error)",
+          "el.addEventListener(load)",
+          "el.addEventListener(error)",
+          "loadSqlJs",
+          "locateFile",
+          "openIdb",
+          "req.onupgradeneeded",
+          "req.onsuccess",
+          "req.onerror",
+          "idbRead",
+          "rq.onsuccess",
+          "rq.onerror",
+          "idbWrite",
+          "tx.oncomplete",
+          "tx.onerror",
+          "tx.onabort",
+          "exec",
+          "rows",
+          "addMissingColumns",
+          "init",
+          "isAvailable",
+          "why",
+          "settingsFromDb",
+          "readState",
+          "writeState",
+          "num",
+          "persist",
+          "lastPersistAt",
+          "exportBytes",
+          "counts",
+          "one",
+          "igicSummary"
+        ],
+        "imports": [],
+        "kind": "script",
+        "parse_mode": "parsed",
+        "path": "sqlite.js",
+        "role": "unknown",
+        "sha256": "52be3e62c432d5fb6a02651299443d291b04749028c2d9225bdf44dd91f8dca5",
+        "strings": [
+          "1.13.1",
+          "1.13.0",
+          "1.10.3",
+          "facturas.igic",
+          "sqlite",
+          "facturas.igic.sqlite",
+          "ready",
+          "error",
+          "No se pudo cargar SQLite.",
+          "load",
+          "script",
+          "function",
+          "sql.js no se ha inicializado.",
+          "Este navegador no tiene IndexedDB.",
+          "No se pudo abrir IndexedDB.",
+          "readonly",
+          "No se pudo leer de IndexedDB.",
+          "readwrite",
+          "No se pudo guardar en IndexedDB.",
+          "Se canceló el guardado.",
+          "La base de datos no está abierta.",
+          "PRAGMA table_info(facturas)",
+          "tipo",
+          "ALTER TABLE facturas ADD COLUMN tipo TEXT DEFAULT 'FACTURA'",
+          "categoria",
+          "ALTER TABLE facturas ADD COLUMN categoria TEXT DEFAULT ''",
+          "sentido",
+          "ALTER TABLE facturas ADD COLUMN sentido TEXT DEFAULT 'GASTO'",
+          "lineas",
+          "ALTER TABLE facturas ADD COLUMN lineas TEXT DEFAULT ''",
+          "liquidacion",
+          "ALTER TABLE facturas ADD COLUMN liquidacion TEXT DEFAULT ''",
+          "original",
+          "ALTER TABLE facturas ADD COLUMN original TEXT DEFAULT ''",
+          "SQLite no está disponible; se guardará como antes:",
+          "SELECT clave, valor FROM ajustes",
+          "SELECT id, nombre, nif, email, telefono, nota, creado_en FROM proveedores ORDER BY creado_en",
+          "PAGADO",
+          "PENDIENTE",
+          "FACTURA",
+          "INGRESO",
+          "GASTO",
+          "object",
+          "manual",
+          "SELECT id, de, asunto, fecha, texto, adjuntos, importado_en, usado_en FROM correos ORDER BY importado_en DESC",
+          "No se pudo leer el correo guardado:",
+          "BEGIN",
+          "DELETE FROM facturas",
+          "DELETE FROM proveedores",
+          "DELETE FROM ajustes",
+          "DELETE FROM correos",
+          "INSERT INTO ajustes (clave, valor) VALUES (?, ?)",
+          "INSERT INTO proveedores (id, nombre, nif, email, telefono, nota, creado_en)\n         VALUES (?, ?, ?, ?, ?, ?, ?)",
+          "(sin nombre)",
+          "INSERT INTO correos (id, de, asunto, fecha, texto, adjuntos, importado_en, usado_en)\n         VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+          "(sin asunto)",
+          "COMMIT",
+          "No se pudo escribir en SQLite:",
+          "ROLLBACK",
+          "No se pudo guardar la base de datos:",
+          "No se pudo exportar la base de datos:",
+          "SELECT COUNT(*) FROM proveedores",
+          "SELECT COUNT(*) FROM facturas",
+          "SELECT COUNT(*) FROM correos",
+          "SELECT COUNT(*) FROM facturas WHERE estado = 'PAGADO'",
+          "SELECT COUNT(*) FROM facturas WHERE estado = 'PENDIENTE'",
+          "SELECT sqlite_version() AS v",
+          "No se pudieron contar las filas:",
+          "SELECT proveedor, estado, facturas, base, igic, total\n         FROM igic_por_proveedor ORDER BY total DESC",
+          "No se pudo consultar la vista del IGIC:"
+        ]
+      }
+    ],
+    "modules_total": 1,
+    "native_modules": [],
+    "nodes": [
+      {
+        "id": "module:sqlite.js",
+        "kind": "module",
+        "label": "sqlite.js",
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "new Promise"
+          ],
+          "end": 2274,
+          "end_line": 59,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "src"
+          ],
+          "parent": null,
+          "start": 1347,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#loadScriptOnce@33",
+        "kind": "function",
+        "label": "loadScriptOnce",
+        "line": 33,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "resolve"
+          ],
+          "end": 1718,
+          "end_line": 39,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@34>",
+          "start": 1703,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#prev.addEventListener(load)@39",
+        "kind": "function",
+        "label": "prev.addEventListener(load)",
+        "line": 39,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "reject",
+            "new Error"
+          ],
+          "end": 1826,
+          "end_line": 40,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@34>",
+          "start": 1774,
+          "strings": [
+            "No se pudo cargar SQLite."
+          ]
+        },
+        "id": "fn:sqlite.js#prev.addEventListener(error)@40",
+        "kind": "function",
+        "label": "prev.addEventListener(error)",
+        "line": 40,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "resolve"
+          ],
+          "end": 2092,
+          "end_line": 52,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@34>",
+          "start": 2028,
+          "strings": [
+            "ready"
+          ]
+        },
+        "id": "fn:sqlite.js#el.addEventListener(load)@49",
+        "kind": "function",
+        "label": "el.addEventListener(load)",
+        "line": 49,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "reject",
+            "new Error"
+          ],
+          "end": 2229,
+          "end_line": 56,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@34>",
+          "start": 2128,
+          "strings": [
+            "error",
+            "No se pudo cargar SQLite."
+          ]
+        },
+        "id": "fn:sqlite.js#el.addEventListener(error)@53",
+        "kind": "function",
+        "label": "el.addEventListener(error)",
+        "line": 53,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "loadScriptOnce",
+            "new Error",
+            "initSqlJs",
+            "console.warn"
+          ],
+          "end": 2856,
+          "end_line": 75,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 2276,
+          "strings": [
+            "function",
+            "sql.js no se ha inicializado.",
+            "No se pudo cargar SQLite."
+          ]
+        },
+        "id": "fn:sqlite.js#loadSqlJs@61",
+        "kind": "function",
+        "label": "loadSqlJs",
+        "line": 61,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [],
+          "end": 2675,
+          "end_line": 68,
+          "exported": false,
+          "kind": "arrow",
+          "params": [
+            "file"
+          ],
+          "parent": "loadSqlJs",
+          "start": 2654,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#locateFile@68",
+        "kind": "function",
+        "label": "locateFile",
+        "line": 68,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "new Promise"
+          ],
+          "end": 3572,
+          "end_line": 92,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 3078,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#openIdb@81",
+        "kind": "function",
+        "label": "openIdb",
+        "line": 81,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "reject",
+            "new Error",
+            "indexedDB.open"
+          ],
+          "end": 3568,
+          "end_line": 91,
+          "exported": false,
+          "kind": "arrow",
+          "params": [
+            "resolve",
+            "reject"
+          ],
+          "parent": "openIdb",
+          "start": 3120,
+          "strings": [
+            "Este navegador no tiene IndexedDB."
+          ]
+        },
+        "id": "fn:sqlite.js#<anonymous@82>@82",
+        "kind": "function",
+        "label": "<anonymous@82>",
+        "line": 82,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "d.objectStoreNames.contains",
+            "d.createObjectStore"
+          ],
+          "end": 3429,
+          "end_line": 88,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@82>",
+          "start": 3305,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#req.onupgradeneeded@85",
+        "kind": "function",
+        "label": "req.onupgradeneeded",
+        "line": 85,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "resolve"
+          ],
+          "end": 3476,
+          "end_line": 89,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@82>",
+          "start": 3451,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#req.onsuccess@89",
+        "kind": "function",
+        "label": "req.onsuccess",
+        "line": 89,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "reject",
+            "new Error"
+          ],
+          "end": 3563,
+          "end_line": 90,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@82>",
+          "start": 3496,
+          "strings": [
+            "No se pudo abrir IndexedDB."
+          ]
+        },
+        "id": "fn:sqlite.js#req.onerror@90",
+        "kind": "function",
+        "label": "req.onerror",
+        "line": 90,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "openIdb",
+            "new Promise",
+            "d.close"
+          ],
+          "end": 3988,
+          "end_line": 106,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 3574,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#idbRead@94",
+        "kind": "function",
+        "label": "idbRead",
+        "line": 94,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "resolve"
+          ],
+          "end": 3855,
+          "end_line": 100,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@97>",
+          "start": 3823,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#rq.onsuccess@100",
+        "kind": "function",
+        "label": "rq.onsuccess",
+        "line": 100,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "reject",
+            "new Error"
+          ],
+          "end": 3944,
+          "end_line": 101,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@97>",
+          "start": 3876,
+          "strings": [
+            "No se pudo leer de IndexedDB."
+          ]
+        },
+        "id": "fn:sqlite.js#rq.onerror@101",
+        "kind": "function",
+        "label": "rq.onerror",
+        "line": 101,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "openIdb",
+            "new Promise",
+            "d.close"
+          ],
+          "end": 4471,
+          "end_line": 121,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "bytes"
+          ],
+          "parent": null,
+          "start": 3990,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#idbWrite@108",
+        "kind": "function",
+        "label": "idbWrite",
+        "line": 108,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "resolve"
+          ],
+          "end": 4251,
+          "end_line": 114,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@111>",
+          "start": 4236,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#tx.oncomplete@114",
+        "kind": "function",
+        "label": "tx.oncomplete",
+        "line": 114,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "reject",
+            "new Error"
+          ],
+          "end": 4343,
+          "end_line": 115,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@111>",
+          "start": 4272,
+          "strings": [
+            "No se pudo guardar en IndexedDB."
+          ]
+        },
+        "id": "fn:sqlite.js#tx.onerror@115",
+        "kind": "function",
+        "label": "tx.onerror",
+        "line": 115,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "reject",
+            "new Error"
+          ],
+          "end": 4427,
+          "end_line": 116,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@111>",
+          "start": 4364,
+          "strings": [
+            "Se canceló el guardado."
+          ]
+        },
+        "id": "fn:sqlite.js#tx.onabort@116",
+        "kind": "function",
+        "label": "tx.onabort",
+        "line": 116,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "new Error",
+            "db.run"
+          ],
+          "end": 7070,
+          "end_line": 206,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "sql",
+            "params"
+          ],
+          "parent": null,
+          "start": 6902,
+          "strings": [
+            "La base de datos no está abierta."
+          ]
+        },
+        "id": "fn:sqlite.js#exec@202",
+        "kind": "function",
+        "label": "exec",
+        "line": 202,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "db.prepare",
+            "stmt.bind",
+            "stmt.step",
+            "out.push",
+            "stmt.getAsObject",
+            "stmt.free"
+          ],
+          "end": 7315,
+          "end_line": 218,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "sql",
+            "params"
+          ],
+          "parent": null,
+          "start": 7072,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#rows@208",
+        "kind": "function",
+        "label": "rows",
+        "line": 208,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "new Set",
+            "rows(PRAGMA table_info(facturas)).map",
+            "rows",
+            "have.has",
+            "exec"
+          ],
+          "end": 8260,
+          "end_line": 233,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 7477,
+          "strings": [
+            "PRAGMA table_info(facturas)",
+            "tipo",
+            "ALTER TABLE facturas ADD COLUMN tipo TEXT DEFAULT 'FACTURA'",
+            "categoria",
+            "ALTER TABLE facturas ADD COLUMN categoria TEXT DEFAULT ''",
+            "sentido",
+            "ALTER TABLE facturas ADD COLUMN sentido TEXT DEFAULT 'GASTO'",
+            "lineas",
+            "ALTER TABLE facturas ADD COLUMN lineas TEXT DEFAULT ''",
+            "liquidacion",
+            "ALTER TABLE facturas ADD COLUMN liquidacion TEXT DEFAULT ''",
+            "original",
+            "ALTER TABLE facturas ADD COLUMN original TEXT DEFAULT ''"
+          ]
+        },
+        "id": "fn:sqlite.js#addMissingColumns@224",
+        "kind": "function",
+        "label": "addMissingColumns",
+        "line": 224,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "loadSqlJs",
+            "idbRead().catch",
+            "idbRead",
+            "new SQL.Database",
+            "new Uint8Array",
+            "db.run",
+            "addMissingColumns",
+            "String",
+            "console.warn"
+          ],
+          "end": 9111,
+          "end_line": 257,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 8573,
+          "strings": [
+            "SQLite no está disponible; se guardará como antes:"
+          ]
+        },
+        "id": "fn:sqlite.js#init@240",
+        "kind": "function",
+        "label": "init",
+        "line": 240,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [],
+          "end": 9174,
+          "end_line": 261,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 9120,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#isAvailable@259",
+        "kind": "function",
+        "label": "isAvailable",
+        "line": 259,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [],
+          "end": 9222,
+          "end_line": 265,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 9183,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#why@263",
+        "kind": "function",
+        "label": "why",
+        "line": 263,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "rows",
+            "JSON.parse"
+          ],
+          "end": 9687,
+          "end_line": 281,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 9444,
+          "strings": [
+            "SELECT clave, valor FROM ajustes"
+          ]
+        },
+        "id": "fn:sqlite.js#settingsFromDb@271",
+        "kind": "function",
+        "label": "settingsFromDb",
+        "line": 271,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "isAvailable",
+            "settingsFromDb",
+            "rows().map",
+            "rows",
+            "console.warn",
+            "Object.keys"
+          ],
+          "end": 13035,
+          "end_line": 389,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 9843,
+          "strings": [
+            "SELECT id, nombre, nif, email, telefono, nota, creado_en FROM proveedores ORDER BY creado_en",
+            "SELECT id, de, asunto, fecha, texto, adjuntos, importado_en, usado_en FROM correos ORDER BY importado_en DESC",
+            "No se pudo leer el correo guardado:"
+          ]
+        },
+        "id": "fn:sqlite.js#readState@287",
+        "kind": "function",
+        "label": "readState",
+        "line": 287,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "isAvailable",
+            "exec",
+            "Object.entries",
+            "JSON.stringify",
+            "new Date",
+            "num",
+            "Array.isArray",
+            "String().slice",
+            "String",
+            "console.error"
+          ],
+          "end": 16255,
+          "end_line": 490,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "state"
+          ],
+          "parent": null,
+          "start": 13117,
+          "strings": [
+            "BEGIN",
+            "DELETE FROM facturas",
+            "DELETE FROM proveedores",
+            "DELETE FROM ajustes",
+            "DELETE FROM correos",
+            "INSERT INTO ajustes (clave, valor) VALUES (?, ?)",
+            "INSERT INTO proveedores (id, nombre, nif, email, telefono, nota, creado_en)\n         VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "(sin nombre)",
+            "PAGADO",
+            "PENDIENTE",
+            "FACTURA",
+            "INGRESO",
+            "GASTO",
+            "manual",
+            "INSERT INTO correos (id, de, asunto, fecha, texto, adjuntos, importado_en, usado_en)\n         VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            "(sin asunto)",
+            "COMMIT",
+            "No se pudo escribir en SQLite:",
+            "ROLLBACK"
+          ]
+        },
+        "id": "fn:sqlite.js#writeState@392",
+        "kind": "function",
+        "label": "writeState",
+        "line": 392,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Number",
+            "Number.isFinite"
+          ],
+          "end": 16381,
+          "end_line": 496,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "v"
+          ],
+          "parent": null,
+          "start": 16257,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#num@492",
+        "kind": "function",
+        "label": "num",
+        "line": 492,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "isAvailable",
+            "db.export",
+            "idbWrite",
+            "Date.now",
+            "console.warn"
+          ],
+          "end": 16728,
+          "end_line": 510,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 16448,
+          "strings": [
+            "No se pudo guardar la base de datos:"
+          ]
+        },
+        "id": "fn:sqlite.js#persist@499",
+        "kind": "function",
+        "label": "persist",
+        "line": 499,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [],
+          "end": 16787,
+          "end_line": 514,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 16737,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#lastPersistAt@512",
+        "kind": "function",
+        "label": "lastPersistAt",
+        "line": 512,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "isAvailable",
+            "db.export",
+            "console.warn"
+          ],
+          "end": 17046,
+          "end_line": 525,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 16850,
+          "strings": [
+            "No se pudo exportar la base de datos:"
+          ]
+        },
+        "id": "fn:sqlite.js#exportBytes@517",
+        "kind": "function",
+        "label": "exportBytes",
+        "line": 517,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "isAvailable",
+            "one",
+            "db.export",
+            "rows",
+            "console.warn"
+          ],
+          "end": 17856,
+          "end_line": 548,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 17123,
+          "strings": [
+            "SELECT COUNT(*) FROM proveedores",
+            "SELECT COUNT(*) FROM facturas",
+            "SELECT COUNT(*) FROM correos",
+            "SELECT COUNT(*) FROM facturas WHERE estado = 'PAGADO'",
+            "SELECT COUNT(*) FROM facturas WHERE estado = 'PENDIENTE'",
+            "SELECT sqlite_version() AS v",
+            "No se pudieron contar las filas:"
+          ]
+        },
+        "id": "fn:sqlite.js#counts@528",
+        "kind": "function",
+        "label": "counts",
+        "line": 528,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "rows",
+            "Number",
+            "Object.values"
+          ],
+          "end": 17310,
+          "end_line": 534,
+          "exported": false,
+          "kind": "arrow",
+          "params": [
+            "sql"
+          ],
+          "parent": "counts",
+          "start": 17202,
+          "strings": []
+        },
+        "id": "fn:sqlite.js#one@531",
+        "kind": "function",
+        "label": "one",
+        "line": 531,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "isAvailable",
+            "rows",
+            "console.warn"
+          ],
+          "end": 18325,
+          "end_line": 565,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 18016,
+          "strings": [
+            "SELECT proveedor, estado, facturas, base, igic, total\n         FROM igic_por_proveedor ORDER BY total DESC",
+            "No se pudo consultar la vista del IGIC:"
+          ]
+        },
+        "id": "fn:sqlite.js#igicSummary@554",
+        "kind": "function",
+        "label": "igicSummary",
+        "line": 554,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "id": "storage:indexedDB.open facturas.igic",
+        "kind": "storage",
+        "label": "indexedDB.open facturas.igic"
+      },
+      {
+        "id": "event:sqlite.js#prev:load",
+        "kind": "event",
+        "label": "prev:load",
+        "line": 39,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:sqlite.js#prev:error",
+        "kind": "event",
+        "label": "prev:error",
+        "line": 40,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:sqlite.js#el:load",
+        "kind": "event",
+        "label": "el:load",
+        "line": 49,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:sqlite.js#el:error",
+        "kind": "event",
+        "label": "el:error",
+        "line": 53,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:sqlite.js#req:upgradeneeded",
+        "kind": "event",
+        "label": "req:upgradeneeded",
+        "line": 85,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:sqlite.js#req:success",
+        "kind": "event",
+        "label": "req:success",
+        "line": 89,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:sqlite.js#req:error",
+        "kind": "event",
+        "label": "req:error",
+        "line": 90,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:sqlite.js#rq:success",
+        "kind": "event",
+        "label": "rq:success",
+        "line": 100,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:sqlite.js#rq:error",
+        "kind": "event",
+        "label": "rq:error",
+        "line": 101,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:sqlite.js#tx:complete",
+        "kind": "event",
+        "label": "tx:complete",
+        "line": 114,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:sqlite.js#tx:error",
+        "kind": "event",
+        "label": "tx:error",
+        "line": 115,
+        "module": "sqlite.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:sqlite.js#tx:abort",
+        "kind": "event",
+        "label": "tx:abort",
+        "line": 116,
+        "module": "sqlite.js",
+        "role": "unknown"
+      }
+    ],
+    "package": null,
+    "routes": [],
+    "source_maps": [],
+    "stats": {
+      "api_operations": 0,
+      "bundle_modules": 0,
+      "edges": 84,
+      "endpoints": 0,
+      "files": 1,
+      "functions": 35,
+      "ipc_channels": 0,
+      "listed": 1,
+      "modules": 1,
+      "nodes": 49,
+      "paired_channels": 0
+    },
+    "storage": [
+      {
+        "api": "indexedDB.open",
+        "arg": "facturas.igic",
+        "function": "<anonymous@82>",
+        "line": 84,
+        "module": "sqlite.js",
+        "role": "unknown"
+      }
+    ],
+    "summary": "JavaScript code sqlite.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+    "vendors": [],
+    "windows": []
+  },
+  "summary": "JavaScript code sqlite.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "static_only",
+      "message": "Static reading only: code built at run time (eval, computed requires, remote content) is invisible; IPC pairs need literal channel names."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\sqlite.js"
+    }
+  ],
+  "links": []
+}

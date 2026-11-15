@@ -1,0 +1,94 @@
+{
+  "id": "ev_a81c0019839f24c0ae9af32a5b3fd2d96a9fb9d975278a1549d494b9cd83113e",
+  "subject": {
+    "kind": "script",
+    "sha256": "a77b947598bdabd10ab492a586a45e58696d15ea952381747103996cd8a8aa1f",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 10,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "queueFiles"
+  },
+  "result": {
+    "file_size": 72385,
+    "limit": 10,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "717565756546696c6573",
+        "file_offset": 33372,
+        "file_offset_hex": "0x825c",
+        "length": 10,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "717565756546696c6573",
+        "file_offset": 53015,
+        "file_offset_hex": "0xcf17",
+        "length": 10,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "717565756546696c6573",
+        "file_offset": 72276,
+        "file_offset_hex": "0x11a54",
+        "length": 10,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 10
+      }
+    ],
+    "total_matches": 3
+  },
+  "summary": "3 match(es) for utf8 in views.js; showing 3 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 3,
+    "total": 3
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x825c"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xcf17"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x11a54"
+    }
+  ],
+  "links": []
+}

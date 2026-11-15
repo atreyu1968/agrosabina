@@ -1,0 +1,54 @@
+{
+  "id": "ev_1ef2714be5984d1df25e9a4203255f2d83ec266e598b259ce28ee6ae982b2999",
+  "subject": {
+    "kind": "script",
+    "sha256": "dce5715426f363eda41a5e86d8aca69716de8b9e5f03038cae3689841a53368b",
+    "name": "nomina.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 18,
+    "offset": 14,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 10720,
+    "lines": 18,
+    "more": true,
+    "offset": 14,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js",
+    "replaced_sequences": 0,
+    "text": " *   476 Organismos de la Seguridad Social ...... al haber (trabajador + empresa)\n *   4751 Hacienda Pública, acreedora por IRPF .. al haber\n *   465 Remuneraciones pendientes de pago ...... al haber (el líquido)\n * Cuando la nómina se marca pagada, la contabilidad saca el dinero de la\n * cuenta 465 contra caja (570) o banco (572), como cualquier otro pago.\n */\n\nimport { parseAmount, round2 } from \"./util.js\";\n\n/** Las cuentas del PGC que toca una nómina. */\nexport const CUENTAS_NOMINA = Object.freeze({\n  sueldos: \"640\",\n  ssEmpresa: \"642\",\n  ssPagar: \"476\",\n  irpf: \"4751\",\n  liquido: \"465\",\n});\n\n",
+    "total_lines": 288
+  },
+  "summary": "nomina.js: lines 15–32 of 288 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 18,
+    "total": 288,
+    "next_offset": 32
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\nomina.js"
+    }
+  ],
+  "links": []
+}

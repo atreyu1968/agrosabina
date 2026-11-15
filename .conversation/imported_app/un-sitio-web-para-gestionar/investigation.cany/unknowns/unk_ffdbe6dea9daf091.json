@@ -1,0 +1,15 @@
+{
+  "id": "unk_ffdbe6dea9daf091",
+  "revision": 1,
+  "question": "¿Cómo se porta el importador de nóminas con una nómina real de Agrosabina (un PDF o una foto de la gestoría)? No se ha probado en el navegador ni con un documento de verdad: solo se ha comprobado que el código se analiza y que el sitio compila.",
+  "severity": "high",
+  "domain": "importación",
+  "status": "open",
+  "probes": [
+    "Abrir la página con permiso, subir una nómina real y mirar la ventana de revisión: debe decir «leído con el importador de nómina (recibo de salarios)» y traer bruto, SS, IRPF y líquido",
+    "Subir una liquidación real y comprobar que el elegido es el de liquidación y que no aparece IGIC inventado",
+    "Probar un texto pegado de nómina en «Pegar el texto»"
+  ],
+  "evidence_for": [],
+  "evidence_against": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_a9465b6982ac0443988bff9e28d6889e42a7600e7d5287f1456261c6495cf935",
+  "subject": {
+    "kind": "script",
+    "sha256": "07c31762a454b6be58a39fd6ff0babbd17c7da22919ba552752ed159e42ff7c1",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 76,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 129963,
+    "lines": 30,
+    "more": true,
+    "offset": 76,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "\nexport const ui = {\n  route: \"resumen\",\n  filters: { status: \"all\", supplier: \"\", q: \"\", direction: \"all\" },\n  supplierQuery: \"\",\n  jobs: [],\n  // Pantalla de ventas: periodo elegido y fechas a mano.\n  sales: { range: \"year\", from: \"\", to: \"\" },\n};\n\nconst ROUTES = [\"resumen\", \"ventas\", \"compras\", \"proveedores\", \"correo\", \"importar\"];\n\n\n/* ------------------------------------------------------------------ */\n/* Utilidades de pintado                                              */\n/* ------------------------------------------------------------------ */\n\nfunction statusPill(inv, interactive = true) {\n  const paid = inv.status === STATUS.PAID;\n  const cls = paid ? \"paid\" : \"pending\";\n  const label = paid ? \"Pagado\" : \"Pendiente\";\n  if (!interactive) return `<span class=\"status static ${cls}\">${label}</span>`;\n  return `<button class=\"status ${cls}\" data-action=\"toggle-status\" data-id=\"${inv.id}\"\n    title=\"Cambiar a ${paid ? \"pendiente\" : \"pagado\"}\">${label}</button>`;\n}\n\nfunction supplierName(id) {\n  const s = supplierById(id);\n  return s ? s.name : \"Sin proveedor\";\n}\n",
+    "total_lines": 3467
+  },
+  "summary": "views.js: lines 77–106 of 3467 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 3467,
+    "next_offset": 106
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

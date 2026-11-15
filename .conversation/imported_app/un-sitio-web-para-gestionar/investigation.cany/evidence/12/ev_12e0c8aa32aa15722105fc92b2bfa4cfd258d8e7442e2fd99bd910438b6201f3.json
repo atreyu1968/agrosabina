@@ -1,0 +1,54 @@
+{
+  "id": "ev_12e0c8aa32aa15722105fc92b2bfa4cfd258d8e7442e2fd99bd910438b6201f3",
+  "subject": {
+    "kind": "script",
+    "sha256": "642112be3226f861ab5b29ed690b06380b5b4edb89f76e2e3697ff52df92f980",
+    "name": "dom.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 96,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 9373,
+    "lines": 30,
+    "more": true,
+    "offset": 96,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js",
+    "replaced_sequences": 0,
+    "text": "  document.body.style.overflow = \"\";\n  wrap.remove();\n  if (typeof onClose === \"function\") onClose();\n}\n\nexport function modalIsOpen() {\n  return !!activeModal;\n}\n\n/** Pregunta sí/no. Devuelve una promesa con true o false. */\nexport function confirmDialog({ title, message, confirm = \"Sí, seguir\", cancel = \"Cancelar\", danger = false }) {\n  return new Promise((resolve) => {\n    let answered = false;\n    openModal(\n      `<div class=\"modal-head\">\n         <div>\n           <h2>${esc(title)}</h2>\n           <p>${esc(message)}</p>\n         </div>\n         <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n       </div>\n       <div class=\"modal-foot\">\n         <button class=\"btn ${danger ? \"danger\" : \"primary\"}\" data-confirm-yes>${esc(confirm)}</button>\n         <button class=\"btn ghost\" data-modal-cancel>${esc(cancel)}</button>\n       </div>`,\n      {\n        narrow: true,\n        onMount(wrap) {\n          wrap.querySelector(\"[data-confirm-yes]\").addEventListener(\"click\", () => {\n            answered = true;\n",
+    "total_lines": 155
+  },
+  "summary": "dom.js: lines 97–126 of 155 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 155,
+    "next_offset": 126
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js"
+    }
+  ],
+  "links": []
+}

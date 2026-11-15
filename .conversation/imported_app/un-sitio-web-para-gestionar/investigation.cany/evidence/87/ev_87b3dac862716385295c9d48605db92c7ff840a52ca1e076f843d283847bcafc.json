@@ -1,0 +1,54 @@
+{
+  "id": "ev_87b3dac862716385295c9d48605db92c7ff840a52ca1e076f843d283847bcafc",
+  "subject": {
+    "kind": "script",
+    "sha256": "73c264dee64a42dcc19ca79b0557e68c6c19e0f0b56e1aa101c43c89926f05a2",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 110,
+    "offset": 1828,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 99263,
+    "lines": 110,
+    "more": true,
+    "offset": 1828,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      const drop = ev.target.closest(\"[data-drop-dto]\");\n      if (!drop) return;\n      ev.preventDefault();\n      const row = drop.closest(\".dto-line\");\n      if (row) row.remove();\n      recalcFromLiq();\n    });\n  }\n\n  if (addDtoBtn && dtosBox) {\n    addDtoBtn.addEventListener(\"click\", (ev) => {\n      ev.preventDefault();\n      dtosBox.insertAdjacentHTML(\"beforeend\", dtoRowHtml(\"\", null));\n      const rows = dtosBox.querySelectorAll(\".dto-line\");\n      const last = rows[rows.length - 1];\n      if (last) last.querySelector(\".dto-label\").focus();\n      paintLiq();\n    });\n  }\n\n  function syncLiqVisibility() {\n    if (!liqBox) return;\n    liqBox.hidden = kindSel.value !== \"LIQUIDACION\";\n  }\n\n  if (kindSel) {\n    kindSel.addEventListener(\"change\", syncLiqVisibility);\n    syncLiqVisibility();\n  }\n\n  paintLines();\n  paintLiq();\n\n  if (initial && initial.rate != null) rate.value = String(initial.rate);\n}\n\nfunction readIgicLines(wrap) {\n  const box = wrap.querySelector(\"#iv-lines\");\n  if (!box) return [];\n  return [...box.querySelectorAll(\".igic-line\")]\n    .map((row) => {\n      const baseInput = row.querySelector(\".line-base\");\n      const rateSelect = row.querySelector(\".line-rate\");\n      const base = parseAmount(baseInput ? baseInput.value : \"\");\n      const rate = Number(rateSelect ? rateSelect.value : NaN);\n      if (base == null || !Number.isFinite(rate)) return null;\n      return { base, rate };\n    })\n    .filter(Boolean);\n}\n\n/** Lo que hay escrito en el bloque de liquidación de fruta, o null si está vacío. */\nfunction readLiquidacion(wrap) {\n  const box = wrap.querySelector(\"#f-liq\");\n  if (!box) return null;\n  const val = (sel) => {\n    const el = wrap.querySelector(sel);\n    return el && typeof el.value === \"string\" ? el.value : \"\";\n  };\n  const product = val(\"#l-product\").trim();\n  const kg = parseAmount(val(\"#l-kg\"));\n  const price = parseAmount(val(\"#l-price\"));\n  const dtos = wrap.querySelector(\"#iv-dtos\");\n  const discounts = dtos\n    ? [...dtos.querySelectorAll(\".dto-line\")]\n        .map((row) => {\n          const labelEl = row.querySelector(\".dto-label\");\n          const amountEl = row.querySelector(\".dto-amount\");\n          const label = (labelEl ? labelEl.value : \"\").trim();\n          const amount = parseAmount(amountEl ? amountEl.value : \"\");\n          if (!label && amount == null) return null;\n          return { label, amount: amount == null ? 0 : amount };\n        })\n        .filter(Boolean)\n    : [];\n  if (!product && kg == null && price == null && !discounts.length) return null;\n  return { product, kg, price, discounts };\n}\n\nfunction readForm(wrap) {\n  const q = (id) => wrap.querySelector(id);\n  const status = q(\"#f-status-seg\").dataset.value;\n  const base = parseAmount(q(\"#f-base\").value);\n  const rateRaw = q(\"#f-rate\").value;\n  const rate = rateRaw === \"\" ? null : Number(rateRaw);\n  const igic = parseAmount(q(\"#f-igic\").value);\n  const total = parseAmount(q(\"#f-total\").value);\n  const lines = readIgicLines(wrap);\n\n  return {\n    supplierName: q(\"#f-name\").value.trim(),\n    supplierNif: q(\"#f-nif\").value.trim(),\n    number: q(\"#f-number\").value.trim(),\n    issueDate: q(\"#f-issue\").value || \"\",\n    dueDate: q(\"#f-due\").value || \"\",\n    kind: (q(\"#f-kind\") && q(\"#f-kind\").value) || \"FACTURA\",\n    category: (q(\"#f-cat\") && q(\"#f-cat\").value) || \"\",\n    direction: directionOf((q(\"#f-kind\") && q(\"#f-kind\").value) || \"FACTURA\"),\n    base,\n    rate:\n      lines.length > 1 && base > 0 && igic != null\n        ? round2((igic / base) * 100)\n        : Number.isFinite(rate)\n          ? rate\n          : null,\n    igic,\n    total,\n    lines,\n    status: status === STATUS.PAID ? STATUS.PAID : STATUS.PENDING,\n  };\n",
+    "total_lines": 2658
+  },
+  "summary": "views.js: lines 1829–1938 of 2658 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 110,
+    "total": 2658,
+    "next_offset": 1938
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

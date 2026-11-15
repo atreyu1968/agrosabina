@@ -1,0 +1,54 @@
+{
+  "id": "ev_4da8e783062d5c88f5f331fc3d4e48c4653fcb6c1b48527379429f26cf6b4d61",
+  "subject": {
+    "kind": "script",
+    "sha256": "74d04d86a9e267ad2036e387eae84d9dac1474b696d523baafcaae4fd6496266",
+    "name": "sqlite.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 140,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 17820,
+    "lines": 140,
+    "more": true,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js",
+    "replaced_sequences": 0,
+    "text": "/*\n * La base de datos: SQLite de verdad, dentro del navegador.\n *\n * Se usa sql.js, que es SQLite compilado a WebAssembly. La base de datos vive\n * en memoria mientras la página está abierta y, en cada cambio, se guarda\n * entera (sus bytes) en IndexedDB, que es el almacén del navegador pensado\n * para datos binarios y de más tamaño que localStorage.\n *\n * Ventajas: los datos están en tablas SQL (proveedores, facturas, ajustes),\n * se pueden consultar con SQL y se pueden descargar como fichero .sqlite para\n * abrirlo con cualquier programa de bases de datos.\n *\n * Si el navegador no deja cargar sql.js (sin conexión la primera vez, o un\n * navegador muy antiguo), el programa sigue funcionando: store.js cae en el\n * guardado anterior en localStorage y lo dice en Ajustes.\n */\n\nconst SQLJS_VERSIONS = [\"1.13.1\", \"1.13.0\", \"1.10.3\"];\nconst IDB_NAME = \"facturas.igic\";\nconst IDB_STORE = \"sqlite\";\nconst IDB_KEY = \"facturas.igic.sqlite\";\n\nlet SQL = null; // el módulo sql.js ya cargado\nlet db = null; // la base de datos abierta (objeto de sql.js)\nlet available = false;\nlet failReason = \"\";\nlet lastPersist = 0;\n\n/* ------------------------------------------------------------------ */\n/* Carga de sql.js                                                    */\n/* ------------------------------------------------------------------ */\n\nfunction loadScriptOnce(src) {\n  return new Promise((resolve, reject) => {\n    const prev = document.querySelector(`script[data-sqljs=\"${src}\"]`);\n    if (prev) {\n      if (prev.dataset.state === \"ready\") return resolve();\n      if (prev.dataset.state === \"error\") return reject(new Error(\"No se pudo cargar SQLite.\"));\n      prev.addEventListener(\"load\", () => resolve(), { once: true });\n      prev.addEventListener(\"error\", () => reject(new Error(\"No se pudo cargar SQLite.\")), {\n        once: true,\n      });\n      return;\n    }\n    const el = document.createElement(\"script\");\n    el.src = src;\n    el.async = true;\n    el.dataset.sqljs = src;\n    el.addEventListener(\"load\", () => {\n      el.dataset.state = \"ready\";\n      resolve();\n    });\n    el.addEventListener(\"error\", () => {\n      el.dataset.state = \"error\";\n      reject(new Error(\"No se pudo cargar SQLite.\"));\n    });\n    document.head.appendChild(el);\n  });\n}\n\nasync function loadSqlJs() {\n  let lastError = null;\n  for (const version of SQLJS_VERSIONS) {\n    const base = `https://cdn.jsdelivr.net/npm/sql.js@${version}/dist/`;\n    try {\n      await loadScriptOnce(`${base}sql-wasm.js`);\n      if (typeof window.initSqlJs !== \"function\") throw new Error(\"sql.js no se ha inicializado.\");\n      return await window.initSqlJs({ locateFile: (file) => base + file });\n    } catch (err) {\n      lastError = err;\n      console.warn(`SQLite ${version} no ha cargado:`, err);\n    }\n  }\n  throw lastError || new Error(\"No se pudo cargar SQLite.\");\n}\n\n/* ------------------------------------------------------------------ */\n/* IndexedDB: donde se guardan los bytes de la base de datos          */\n/* ------------------------------------------------------------------ */\n\nfunction openIdb() {\n  return new Promise((resolve, reject) => {\n    if (!window.indexedDB) return reject(new Error(\"Este navegador no tiene IndexedDB.\"));\n    const req = indexedDB.open(IDB_NAME, 1);\n    req.onupgradeneeded = () => {\n      const d = req.result;\n      if (!d.objectStoreNames.contains(IDB_STORE)) d.createObjectStore(IDB_STORE);\n    };\n    req.onsuccess = () => resolve(req.result);\n    req.onerror = () => reject(req.error || new Error(\"No se pudo abrir IndexedDB.\"));\n  });\n}\n\nasync function idbRead() {\n  const d = await openIdb();\n  try {\n    return await new Promise((resolve, reject) => {\n      const tx = d.transaction(IDB_STORE, \"readonly\");\n      const rq = tx.objectStore(IDB_STORE).get(IDB_KEY);\n      rq.onsuccess = () => resolve(rq.result || null);\n      rq.onerror = () => reject(rq.error || new Error(\"No se pudo leer de IndexedDB.\"));\n    });\n  } finally {\n    d.close();\n  }\n}\n\nasync function idbWrite(bytes) {\n  const d = await openIdb();\n  try {\n    await new Promise((resolve, reject) => {\n      const tx = d.transaction(IDB_STORE, \"readwrite\");\n      tx.objectStore(IDB_STORE).put(bytes, IDB_KEY);\n      tx.oncomplete = () => resolve();\n      tx.onerror = () => reject(tx.error || new Error(\"No se pudo guardar en IndexedDB.\"));\n      tx.onabort = () => reject(tx.error || new Error(\"Se canceló el guardado.\"));\n    });\n  } finally {\n    d.close();\n  }\n}\n\n/* ------------------------------------------------------------------ */\n/* Esquema                                                            */\n/* ------------------------------------------------------------------ */\n\nconst SCHEMA = `\nPRAGMA foreign_keys = ON;\n\nCREATE TABLE IF NOT EXISTS ajustes (\n  clave TEXT PRIMARY KEY,\n  valor TEXT\n);\n\nCREATE TABLE IF NOT EXISTS proveedores (\n  id         TEXT PRIMARY KEY,\n  nombre     TEXT NOT NULL,\n  nif        TEXT DEFAULT '',\n  email      TEXT DEFAULT '',\n  telefono   TEXT DEFAULT '',\n",
+    "total_lines": 554
+  },
+  "summary": "sqlite.js: lines 1–140 of 554 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 140,
+    "total": 554,
+    "next_offset": 140
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+    }
+  ],
+  "links": []
+}

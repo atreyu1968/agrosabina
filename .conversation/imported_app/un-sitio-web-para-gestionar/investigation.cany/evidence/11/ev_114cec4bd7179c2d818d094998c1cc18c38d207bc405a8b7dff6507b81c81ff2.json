@@ -1,0 +1,51 @@
+{
+  "id": "ev_114cec4bd7179c2d818d094998c1cc18c38d207bc405a8b7dff6507b81c81ff2",
+  "subject": {
+    "kind": "artifact-pair",
+    "name": "site vs dist"
+  },
+  "operation": "core_archives_compare",
+  "params": {
+    "left": "inv_8ffbb81d4a301391c7a26e589ffa1fceb4184c78e84a26bb8595936a606b7735",
+    "right": "inv_8ffbb81d4a301391c7a26e589ffa1fceb4184c78e84a26bb8595936a606b7735"
+  },
+  "result": {
+    "added": [],
+    "changed": [],
+    "counts": {
+      "added": 0,
+      "changed": 0,
+      "moved": 0,
+      "removed": 0,
+      "unchanged": 20
+    },
+    "identical": true,
+    "left": {
+      "content_id": "inv_8ffbb81d4a301391c7a26e589ffa1fceb4184c78e84a26bb8595936a606b7735",
+      "files": 20,
+      "root": "site"
+    },
+    "moved": [],
+    "removed": [],
+    "right": {
+      "content_id": "inv_8ffbb81d4a301391c7a26e589ffa1fceb4184c78e84a26bb8595936a606b7735",
+      "files": 20,
+      "root": "dist"
+    }
+  },
+  "summary": "site → dist: 0 added, 0 removed, 0 changed, 0 moved, 20 unchanged.",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "unknown"
+  },
+  "locations": [],
+  "links": []
+}

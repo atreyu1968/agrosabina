@@ -1,0 +1,54 @@
+{
+  "id": "ev_cd40b2b01303ebfc2ff5377a3abc11a6719110899af41c0fa018df16245660df",
+  "subject": {
+    "kind": "script",
+    "sha256": "95cfec9262b76d4a06e9da1f5aa03517b468bd8e6341b387341adabc3c2d11cb",
+    "name": "model.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 30,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 10340,
+    "lines": 30,
+    "more": true,
+    "offset": 30,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js",
+    "replaced_sequences": 0,
+    "text": "  { id: \"SERVICIOS\", label: \"Servicios externos\", direction: DIRECTIONS.OUT },\n  { id: \"FITOSANITARIOS\", label: \"Fitosanitarios\", direction: DIRECTIONS.OUT },\n  { id: \"ABONOS\", label: \"Abonos y fertilizantes\", direction: DIRECTIONS.OUT },\n  { id: \"COMBUSTIBLE\", label: \"Combustible y carburantes\", direction: DIRECTIONS.OUT },\n  { id: \"IMPUESTOS\", label: \"Impuestos y tasas\", direction: DIRECTIONS.OUT },\n  { id: \"FRUTA\", label: \"Fruta (liquidaciones y pagos)\", direction: DIRECTIONS.IN },\n  { id: \"SUBVENCIONES\", label: \"Subvenciones y ayudas\", direction: DIRECTIONS.IN },\n  { id: \"OTROS\", label: \"Otros\", direction: \"\" },\n]);\n\nexport function kindInfo(id) {\n  return DOC_KINDS.find((k) => k.id === id) || DOC_KINDS[0];\n}\n\nexport function categoryInfo(id) {\n  return CATEGORIES.find((c) => c.id === id) || CATEGORIES[0];\n}\n\n/** El sentido (ingreso o gasto) lo manda el tipo de documento. */\nexport function directionOf(kindId, fallback = DIRECTIONS.OUT) {\n  const k = DOC_KINDS.find((x) => x.id === kindId);\n  return k ? k.direction : fallback;\n}\n\n/** Tipos para un <select>, con el sentido bien claro. */\nexport function kindOptions(current) {\n  return DOC_KINDS.map(\n    (k) =>\n      `<option value=\"${k.id}\" ${k.id === current ? \"selected\" : \"\"}>${k.label} (${\n        k.direction === DIRECTIONS.IN ? \"ingreso\" : \"gasto\"\n",
+    "total_lines": 242
+  },
+  "summary": "model.js: lines 31–60 of 242 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 242,
+    "next_offset": 60
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js"
+    }
+  ],
+  "links": []
+}

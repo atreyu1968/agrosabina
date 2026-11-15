@@ -1,0 +1,54 @@
+{
+  "id": "ev_7bd825b4d67ce3a83bacaf990676460cd2eda0c25cd1d4e3971af8d803aec812",
+  "subject": {
+    "kind": "script",
+    "sha256": "c48ded4f9cf5041b482b33ee217b0c9019182ba5922a959fb68cfe1f038baa21",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 356,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 246388,
+    "lines": 60,
+    "more": true,
+    "offset": 356,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  const meta = pageMeta(route);\n  document.getElementById(\"viewTitle\").textContent = meta.title;\n  document.getElementById(\"viewSub\").textContent = meta.sub;\n  document.getElementById(\"topActions\").innerHTML = topActions(route);\n\n  const view = document.getElementById(\"view\");\n  if (route === \"resumen\") view.innerHTML = viewResumen();\n  else if (route === \"ventas\") view.innerHTML = viewVentas();\n  else if (route === \"contabilidad\") view.innerHTML = viewContabilidad();\n  else if (route === \"compras\") view.innerHTML = viewFacturas();\n  else if (route === \"nominas\") view.innerHTML = viewNominas();\n  else if (route === \"proveedores\") view.innerHTML = viewProveedores();\n  else if (route === \"documentos\") view.innerHTML = viewDocumentos();\n  else if (route === \"correo\") view.innerHTML = viewCorreo();\n  else view.innerHTML = viewImportar();\n\n  updateNavBadge();\n}\n\n/* ------------------------------------------------------------------ */\n/* Documentos: el archivo de todo lo guardado                          */\n/* ------------------------------------------------------------------ */\n\nconst DOC_SORTS = [\n  { id: \"recent\", label: \"Más recientes primero\" },\n  { id: \"oldest\", label: \"Más antiguos primero\" },\n  { id: \"amount\", label: \"Por importe, de mayor a menor\" },\n  { id: \"supplier\", label: \"Por proveedor, de la A a la Z\" },\n];\n\n/** La fecha con la que se filtra y se ordena un documento. */\nfunction docDay(inv) {\n  return inv.issueDate || String(inv.createdAt || \"\").slice(0, 10) || \"\";\n}\n\nfunction docDirection(inv) {\n  return inv.direction || directionOf(inv.kind || \"FACTURA\");\n}\n\n/** El proveedor o comprador de un documento, o un hueco si ya no está. */\nfunction docSupplier(inv) {\n  const list = getState().suppliers || [];\n  return list.find((s) => s.id === inv.supplierId) || null;\n}\n\n/** Los documentos guardados que pasan por el buscador y todos los filtros. */\nfunction docList() {\n  const st = ui.docs;\n  const w = windowFor(st);\n  const needle = st.q.trim().toLowerCase();\n  let list = getState().invoices.slice();\n\n  if (st.kind !== \"all\") list = list.filter((inv) => (inv.kind || \"FACTURA\") === st.kind);\n  if (st.dir !== \"all\") list = list.filter((inv) => docDirection(inv) === st.dir);\n  if (st.status === \"pending\") list = list.filter((inv) => inv.status !== STATUS.PAID);\n  else if (st.status === \"paid\") list = list.filter((inv) => inv.status === STATUS.PAID);\n  if (st.supplier) list = list.filter((inv) => inv.supplierId === st.supplier);\n  if (w.from || w.to) list = list.filter((inv) => inSalesWindow(docDay(inv), w));\n\n  if (needle) {\n",
+    "total_lines": 6175
+  },
+  "summary": "views.js: lines 357–416 of 6175 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 6175,
+    "next_offset": 416
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

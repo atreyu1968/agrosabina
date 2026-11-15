@@ -1,0 +1,54 @@
+{
+  "id": "ev_b09ee6f94f016350df4430e014736700c3d19fd9a3e01cb883628b123557f677",
+  "subject": {
+    "kind": "script",
+    "sha256": "5e17d89c337b593cb05d0ca1b1c9e70e16a2366aecc10979f182f9dc07a35d2f",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 200,
+    "offset": 300,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\_check3\\pretty\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 23521,
+    "lines": 200,
+    "more": true,
+    "offset": 300,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\_check3\\pretty\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "\t\t\t[cuentaDoc, base],\n\t\t\t[\"477\", igic],\n\t\t\t[\"430\", -total]\n\t\t] : [\n\t\t\t[cuentaDoc, base],\n\t\t\t[\"472\", igic],\n\t\t\t[\"400\", -total]\n\t\t];\n\t\tconst lines = lineas(raw);\n\t\tif (!lines.length) continue;\n\t\tout.push({\n\t\t\tid: `${inv.id}:devengo`,\n\t\t\tdate: dia,\n\t\t\tconcept,\n\t\t\tref: numero,\n\t\t\tkind: \"devengo\",\n\t\t\tdocId: inv.id,\n\t\t\tlines\n\t\t});\n\t\tif (String(inv.status || \"\") === \"PAGADO\") {\n\t\t\tconst diaPago = String(inv.paidDate || \"\").slice(0, 10) || dia;\n\t\t\tif (dentro(diaPago)) {\n\t\t\t\tconst linesPago = lineas(ingreso ? [[\"572\", total], [\"430\", -total]] : [[\"400\", total], [\"572\", -total]]);\n\t\t\t\tif (linesPago.length) {\n\t\t\t\t\tout.push({\n\t\t\t\t\t\tid: `${inv.id}:${ingreso ? \"cobro\" : \"pago\"}`,\n\t\t\t\t\t\tdate: diaPago,\n\t\t\t\t\t\tconcept: `${ingreso ? \"Cobro\" : \"Pago\"}${numero ? ` ${numero}` : \"\"}${quien}`,\n\t\t\t\t\t\tref: numero,\n\t\t\t\t\t\tkind: ingreso ? \"cobro\" : \"pago\",\n\t\t\t\t\t\tdocId: inv.id,\n\t\t\t\t\t\tlines: linesPago\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\tout.sort((a, b) => {\n\t\tif (a.date !== b.date) return a.date < b.date ? -1 : 1;\n\t\tconst oa = ORDEN[a.kind] == null ? 9 : ORDEN[a.kind];\n\t\tconst ob = ORDEN[b.kind] == null ? 9 : ORDEN[b.kind];\n\t\tif (oa !== ob) return oa - ob;\n\t\treturn a.concept.localeCompare(b.concept);\n\t});\n\tout.forEach((e, i) => {\n\t\te.number = i + 1;\n\t\te.total = totalLineas(e.lines);\n\t});\n\treturn out;\n}\n/* ------------------------------------------------------------------ */\n/* Libro mayor                                                        */\n/* ------------------------------------------------------------------ */\n/** Una fila por cuenta: lo que se ha movido y el saldo que queda. */\nexport function libroMayor(entries) {\n\tconst map = new Map();\n\tfor (const e of entries || []) {\n\t\tfor (const l of e.lines || []) {\n\t\t\tlet row = map.get(l.account);\n\t\t\tif (!row) {\n\t\t\t\tconst c = cuenta(l.account);\n\t\t\t\trow = {\n\t\t\t\t\tcode: l.account,\n\t\t\t\t\tname: c.name,\n\t\t\t\t\tbalance: c.balance,\n\t\t\t\t\tpl: c.pl,\n\t\t\t\t\tdebit: 0,\n\t\t\t\t\tcredit: 0,\n\t\t\t\t\tmoves: []\n\t\t\t\t};\n\t\t\t\tmap.set(l.account, row);\n\t\t\t}\n\t\t\trow.debit = round2(row.debit + (l.debit || 0));\n\t\t\trow.credit = round2(row.credit + (l.credit || 0));\n\t\t\trow.moves.push({\n\t\t\t\tdate: e.date,\n\t\t\t\tnumber: e.number,\n\t\t\t\tconcept: e.concept,\n\t\t\t\tdebit: l.debit || 0,\n\t\t\t\tcredit: l.credit || 0,\n\t\t\t\trunning: 0\n\t\t\t});\n\t\t}\n\t}\n\tconst rows = [...map.values()];\n\tfor (const r of rows) {\n\t\tlet acc = 0;\n\t\tfor (const m of r.moves) {\n\t\t\tacc = round2(acc + m.debit - m.credit);\n\t\t\tm.running = acc;\n\t\t}\n\t\tr.saldo = round2(r.debit - r.credit);\n\t}\n\trows.sort((a, b) => a.code < b.code ? -1 : a.code > b.code ? 1 : 0);\n\treturn rows;\n}\n/* ------------------------------------------------------------------ */\n/* Balance de sumas y saldos                                          */\n/* ------------------------------------------------------------------ */\n/**\n* Sumas y saldos: por cuenta, cuánto se ha movido al debe y al haber y el\n* saldo que queda, deudor o acreedor. Las dos últimas columnas tienen que\n* sumar lo mismo: si no, algo se ha quedado fuera.\n*/\nexport function balanceSumasYSaldos(mayor) {\n\tconst rows = (mayor || []).map((r) => ({\n\t\tcode: r.code,\n\t\tname: r.name,\n\t\tdebit: r.debit,\n\t\tcredit: r.credit,\n\t\tdeudor: r.saldo > .004 ? r.saldo : 0,\n\t\tacreedor: r.saldo < -.004 ? round2(-r.saldo) : 0\n\t}));\n\tconst totals = rows.reduce((t, r) => ({\n\t\tdebit: round2(t.debit + r.debit),\n\t\tcredit: round2(t.credit + r.credit),\n\t\tdeudor: round2(t.deudor + r.deudor),\n\t\tacreedor: round2(t.acreedor + r.acreedor)\n\t}), {\n\t\tdebit: 0,\n\t\tcredit: 0,\n\t\tdeudor: 0,\n\t\tacreedor: 0\n\t});\n\treturn {\n\t\trows,\n\t\ttotals,\n\t\tcuadra: Math.abs(totals.deudor - totals.acreedor) < .01\n\t};\n}\n/* ------------------------------------------------------------------ */\n/* Cuenta de pérdidas y ganancias (modelo oficial)                    */\n/* ------------------------------------------------------------------ */\nexport const LINEAS_RESULTADOS = Object.freeze([\n\t{\n\t\tkey: \"1\",\n\t\tlabel: \"1. Importe neto de la cifra de negocios\"\n\t},\n\t{\n\t\tkey: \"2\",\n\t\tlabel: \"2. Variación de existencias de productos terminados y en curso de fabricación\"\n\t},\n\t{\n\t\tkey: \"3\",\n\t\tlabel: \"3. Trabajos realizados por la empresa para su activo\"\n\t},\n\t{\n\t\tkey: \"4\",\n\t\tlabel: \"4. Aprovisionamientos\"\n\t},\n\t{\n\t\tkey: \"5\",\n\t\tlabel: \"5. Otros ingresos de explotación\"\n\t},\n\t{\n\t\tkey: \"6\",\n\t\tlabel: \"6. Gastos de personal\"\n\t},\n\t{\n\t\tkey: \"7\",\n\t\tlabel: \"7. Otros gastos de explotación\"\n\t},\n\t{\n\t\tkey: \"8\",\n\t\tlabel: \"8. Amortización del inmovilizado\"\n\t},\n\t{\n\t\tkey: \"9\",\n\t\tlabel: \"9. Imputación de subvenciones de inmovilizado no financiero y otras\"\n\t},\n\t{\n\t\tkey: \"10\",\n\t\tlabel: \"10. Excesos de provisiones\"\n\t},\n\t{\n\t\tkey: \"11\",\n\t\tlabel: \"11. Deterioro y resultado por enajenaciones del inmovilizado\"\n\t},\n\t{\n\t\tkey: \"A\",\n\t\tlabel: \"A) RESULTADO DE EXPLOTACIÓN (1+2+3+4+5+6+7+8+9+10+11)\",\n\t\ttotal: true\n\t},\n\t{\n\t\tkey: \"12\",\n\t\tlabel: \"12. Ingresos financieros\"\n\t},\n\t{\n\t\tkey: \"13\",\n\t\tlabel: \"13. Gastos financieros\"\n\t},\n\t{\n\t\tkey: \"14\",\n\t\tlabel: \"14. Variación de valor razonable en instrumentos financieros\"\n\t},\n\t{\n\t\tkey: \"15\",\n\t\tlabel: \"15. Diferencias de cambio\"\n\t},\n\t{\n",
+    "total_lines": 986
+  },
+  "summary": "accounting.js: lines 301–500 of 986 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 200,
+    "total": 986,
+    "next_offset": 500
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\_check3\\pretty\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

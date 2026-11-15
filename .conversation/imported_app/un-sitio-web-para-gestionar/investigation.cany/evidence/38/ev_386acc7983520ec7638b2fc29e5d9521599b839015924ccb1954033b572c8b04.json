@@ -1,0 +1,54 @@
+{
+  "id": "ev_386acc7983520ec7638b2fc29e5d9521599b839015924ccb1954033b572c8b04",
+  "subject": {
+    "kind": "text",
+    "sha256": "c90af09157cec6c2774528828d8faa1d8cee8c6bd33f85d762a91e5f5f799fd2",
+    "name": "README.md"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 26,
+    "offset": 122,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\README.md"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 13244,
+    "lines": 26,
+    "more": true,
+    "offset": 122,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\README.md",
+    "replaced_sequences": 0,
+    "text": "ordenador. Eso es una decisión de la empresa, no un detalle del programa.\n\n## La base de datos\n\nLos proveedores, las facturas y los ajustes están en una base de datos SQLite de verdad,\ncreada con [sql.js](https://sql.js.org) (SQLite compilado a WebAssembly). El fichero de la\nbase de datos se guarda como bytes en **IndexedDB** (`facturas.igic`), porque `localStorage`\nsolo admite texto y unos 5 MB.\n\nTablas:\n\n- `proveedores` — id, nombre, NIF, email, teléfono, nota, fecha de alta.\n- `facturas` — número, fechas, base, tipo de IGIC, cuota, total, estado (`PAGADO` /\n  `PENDIENTE`, con `CHECK`), fecha de pago, origen, nombre del fichero, texto leído,\n  notas y confianza de la lectura, más `tipo` (factura, liquidación, subvención…),\n  `categoria` (agua, luz, laborales…) y `sentido` (`INGRESO` / `GASTO`). La clave de\n  proveedor es una clave foránea con `ON DELETE CASCADE`.\n- `correos` — los `.eml` guardados: de, asunto, fecha, texto, adjuntos (en JSON) y\n  cuándo se importaron y se revisaron.\n- `ajustes` — clave y valor.\n- Vista `igic_por_proveedor` — base, cuota y total ya sumados por proveedor y estado.\n\n`PRAGMA foreign_keys = ON` y `user_version = 3`. Una base de datos de la versión anterior se\ncompleta sola: `sqlite.js` mira `PRAGMA table_info(facturas)` y añade las columnas que falten\n(`ALTER TABLE … ADD COLUMN`), sin perder nada. Las columnas `tipo`, `categoria`, `sentido`\ny `lineas` llegaron así.\n",
+    "total_lines": 244
+  },
+  "summary": "README.md: lines 123–148 of 244 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 26,
+    "total": 244,
+    "next_offset": 148
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\README.md"
+    }
+  ],
+  "links": []
+}

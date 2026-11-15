@@ -1,0 +1,54 @@
+{
+  "id": "ev_9101b0c36584ec043e0d9d781a1a7722efd4fbddbb1b2d1f5854323d053e9b9b",
+  "subject": {
+    "kind": "script",
+    "sha256": "5424c53cadc6967fd41cb2d41f506ef1289ebd4290305ebd0dd21bd6dfeca4f8",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 64,
+    "offset": 376,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 23887,
+    "lines": 64,
+    "more": true,
+    "offset": 376,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "\nexport const LINEAS_RESULTADOS = Object.freeze([\n  { key: \"1\", label: \"1. Importe neto de la cifra de negocios\" },\n  { key: \"2\", label: \"2. Variación de existencias de productos terminados y en curso de fabricación\" },\n  { key: \"3\", label: \"3. Trabajos realizados por la empresa para su activo\" },\n  { key: \"4\", label: \"4. Aprovisionamientos\" },\n  { key: \"5\", label: \"5. Otros ingresos de explotación\" },\n  { key: \"6\", label: \"6. Gastos de personal\" },\n  { key: \"7\", label: \"7. Otros gastos de explotación\" },\n  { key: \"8\", label: \"8. Amortización del inmovilizado\" },\n  { key: \"9\", label: \"9. Imputación de subvenciones de inmovilizado no financiero y otras\" },\n  { key: \"10\", label: \"10. Excesos de provisiones\" },\n  { key: \"11\", label: \"11. Deterioro y resultado por enajenaciones del inmovilizado\" },\n  { key: \"A\", label: \"A) RESULTADO DE EXPLOTACIÓN (1+2+3+4+5+6+7+8+9+10+11)\", total: true },\n  { key: \"12\", label: \"12. Ingresos financieros\" },\n  { key: \"13\", label: \"13. Gastos financieros\" },\n  { key: \"14\", label: \"14. Variación de valor razonable en instrumentos financieros\" },\n  { key: \"15\", label: \"15. Diferencias de cambio\" },\n  { key: \"16\", label: \"16. Deterioro y resultado por enajenaciones de instrumentos financieros\" },\n  { key: \"B\", label: \"B) RESULTADO FINANCIERO (12+13+14+15+16)\", total: true },\n  { key: \"C\", label: \"C) RESULTADO ANTES DE IMPUESTOS (A + B)\", total: true },\n  { key: \"17\", label: \"17. Impuestos sobre beneficios\" },\n  { key: \"D\", label: \"D) RESULTADO DEL EJERCICIO (C + 17)\", total: true },\n]);\n\nconst EXPLOTACION = [\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"10\", \"11\"];\nconst FINANCIERO = [\"12\", \"13\", \"14\", \"15\", \"16\"];\n\n/** El resultado del ejercicio: los ingresos menos los gastos del periodo. */\nexport function resultadoEjercicio(mayor) {\n  let total = 0;\n  for (const r of mayor || []) {\n    const first = String(r.code).charAt(0);\n    if (first === \"6\" || first === \"7\") total = round2(total - r.saldo);\n  }\n  return total;\n}\n\n/**\n * La cuenta de pérdidas y ganancias con las líneas del modelo oficial.\n * Los gastos salen en negativo y los ingresos en positivo, que es como se\n * presenta en el Registro. Las líneas sin movimiento salen a cero.\n */\nexport function cuentaResultados(mayor) {\n  const porClave = {};\n  let sinClasificar = 0;\n  for (const r of mayor || []) {\n    const first = String(r.code).charAt(0);\n    if (first !== \"6\" && first !== \"7\") continue;\n    const value = round2(-r.saldo);\n    const key = cuenta(r.code).pl;\n    if (!key) {\n      sinClasificar = round2(sinClasificar + value);\n      continue;\n    }\n    porClave[key] = round2((porClave[key] || 0) + value);\n  }\n  const valor = (k) => round2(porClave[k] || 0);\n  const explotacion = round2(EXPLOTACION.reduce((n, k) => n + valor(k), 0));\n  const financiero = round2(FINANCIERO.reduce((n, k) => n + valor(k), 0));\n  const antes = round2(explotacion + financiero);\n  const impuesto = valor(\"17\");\n  const resultado = round2(antes + impuesto);\n  const lines = LINEAS_RESULTADOS.map((l) => {\n",
+    "total_lines": 588
+  },
+  "summary": "accounting.js: lines 377–440 of 588 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 64,
+    "total": 588,
+    "next_offset": 440
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

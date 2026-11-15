@@ -1,0 +1,54 @@
+{
+  "id": "ev_227ac0c9ef4c9bcc2d1625b1fbee2ae594cf7f8ec03cb173dbff43d10f7af894",
+  "subject": {
+    "kind": "script",
+    "sha256": "aea2f632810a30a206bb5c03f817d42223cbbd6fc0a8616cce3c29f88a6f2449",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 336,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 29170,
+    "lines": 70,
+    "more": true,
+    "offset": 336,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "    const { base, igic, total } = importes(inv);\n    if (!total) continue;\n\n    const ingreso = directionOf(inv.kind) === \"INGRESO\";\n    const cuentaDoc = cuentaDeDocumento(inv);\n    const tercero = cuentaTercero(inv, ingreso);\n    const numero = String(inv.number || \"\").trim();\n    const quien = inv.party ? ` · ${String(inv.party)}` : \"\";\n    const tipo = ingreso ? \"Ingreso\" : \"Gasto\";\n    const concept = `${tipo}${numero ? ` ${numero}` : \"\"}${quien}`;\n    const raw = ingreso\n      ? [\n          [cuentaDoc, base],\n          [\"477\", igic],\n          [tercero, -total],\n        ]\n      : [\n          [cuentaDoc, base],\n          [\"472\", igic],\n          [tercero, -total],\n        ];\n    const lines = lineas(raw);\n    if (!lines.length) continue;\n    out.push({\n      id: `${inv.id}:devengo`,\n      date: dia,\n      concept,\n      ref: numero,\n      kind: \"devengo\",\n      docId: inv.id,\n      lines,\n    });\n\n    if (String(inv.status || \"\") === \"PAGADO\") {\n      const diaPago = String(inv.paidDate || \"\").slice(0, 10) || dia;\n      if (dentro(diaPago)) {\n        const linesPago = lineas(\n          ingreso\n            ? [\n                [\"572\", total],\n                [tercero, -total],\n              ]\n            : [\n                [tercero, total],\n                [\"572\", -total],\n              ]\n        );\n        if (linesPago.length) {\n          out.push({\n            id: `${inv.id}:${ingreso ? \"cobro\" : \"pago\"}`,\n            date: diaPago,\n            concept: `${ingreso ? \"Cobro\" : \"Pago\"}${numero ? ` ${numero}` : \"\"}${quien}`,\n            ref: numero,\n            kind: ingreso ? \"cobro\" : \"pago\",\n            docId: inv.id,\n            lines: linesPago,\n          });\n        }\n      }\n    }\n  }\n\n  // Asientos escritos a mano, que se mezclan con los demás por fecha.\n  for (const m of opts.manuales || []) {\n    if (!m) continue;\n    const dia = String(m.date || \"\").slice(0, 10);\n    if (!dentro(dia)) continue;\n    const raw = [];\n    for (const l of m.lineas || []) {\n      const code = String((l && l.cuenta) || \"\").trim();\n",
+    "total_lines": 732
+  },
+  "summary": "accounting.js: lines 337–406 of 732 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 732,
+    "next_offset": 406
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

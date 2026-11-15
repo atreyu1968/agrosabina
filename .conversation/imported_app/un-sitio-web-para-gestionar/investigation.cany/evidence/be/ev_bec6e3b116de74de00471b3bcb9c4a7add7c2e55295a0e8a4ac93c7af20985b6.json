@@ -1,0 +1,87 @@
+{
+  "id": "ev_bec6e3b116de74de00471b3bcb9c4a7add7c2e55295a0e8a4ac93c7af20985b6",
+  "subject": {
+    "kind": "script",
+    "sha256": "bd1a7c4db1d211c35d40bee0f35fdff38dc09caa217fb954d8985cac13e061de",
+    "name": "importers.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\importers.js",
+    "pattern": null,
+    "text": "esReciboDeSalarios"
+  },
+  "result": {
+    "file_size": 13151,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "657352656369626f446553616c6172696f73",
+        "file_offset": 2646,
+        "file_offset_hex": "0xa56",
+        "length": 18,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "657352656369626f446553616c6172696f73",
+        "file_offset": 5835,
+        "file_offset_hex": "0x16cb",
+        "length": 18,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\importers.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 18
+      },
+      {
+        "kind": "utf16le",
+        "length": 36
+      }
+    ],
+    "total_matches": 2
+  },
+  "summary": "2 match(es) for utf8 + utf16le in importers.js; showing 2 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0xa56"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x16cb"
+    }
+  ],
+  "links": []
+}

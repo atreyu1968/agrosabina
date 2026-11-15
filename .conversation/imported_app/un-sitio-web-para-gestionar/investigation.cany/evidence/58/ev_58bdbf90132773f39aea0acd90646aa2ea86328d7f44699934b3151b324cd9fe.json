@@ -1,0 +1,289 @@
+{
+  "id": "ev_58bdbf90132773f39aea0acd90646aa2ea86328d7f44699934b3151b324cd9fe",
+  "subject": {
+    "kind": "js-app",
+    "sha256": "9cdbd435e5b2be884419ceb21691520925e2805ec3c3b6689f9ece31259dd486",
+    "name": "app"
+  },
+  "operation": "core_evidence_browse",
+  "params": {
+    "show": {
+      "fields": [
+        "path",
+        "parse_mode",
+        "exports",
+        "imports",
+        "functions"
+      ],
+      "kind": "rows",
+      "limit": 2,
+      "list": "modules",
+      "matching": {
+        "path": "assets/js/views.js"
+      }
+    },
+    "source": {
+      "evidence_id": "ev_d89e4587d705420bba6cf51b8b0c834360671db6f7a7fff9ed309d69337f84cb",
+      "kind": "saved"
+    }
+  },
+  "result": {
+    "coverage": {
+      "at_end": true,
+      "examined": 1,
+      "next_offset": null,
+      "status": "page",
+      "total": 1
+    },
+    "from_evidence": "ev_d89e4587d705420bba6cf51b8b0c834360671db6f7a7fff9ed309d69337f84cb",
+    "from_tool": "js_app_map",
+    "shown": {
+      "items": [
+        {
+          "exports": {
+            "cjs": [],
+            "esm": [
+              "ui",
+              "renderLoading",
+              "render",
+              "openMailPasteModal",
+              "queueFiles",
+              "openInvoiceModal",
+              "openPasteModal",
+              "openSupplierModal",
+              "openSettings",
+              "exportCsv",
+              "exportBackup",
+              "askImportBackup",
+              "onAction",
+              "onInput",
+              "onChange",
+              "onFilterButton",
+              "onDirectionButton",
+              "wireDropzone",
+              "hasJobs"
+            ]
+          },
+          "functions": [
+            "askPaidDate",
+            "onMount",
+            "b.addEventListener(click)",
+            "go",
+            "input.addEventListener(keydown)",
+            "statusPill",
+            "supplierName",
+            "rateText",
+            "tagOf",
+            "categoryCard",
+            "renderLoading",
+            "render",
+            "updateNavBadge",
+            "pageMeta",
+            "topActions",
+            "viewResumen",
+            "emptyResumen",
+            "salesWindow",
+            "two",
+            "inSalesWindow",
+            "isIncomeDoc",
+            "salesDocs",
+            "liquidacionNumbers",
+            "salesStats",
+            "bump",
+            "salesGroupTable",
+            "salesRangeBar",
+            "viewVentas",
+            "rowsOf",
+            "refreshSales",
+            "exportSalesCsv",
+            "filteredInvoices",
+            "viewFacturas",
+            "invoiceTable",
+            "refreshInvoiceTable",
+            "viewProveedores",
+            "supplierGrid",
+            "refreshSupplierGrid",
+            "mailDateText",
+            "mailRow",
+            "viewCorreo",
+            "pickEmails",
+            "input.addEventListener(change)",
+            "importEmails",
+            "useMail",
+            "openMailPasteModal",
+            "onMount",
+            "b.addEventListener(click)",
+            "wrap.querySelector([data-save-mail]).addEventListener(click)",
+            "testAi",
+            "viewImportar",
+            "paintIngestSoon",
+            "paintIngest",
+            "queueFiles",
+            "runQueue",
+            "runOne",
+            "applyAiReading",
+            "setIfEmpty",
+            "noMoney",
+            "rateOptions",
+            "lineRowHtml",
+            "dtoRowHtml",
+            "guessLiquidacion",
+            "liquidacionReadHtml",
+            "row",
+            "invoiceFormHtml",
+            "notesHtml",
+            "openInvoiceModal",
+            "finish",
+            "onMount",
+            "wrap.querySelector([data-save]).addEventListener(click)",
+            "b.addEventListener(click)",
+            "onClose",
+            "bindForm",
+            "q",
+            "showWhy",
+            "repaintCategories",
+            "catSel.addEventListener(change)",
+            "num",
+            "setIfNotFocused",
+            "recalcFromBase",
+            "recalcFromIgic",
+            "recalcFromTotal",
+            "syncRate",
+            "el.addEventListener(blur)",
+            "b.addEventListener(click)",
+            "updateHints",
+            "lineTotals",
+            "paintLines",
+            "recalcFromLines",
+            "linesBox.addEventListener(click)",
+            "addLineBtn.addEventListener(click)",
+            "paintLiq",
+            "recalcFromLiq",
+            "liqBox.addEventListener(click)",
+            "addDtoBtn.addEventListener(click)",
+            "syncLiqVisibility",
+            "readIgicLines",
+            "readLiquidacion",
+            "val",
+            "readForm",
+            "q",
+            "submitInvoice",
+            "importFromCamera",
+            "sqlitePanel",
+            "exportSqlite",
+            "reviewJob",
+            "openPasteModal",
+            "onMount",
+            "b.addEventListener(click)",
+            "wrap.querySelector([data-read]).addEventListener(click)",
+            "openSupplierModal",
+            "onMount",
+            "b.addEventListener(click)",
+            "wrap.querySelector([data-save]).addEventListener(click)",
+            "openSettings",
+            "onMount",
+            "b.addEventListener(click)",
+            "providerSel.addEventListener(change)",
+            "wrap.querySelector([data-save]).addEventListener(click)",
+            "csvCell",
+            "exportCsv",
+            "exportBackup",
+            "askImportBackup",
+            "input.addEventListener(change)",
+            "onAction",
+            "onInput",
+            "onChange",
+            "onFilterButton",
+            "onDirectionButton",
+            "wireDropzone",
+            "document.addEventListener(dragover)",
+            "document.addEventListener(dragleave)",
+            "document.addEventListener(drop)",
+            "hasJobs"
+          ],
+          "imports": [
+            {
+              "kind": "import",
+              "line": 5,
+              "resolved": "assets/js/util.js",
+              "specifier": "./util.js"
+            },
+            {
+              "kind": "import",
+              "line": 23,
+              "resolved": "assets/js/store.js",
+              "specifier": "./store.js"
+            },
+            {
+              "kind": "import",
+              "line": 54,
+              "resolved": "assets/js/parse.js",
+              "specifier": "./parse.js"
+            },
+            {
+              "kind": "import",
+              "line": 55,
+              "resolved": "assets/js/read.js",
+              "specifier": "./read.js"
+            },
+            {
+              "kind": "import",
+              "line": 56,
+              "resolved": "assets/js/camera.js",
+              "specifier": "./camera.js"
+            },
+            {
+              "kind": "import",
+              "line": 57,
+              "resolved": "assets/js/model.js",
+              "specifier": "./model.js"
+            },
+            {
+              "kind": "import",
+              "line": 64,
+              "resolved": "assets/js/ai.js",
+              "specifier": "./ai.js"
+            },
+            {
+              "kind": "import",
+              "line": 65,
+              "resolved": "assets/js/mail.js",
+              "specifier": "./mail.js"
+            },
+            {
+              "kind": "import",
+              "line": 66,
+              "resolved": "assets/js/dom.js",
+              "specifier": "./dom.js"
+            }
+          ],
+          "parse_mode": "parsed",
+          "path": "assets/js/views.js"
+        }
+      ],
+      "list": "modules",
+      "list_total": 40,
+      "offset": 0,
+      "total": 1
+    }
+  },
+  "summary": "Part of js_app_map evidence (page).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [],
+  "links": [
+    "ev_d89e4587d705420bba6cf51b8b0c834360671db6f7a7fff9ed309d69337f84cb"
+  ]
+}

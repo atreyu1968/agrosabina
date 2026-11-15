@@ -1,0 +1,54 @@
+{
+  "id": "ev_13a10ed952d86497a91d4b3941161d95b8ada9a78d932341d8cd00fdd8aad761",
+  "subject": {
+    "kind": "script",
+    "sha256": "effbee695913dd70eb1d3b51952ecc8ed76c4969a93f6df5b3ddba29ce97f26c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 3230,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 196170,
+    "lines": 40,
+    "more": true,
+    "offset": 3230,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    number: q(\"#f-number\").value.trim(),\n    issueDate: q(\"#f-issue\").value || \"\",\n    dueDate: q(\"#f-due\").value || \"\",\n    kind: (q(\"#f-kind\") && q(\"#f-kind\").value) || \"FACTURA\",\n    category: (q(\"#f-cat\") && q(\"#f-cat\").value) || \"\",\n    direction: directionOf((q(\"#f-kind\") && q(\"#f-kind\").value) || \"FACTURA\"),\n    base,\n    rate:\n      lines.length > 1 && base > 0 && igic != null\n        ? round2((igic / base) * 100)\n        : Number.isFinite(rate)\n          ? rate\n          : null,\n    igic,\n    total,\n    lines,\n    liquidacion: readLiquidacion(wrap),\n    status: status === STATUS.PAID ? STATUS.PAID : STATUS.PENDING,\n    paidDate:\n      status === STATUS.PAID\n        ? String((q(\"#f-paid-date\") && q(\"#f-paid-date\").value) || \"\").slice(0, 10)\n        : \"\",\n  };\n}\n\nasync function submitInvoice(wrap, { mode, invoice, job }) {\n  const v = readForm(wrap);\n\n  if (!v.supplierName) {\n    toast(\"Escribe el nombre del proveedor.\", \"bad\");\n    wrap.querySelector(\"#f-name\").focus();\n    return null;\n  }\n  if (v.total == null && v.base == null) {\n    toast(\"Necesito al menos el total o la base imponible.\", \"bad\");\n    wrap.querySelector(\"#f-total\").focus();\n    return null;\n  }\n\n  const existing = findSupplierByNameOrNif(v.supplierName, v.supplierNif);\n",
+    "total_lines": 5107
+  },
+  "summary": "views.js: lines 3231–3270 of 5107 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 5107,
+    "next_offset": 3270
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

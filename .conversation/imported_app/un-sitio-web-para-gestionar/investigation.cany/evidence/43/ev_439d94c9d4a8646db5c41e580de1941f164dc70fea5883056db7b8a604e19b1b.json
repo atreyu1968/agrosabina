@@ -1,0 +1,54 @@
+{
+  "id": "ev_439d94c9d4a8646db5c41e580de1941f164dc70fea5883056db7b8a604e19b1b",
+  "subject": {
+    "kind": "script",
+    "sha256": "92c3bd8a5ff49414728e649d8d210efbe5b8e0f69b993b1f22e574a8dc1b8003",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 4252,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 205853,
+    "lines": 40,
+    "more": true,
+    "offset": 4252,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    ui.docs.q = target.value;\n    refreshDocResults();\n    return;\n  }\n  if (target.id === \"supplierSearch\") {\n    ui.supplierQuery = target.value;\n    const pos = target.selectionStart;\n    refreshSupplierGrid();\n    const again = document.getElementById(\"supplierSearch\");\n    if (again) {\n      again.focus();\n      try {\n        again.setSelectionRange(pos, pos);\n      } catch (_) {\n        /* nada */\n      }\n    }\n  }\n}\n\nexport function onChange(event) {\n  const target = event.target;\n  if (!(target instanceof HTMLElement)) return;\n  if (target.id === \"accRange\") {\n    ui.conta.range = target.value;\n    if (ui.conta.range === \"custom\") {\n      if (!ui.conta.from) ui.conta.from = `${new Date().getFullYear()}-01-01`;\n      if (!ui.conta.to) ui.conta.to = todayISO();\n    }\n    render();\n    return;\n  }\n  if (target.id === \"accFrom\" || target.id === \"accTo\") {\n    ui.conta[target.id === \"accFrom\" ? \"from\" : \"to\"] = target.value;\n    render();\n    return;\n  }\n  if (target.id === \"docKind\") {\n    ui.docs.kind = target.value;\n    render();\n",
+    "total_lines": 5298
+  },
+  "summary": "views.js: lines 4253–4292 of 5298 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 5298,
+    "next_offset": 4292
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

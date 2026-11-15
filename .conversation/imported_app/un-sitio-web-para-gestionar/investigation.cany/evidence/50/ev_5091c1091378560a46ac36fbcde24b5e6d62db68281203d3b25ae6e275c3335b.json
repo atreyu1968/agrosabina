@@ -1,0 +1,54 @@
+{
+  "id": "ev_5091c1091378560a46ac36fbcde24b5e6d62db68281203d3b25ae6e275c3335b",
+  "subject": {
+    "kind": "script",
+    "sha256": "9be5a3bfd0a63d5de152c9c8c23375c99a17da56e72e1add6d642e6178ed2ce3",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 505,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24552,
+    "lines": 40,
+    "more": true,
+    "offset": 505,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "  inv.lines = normaliseInvoice({ lines: inv.lines }).lines;\n  inv.liquidacion = normaliseLiquidacion(inv.liquidacion);\n  if (inv.status === STATUS.PAID && !inv.paidDate) inv.paidDate = todayISO();\n  if (inv.status === STATUS.PENDING) inv.paidDate = \"\";\n  inv.updatedAt = new Date().toISOString();\n  save();\n  return inv;\n}\n\nexport function deleteInvoice(id) {\n  state.invoices = state.invoices.filter((i) => i.id !== id);\n  save();\n}\n\nexport function setInvoiceStatus(id, status) {\n  return updateInvoice(id, { status });\n}\n\nexport function toggleInvoiceStatus(id) {\n  const inv = state.invoices.find((i) => i.id === id);\n  if (!inv) return null;\n  return setInvoiceStatus(id, inv.status === STATUS.PAID ? STATUS.PENDING : STATUS.PAID);\n}\n\nexport function invoiceById(id) {\n  return state.invoices.find((i) => i.id === id) || null;\n}\n\nfunction numOrNull(v) {\n  if (v === \"\" || v == null) return null;\n  const n = Number(v);\n  return Number.isFinite(n) ? n : null;\n}\n\n/* ------------------------------------------------------------------ */\n/* Cifras                                                             */\n/* ------------------------------------------------------------------ */\n\n/** Totales de un conjunto de facturas. */\nexport function totals(invoices) {\n",
+    "total_lines": 780
+  },
+  "summary": "store.js: lines 506–545 of 780 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 780,
+    "next_offset": 545
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

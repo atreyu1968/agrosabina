@@ -1,0 +1,54 @@
+{
+  "id": "ev_d4d6e9a19fbe4242056527df278e57ee371b1ebd70568432ade048b4b9055670",
+  "subject": {
+    "kind": "script",
+    "sha256": "83704397ea89e45fa1af80334964cb8e67554af7773347bdc2b1474dc48b4b50",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 80,
+    "offset": 2670,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 245244,
+    "lines": 80,
+    "more": true,
+    "offset": 2670,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "async function applyAiReading(job, text) {\n  const settings = getState().settings;\n  if (!aiConfigured(settings) || !String(text || \"\").trim()) return [];\n\n  const model = String(settings.aiModel || AI_DEFAULTS.aiModel);\n  let ai;\n  try {\n    job.stage = `Preguntando a la IA (${model})…`;\n    paintIngest();\n    ai = await aiExtract(text, settings);\n  } catch (err) {\n    const why = err && err.message ? err.message : \"no ha contestado\";\n    job.parsed.notes.push(`La IA no ha podido ayudar (${why}). Se queda lo que he leído yo.`);\n    return [];\n  }\n\n  const p = job.parsed;\n  const filled = [];\n\n  const setIfEmpty = (key, value, label) => {\n    const current = p[key];\n    const empty =\n      current == null || current === \"\" || (typeof current === \"number\" && !Number.isFinite(current));\n    if (empty && value != null && value !== \"\") {\n      p[key] = value;\n      filled.push(label);\n    }\n  };\n\n  if (ai.kind && (!p.kind || p.kind === \"OTRO\")) {\n    p.kind = ai.kind;\n    p.direction = directionOf(ai.kind);\n    filled.push(\"el tipo de documento\");\n  }\n  setIfEmpty(\"category\", ai.category, \"el concepto\");\n  setIfEmpty(\"supplierName\", ai.supplierName, \"el proveedor\");\n  setIfEmpty(\"supplierNif\", ai.supplierNif, \"el NIF\");\n  setIfEmpty(\"number\", ai.number, \"el número\");\n  setIfEmpty(\"issueDate\", ai.issueDate, \"la fecha\");\n  setIfEmpty(\"dueDate\", ai.dueDate, \"el vencimiento\");\n\n  // Los importes: solo si están a cero o sin leer, para no pisar la aritmética.\n  const noMoney = (v) => v == null || !Number.isFinite(Number(v)) || Number(v) === 0;\n  if (noMoney(p.base) && ai.base != null && ai.base !== 0) {\n    p.base = ai.base;\n    filled.push(\"la base\");\n  }\n  if (noMoney(p.igic) && ai.igic != null && !p.base && ai.igic !== 0) {\n    p.igic = ai.igic;\n    filled.push(\"la cuota de IGIC\");\n  }\n  if (noMoney(p.total) && ai.total != null && ai.total !== 0) {\n    p.total = ai.total;\n    filled.push(\"el total\");\n  }\n\n  // La liquidación: manda la IA solo si las reglas no encontraron nada o si\n  // lo que encontraron no cuadraba (kilos × precio ≠ bruto).\n  const rulesFailed = !p.liquidacion || (p.liquidacionRead && p.liquidacionRead.ok === false);\n  if (ai.liquidacion && rulesFailed) {\n    const liqAI = ai.liquidacion;\n    const kg = liqAI.kg;\n    const price = liqAI.price;\n    const discounts = liqAI.discounts || [];\n    const gross = kg != null && price != null ? round2(kg * price) : null;\n    const dtoSum = round2(discounts.reduce((sum, d) => sum + d.amount, 0));\n    const net = liqAI.net != null ? liqAI.net : gross != null ? round2(gross - dtoSum) : null;\n\n    p.liquidacion = {\n      product: liqAI.product || (p.liquidacion && p.liquidacion.product) || \"\",\n      category: liqAI.category || (p.liquidacion && p.liquidacion.category) || \"\",\n      kg,\n      price,\n      discounts,\n    };\n    p.liquidacionRead = {\n      kg,\n      price,\n      gross,\n      discounts,\n",
+    "total_lines": 6154
+  },
+  "summary": "views.js: lines 2671–2750 of 6154 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 80,
+    "total": 6154,
+    "next_offset": 2750
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

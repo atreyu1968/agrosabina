@@ -1,0 +1,54 @@
+{
+  "id": "ev_165dbf04cb03d92b449796add3d03964a7974c67ec146970ea0317fd838ef425",
+  "subject": {
+    "kind": "script",
+    "sha256": "88be6e3dff8fc26bcc76f04b90e1db18661f2b7004a8d5f704b043113873abf7",
+    "name": "parse.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 62,
+    "offset": 638,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 40608,
+    "lines": 62,
+    "more": true,
+    "offset": 638,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js",
+    "replaced_sequences": 0,
+    "text": "  const n = Number(s);\n  if (!Number.isFinite(n)) return null;\n  return neg ? -n : n;\n}\n\n/** El total de kilos, si el papel lo dice con nombre propio. */\nconst RE_LIQ_TOTAL_KG = /(?:total\\s*(?:de\\s*)?kilos|kilos?\\s*(?:netos|totales)|total\\s*kgs?)/i;\n\n/**\n * El texto quitando las fechas: «15/04/2024» no es un importe y, al buscar el\n * número que va detrás de «kilos», se colaba el día del albarán.\n */\nfunction liqLimpio(text) {\n  return String(text == null ? \"\" : text)\n    .replace(/\\u00a0/g, \" \")\n    .replace(/\\d{1,2}[/.-]\\d{1,2}[/.-]\\d{2,4}/g, \" \")\n    .replace(/\\d{1,2}\\/\\d{1,2}/g, \" \");\n}\n\n/** El texto sin fechas y sin porcentajes: solo quedan importes y cantidades. */\nfunction liqSinPct(text) {\n  return liqLimpio(text).replace(/\\d+(?:[.,]\\d+)?\\s*%/g, \" \");\n}\n\n/** Todos los números del texto, cada uno con el trozo de texto que lleva delante. */\nfunction liqTokens(text) {\n  const limpio = liqLimpio(text);\n  const re = new RegExp(LIQ_NUM, \"g\");\n  const out = [];\n  let antes = 0;\n  let m = re.exec(limpio);\n  while (m) {\n    const fin = m.index + m[0].length;\n    out.push({\n      raw: m[0],\n      chunk: limpio.slice(antes, m.index),\n      esPct: /^\\s*%/.test(limpio.slice(fin, fin + 3)),\n    });\n    antes = fin;\n    m = re.exec(limpio);\n  }\n  return out;\n}\n\n/** ¿Estos dos importes son el mismo, con margen para el redondeo? */\nfunction cuadra(uno, otro) {\n  return Math.abs(uno - otro) <= Math.max(1, Math.abs(otro) * 0.02);\n}\n\n/** El primer número que va detrás de una etiqueta, sin fechas ni porcentajes. */\nfunction liqDespues(text, labelRe) {\n  const look = new RegExp(\"(?:\" + labelRe.source + \")[^0-9]{0,24}?(\" + LIQ_NUM + \")\", \"i\");\n  const m = look.exec(liqSinPct(text));\n  return m ? m[1] : null;\n}\n\n/** El número que va justo delante de una unidad o etiqueta. */\nfunction liqAntes(text, labelRe) {\n  const look = new RegExp(\"(\" + LIQ_NUM + \")\\\\s*(?:\" + labelRe.source + \")\", \"i\");\n  const m = look.exec(liqSinPct(text));\n  return m ? m[1] : null;\n}\n",
+    "total_lines": 1076
+  },
+  "summary": "parse.js: lines 639–700 of 1076 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 62,
+    "total": 1076,
+    "next_offset": 700
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+    }
+  ],
+  "links": []
+}

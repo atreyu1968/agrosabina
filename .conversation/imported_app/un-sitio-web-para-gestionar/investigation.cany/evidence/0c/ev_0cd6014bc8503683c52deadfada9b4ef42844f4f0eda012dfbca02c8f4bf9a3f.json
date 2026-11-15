@@ -1,0 +1,54 @@
+{
+  "id": "ev_0cd6014bc8503683c52deadfada9b4ef42844f4f0eda012dfbca02c8f4bf9a3f",
+  "subject": {
+    "kind": "script",
+    "sha256": "e77d2b067087936538d3d840a88e5abb36fb4b329936b321d8810b38a1692838",
+    "name": "util.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 16,
+    "offset": 214,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 7872,
+    "lines": 16,
+    "more": true,
+    "offset": 214,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js",
+    "replaced_sequences": 0,
+    "text": "\n/** Últimos n meses (incluido el actual), del más antiguo al más nuevo. */\nexport function lastMonths(n) {\n  const out = [];\n  const d = new Date();\n  d.setDate(1);\n  for (let i = n - 1; i >= 0; i--) {\n    const c = new Date(d.getFullYear(), d.getMonth() - i, 1);\n    out.push(`${c.getFullYear()}-${String(c.getMonth() + 1).padStart(2, \"0\")}`);\n  }\n  return out;\n}\n\nexport function initials(name) {\n  const parts = fold(name).split(\" \").filter(Boolean);\n  if (!parts.length) return \"?\";\n",
+    "total_lines": 249
+  },
+  "summary": "util.js: lines 215–230 of 249 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 16,
+    "total": 249,
+    "next_offset": 230
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js"
+    }
+  ],
+  "links": []
+}

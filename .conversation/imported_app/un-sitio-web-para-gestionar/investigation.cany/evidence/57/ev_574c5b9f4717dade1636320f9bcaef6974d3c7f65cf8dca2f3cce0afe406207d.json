@@ -1,0 +1,54 @@
+{
+  "id": "ev_574c5b9f4717dade1636320f9bcaef6974d3c7f65cf8dca2f3cce0afe406207d",
+  "subject": {
+    "kind": "script",
+    "sha256": "f1c93129d75ab0a38973e99e3a8c4949466f30cbe3354a6ee1afd671fb6d69c3",
+    "name": "ai.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 62,
+    "offset": 256,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 18104,
+    "lines": 62,
+    "more": true,
+    "offset": 256,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js",
+    "replaced_sequences": 0,
+    "text": " */\nfunction extractPromptPapel(text, images) {\n  const kinds = DOC_KINDS.map((k) => `${k.id} (${k.label})`).join(\"; \");\n  const cabecera = [\n    \"Te mando un documento de una empresa agrícola de las Islas Canarias (IGIC, no IVA).\",\n    `Tipos posibles: ${kinds}.`,\n    \"Míralo bien: puede venir en varias hojas y cada hoja puede ser un papel distinto\",\n    \"(por ejemplo, tres nóminas seguidas). Lee el papel tal cual y sácale TODOS sus datos con cuidado:\",\n    \"el texto de abajo puede tener erratas del lector automático, así que manda lo que ves en la imagen.\",\n    \"\",\n    \"Rellena una sola ficha con el documento que te mando. Si son varios papeles distintos,\",\n    \"fíjate en el primero de ellos y no mezcles sus importes con los de los demás.\",\n    \"\",\n    \"Devuelve SOLO este JSON, con null en lo que no aparezca:\",\n    \"{\",\n    '  \"tipo\": \"FACTURA\",',\n    '  \"categoria\": \"AGUA\",',\n    '  \"proveedor\": \"nombre o razón social\",',\n    '  \"nif\": \"A12345678\",',\n    '  \"numero\": \"número del documento\",',\n    '  \"fecha\": \"AAAA-MM-DD\",',\n    '  \"vencimiento\": \"AAAA-MM-DD\",',\n    '  \"base\": 0, \"igic\": 0, \"total\": 0,',\n    '  \"liquidacion\": {\"producto\": \"\", \"categoria\": \"\", \"kilos\": 0, \"precio\": 0,',\n    '    \"descuentos\": [{\"concepto\": \"\", \"importe\": 0}], \"liquido\": 0},',\n    '  \"motivo\": \"una frase corta de por qué\"',\n    \"}\",\n    \"\",\n    \"Reglas de los números (importante):\",\n    \"- Importes en euros, con punto decimal: 1.234,56 € se escribe 1234.56.\",\n    \"- Kilos en kilogramos: 4.520 kg se escribe 4520.\",\n    \"- Precio por kilo en euros por kilo, con punto decimal: «0,853 €/kg» es 0.853, no 853.\",\n    \"- Si el documento no es una liquidación de fruta, deja liquidacion en null.\",\n  ].join(\"\\n\");\n\n  const ayuda = String(text || \"\").trim();\n  const partes = [\n    {\n      type: \"text\",\n      text: cabecera + (ayuda ? `\\n\\nTexto que sacó el lector del propio papel (solo por si ayuda):\\n${ayuda.slice(0, 6000)}` : \"\"),\n    },\n  ];\n  for (const url of images) {\n    partes.push({ type: \"image_url\", image_url: { url, detail: \"high\" } });\n  }\n  return partes;\n}\n\n/** Solo se aceptan imágenes en datos, y no muchas. */\nfunction onlyDataImages(images) {\n  return (Array.isArray(images) ? images : [])\n    .filter((u) => typeof u === \"string\" && /^data:image\\/(jpeg|jpg|png|webp);base64,/i.test(u))\n    .slice(0, 6);\n}\n\n/**\n * Pide a la IA que interprete un documento y devuelve los campos ya ordenados\n * y comprobados. Si se le pasan imágenes (las hojas del papel), la IA lee el\n * documento tal cual; si el servicio no sabe mirar imágenes, se reintenta con\n * el texto y se avisa. Lanza Error si no contesta o no se entiende.\n */\nexport async function aiExtract(text, settings, { timeoutMs = 30000, images = [], onNote = null } = {}) {\n",
+    "total_lines": 488
+  },
+  "summary": "ai.js: lines 257–318 of 488 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 62,
+    "total": 488,
+    "next_offset": 318
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js"
+    }
+  ],
+  "links": []
+}

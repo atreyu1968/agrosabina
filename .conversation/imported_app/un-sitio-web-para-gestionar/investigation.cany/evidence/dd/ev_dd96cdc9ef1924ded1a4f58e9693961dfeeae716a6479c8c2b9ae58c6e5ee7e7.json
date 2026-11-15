@@ -1,0 +1,54 @@
+{
+  "id": "ev_dd96cdc9ef1924ded1a4f58e9693961dfeeae716a6479c8c2b9ae58c6e5ee7e7",
+  "subject": {
+    "kind": "script",
+    "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 140,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24919,
+    "lines": 40,
+    "more": true,
+    "offset": 140,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "      : [],\n    // Liquidación de fruta: kilos, precio por kilo, descuentos y líquido a percibir.\n    liquidacion: normaliseLiquidacion(inv.liquidacion),\n    source: inv.source || \"manual\",\n    fileName: inv.fileName || \"\",\n    rawText: String(inv.rawText || \"\").slice(0, 8000),\n    notes: Array.isArray(inv.notes) ? inv.notes : [],\n    confidence: Number.isFinite(inv.confidence) ? inv.confidence : null,\n    createdAt: inv.createdAt || new Date().toISOString(),\n    updatedAt: inv.updatedAt || inv.createdAt || new Date().toISOString(),\n  };\n}\n\nfunction normalise(raw) {\n  const base = emptyState();\n  if (!raw || typeof raw !== \"object\") return base;\n  const out = {\n    version: 1,\n    settings: Object.assign(base.settings, raw.settings || {}),\n    suppliers: Array.isArray(raw.suppliers) ? raw.suppliers.map(normaliseSupplier).filter(Boolean) : [],\n    invoices: Array.isArray(raw.invoices) ? raw.invoices.map(normaliseInvoice) : [],\n    messages: Array.isArray(raw.messages) ? raw.messages.map(normaliseMessage).filter(Boolean) : [],\n  };\n  // Una factura sin proveedor válido se queda sin asignar en lugar de romper.\n  const ids = new Set(out.suppliers.map((s) => s.id));\n  out.invoices = out.invoices.filter((inv) => !inv.supplierId || ids.has(inv.supplierId));\n  return out;\n}\n\nfunction normaliseSupplier(s) {\n  if (!s || typeof s !== \"object\") return null;\n  const name = String(s.name || \"\").trim();\n  if (!name && !s.nif) return null;\n  return {\n    id: s.id || uid(\"sup\"),\n    name: name || String(s.nif || \"Proveedor\"),\n    nif: String(s.nif || \"\").trim(),\n    email: String(s.email || \"\").trim(),\n    phone: String(s.phone || \"\").trim(),\n    note: String(s.note || \"\").trim(),\n",
+    "total_lines": 789
+  },
+  "summary": "store.js: lines 141–180 of 789 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 789,
+    "next_offset": 180
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

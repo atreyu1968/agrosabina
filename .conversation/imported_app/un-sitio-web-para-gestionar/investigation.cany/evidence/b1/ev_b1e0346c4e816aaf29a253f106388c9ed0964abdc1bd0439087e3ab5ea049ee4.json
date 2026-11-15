@@ -1,0 +1,54 @@
+{
+  "id": "ev_b1e0346c4e816aaf29a253f106388c9ed0964abdc1bd0439087e3ab5ea049ee4",
+  "subject": {
+    "kind": "script",
+    "sha256": "972b1b7be9bc1577cb6086bdfd834369effd809ab3790f15ed31e98a92be3786",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 600,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 200323,
+    "lines": 45,
+    "more": true,
+    "offset": 600,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "                 .map((l) => {\n                   const lr = l.rate != null ? l.rate : l.tipo;\n                   const lb = l.base != null ? l.base : l.importe;\n                   const li = l.igic != null ? l.igic : l.cuota;\n                   return `<tr><td>${esc(rateText(lr))}</td><td class=\"num\">${fmtEUR(lb)}</td><td class=\"num\">${fmtEUR(li)}</td></tr>`;\n                 })\n                 .join(\"\")}\n             </tbody>\n           </table></div>`\n        : \"\"\n    }\n    ${\n      liq\n        ? `<h3 style=\"margin:16px 0 6px\">Liquidación de fruta</h3>\n           <div class=\"table-wrap\"><table class=\"data\"><tbody>\n             <tr><th>Producto</th><td>${esc(liq.product || \"—\")}</td></tr>\n             <tr><th>Categoría</th><td>${esc(liq.category || \"—\")}</td></tr>\n             <tr><th>Kilos</th><td>${liqNum.kg != null ? fmtNum(liqNum.kg) : \"—\"}</td></tr>\n             <tr><th>Precio €/kg</th><td>${liqNum.price != null ? fmtNum(liqNum.price, 3) : \"—\"}</td></tr>\n             <tr><th>Bruto</th><td>${fmtEUR(liqNum.gross)}</td></tr>\n             <tr><th>Descuentos</th><td>${fmtEUR(liqNum.discounts)}</td></tr>\n             <tr><th>Líquido a percibir</th><td><strong>${fmtEUR(liqNum.net)}</strong></td></tr>\n           </tbody></table></div>`\n        : \"\"\n    }\n    ${notes ? `<h3 style=\"margin:16px 0 6px\">Notas</h3><p class=\"sub\" style=\"white-space:pre-wrap\">${esc(notes)}</p>` : \"\"}\n    <h3 style=\"margin:16px 0 6px\">El texto que se leyó</h3>\n    ${\n      raw\n        ? `<div class=\"raw-text\">${esc(raw)}</div>`\n        : `<p class=\"sub\">De este documento no se guardó texto: se escribió a mano.</p>`\n    }`;\n\n  openModal(\n    `<div class=\"modal-head\">\n      <div>\n        <h2>${esc(info.label || \"Documento\")}${inv.number ? ` ${esc(inv.number)}` : \"\"}</h2>\n        <p>${esc(sup.name || \"Sin proveedor\")} · ${fmtEUR(inv.total)}</p>\n      </div>\n      <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n    </div>\n    <div class=\"modal-body\">${body}</div>\n    <div class=\"modal-foot\">\n      <div class=\"spacer\"></div>\n      <button class=\"btn primary\" data-modal-cancel>Cerrar</button>\n",
+    "total_lines": 5201
+  },
+  "summary": "views.js: lines 601–645 of 5201 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 5201,
+    "next_offset": 645
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_e76175977a6ed89370ca5207936ab29efb7dc9f5eab74d091abf4927f14cf1b3",
+  "subject": {
+    "kind": "script",
+    "sha256": "b2026fbddd71e58d4f0ce0f026c5584629456f76dba2fe2c361d2cf966518e22",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 55,
+    "offset": 1818,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 207221,
+    "lines": 55,
+    "more": true,
+    "offset": 1818,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "/* Proveedores                                                        */\n/* ------------------------------------------------------------------ */\n\n/** Los terceros de un papel: proveedores, clientes o todos. */\nfunction tercerosPorRol(rol) {\n  const lista = getState().suppliers;\n  if (rol === \"TODOS\") return lista.slice();\n  if (rol === \"CLIENTE\") {\n    return lista.filter((s) => {\n      const r = String(s.role || \"\").toUpperCase();\n      return r === \"CLIENTE\" || r === \"AMBOS\";\n    });\n  }\n  return lista.filter((s) => {\n    const r = String(s.role || \"\").toUpperCase();\n    return r === \"PROVEEDOR\" || r === \"AMBOS\";\n  });\n}\n\nfunction viewProveedores() {\n  const state = getState();\n  if (!state.suppliers.length) {\n    return `<section class=\"card\"><div class=\"empty\">\n      <div class=\"e-icon\">${icon(\"store\")}</div>\n      <h3>Los proveedores y los clientes se crean solos</h3>\n      <p>En cuanto subas una factura, guardo el proveedor con su nombre y su NIF; con las liquidaciones y los ingresos pasa lo mismo con el cliente. Si quieres, también puedes darlos de alta tú.</p>\n      <div class=\"e-actions\">\n        <button class=\"btn primary\" data-action=\"import-files\">${icon(\"upload\")} Subir factura</button>\n        <button class=\"btn\" data-action=\"new-supplier\">${icon(\"plus\")} Añadir proveedor o cliente</button>\n      </div>\n    </div></section>`;\n  }\n\n  const rol = ui.supplierRole || \"PROVEEDOR\";\n  const cuantos = tercerosPorRol(rol).length;\n  return `\n  <section class=\"card\" style=\"margin-bottom:16px\">\n    <div class=\"filters\">\n      <div class=\"segmented\" id=\"supplierRoleSeg\" data-value=\"${esc(rol)}\">\n        <button type=\"button\" data-action=\"supplier-role\" data-role=\"PROVEEDOR\" class=\"${rol === \"PROVEEDOR\" ? \"active\" : \"\"}\">Proveedores</button>\n        <button type=\"button\" data-action=\"supplier-role\" data-role=\"CLIENTE\" class=\"${rol === \"CLIENTE\" ? \"active\" : \"\"}\">Clientes</button>\n        <button type=\"button\" data-action=\"supplier-role\" data-role=\"TODOS\" class=\"${rol === \"TODOS\" ? \"active\" : \"\"}\">Todos</button>\n      </div>\n      <div class=\"spacer\"></div>\n      <span class=\"tag\">${cuantos} de ${state.suppliers.length}</span>\n    </div>\n    <div class=\"filters\" style=\"margin-top:10px\">\n      <label class=\"search\">\n        ${icon(\"search\")}\n        <input type=\"search\" id=\"supplierSearch\" placeholder=\"Buscar por nombre o NIF\" value=\"${esc(ui.supplierQuery)}\" aria-label=\"Buscar proveedores y clientes\">\n      </label>\n    </div>\n  </section>\n  <div id=\"supplierGridWrap\">${supplierGrid()}</div>`;\n}\n",
+    "total_lines": 5325
+  },
+  "summary": "views.js: lines 1819–1873 of 5325 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 55,
+    "total": 5325,
+    "next_offset": 1873
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,149 @@
+{
+  "id": "ev_b73f9aad75eec2a9ed1196df0e224f56deb8567458db463eae0fb60829da1348",
+  "subject": {
+    "kind": "script",
+    "sha256": "1e585cc49b078fbe974665ab51132669cb2bc7c416a346bae7db13c338c2a41c",
+    "name": "ai.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 30,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js",
+    "pattern": null,
+    "text": "export "
+  },
+  "result": {
+    "file_size": 13720,
+    "limit": 30,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 658,
+        "file_offset_hex": "0x292",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 1123,
+        "file_offset_hex": "0x463",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 2019,
+        "file_offset_hex": "0x7e3",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 2316,
+        "file_offset_hex": "0x90c",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 8729,
+        "file_offset_hex": "0x2219",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 11133,
+        "file_offset_hex": "0x2b7d",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 11594,
+        "file_offset_hex": "0x2d4a",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 12791,
+        "file_offset_hex": "0x31f7",
+        "length": 7,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 7
+      }
+    ],
+    "total_matches": 8
+  },
+  "summary": "8 match(es) for utf8 in ai.js; showing 8 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 8,
+    "total": 8
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x292"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x463"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x7e3"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x90c"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x2219"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x2b7d"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x2d4a"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x31f7"
+    }
+  ],
+  "links": []
+}

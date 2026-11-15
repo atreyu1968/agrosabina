@@ -1,0 +1,72 @@
+{
+  "id": "ev_0fc54e1879df9009dd8fde84bb26bfdb8053e8117ae3268ca437b9ebc2ad88f1",
+  "subject": {
+    "kind": "script",
+    "sha256": "8281c07a6c6e0e591b3d171028ac0385d2e4d6c7e6e685816c745534065f2b7d",
+    "name": "accounting.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 5,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\accounting.js",
+    "pattern": null,
+    "text": "RESULTADO DE EXPLOTACIÓN"
+  },
+  "result": {
+    "file_size": 23722,
+    "limit": 5,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "524553554c5441444f204445204558504c4f54414349c3934e",
+        "file_offset": 13766,
+        "file_offset_hex": "0x35c6",
+        "length": 25,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\accounting.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 25
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 in accounting.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x35c6"
+    }
+  ],
+  "links": []
+}

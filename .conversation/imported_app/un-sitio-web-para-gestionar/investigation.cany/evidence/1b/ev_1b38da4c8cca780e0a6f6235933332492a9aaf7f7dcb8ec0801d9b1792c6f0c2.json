@@ -1,0 +1,231 @@
+{
+  "id": "ev_1b38da4c8cca780e0a6f6235933332492a9aaf7f7dcb8ec0801d9b1792c6f0c2",
+  "subject": {
+    "kind": "js-app",
+    "sha256": "50f33435b7b6b09abca6d9ed2531cf1b87bbdb55852a0a34af208aa617a1ca21",
+    "name": "app"
+  },
+  "operation": "core_evidence_browse",
+  "params": {
+    "show": {
+      "fields": [
+        "path",
+        "parse_mode"
+      ],
+      "kind": "rows",
+      "limit": 45,
+      "list": "modules",
+      "offset": 0
+    },
+    "source": {
+      "evidence_id": "ev_cc376df63a80c4e6d597e23ef42924a14f0717e249c2ef79d6ed1654244f9cc2",
+      "kind": "saved"
+    }
+  },
+  "result": {
+    "coverage": {
+      "at_end": true,
+      "examined": 43,
+      "next_offset": null,
+      "status": "page",
+      "total": 43
+    },
+    "from_evidence": "ev_cc376df63a80c4e6d597e23ef42924a14f0717e249c2ef79d6ed1654244f9cc2",
+    "from_tool": "js_app_map",
+    "shown": {
+      "items": [
+        {
+          "parse_mode": "parsed",
+          "path": "assets/js/ai.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "assets/js/camera.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "assets/js/dom.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "assets/js/mail.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "assets/js/main.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "assets/js/model.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "assets/js/parse.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "assets/js/read.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "assets/js/sqlite.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "assets/js/store.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "assets/js/util.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "assets/js/views.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "dist/assets/js/ai.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "dist/assets/js/camera.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "dist/assets/js/dom.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "dist/assets/js/mail.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "dist/assets/js/main.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "dist/assets/js/model.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "dist/assets/js/parse.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "dist/assets/js/read.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "dist/assets/js/sqlite.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "dist/assets/js/store.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "dist/assets/js/util.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "dist/assets/js/views.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "dist/index.html#inline-1"
+        },
+        {
+          "path": "dist/index.html"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "index.html#inline-1"
+        },
+        {
+          "path": "index.html"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "site/assets/js/ai.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "site/assets/js/camera.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "site/assets/js/dom.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "site/assets/js/mail.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "site/assets/js/main.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "site/assets/js/model.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "site/assets/js/parse.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "site/assets/js/read.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "site/assets/js/sqlite.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "site/assets/js/store.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "site/assets/js/util.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "site/assets/js/views.js"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "site/index.html#inline-1"
+        },
+        {
+          "path": "site/index.html"
+        },
+        {
+          "parse_mode": "parsed",
+          "path": "tools/build.mjs"
+        }
+      ],
+      "list": "modules",
+      "offset": 0,
+      "total": 43
+    }
+  },
+  "summary": "Part of js_app_map evidence (page).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 43,
+    "total": 43
+  },
+  "locations": [],
+  "links": [
+    "ev_cc376df63a80c4e6d597e23ef42924a14f0717e249c2ef79d6ed1654244f9cc2"
+  ]
+}

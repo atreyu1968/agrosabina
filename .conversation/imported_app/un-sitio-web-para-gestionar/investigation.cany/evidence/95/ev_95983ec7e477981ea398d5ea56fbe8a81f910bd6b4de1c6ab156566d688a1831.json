@@ -1,0 +1,54 @@
+{
+  "id": "ev_95983ec7e477981ea398d5ea56fbe8a81f910bd6b4de1c6ab156566d688a1831",
+  "subject": {
+    "kind": "script",
+    "sha256": "effbee695913dd70eb1d3b51952ecc8ed76c4969a93f6df5b3ddba29ce97f26c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 592,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 196170,
+    "lines": 60,
+    "more": true,
+    "offset": 592,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "                 .join(\"\")}\n             </tbody>\n           </table></div>`\n        : \"\"\n    }\n    ${\n      liq\n        ? `<h3 style=\"margin:16px 0 6px\">Liquidación de fruta</h3>\n           <div class=\"table-wrap\"><table class=\"data\"><tbody>\n             <tr><th>Producto</th><td>${esc(liq.product || \"—\")}</td></tr>\n             <tr><th>Categoría</th><td>${esc(liq.category || \"—\")}</td></tr>\n             <tr><th>Kilos</th><td>${liqNum.kg != null ? fmtNum(liqNum.kg) : \"—\"}</td></tr>\n             <tr><th>Precio €/kg</th><td>${liqNum.price != null ? fmtNum(liqNum.price, 3) : \"—\"}</td></tr>\n             <tr><th>Bruto</th><td>${fmtEUR(liqNum.gross)}</td></tr>\n             <tr><th>Descuentos</th><td>${fmtEUR(liqNum.discounts)}</td></tr>\n             <tr><th>Líquido a percibir</th><td><strong>${fmtEUR(liqNum.net)}</strong></td></tr>\n           </tbody></table></div>`\n        : \"\"\n    }\n    ${notes ? `<h3 style=\"margin:16px 0 6px\">Notas</h3><p class=\"sub\" style=\"white-space:pre-wrap\">${esc(notes)}</p>` : \"\"}\n    <h3 style=\"margin:16px 0 6px\">El texto que se leyó</h3>\n    ${\n      raw\n        ? `<div class=\"raw-text\">${esc(raw)}</div>`\n        : `<p class=\"sub\">De este documento no se guardó texto: se escribió a mano.</p>`\n    }`;\n\n  openModal(\n    `<div class=\"modal-head\">\n      <div>\n        <h2>${esc(info.label || \"Documento\")}${inv.number ? ` ${esc(inv.number)}` : \"\"}</h2>\n        <p>${esc(sup.name || \"Sin proveedor\")} · ${fmtEUR(inv.total)}</p>\n      </div>\n      <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n    </div>\n    <div class=\"modal-body\">${body}</div>\n    <div class=\"modal-foot\">\n      <div class=\"spacer\"></div>\n      <button class=\"btn primary\" data-modal-cancel>Cerrar</button>\n    </div>`\n  );\n}\n\n/** El índice de documentos en CSV, con lo que se está viendo. */\nfunction exportDocsCsv() {\n  const list = docList();\n  if (!list.length) {\n    toast(\"No hay documentos con esos filtros.\", \"warn\");\n    return;\n  }\n  const headers = [\n    \"Fecha\",\n    \"Tipo\",\n    \"Sentido\",\n    \"Proveedor\",\n    \"NIF\",\n    \"Número\",\n    \"Base\",\n    \"IGIC\",\n    \"Total\",\n",
+    "total_lines": 5107
+  },
+  "summary": "views.js: lines 593–652 of 5107 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 5107,
+    "next_offset": 652
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

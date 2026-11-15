@@ -1,0 +1,54 @@
+{
+  "id": "ev_a131afcf44be6b397b8fb936a04b450e2483c3a2a52b75e6e0e4afc25b535d82",
+  "subject": {
+    "kind": "script",
+    "sha256": "83704397ea89e45fa1af80334964cb8e67554af7773347bdc2b1474dc48b4b50",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 2940,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 245244,
+    "lines": 70,
+    "more": true,
+    "offset": 2940,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  if (n.bruto != null) fila(\"Bruto (devengos)\", fmtEUR(n.bruto), true);\n  if (n.ssTrabajador != null) fila(\"Seguridad Social del trabajador\", fmtEUR(n.ssTrabajador));\n  if (n.irpf != null) {\n    fila(\"IRPF\", `${fmtEUR(n.irpf)}${n.irpfPct != null ? ` (${fmtNum(n.irpfPct, 2)} %)` : \"\"}`);\n  }\n  if (n.neto != null) fila(\"Líquido a percibir\", fmtEUR(n.neto), true);\n  if (n.ssEmpresa != null) fila(\"Seguridad Social de la empresa\", fmtEUR(n.ssEmpresa));\n  if (n.coste != null) fila(\"Coste para la empresa\", fmtEUR(n.coste), true);\n  if (!filas.length) return \"\";\n  const notas = Array.isArray(read.notas) ? read.notas : [];\n  return `<div class=\"summary-box span-2\" style=\"margin-bottom:12px\">\n    ${icon(\"info\")}\n    <div>\n      <div style=\"font-weight:600;margin-bottom:4px\">Datos que voy a importar de la nómina</div>\n      <div style=\"display:grid;grid-template-columns:auto auto;gap:2px 14px;font-size:13px\">\n        ${filas\n          .map(\n            ([k, val, strong]) =>\n              `<span>${k}</span><span${strong ? ' style=\"font-weight:600\"' : \"\"}>${val}</span>`\n          )\n          .join(\"\")}\n      </div>\n      ${\n        notas.length\n          ? `<div style=\"font-size:12px;color:var(--ink-3);margin-top:6px\">${notas\n              .map((t) => esc(t))\n              .join(\"<br>\")}</div>`\n          : \"\"\n      }\n    </div>\n  </div>`;\n}\n\n/**\n * El bloque de la nómina en la ficha del documento: solo se ve cuando el tipo\n * es «Nómina». El líquido sale solo (bruto − Seguridad Social − IRPF).\n */\nfunction nominaFormHtml(v) {\n  const n = calcularNomina((v && v.nomina) || {});\n  const kind = (v && v.kind) || \"FACTURA\";\n  const val = (x) => (x == null ? \"\" : fmtNum(x));\n  return `<div class=\"field span-2\" id=\"f-nom\" ${kind === \"NOMINA\" ? \"\" : \"hidden\"}>\n    <div class=\"lines-head\">\n      <div>\n        <label>Recibo de salarios</label>\n        <p class=\"lines-hint\">Bruto, Seguridad Social e IRPF que trae el papel. La contabilidad apunta ${CUENTAS_NOMINA.sueldos} sueldos y ${CUENTAS_NOMINA.ssEmpresa} Seguridad Social de la empresa contra ${CUENTAS_NOMINA.ssPagar} Seguridad Social y ${CUENTAS_NOMINA.irpf} IRPF, y el líquido a la subcuenta de ${CUENTAS_NOMINA.liquido} de este trabajador (${CUENTAS_NOMINA.liquido}001, ${CUENTAS_NOMINA.liquido}002…), una por cada uno.</p>\n      </div>\n    </div>\n    <div class=\"form-grid\">\n      <div class=\"field\">\n        <label for=\"n-trabajador\">Trabajador</label>\n        <input id=\"n-trabajador\" type=\"text\" autocomplete=\"off\" value=\"${esc(n.trabajador)}\" placeholder=\"Nombre y apellidos\">\n      </div>\n      <div class=\"field\">\n        <label for=\"n-periodo\">Periodo <span class=\"hint\">(opcional)</span></label>\n        <input id=\"n-periodo\" type=\"text\" autocomplete=\"off\" value=\"${esc(n.periodo)}\" placeholder=\"01/03/2025 a 31/03/2025\">\n      </div>\n      <div class=\"field\">\n        <label for=\"n-bruto\">Bruto (devengos)</label>\n        <div class=\"with-suffix\"><input id=\"n-bruto\" type=\"text\" inputmode=\"decimal\" value=\"${val(n.bruto)}\" placeholder=\"0,00\"><span>€</span></div>\n      </div>\n      <div class=\"field\">\n        <label for=\"n-ss\">Seguridad Social del trabajador</label>\n        <div class=\"with-suffix\"><input id=\"n-ss\" type=\"text\" inputmode=\"decimal\" value=\"${val(n.ssTrabajador)}\" placeholder=\"0,00\"><span>€</span></div>\n      </div>\n      <div class=\"field\">\n        <label for=\"n-irpf\">IRPF</label>\n        <div class=\"with-suffix\"><input id=\"n-irpf\" type=\"text\" inputmode=\"decimal\" value=\"${val(n.irpf)}\" placeholder=\"0,00\"><span>€</span></div>\n      </div>\n      <div class=\"field\">\n",
+    "total_lines": 6154
+  },
+  "summary": "views.js: lines 2941–3010 of 6154 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 6154,
+    "next_offset": 3010
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

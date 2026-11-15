@@ -1,0 +1,54 @@
+{
+  "id": "ev_7cb124edb6992f3e59b98837fd46ed166036bffc318b4c2814666b3aeead5f0d",
+  "subject": {
+    "kind": "script",
+    "sha256": "6ec57842818ead8f65029f95b4b820488a6dbfbb6233142f78099083827d16c7",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 3372,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177631,
+    "lines": 30,
+    "more": true,
+    "offset": 3372,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "        toast(\n          isIncome\n            ? `Cobrado el ${fmtDate(day)}.`\n            : `Pagado el ${fmtDate(day)}.`\n        );\n        render();\n      });\n      return;\n    }\n    case \"edit-invoice\": {\n      const inv = getState().invoices.find((i) => i.id === id);\n      if (inv) openInvoiceModal({ mode: \"edit\", invoice: inv });\n      return;\n    }\n    case \"delete-invoice\": {\n      const inv = getState().invoices.find((i) => i.id === id);\n      if (!inv) return;\n      const ok = await confirmDialog({\n        title: \"Borrar la factura\",\n        message: `Se borrará la factura ${inv.number || \"sin número\"} de ${supplierName(inv.supplierId)} (${fmtEUR(inv.total)}). El proveedor se queda en la lista.`,\n        confirm: \"Sí, borrarla\",\n        danger: true,\n      });\n      if (!ok) return;\n      deleteInvoice(id);\n      toast(\"Factura borrada.\");\n      render();\n      return;\n    }\n    case \"new-invoice\":\n",
+    "total_lines": 4628
+  },
+  "summary": "views.js: lines 3373–3402 of 4628 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 4628,
+    "next_offset": 3402
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

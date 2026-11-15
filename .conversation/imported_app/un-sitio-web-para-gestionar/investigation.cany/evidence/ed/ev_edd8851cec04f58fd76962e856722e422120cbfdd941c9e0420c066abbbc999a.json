@@ -1,0 +1,54 @@
+{
+  "id": "ev_edd8851cec04f58fd76962e856722e422120cbfdd941c9e0420c066abbbc999a",
+  "subject": {
+    "kind": "script",
+    "sha256": "a6efaf1951f6d94f6a827d45ca436123cf3900809e858bae693540ef9445eb7d",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 5080,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 280991,
+    "lines": 70,
+    "more": true,
+    "offset": 5080,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "        </div>\n        <div class=\"field\">\n          <label for=\"set-ai-model\">Modelo</label>\n          <input id=\"set-ai-model\" type=\"text\" autocomplete=\"off\" value=\"${esc(s.aiModel || AI_DEFAULTS.aiModel)}\" placeholder=\"deepseek-chat\">\n        </div>\n        <div class=\"field\">\n          <label for=\"set-ai-key\">Clave</label>\n          <input id=\"set-ai-key\" type=\"password\" autocomplete=\"off\" value=\"${esc(s.aiKey || \"\")}\" placeholder=\"sk-…\">\n          <span class=\"hint\">Se queda guardada en este navegador, junto a tus facturas.</span>\n        </div>\n      </div>\n      <div class=\"row wrap\" style=\"margin-top:12px\">\n        <button class=\"btn sm\" data-action=\"test-ai\">${icon(\"sparkle\")} Probar la conexión</button>\n        <span id=\"aiStatus\" style=\"font-size:12.5px;color:var(--ink-3)\"></span>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Base de datos SQLite</h3>\n      ${sqlitePanel()}\n    </div>\n    <div class=\"modal-foot\">\n      <button class=\"btn primary\" data-save>Guardar ajustes</button>\n      <button class=\"btn ghost\" data-modal-cancel>Cerrar</button>\n    </div>`,\n    {\n      onMount(wrap) {\n        wrap.querySelectorAll(\"[data-modal-cancel]\").forEach((b) =>\n          b.addEventListener(\"click\", () => closeModal())\n        );\n\n        // Elegir el servicio rellena la dirección y el modelo; después se\n        // pueden cambiar a mano si el servicio usa otros nombres.\n        const providerSel = wrap.querySelector(\"#set-ai-provider\");\n        const endpointInput = wrap.querySelector(\"#set-ai-endpoint\");\n        const modelInput = wrap.querySelector(\"#set-ai-model\");\n        const providerHint = wrap.querySelector(\"#set-ai-provider-hint\");\n        if (providerSel) {\n          providerSel.addEventListener(\"change\", () => {\n            const chosen = AI_PROVIDERS.find((p) => p.id === providerSel.value);\n            if (!chosen) return;\n            if (providerHint) providerHint.textContent = chosen.hint;\n            if (chosen.endpoint) {\n              endpointInput.value = chosen.endpoint;\n              modelInput.value = chosen.model;\n            }\n          });\n        }\n\n        // Cuánto ocupan los originales guardados (se cuenta al abrir Ajustes).\n        originalsUsage()\n          .then((u) => {\n            const el = wrap.querySelector(\"#origUsage\");\n            if (!el) return;\n            el.textContent = u.count\n              ? `Guardados ${u.count} original${u.count === 1 ? \"\" : \"es\"} · ${originalSizeText(u.bytes)} en este navegador.`\n              : \"Todavía no hay ningún original guardado: se guardan al dar de alta un documento con foto, PDF o correo.\";\n          })\n          .catch(() => {});\n\n        wrap.querySelector(\"[data-save]\").addEventListener(\"click\", () => {\n          updateSettings({\n            defaultRate: Number(wrap.querySelector(\"#set-rate\").value),\n            businessName: wrap.querySelector(\"#set-name\").value.trim(),\n            cashAccount: wrap.querySelector(\"#set-cash\").value.trim() || \"Caja general\",\n            bankAccounts: wrap\n              .querySelector(\"#set-banks\")\n              .value.split(\"\\n\")\n              .map((t) => t.trim())\n              .filter(Boolean)\n",
+    "total_lines": 7068
+  },
+  "summary": "views.js: lines 5081–5150 of 7068 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 7068,
+    "next_offset": 5150
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

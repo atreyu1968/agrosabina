@@ -1,0 +1,54 @@
+{
+  "id": "ev_678958fa9d49ea8f510b1f49b3df62ed8c377ef042b433c0c3105b6580e6932e",
+  "subject": {
+    "kind": "script",
+    "sha256": "e77d2b067087936538d3d840a88e5abb36fb4b329936b321d8810b38a1692838",
+    "name": "util.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 16,
+    "offset": 206,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 7872,
+    "lines": 16,
+    "more": true,
+    "offset": 206,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js",
+    "replaced_sequences": 0,
+    "text": "\nexport function monthLabel(key) {\n  const names = [\"ene\", \"feb\", \"mar\", \"abr\", \"may\", \"jun\", \"jul\", \"ago\", \"sep\", \"oct\", \"nov\", \"dic\"];\n  const [y, m] = String(key).split(\"-\");\n  const idx = Number(m) - 1;\n  if (!names[idx] || !y) return key;\n  return `${names[idx]} ${y.slice(2)}`;\n}\n\n/** Últimos n meses (incluido el actual), del más antiguo al más nuevo. */\nexport function lastMonths(n) {\n  const out = [];\n  const d = new Date();\n  d.setDate(1);\n  for (let i = n - 1; i >= 0; i--) {\n    const c = new Date(d.getFullYear(), d.getMonth() - i, 1);\n",
+    "total_lines": 249
+  },
+  "summary": "util.js: lines 207–222 of 249 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 16,
+    "total": 249,
+    "next_offset": 222
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js"
+    }
+  ],
+  "links": []
+}

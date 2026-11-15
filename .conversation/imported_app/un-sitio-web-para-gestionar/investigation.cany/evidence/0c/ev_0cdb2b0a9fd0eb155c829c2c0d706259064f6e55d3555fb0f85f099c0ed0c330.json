@@ -1,0 +1,54 @@
+{
+  "id": "ev_0cdb2b0a9fd0eb155c829c2c0d706259064f6e55d3555fb0f85f099c0ed0c330",
+  "subject": {
+    "kind": "script",
+    "sha256": "95cfec9262b76d4a06e9da1f5aa03517b468bd8e6341b387341adabc3c2d11cb",
+    "name": "model.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 10,
+    "offset": 38,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 10340,
+    "lines": 10,
+    "more": true,
+    "offset": 38,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js",
+    "replaced_sequences": 0,
+    "text": "]);\n\nexport function kindInfo(id) {\n  return DOC_KINDS.find((k) => k.id === id) || DOC_KINDS[0];\n}\n\nexport function categoryInfo(id) {\n  return CATEGORIES.find((c) => c.id === id) || CATEGORIES[0];\n}\n\n",
+    "total_lines": 242
+  },
+  "summary": "model.js: lines 39–48 of 242 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 10,
+    "total": 242,
+    "next_offset": 48
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js"
+    }
+  ],
+  "links": []
+}

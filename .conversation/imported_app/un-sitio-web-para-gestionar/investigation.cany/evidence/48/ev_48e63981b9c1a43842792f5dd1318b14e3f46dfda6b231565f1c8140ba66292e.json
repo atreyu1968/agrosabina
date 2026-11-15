@@ -1,0 +1,54 @@
+{
+  "id": "ev_48e63981b9c1a43842792f5dd1318b14e3f46dfda6b231565f1c8140ba66292e",
+  "subject": {
+    "kind": "script",
+    "sha256": "cd48c5cf20b87e39095de591bed9b4aadd07c9211f3a562a2f958858a55644b0",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 110,
+    "offset": 2855,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 123883,
+    "lines": 110,
+    "more": true,
+    "offset": 2855,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "          render();\n        });\n      },\n    }\n  );\n}\n\n/* ------------------------------------------------------------------ */\n/* Ajustes                                                            */\n/* ------------------------------------------------------------------ */\n\nexport function openSettings() {\n  const s = getState().settings;\n  openModal(\n    `<div class=\"modal-head\">\n      <div>\n        <h2>Ajustes</h2>\n        <p>Lo que se aplica a las facturas nuevas</p>\n      </div>\n      <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"form-grid\">\n        <div class=\"field\">\n          <label for=\"set-rate\">IGIC por defecto</label>\n          <select id=\"set-rate\">\n            ${IGIC_RATES.map((r) => `<option value=\"${r.value}\" ${Number(s.defaultRate) === r.value ? \"selected\" : \"\"}>${rateText(r.value)} — ${r.label.split(\"—\")[1].trim()}</option>`).join(\"\")}\n          </select>\n        </div>\n        <div class=\"field\">\n          <label for=\"set-name\">Nombre de la empresa</label>\n          <input id=\"set-name\" type=\"text\" value=\"${esc(s.businessName || \"\")}\" placeholder=\"Agrosabina SL\">\n        </div>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Copia de seguridad</h3>\n      <p style=\"font-size:13px;color:var(--ink-3);margin-bottom:12px\">\n        Los datos viven en este navegador. Si limpias el historial o cambias de ordenador, se pierden:\n        descarga una copia de vez en cuando.\n      </p>\n      <div class=\"row wrap\">\n        <button class=\"btn sm\" data-action=\"export-json\">${icon(\"download\")} Descargar copia</button>\n        <button class=\"btn sm\" data-action=\"import-json\">${icon(\"upload\")} Restaurar copia</button>\n        <div class=\"spacer\"></div>\n        <button class=\"btn sm danger\" data-action=\"clear-all\">${icon(\"trash\")} Borrar todo</button>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Clasificación con IA <span class=\"tag\">opcional</span></h3>\n      <p style=\"font-size:13px;color:var(--ink-3);margin-bottom:12px\">\n        Con esto encendido, cada documento se clasifica también con una IA: de qué tipo es y en qué concepto\n        entra. A la IA solo le llega <strong>el texto ya leído</strong>, nunca la foto ni el PDF, y solo si tú\n        escribes tu clave. Si no contesta, el programa sigue con sus propias reglas.\n      </p>\n      <label style=\"display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;margin-bottom:12px\">\n        <input type=\"checkbox\" id=\"set-ai-on\" ${s.aiEnabled ? \"checked\" : \"\"}> Usar una IA para clasificar\n      </label>\n      <div class=\"form-grid\">\n        <div class=\"field span-2\">\n          <label for=\"set-ai-endpoint\">Dirección del servicio</label>\n          <input id=\"set-ai-endpoint\" type=\"text\" autocomplete=\"off\" value=\"${esc(s.aiEndpoint || AI_DEFAULTS.aiEndpoint)}\" placeholder=\"https://api.openai.com/v1\">\n          <span class=\"hint\">Vale cualquier servicio compatible: OpenAI, Groq, OpenRouter o una IA en tu propio ordenador.</span>\n        </div>\n        <div class=\"field\">\n          <label for=\"set-ai-model\">Modelo</label>\n          <input id=\"set-ai-model\" type=\"text\" autocomplete=\"off\" value=\"${esc(s.aiModel || AI_DEFAULTS.aiModel)}\" placeholder=\"gpt-4o-mini\">\n        </div>\n        <div class=\"field\">\n          <label for=\"set-ai-key\">Clave</label>\n          <input id=\"set-ai-key\" type=\"password\" autocomplete=\"off\" value=\"${esc(s.aiKey || \"\")}\" placeholder=\"sk-…\">\n          <span class=\"hint\">Se queda guardada en este navegador, junto a tus facturas.</span>\n        </div>\n      </div>\n      <div class=\"row wrap\" style=\"margin-top:12px\">\n        <button class=\"btn sm\" data-action=\"test-ai\">${icon(\"sparkle\")} Probar la IA</button>\n        <span id=\"aiStatus\" style=\"font-size:12.5px;color:var(--ink-3)\"></span>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Base de datos SQLite</h3>\n      ${sqlitePanel()}\n    </div>\n    <div class=\"modal-foot\">\n      <button class=\"btn primary\" data-save>Guardar ajustes</button>\n      <button class=\"btn ghost\" data-modal-cancel>Cerrar</button>\n    </div>`,\n    {\n      onMount(wrap) {\n        wrap.querySelectorAll(\"[data-modal-cancel]\").forEach((b) =>\n          b.addEventListener(\"click\", () => closeModal())\n        );\n        wrap.querySelector(\"[data-save]\").addEventListener(\"click\", () => {\n          updateSettings({\n            defaultRate: Number(wrap.querySelector(\"#set-rate\").value),\n            businessName: wrap.querySelector(\"#set-name\").value.trim(),\n            aiEnabled: wrap.querySelector(\"#set-ai-on\").checked,\n            aiEndpoint: wrap.querySelector(\"#set-ai-endpoint\").value.trim(),\n            aiModel: wrap.querySelector(\"#set-ai-model\").value.trim(),\n            aiKey: wrap.querySelector(\"#set-ai-key\").value.trim(),\n          });\n          toast(\"Ajustes guardados.\");\n          closeModal();\n          render();\n        });\n      },\n    }\n",
+    "total_lines": 3310
+  },
+  "summary": "views.js: lines 2856–2965 of 3310 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 110,
+    "total": 3310,
+    "next_offset": 2965
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

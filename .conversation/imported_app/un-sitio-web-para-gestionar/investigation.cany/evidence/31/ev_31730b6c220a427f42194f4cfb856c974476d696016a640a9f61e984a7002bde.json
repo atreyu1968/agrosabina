@@ -1,0 +1,54 @@
+{
+  "id": "ev_31730b6c220a427f42194f4cfb856c974476d696016a640a9f61e984a7002bde",
+  "subject": {
+    "kind": "script",
+    "sha256": "4a72591d8a89979c3d6b62e9cdfe35dabca4ee489f839bc12901b4de840df127",
+    "name": "main.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 29,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 5344,
+    "lines": 60,
+    "more": true,
+    "offset": 29,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js",
+    "replaced_sequences": 0,
+    "text": "\nasync function boot() {\n  window.__appBooted = true; // el aviso de «no arranca» de index.html ya no hace falta\n\n  views.ui.route = routeFromHash();\n  views.renderLoading(); // mientras se abre la base de datos\n\n  // Las escuchas van antes que la base de datos: así el menú y los botones responden\n  // desde el primer segundo, aunque SQLite tarde en abrir.\n  wireGlobalEvents();\n\n  // Abrir la base de datos SQLite y traer los datos, pero sin dejar la pantalla\n  // esperando para siempre: si en 9 segundos no ha contestado, se sigue con la copia\n  // guardada en el navegador y se avisa. Nunca se queda el programa en «Abriendo…».\n  let dbReady = false;\n  try {\n    await Promise.race([\n      initStore().then(() => {\n        dbReady = true;\n      }),\n      new Promise((resolve) => setTimeout(resolve, 9000)),\n    ]);\n  } catch (err) {\n    console.error(\"No se pudo arrancar el almacén de datos:\", err);\n  }\n\n  views.render();\n  if (!dbReady) {\n    setTimeout(\n      () =>\n        toast(\n          \"La base de datos está tardando en abrir. Sigo con la copia que hay guardada en este navegador.\",\n          \"bad\",\n          9000\n        ),\n      900\n    );\n  }\n  escapeKeyCloses();\n  views.wireDropzone();\n\n  const info = storageInfo();\n  if (info.engine === \"local\") {\n    setTimeout(\n      () =>\n        toast(\n          \"No he podido abrir la base de datos SQLite en este navegador, así que guardo los datos de la forma anterior. Todo funciona igual.\",\n          \"bad\",\n          9000\n        ),\n      1200\n    );\n  }\n\n  function wireGlobalEvents() {\n    window.addEventListener(\"hashchange\", () => {\n      // El enlace «Saltar al contenido» usa #view: no es una sección, no se repinta.\n      if (location.hash && !location.hash.startsWith(\"#/\")) return;\n      views.ui.route = routeFromHash();\n      window.scrollTo(0, 0);\n",
+    "total_lines": 179
+  },
+  "summary": "main.js: lines 30–89 of 179 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 179,
+    "next_offset": 89
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js"
+    }
+  ],
+  "links": []
+}

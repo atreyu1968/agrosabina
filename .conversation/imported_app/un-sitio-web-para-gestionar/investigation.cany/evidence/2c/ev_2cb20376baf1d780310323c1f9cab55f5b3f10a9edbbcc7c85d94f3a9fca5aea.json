@@ -1,0 +1,54 @@
+{
+  "id": "ev_2cb20376baf1d780310323c1f9cab55f5b3f10a9edbbcc7c85d94f3a9fca5aea",
+  "subject": {
+    "kind": "script",
+    "sha256": "d2cbd2f3594852fd8d45b4b4856992f6347f827cada152484c39b6e4b10105cd",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 2307,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 132921,
+    "lines": 60,
+    "more": true,
+    "offset": 2307,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      <div id=\"dupWarning\" class=\"summary-box warn\" hidden style=\"margin-bottom:14px\">${icon(\"alert\")}<div></div></div>\n      <div class=\"review-layout\">\n        <div>\n          ${invoiceFormHtml(values)}\n        </div>\n        <div>\n          <div class=\"summary-box\" style=\"margin-bottom:12px\">\n            ${icon(\"info\")}\n            <div id=\"supplierInfo\">Al guardar, el proveedor se añade solo a tu lista.</div>\n          </div>\n          ${job && job.parsed.rawText ? `\n          <details>\n            <summary style=\"cursor:pointer;font-size:13px;color:var(--ink-2);font-weight:600\">Ver el texto que he leído</summary>\n            <div class=\"raw-text\" style=\"margin-top:8px\">${esc(job.parsed.rawText)}</div>\n          </details>` : \"\"}\n        </div>\n      </div>\n    </div>\n    <div class=\"modal-foot\">\n      <button class=\"btn primary\" data-save>${editing ? \"Guardar cambios\" : \"Guardar documento\"}</button>\n      <button class=\"btn ghost\" data-modal-cancel>${job ? \"Descartar\" : \"Cancelar\"}</button>\n      <div class=\"spacer\"></div>\n      ${job ? `<span class=\"muted\" style=\"font-size:12px;color:var(--ink-3)\">Comprueba los importes antes de guardar</span>` : \"\"}\n    </div>`;\n\n  return new Promise((resolve) => {\n    let settled = false;\n    const finish = (result) => {\n      if (settled) return;\n      settled = true;\n      resolve(result);\n    };\n\n    openModal(html, {\n      onMount(wrap) {\n        bindForm(wrap, values);\n\n        wrap.querySelector(\"[data-save]\").addEventListener(\"click\", async () => {\n          const saved = await submitInvoice(wrap, { mode, invoice, job });\n          if (saved) {\n            finish(saved);\n            closeModal();\n          }\n        });\n        wrap.querySelectorAll(\"[data-modal-cancel]\").forEach((b) =>\n          b.addEventListener(\"click\", () => {\n            closeModal();\n            finish(null);\n          })\n        );\n      },\n      onClose() {\n        finish(null);\n      },\n    });\n  });\n}\n\nfunction bindForm(wrap, initial) {\n  const q = (id) => wrap.querySelector(id);\n",
+    "total_lines": 3544
+  },
+  "summary": "views.js: lines 2308–2367 of 3544 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 3544,
+    "next_offset": 2367
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

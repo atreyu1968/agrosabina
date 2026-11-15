@@ -1,0 +1,54 @@
+{
+  "id": "ev_c3b501c402b84a0a7ec62eef62a5a3f5dac8af5d163b1592c57237188984a1cb",
+  "subject": {
+    "kind": "script",
+    "sha256": "a184588da01bbaaff7f7e9b3028b69a729173e09996373b78baeb039c091ccf7",
+    "name": "dom.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 18,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 9091,
+    "lines": 40,
+    "more": true,
+    "offset": 18,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js",
+    "replaced_sequences": 0,
+    "text": "  image: '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"4.5\" width=\"17\" height=\"15\" rx=\"2\"/><circle cx=\"9\" cy=\"10\" r=\"1.6\"/><path d=\"m5 18 5.5-5.5L15 17l2-2 2.5 2.5\"/></svg>',\n  wallet: '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 7.5h13.5A2.5 2.5 0 0 1 20 10v7.5H6.5A2.5 2.5 0 0 1 4 15z\"/><path d=\"M4 7.5 6 4h11v3.5\"/><path d=\"M16 13h1.5\"/></svg>',\n  gear: '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M12 4v2M12 18v2M4.5 12h2M17.5 12h2M6.7 6.7l1.5 1.5M15.8 15.8l1.5 1.5M17.3 6.7l-1.5 1.5M8.2 15.8l-1.5 1.5\"/></svg>',\n  arrow: '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h13\"/><path d=\"m13 7 5 5-5 5\"/></svg>',\n  sparkle: '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3.5 13.7 9l5.5 1.7-5.5 1.7L12 18l-1.7-5.6L4.8 10.7 10.3 9z\"/></svg>',\n  store: '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9.5V20h16V9.5\"/><path d=\"M3 9.5 5.5 4h13L21 9.5z\"/><path d=\"M9.5 20v-5.5h5V20\"/></svg>',\n  mail: '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"5.5\" width=\"18\" height=\"13\" rx=\"2\"/><path d=\"m3.8 6.6 8.2 6 8.2-6\"/></svg>',\n  leaf: '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 4c-9 0-14 4-14 10a6 6 0 0 0 6 6c6 0 8-6 8-16z\"/><path d=\"M6 20c1.5-4 4-7 8-9\"/></svg>',\n  arrowDown: '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 5v13\"/><path d=\"m6.5 12.5 5.5 5.5 5.5-5.5\"/></svg>',\n  arrowUp: '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 19V6\"/><path d=\"m6.5 11.5 5.5-5.5 5.5 5.5\"/></svg>',\n};\n\nexport function icon(name, cls = \"\") {\n  const svg = ICON[name] || \"\";\n  return cls ? svg.replace(\"<svg \", `<svg class=\"${cls}\" `) : svg;\n}\n\n/* ------------------------------------------------------------------ */\n/* Avisos                                                             */\n/* ------------------------------------------------------------------ */\n\nexport function toast(message, kind = \"ok\", ms = 3600) {\n  const host = document.getElementById(\"toasts\");\n  if (!host) return;\n  const el = document.createElement(\"div\");\n  el.className = `toast ${kind}`;\n  el.innerHTML = `${icon(kind === \"bad\" ? \"alert\" : \"check\")}<span>${esc(message)}</span>`;\n  host.appendChild(el);\n  const kill = () => {\n    el.classList.add(\"out\");\n    setTimeout(() => el.remove(), 260);\n  };\n  setTimeout(kill, ms);\n  el.addEventListener(\"click\", kill);\n}\n\n/* ------------------------------------------------------------------ */\n/* Ventanas                                                           */\n/* ------------------------------------------------------------------ */\n\n",
+    "total_lines": 153
+  },
+  "summary": "dom.js: lines 19–58 of 153 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 153,
+    "next_offset": 58
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js"
+    }
+  ],
+  "links": []
+}

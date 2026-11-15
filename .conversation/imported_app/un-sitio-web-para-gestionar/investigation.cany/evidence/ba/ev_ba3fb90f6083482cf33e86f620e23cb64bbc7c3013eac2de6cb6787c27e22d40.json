@@ -1,0 +1,54 @@
+{
+  "id": "ev_ba3fb90f6083482cf33e86f620e23cb64bbc7c3013eac2de6cb6787c27e22d40",
+  "subject": {
+    "kind": "script",
+    "sha256": "8980cda49b841137374371abad4d37f6426ebbebeefb0ffbec73d4403fe8545c",
+    "name": "sqlite.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 90,
+    "offset": 432,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 19189,
+    "lines": 90,
+    "more": true,
+    "offset": 432,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js",
+    "replaced_sequences": 0,
+    "text": "          s.email || \"\",\n          s.phone || \"\",\n          s.note || \"\",\n          s.createdAt || new Date().toISOString(),\n        ]\n      );\n    }\n\n    for (const inv of invoices) {\n      exec(\n        `INSERT INTO facturas (id, proveedor_id, numero, fecha, vencimiento, base, tipo_igic,\n                               cuota_igic, total, estado, fecha_pago, tipo, categoria, sentido,\n                               lineas, liquidacion, origen, fichero, original, texto, notas, confianza,\n                               creado_en, actualizado_en)\n         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,\n        [\n          inv.id,\n          inv.supplierId || null,\n          inv.number || \"\",\n          inv.issueDate || \"\",\n          inv.dueDate || \"\",\n          num(inv.base),\n          num(inv.rate),\n          num(inv.igic),\n          num(inv.total),\n          inv.status === \"PAGADO\" ? \"PAGADO\" : \"PENDIENTE\",\n          inv.paidDate || \"\",\n          inv.kind || \"FACTURA\",\n          inv.category || \"\",\n          inv.direction === \"INGRESO\" ? \"INGRESO\" : \"GASTO\",\n          JSON.stringify(Array.isArray(inv.lines) ? inv.lines : []),\n          JSON.stringify(inv.liquidacion || null),\n          inv.source || \"manual\",\n          inv.fileName || \"\",\n          JSON.stringify(inv.original || null),\n          String(inv.rawText || \"\").slice(0, 8000),\n          JSON.stringify(inv.notes || []),\n          num(inv.confidence),\n          inv.createdAt || new Date().toISOString(),\n          inv.updatedAt || inv.createdAt || new Date().toISOString(),\n        ]\n      );\n    }\n\n    for (const m of messages) {\n      exec(\n        `INSERT INTO correos (id, de, asunto, fecha, texto, adjuntos, importado_en, usado_en)\n         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,\n        [\n          m.id,\n          m.from || \"\",\n          m.subject || \"(sin asunto)\",\n          m.date || \"\",\n          String(m.text || \"\").slice(0, 20000),\n          JSON.stringify(m.attachments || []),\n          m.importedAt || new Date().toISOString(),\n          m.usedAt || \"\",\n        ]\n      );\n    }\n\n    exec(\"COMMIT\");\n    return true;\n  } catch (err) {\n    console.error(\"No se pudo escribir en SQLite:\", err);\n    try {\n      exec(\"ROLLBACK\");\n    } catch (_) {\n      /* nada */\n    }\n    return false;\n  }\n}\n\nfunction num(v) {\n  if (v === \"\" || v == null) return null;\n  const n = Number(v);\n  return Number.isFinite(n) ? n : null;\n}\n\n/** Guarda los bytes de la base de datos en IndexedDB. */\nexport async function persist() {\n  if (!isAvailable()) return false;\n  try {\n    const bytes = db.export();\n    await idbWrite(bytes);\n    lastPersist = Date.now();\n    return true;\n  } catch (err) {\n    console.warn(\"No se pudo guardar la base de datos:\", err);\n",
+    "total_lines": 580
+  },
+  "summary": "sqlite.js: lines 433–522 of 580 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 90,
+    "total": 580,
+    "next_offset": 522
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+    }
+  ],
+  "links": []
+}

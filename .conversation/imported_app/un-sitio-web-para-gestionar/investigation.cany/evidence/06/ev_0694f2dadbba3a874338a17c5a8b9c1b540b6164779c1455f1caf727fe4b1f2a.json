@@ -1,0 +1,76 @@
+{
+  "id": "ev_0694f2dadbba3a874338a17c5a8b9c1b540b6164779c1455f1caf727fe4b1f2a",
+  "subject": {
+    "kind": "script",
+    "sha256": "bd255235771291bb92e5706f286f29a547f32810273433661ff185dfeb20bf5f",
+    "name": "index.html"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\index.html",
+    "pattern": null,
+    "text": "data-route=\"nominas\""
+  },
+  "result": {
+    "file_size": 6798,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "646174612d726f7574653d226e6f6d696e617322",
+        "file_offset": 2797,
+        "file_offset_hex": "0xaed",
+        "length": 20,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\index.html",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 20
+      },
+      {
+        "kind": "utf16le",
+        "length": 40
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 + utf16le in index.html; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0xaed"
+    }
+  ],
+  "links": []
+}

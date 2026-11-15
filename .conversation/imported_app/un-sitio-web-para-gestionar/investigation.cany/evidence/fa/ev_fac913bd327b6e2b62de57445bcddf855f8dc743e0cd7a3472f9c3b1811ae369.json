@@ -1,0 +1,54 @@
+{
+  "id": "ev_fac913bd327b6e2b62de57445bcddf855f8dc743e0cd7a3472f9c3b1811ae369",
+  "subject": {
+    "kind": "script",
+    "sha256": "6ec57842818ead8f65029f95b4b820488a6dbfbb6233142f78099083827d16c7",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 618,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177631,
+    "lines": 40,
+    "more": true,
+    "offset": 618,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "          </div>\n          <div class=\"step\">\n            <div class=\"n\">3</div>\n            <h4>Marca pagado o pendiente</h4>\n            <p>Con un clic cambias el estado. El resumen te dice cuánto debes y cuánto IGIC llevas.</p>\n          </div>\n        </div>\n      </div>\n    </section>\n  </div>`;\n}\n\n/* ------------------------------------------------------------------ */\n/* Ventas e ingresos                                                  */\n/* ------------------------------------------------------------------ */\n\nconst SALES_RANGES = [\n  { id: \"year\", label: \"Este año\" },\n  { id: \"quarter\", label: \"Este trimestre\" },\n  { id: \"month\", label: \"Este mes\" },\n  { id: \"campaign\", label: \"Últimos 12 meses\" },\n  { id: \"all\", label: \"Todo lo registrado\" },\n  { id: \"custom\", label: \"Elegir fechas\" },\n];\n\n/** El periodo que se está mirando: fechas desde/hasta y su nombre. */\nfunction salesWindow() {\n  return windowFor(ui.sales);\n}\n\n/** Lo mismo, para cualquier pantalla que elija un periodo. */\nfunction windowFor(state) {\n  const now = new Date();\n  const y = now.getFullYear();\n  const two = (n) => String(n).padStart(2, \"0\");\n  const today = todayISO();\n  const monthFrom = `${y}-${two(now.getMonth() + 1)}-01`;\n  const quarterFrom = `${y}-${two(Math.floor(now.getMonth() / 3) * 3 + 1)}-01`;\n  const yearAgo = `${y - 1}-${two(now.getMonth() + 1)}-${two(now.getDate())}`;\n  const range = state.range;\n",
+    "total_lines": 4628
+  },
+  "summary": "views.js: lines 619–658 of 4628 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 4628,
+    "next_offset": 658
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,53 @@
+{
+  "id": "ev_393c8b9f7b4cb035b63118e9f10e1363aa6621b12af97a82b73f669ecfed8c72",
+  "subject": {
+    "kind": "pe",
+    "sha256": "5937c281c36ddce51370684c3c01383508fc1e014597ace35bc6014a9d529656",
+    "name": "craft-anything.exe"
+  },
+  "operation": "core_evidence_browse",
+  "params": {
+    "show": {
+      "kind": "part",
+      "name": "ascii"
+    },
+    "source": {
+      "evidence_id": "ev_e1b5dfdbffb9f15270553cb094d5c28e0581966d1af903cf91970b70d300591f",
+      "kind": "saved"
+    }
+  },
+  "result": {
+    "coverage": {
+      "at_end": true,
+      "examined": 1,
+      "next_offset": null,
+      "status": "all-in-view",
+      "total": 1
+    },
+    "from_evidence": "ev_e1b5dfdbffb9f15270553cb094d5c28e0581966d1af903cf91970b70d300591f",
+    "from_tool": "native_bytes_show",
+    "shown": {
+      "part": "ascii",
+      "value": " $tree[$Root] = $p.CreationDate } }; if ($tree.Count -eq 0) { exit 0 }; do { $more = $false; foreach ($p in $all) { $id = [int]$p.ProcessId; $parent = [int]$p.ParentProcessId; if (-not $tree.ContainsKey($id) -and $tree.ContainsKey($parent) -and $p.CreationDate -ge $tree[$parent]) { $tree[$id] = $p.CreationDate; $more = $true } } } while ($more); Stop-Process -Id @($tree.Keys) -Force -ErrorAction SilentlyContinue; $left = @($tree.Keys | Where-Object { Get-Process -Id $_ -ErrorAction SilentlyContinue }); if ($left.Count -gt 0) { Write-Output ('still running: ' + ($left -join ', ')); exit 1 }....h..B.............$Root = ..; ...couldn't end everything .. started: ....-..B....................craft_anything_platform::capture.couldn't end what .. started: .........-..B.....................'..'.tokensecretpasswordpasswdapi-keyapi_keyapikeycredential.. is at .. but could not be started: ....wThe file is there, so something it needs to run is missing. Programs installed with npm need Node.js on the PATH: run `.$` in a terminal to see what it says..found_but_not_started.' isn't installed or isn't on your PATH.... should be at .., but there's no file there..0It may have moved, for example after an update. ...) could not be started: permission denied..Check that the file is executable and that you're allowed to run it... could not be started: .... stopped with exit code ..: .... stopped with exit code .....What .. printed last:..... printed nothing....The output was cut; its last part is "
+    }
+  },
+  "summary": "Part of native_bytes_show evidence (all-in-view).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [],
+  "links": [
+    "ev_e1b5dfdbffb9f15270553cb094d5c28e0581966d1af903cf91970b70d300591f"
+  ]
+}

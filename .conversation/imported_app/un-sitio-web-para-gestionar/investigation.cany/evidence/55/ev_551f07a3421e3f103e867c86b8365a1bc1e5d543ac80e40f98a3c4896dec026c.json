@@ -1,0 +1,54 @@
+{
+  "id": "ev_551f07a3421e3f103e867c86b8365a1bc1e5d543ac80e40f98a3c4896dec026c",
+  "subject": {
+    "kind": "script",
+    "sha256": "83704397ea89e45fa1af80334964cb8e67554af7773347bdc2b1474dc48b4b50",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 3670,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 245244,
+    "lines": 70,
+    "more": true,
+    "offset": 3670,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    if (document.activeElement !== total) total.value = fmtNum(round2(net + cuota));\n  }\n\n  if (liqBox) {\n    liqBox.addEventListener(\"input\", recalcFromLiq);\n    liqBox.addEventListener(\"change\", recalcFromLiq);\n    liqBox.addEventListener(\"click\", (ev) => {\n      const drop = ev.target.closest(\"[data-drop-dto]\");\n      if (!drop) return;\n      ev.preventDefault();\n      const row = drop.closest(\".dto-line\");\n      if (row) row.remove();\n      recalcFromLiq();\n    });\n  }\n\n  if (addDtoBtn && dtosBox) {\n    addDtoBtn.addEventListener(\"click\", (ev) => {\n      ev.preventDefault();\n      dtosBox.insertAdjacentHTML(\"beforeend\", dtoRowHtml(\"\", null));\n      const rows = dtosBox.querySelectorAll(\".dto-line\");\n      const last = rows[rows.length - 1];\n      if (last) last.querySelector(\".dto-label\").focus();\n      paintLiq();\n    });\n  }\n\n  function syncLiqVisibility() {\n    if (!liqBox) return;\n    liqBox.hidden = kindSel.value !== \"LIQUIDACION\";\n  }\n\n  if (kindSel) {\n    kindSel.addEventListener(\"change\", syncLiqVisibility);\n    syncLiqVisibility();\n  }\n\n  paintLines();\n  paintLiq();\n  bindNomina(wrap, { kindSel, base, igic, rate, total });\n\n  if (initial && initial.rate != null) rate.value = String(initial.rate);\n\n  // Al importar una liquidación, la base, el IGIC y el total salen del líquido\n  // que dice el papel (no del importe que hubiera elegido el lector genérico).\n  if (initial && initial.liquidacionRead && liqBox && !liqBox.hidden) recalcFromLiq();\n}\n\nfunction readIgicLines(wrap) {\n  const box = wrap.querySelector(\"#iv-lines\");\n  if (!box) return [];\n  return [...box.querySelectorAll(\".igic-line\")]\n    .map((row) => {\n      const baseInput = row.querySelector(\".line-base\");\n      const rateSelect = row.querySelector(\".line-rate\");\n      const base = parseAmount(baseInput ? baseInput.value : \"\");\n      const rate = Number(rateSelect ? rateSelect.value : NaN);\n      if (base == null || !Number.isFinite(rate)) return null;\n      return { base, rate };\n    })\n    .filter(Boolean);\n}\n\n/** Lo que hay escrito en el bloque de liquidación de fruta, o null si está vacío. */\nfunction readLiquidacion(wrap) {\n  const box = wrap.querySelector(\"#f-liq\");\n  if (!box) return null;\n  const val = (sel) => {\n    const el = wrap.querySelector(sel);\n    return el && typeof el.value === \"string\" ? el.value : \"\";\n",
+    "total_lines": 6154
+  },
+  "summary": "views.js: lines 3671–3740 of 6154 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 6154,
+    "next_offset": 3740
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

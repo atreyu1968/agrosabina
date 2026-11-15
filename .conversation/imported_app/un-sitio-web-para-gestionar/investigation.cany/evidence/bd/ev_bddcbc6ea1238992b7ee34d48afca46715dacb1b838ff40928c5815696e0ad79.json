@@ -1,0 +1,54 @@
+{
+  "id": "ev_bddcbc6ea1238992b7ee34d48afca46715dacb1b838ff40928c5815696e0ad79",
+  "subject": {
+    "kind": "script",
+    "sha256": "85a31d15e67d5803d1091aa6760b00d30b5030e2ed2bab1c23e1db2d49488411",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 782,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 28036,
+    "lines": 30,
+    "more": true,
+    "offset": 782,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "  });\n}\n\n/* ------------------------------------------------------------------ */\n/* Ajustes, ejemplo y copia de seguridad                              */\n/* ------------------------------------------------------------------ */\n\nexport function updateSettings(patch) {\n  state.settings = Object.assign(state.settings, patch);\n  save();\n  return state.settings;\n}\n\nexport function clearAll() {\n  state = emptyState();\n  save();\n}\n\nexport function exportJSON() {\n  return JSON.stringify({ ...state, exportedAt: new Date().toISOString() }, null, 2);\n}\n\nexport function importJSON(text) {\n  const parsed = JSON.parse(text);\n  if (!parsed || (!Array.isArray(parsed.suppliers) && !Array.isArray(parsed.invoices))) {\n    throw new Error(\"El fichero no parece una copia de seguridad de este programa.\");\n  }\n  state = normalise(parsed);\n  save();\n  return state;\n",
+    "total_lines": 881
+  },
+  "summary": "store.js: lines 783–812 of 881 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 881,
+    "next_offset": 812
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

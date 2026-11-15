@@ -1,0 +1,87 @@
+{
+  "id": "ev_fdb1a35b78da88052c8a09617c7891a86b8d1854e33c17d5bfda3b8a5457116e",
+  "subject": {
+    "kind": "text",
+    "sha256": "1c11888f5ec682be7664f14ad58330bc74656eec5143a1d8c0380507ff7b36d4",
+    "name": "styles.css"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "pattern": null,
+    "text": ".row-actions"
+  },
+  "result": {
+    "file_size": 42052,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "2e726f772d616374696f6e73",
+        "file_offset": 10161,
+        "file_offset_hex": "0x27b1",
+        "length": 12,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e726f772d616374696f6e73",
+        "file_offset": 32533,
+        "file_offset_hex": "0x7f15",
+        "length": 12,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 12
+      },
+      {
+        "kind": "utf16le",
+        "length": 24
+      }
+    ],
+    "total_matches": 2
+  },
+  "summary": "2 match(es) for utf8 + utf16le in styles.css; showing 2 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x27b1"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x7f15"
+    }
+  ],
+  "links": []
+}

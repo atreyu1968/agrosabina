@@ -1,0 +1,110 @@
+{
+  "id": "ev_ab0930195d990f8f85144671e325022b84ca5be318d99753327994d2822bc584",
+  "subject": {
+    "kind": "js-app",
+    "sha256": "9cdbd435e5b2be884419ceb21691520925e2805ec3c3b6689f9ece31259dd486",
+    "name": "app"
+  },
+  "operation": "core_evidence_browse",
+  "params": {
+    "show": {
+      "fields": [
+        "path",
+        "parse_mode",
+        "exports"
+      ],
+      "kind": "rows",
+      "limit": 2,
+      "list": "modules",
+      "matching": {
+        "path": "assets/js/store.js"
+      }
+    },
+    "source": {
+      "evidence_id": "ev_d89e4587d705420bba6cf51b8b0c834360671db6f7a7fff9ed309d69337f84cb",
+      "kind": "saved"
+    }
+  },
+  "result": {
+    "coverage": {
+      "at_end": true,
+      "examined": 1,
+      "next_offset": null,
+      "status": "page",
+      "total": 1
+    },
+    "from_evidence": "ev_d89e4587d705420bba6cf51b8b0c834360671db6f7a7fff9ed309d69337f84cb",
+    "from_tool": "js_app_map",
+    "shown": {
+      "items": [
+        {
+          "exports": {
+            "cjs": [],
+            "esm": [
+              "initStore",
+              "save",
+              "flush",
+              "saveWorked",
+              "storageInfo",
+              "exportSqliteBytes",
+              "sqliteIgicSummary",
+              "subscribe",
+              "getState",
+              "findSupplierByNameOrNif",
+              "ensureSupplier",
+              "updateSupplier",
+              "deleteSupplier",
+              "supplierById",
+              "findDuplicate",
+              "addInvoice",
+              "updateInvoice",
+              "deleteInvoice",
+              "setInvoiceStatus",
+              "toggleInvoiceStatus",
+              "invoiceById",
+              "totals",
+              "statsBySupplier",
+              "messages",
+              "messageById",
+              "addMessage",
+              "markMessageUsed",
+              "deleteMessage",
+              "invoicesOf",
+              "sortedInvoices",
+              "updateSettings",
+              "clearAll",
+              "exportJSON",
+              "importJSON",
+              "seedDemo"
+            ]
+          },
+          "parse_mode": "parsed",
+          "path": "assets/js/store.js"
+        }
+      ],
+      "list": "modules",
+      "list_total": 40,
+      "offset": 0,
+      "total": 1
+    }
+  },
+  "summary": "Part of js_app_map evidence (page).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [],
+  "links": [
+    "ev_d89e4587d705420bba6cf51b8b0c834360671db6f7a7fff9ed309d69337f84cb"
+  ]
+}

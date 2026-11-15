@@ -1,0 +1,54 @@
+{
+  "id": "ev_d2a3e9a8c5025be37be86892ace6acc1254307352e42a55f1d353ea3555b169e",
+  "subject": {
+    "kind": "script",
+    "sha256": "88be6e3dff8fc26bcc76f04b90e1db18661f2b7004a8d5f704b043113873abf7",
+    "name": "parse.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 95,
+    "offset": 790,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 40608,
+    "lines": 95,
+    "more": true,
+    "offset": 790,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js",
+    "replaced_sequences": 0,
+    "text": "  }\n  return \"\";\n}\n\n/**\n * Los kilos de cada categoría cuando la tabla no trae el importe de cada fila.\n * Muchas liquidaciones solo ponen los kilos por categoría y el precio arriba,\n * así que aquí se aceptan filas con kilos (y precio) aunque no traigan importe.\n * Se miran los números de la propia línea de la categoría y, si van debajo, los\n * de las dos líneas siguientes.\n */\nfunction liquidacionPorCategoria(text) {\n  const filas = [];\n  const lineas = String(text || \"\").split(/\\r?\\n/);\n  const reNum = new RegExp(LIQ_NUM, \"g\");\n  for (let i = 0; i < lineas.length; i += 1) {\n    const cat = categoriaDeTexto(lineas[i]);\n    if (!cat) continue;\n    let nums = liqSinPct(lineas[i]).match(reNum) || [];\n    if (!nums.length && i + 1 < lineas.length) {\n      nums = liqSinPct(lineas[i + 1]).match(reNum) || [];\n    }\n    if (!nums.length) continue;\n    const kg = parseKg(nums[0]);\n    if (!(kg > 0)) continue;\n    let price = null;\n    let gross = null;\n    if (nums.length >= 2) {\n      const p = parsePrice(nums[1]);\n      if (p != null && p > 0 && p <= 50) price = p;\n    }\n    if (price != null && nums.length >= 3) {\n      const g = parseAmount(nums[2]);\n      if (g > 0 && cuadra(kg * price, g)) gross = g;\n    }\n    if (price == null && nums.length >= 2) {\n      const g = parseAmount(nums[1]);\n      if (g > 0 && g > kg) gross = g;\n    }\n    filas.push({ categoria: cat, kg, price, gross });\n  }\n  return filas;\n}\n\nfunction liquidacionFromTable(text) {\n  const toks = liqTokens(text);\n  const filas = [];\n  const usados = new Set();\n  const noEsFila =\n    /(descuento|deducci|comisi|gasto|retenci|anticipo|manipul|envase|transport|flete|merma|c[aá]non|seguro|cuota|igic|iva|l[íi]quido|total)/i;\n  for (let i = 0; i < toks.length - 1; i += 1) {\n    if (usados.has(i)) continue;\n    const a = toks[i];\n    const b = toks[i + 1];\n    if (a.esPct || b.esPct) continue;\n    if (noEsFila.test(fold(a.chunk))) continue;\n    const kg = parseKg(a.raw);\n    const price = parsePrice(b.raw);\n    if (!(kg > 0) || !(price > 0) || price > 50) continue;\n    const c = toks[i + 2];\n    const d = toks[i + 3];\n    let gross = null;\n    let salto = 3;\n    if (c && !c.esPct) {\n      const g = parseAmount(c.raw);\n      if (g > 0 && cuadra(kg * price, g)) {\n        gross = g;\n        salto = 3;\n      }\n    }\n    if (gross == null && c && c.esPct && d && !d.esPct) {\n      const pct = parsePrice(c.raw);\n      const g = parseAmount(d.raw);\n      if (g > 0 && pct != null && pct >= 0 && pct < 100 && cuadra(kg * price * (1 - pct / 100), g)) {\n        gross = g;\n        salto = 4;\n      }\n    }\n    if (gross == null) continue;\n    filas.push({ kg, price, gross, label: a.chunk });\n    for (let k = i; k < i + salto; k += 1) usados.add(k);\n    i += salto - 1;\n  }\n  return filas;\n}\n\n/**\n * Los descuentos, uno por línea, con su nombre y su importe en euros.\n * Una línea como «Manipulación 3 % 319,36» es un descuento de 319,36 €: el\n * porcentaje solo dice cómo se ha calculado y antes se tiraba la línea entera\n * por llevarlo, así que faltaban descuentos. Un renglón que solo dice\n * «Comisión 3 %», sin importe, no es un descuento.\n */\nfunction liquidacionDiscounts(text) {\n  const rows = [];\n",
+    "total_lines": 1076
+  },
+  "summary": "parse.js: lines 791–885 of 1076 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 95,
+    "total": 1076,
+    "next_offset": 885
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+    }
+  ],
+  "links": []
+}

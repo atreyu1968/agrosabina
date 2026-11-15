@@ -1,0 +1,54 @@
+{
+  "id": "ev_aded0082c0e9d281045c2df607a80fdf2d33d8fa09e4f9d6c2903840578e19c7",
+  "subject": {
+    "kind": "script",
+    "sha256": "8827e4f1203ec19b1e5eaa76aafd4ca1e81e0c182b727e78910c7f90c1a97a42",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 65,
+    "offset": 490,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24643,
+    "lines": 65,
+    "more": true,
+    "offset": 490,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "  { key: \"AN_IV\", kind: \"line\", label: \"IV. Inversiones en empresas del grupo y asociadas a largo plazo\" },\n  { key: \"AN_V\", kind: \"line\", label: \"V. Inversiones financieras a largo plazo\" },\n  { key: \"AN_VI\", kind: \"line\", label: \"VI. Activos por impuesto diferido\" },\n  { key: \"AN_T\", kind: \"total\", label: \"TOTAL ACTIVO NO CORRIENTE (A)\" },\n\n  { key: \"AC\", kind: \"head\", label: \"B) ACTIVO CORRIENTE\" },\n  { key: \"AC_I\", kind: \"line\", label: \"I. Activos no corrientes mantenidos para la venta\" },\n  { key: \"AC_II\", kind: \"line\", label: \"II. Existencias\" },\n  { key: \"AC_III\", kind: \"line\", label: \"III. Deudores comerciales y otras cuentas a cobrar\" },\n  { key: \"AC_IV\", kind: \"line\", label: \"IV. Inversiones en empresas del grupo y asociadas a corto plazo\" },\n  { key: \"AC_V\", kind: \"line\", label: \"V. Inversiones financieras a corto plazo\" },\n  { key: \"AC_VI\", kind: \"line\", label: \"VI. Periodificaciones a corto plazo\" },\n  { key: \"AC_VII\", kind: \"line\", label: \"VII. Efectivo y otros activos líquidos equivalentes\" },\n  { key: \"AC_T\", kind: \"total\", label: \"TOTAL ACTIVO CORRIENTE (B)\" },\n  { key: \"ACTIVO\", kind: \"grand\", label: \"TOTAL ACTIVO (A + B)\" },\n\n  { key: \"PN\", kind: \"head\", label: \"A) PATRIMONIO NETO\" },\n  { key: \"PN_A1\", kind: \"sub\", label: \"A-1) Fondos propios\" },\n  { key: \"PN_I\", kind: \"line\", label: \"I. Capital\" },\n  { key: \"PN_II\", kind: \"line\", label: \"II. Prima de emisión\" },\n  { key: \"PN_III\", kind: \"line\", label: \"III. Reservas\" },\n  { key: \"PN_IV\", kind: \"line\", label: \"IV. (Acciones y participaciones en patrimonio propias)\" },\n  { key: \"PN_V\", kind: \"line\", label: \"V. Resultados de ejercicios anteriores\" },\n  { key: \"PN_VI\", kind: \"line\", label: \"VI. Otras aportaciones de socios\" },\n  { key: \"PN_VII\", kind: \"line\", label: \"VII. Resultado del ejercicio\" },\n  { key: \"PN_VIII\", kind: \"line\", label: \"VIII. (Dividendo a cuenta)\" },\n  { key: \"PN_IX\", kind: \"line\", label: \"IX. Otros instrumentos de patrimonio neto\" },\n  { key: \"PN_A1_T\", kind: \"total\", label: \"TOTAL FONDOS PROPIOS (A-1)\" },\n  { key: \"PN_A2\", kind: \"sub\", label: \"A-2) Ajustes por cambios de valor\" },\n  { key: \"PN_A2_I\", kind: \"line\", label: \"I. Activos financieros disponibles para la venta\" },\n  { key: \"PN_A2_II\", kind: \"line\", label: \"II. Operaciones de cobertura\" },\n  { key: \"PN_A2_III\", kind: \"line\", label: \"III. Otros\" },\n  { key: \"PN_A2_T\", kind: \"total\", label: \"TOTAL AJUSTES POR CAMBIOS DE VALOR (A-2)\" },\n  { key: \"PN_A3\", kind: \"line\", label: \"A-3) Subvenciones, donaciones y legados recibidos\" },\n  { key: \"PN_T\", kind: \"total\", label: \"TOTAL PATRIMONIO NETO (A)\" },\n\n  { key: \"PNC\", kind: \"head\", label: \"B) PASIVO NO CORRIENTE\" },\n  { key: \"PNC_I\", kind: \"line\", label: \"I. Provisiones a largo plazo\" },\n  { key: \"PNC_II\", kind: \"line\", label: \"II. Deudas a largo plazo\" },\n  { key: \"PNC_III\", kind: \"line\", label: \"III. Deudas con empresas del grupo y asociadas a largo plazo\" },\n  { key: \"PNC_IV\", kind: \"line\", label: \"IV. Pasivos por impuesto diferido\" },\n  { key: \"PNC_V\", kind: \"line\", label: \"V. Periodificaciones a largo plazo\" },\n  { key: \"PNC_T\", kind: \"total\", label: \"TOTAL PASIVO NO CORRIENTE (B)\" },\n\n  { key: \"PC\", kind: \"head\", label: \"C) PASIVO CORRIENTE\" },\n  { key: \"PC_I\", kind: \"line\", label: \"I. Pasivos vinculados con activos no corrientes mantenidos para la venta\" },\n  { key: \"PC_II\", kind: \"line\", label: \"II. Provisiones a corto plazo\" },\n  { key: \"PC_III\", kind: \"line\", label: \"III. Deudas a corto plazo\" },\n  { key: \"PC_IV\", kind: \"line\", label: \"IV. Deudas con empresas del grupo y asociadas a corto plazo\" },\n  { key: \"PC_V\", kind: \"line\", label: \"V. Acreedores comerciales y otras cuentas a pagar\" },\n  { key: \"PC_VI\", kind: \"line\", label: \"VI. Periodificaciones a corto plazo\" },\n  { key: \"PC_T\", kind: \"total\", label: \"TOTAL PASIVO CORRIENTE (C)\" },\n  { key: \"PNYP\", kind: \"grand\", label: \"TOTAL PATRIMONIO NETO Y PASIVO (A + B + C)\" },\n]);\n\nconst SUMA_AN = [\"AN_I\", \"AN_II\", \"AN_III\", \"AN_IV\", \"AN_V\", \"AN_VI\"];\nconst SUMA_AC = [\"AC_I\", \"AC_II\", \"AC_III\", \"AC_IV\", \"AC_V\", \"AC_VI\", \"AC_VII\"];\nconst SUMA_FONDOS = [\"PN_I\", \"PN_II\", \"PN_III\", \"PN_IV\", \"PN_V\", \"PN_VI\", \"PN_VII\", \"PN_VIII\", \"PN_IX\"];\nconst SUMA_AJUSTES = [\"PN_A2_I\", \"PN_A2_II\", \"PN_A2_III\"];\nconst SUMA_PNC = [\"PNC_I\", \"PNC_II\", \"PNC_III\", \"PNC_IV\", \"PNC_V\"];\nconst SUMA_PC = [\"PC_I\", \"PC_II\", \"PC_III\", \"PC_IV\", \"PC_V\", \"PC_VI\"];\n\n/**\n * El balance de situación: cada cuenta al epígrafe que le toca y las sumas\n * del modelo. El activo va por su saldo deudor y el patrimonio y el pasivo\n",
+    "total_lines": 614
+  },
+  "summary": "accounting.js: lines 491–555 of 614 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 65,
+    "total": 614,
+    "next_offset": 555
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

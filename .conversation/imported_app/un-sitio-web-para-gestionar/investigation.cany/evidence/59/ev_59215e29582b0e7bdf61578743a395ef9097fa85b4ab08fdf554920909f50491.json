@@ -1,0 +1,54 @@
+{
+  "id": "ev_59215e29582b0e7bdf61578743a395ef9097fa85b4ab08fdf554920909f50491",
+  "subject": {
+    "kind": "script",
+    "sha256": "2996faf029efc1017f4dc10adb816e60d3d5235df8604836778307e81294a870",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 150,
+    "offset": 3960,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 155962,
+    "lines": 150,
+    "more": true,
+    "offset": 3960,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    </div>\n    ${aviso}\n  </section>`;\n}\n\n/** El libro que está elegido en las pestañas. */\nfunction accBody() {\n  try {\n    const entries = asientosContables();\n    const mayor = libroMayor(entries);\n    if (ui.conta.tab === \"mayor\") return accMayorHtml(mayor);\n    if (ui.conta.tab === \"sumas\") return accSumasHtml(balanceSumasYSaldos(mayor));\n    if (ui.conta.tab === \"balance\") {\n      const pyg = cuentaResultados(mayor);\n      return accBalanceHtml(balanceSituacion(mayor, pyg.resultado), pyg.resultado);\n    }\n    if (ui.conta.tab === \"resultados\") return accResultadosHtml(cuentaResultados(mayor));\n    return accDiarioHtml(entries);\n  } catch (err) {\n    // Mejor decir qué pasa que dejar el hueco en blanco.\n    console.error(\"Contabilidad:\", err);\n    const msg = err && err.message ? err.message : String(err);\n    return `\n    <section class=\"card\">\n      <div class=\"card-head\">\n        <div>\n          <h2>No he podido calcular la contabilidad</h2>\n          <p>${esc(msg)}</p>\n        </div>\n      </div>\n    </section>`;\n  }\n}\n\nfunction viewContabilidad() {\n  const w = contaWindow();\n  return `\n  <div class=\"stack\">\n    <section class=\"card\">\n      <div class=\"card-body acc-head\">\n        ${accRangeBar(w)}\n        ${accTabBar()}\n      </div>\n    </section>\n    <div id=\"accBody\">${accBody()}</div>\n  </div>`;\n}\n\n/** Los datos de partida: con qué capital y con cuánto dinero en el banco se empezó. */\nfunction accAperturaModal() {\n  const s = getState().settings || {};\n  openModal(\n    `<div class=\"modal-head\">\n       <div>\n         <h2>Datos de partida</h2>\n         <p>Con esto se hace el asiento de apertura. Sin él, el balance no puede cuadrar.</p>\n       </div>\n       <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n     </div>\n     <div class=\"modal-body\">\n       <div class=\"form-grid\">\n         <label class=\"field\">\n           <span>Capital social (€)</span>\n           <input id=\"accCapital\" type=\"text\" inputmode=\"decimal\" value=\"${s.openingCapital ? esc(String(s.openingCapital)) : \"\"}\" placeholder=\"3.000,00\">\n         </label>\n         <label class=\"field\">\n           <span>Dinero en el banco y en caja (€)</span>\n           <input id=\"accCash\" type=\"text\" inputmode=\"decimal\" value=\"${s.openingCash ? esc(String(s.openingCash)) : \"\"}\" placeholder=\"12.000,00\">\n         </label>\n         <label class=\"field\">\n           <span>Fecha de apertura</span>\n           <input id=\"accDate\" type=\"date\" value=\"${esc(s.openingDate || \"\")}\">\n         </label>\n       </div>\n       <p class=\"muted\">Si el dinero del banco es más que el capital, la diferencia se apunta en reservas; si es menos, en resultados negativos. No me invento ninguna cifra.</p>\n     </div>\n     <div class=\"modal-foot\">\n       <button class=\"btn primary\" data-action=\"acc-save-apertura\">${icon(\"check\")}<span>Guardar</span></button>\n       <button class=\"btn ghost\" data-modal-cancel>Cancelar</button>\n     </div>`,\n    {\n      narrow: true,\n      onMount: (wrap) => {\n        wrap.querySelectorAll(\"[data-modal-cancel]\").forEach((el) => {\n          el.addEventListener(\"click\", () => closeModal());\n        });\n      },\n    }\n  );\n}\n\n/** Guarda los datos de partida y vuelve a pintar. */\nfunction saveApertura() {\n  const cap = document.getElementById(\"accCapital\");\n  const cash = document.getElementById(\"accCash\");\n  const day = document.getElementById(\"accDate\");\n  const capital = accNum(cap ? cap.value : \"\");\n  const tesoreria = accNum(cash ? cash.value : \"\");\n  const fecha = String((day && day.value) || \"\").slice(0, 10) || `${new Date().getFullYear()}-01-01`;\n  updateSettings({ openingCapital: capital, openingCash: tesoreria, openingDate: fecha });\n  closeModal();\n  toast(\n    capital || tesoreria\n      ? `Datos de partida guardados: ${fmtEUR(capital)} de capital y ${fmtEUR(tesoreria)} en bancos.`\n      : \"Datos de partida borrados.\",\n    \"ok\"\n  );\n  render();\n}\n\n/** Descarga en CSV lo que se está viendo. */\nfunction exportAccCsv() {\n  const w = contaWindow();\n  const entries = asientosContables(w);\n  if (!entries.length) {\n    toast(\"No hay asientos en ese periodo.\", \"warn\");\n    return;\n  }\n  const mayor = libroMayor(entries);\n  let headers = [];\n  let rows = [];\n  const tab = ui.conta.tab;\n  if (tab === \"mayor\") {\n    headers = [\"Cuenta\", \"Nombre\", \"Fecha\", \"Asiento\", \"Concepto\", \"Debe\", \"Haber\", \"Saldo\"];\n    for (const r of mayor) {\n      for (const m of r.moves) {\n        rows.push([r.code, r.name, m.date, m.number, m.concept, fmtNum(m.debit), fmtNum(m.credit), fmtNum(m.running)]);\n      }\n    }\n  } else if (tab === \"sumas\") {\n    const sumas = balanceSumasYSaldos(mayor);\n    headers = [\"Cuenta\", \"Nombre\", \"Suma debe\", \"Suma haber\", \"Saldo deudor\", \"Saldo acreedor\"];\n    rows = sumas.rows.map((r) => [r.code, r.name, fmtNum(r.debit), fmtNum(r.credit), fmtNum(r.deudor), fmtNum(r.acreedor)]);\n    rows.push([\"\", \"TOTALES\", fmtNum(sumas.totals.debit), fmtNum(sumas.totals.credit), fmtNum(sumas.totals.deudor), fmtNum(sumas.totals.acreedor)]);\n  } else if (tab === \"balance\") {\n    const pyg = cuentaResultados(mayor);\n    const bal = balanceSituacion(mayor, pyg.resultado);\n    headers = [\"Epígrafe\", \"Importe\"];\n    rows = bal.rows.map((r) => [r.label, fmtNum(r.value)]);\n    rows.push([\"Comprobación (activo − patrimonio y pasivo)\", fmtNum(bal.descuadre)]);\n  } else if (tab === \"resultados\") {\n    const pyg = cuentaResultados(mayor);\n    headers = [\"Concepto\", \"Importe\"];\n    rows = pyg.lines.map((l) => [l.label, fmtNum(l.value)]);\n  } else {\n    headers = [\"Fecha\", \"Asiento\", \"Cuenta\", \"Nombre\", \"Concepto\", \"Debe\", \"Haber\"];\n    for (const e of entries) {\n      for (const l of e.lines) {\n        rows.push([e.date, e.number, l.account, l.name, e.concept, fmtNum(l.debit), fmtNum(l.credit)]);\n      }\n",
+    "total_lines": 4117
+  },
+  "summary": "views.js: lines 3961–4110 of 4117 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 150,
+    "total": 4117,
+    "next_offset": 4110
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_895bea354bcf53a5f2e7ee911b9be363b253b6531791e9b976e6eedf859ef3f8",
+  "subject": {
+    "kind": "script",
+    "sha256": "5424c53cadc6967fd41cb2d41f506ef1289ebd4290305ebd0dd21bd6dfeca4f8",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 92,
+    "offset": 110,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 23887,
+    "lines": 92,
+    "more": true,
+    "offset": 110,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "  if (kind === \"NOMINA\") return \"640\";\n  if (kind === \"COBRO\") return cat === \"SUBVENCIONES\" ? \"740\" : cat === \"FRUTA\" ? \"701\" : \"759\";\n  if (directionOf(kind) === \"INGRESO\") return INGRESO_POR_CONCEPTO[cat] || \"759\";\n  return GASTO_POR_CONCEPTO[cat] || \"629\";\n}\n\n/** Base, cuota y total de un documento, cuadrados entre sí. */\nfunction importes(inv) {\n  let base = round2(Number(inv.base) || 0);\n  const igic = round2(Number(inv.igic) || 0);\n  let total = round2(Number(inv.total) || 0);\n  if (!total) total = round2(base + igic);\n  if (!total) return { base: 0, igic: 0, total: 0 };\n  if (!base) base = round2(total - igic);\n  // Si el total guardado no cuadra con base + cuota, manda el total del papel.\n  if (Math.abs(round2(base + igic) - total) > 0.02) base = round2(total - igic);\n  return { base, igic, total };\n}\n\n/**\n * Convierte una lista de [cuenta, importe] en renglones con debe y haber.\n * Un importe positivo va al debe; uno negativo, al haber. Si bailan céntimos,\n * se los lleva la cuenta de mayor importe para que el asiento cuadre.\n */\nexport function lineas(raw) {\n  const rows = (raw || [])\n    .map((pair) => ({ code: String(pair[0]), value: round2(Number(pair[1]) || 0) }))\n    .filter((r) => Math.abs(r.value) >= 0.005);\n  if (!rows.length) return [];\n  const suma = round2(rows.reduce((n, r) => n + r.value, 0));\n  if (suma !== 0) {\n    let biggest = rows[0];\n    for (const r of rows) if (Math.abs(r.value) > Math.abs(biggest.value)) biggest = r;\n    biggest.value = round2(biggest.value - suma);\n  }\n  return rows\n    .filter((r) => Math.abs(r.value) >= 0.005)\n    .map((r) => ({\n      account: r.code,\n      name: cuenta(r.code).name,\n      debit: r.value > 0 ? r.value : 0,\n      credit: r.value < 0 ? Math.abs(r.value) : 0,\n    }));\n}\n\nfunction totalLineas(lines) {\n  return round2((lines || []).reduce((n, l) => n + l.debit, 0));\n}\n\n/* ------------------------------------------------------------------ */\n/* Asientos                                                           */\n/* ------------------------------------------------------------------ */\n\nconst ORDEN = { apertura: 0, devengo: 1, cobro: 2, pago: 3 };\n\n/**\n * Los asientos del periodo. Uno por documento (cuando se emite) y, si está\n * cobrado o pagado, otro por el movimiento de tesorería. Más el asiento de\n * apertura, si se han dicho el capital y el saldo de bancos.\n *\n * `invoices` son los documentos guardados; se les puede añadir `party` con el\n * nombre del proveedor o del comprador para que salga en el concepto.\n */\nexport function asientosDe(invoices, opts = {}) {\n  const from = String(opts.from || \"\").slice(0, 10);\n  const to = String(opts.to || \"\").slice(0, 10);\n  const dentro = (day) => {\n    const d = String(day || \"\").slice(0, 10);\n    if (!d) return false;\n    if (from && d < from) return false;\n    if (to && d > to) return false;\n    return true;\n  };\n\n  const out = [];\n\n  const ap = opts.apertura;\n  if (ap) {\n    const capital = round2(Number(ap.capital) || 0);\n    const tesoreria = round2(Number(ap.tesoreria) || 0);\n    if (capital || tesoreria) {\n      // La apertura entra siempre, aunque el periodo elegido empiece más\n      // tarde: es la posición de partida y sin ella el balance no cuadra.\n      const dia = String(ap.fecha || \"\").slice(0, 10) || from || `${new Date().getFullYear()}-01-01`;\n      {\n        const resto = round2(tesoreria - capital);\n        const raw = [\n          [\"572\", tesoreria],\n          [\"100\", -capital],\n          resto >= 0 ? [\"113\", -resto] : [\"121\", -resto],\n        ];\n        const lines = lineas(raw);\n",
+    "total_lines": 588
+  },
+  "summary": "accounting.js: lines 111–202 of 588 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 92,
+    "total": 588,
+    "next_offset": 202
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

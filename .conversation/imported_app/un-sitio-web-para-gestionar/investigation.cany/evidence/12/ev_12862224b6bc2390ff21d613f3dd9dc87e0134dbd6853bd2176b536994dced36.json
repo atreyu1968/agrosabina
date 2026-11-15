@@ -1,0 +1,54 @@
+{
+  "id": "ev_12862224b6bc2390ff21d613f3dd9dc87e0134dbd6853bd2176b536994dced36",
+  "subject": {
+    "kind": "script",
+    "sha256": "22c9516ced3b3de1c33a9fb38d26048a837f6179b47a891b5b559de50c49365c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 2820,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 276490,
+    "lines": 60,
+    "more": true,
+    "offset": 2820,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "        });\n        item.source = leido.source || \"\";\n        item.pages = leido.pages || 1;\n        item.texto = String(leido.text || \"\");\n        if (!item.texto.trim()) {\n          item.error = \"No he podido sacar ni una letra de este fichero. Prueba con otra copia del PDF o con una foto más nítida.\";\n        } else {\n          // Se lee con el mismo camino que la importación de verdad\n          // (leerTextoDocumento): primero el lector que más se parece al papel\n          // y, si no hay ninguno claro, las reglas afinan el tipo. Si aquí se\n          // llamara solo a leerDocumento, la prueba diría «factura genérica»\n          // donde la aplicación acierta con la nómina, y no serviría de nada.\n          const { lectura, cls } = await leerTextoDocumento(item.texto, item.name);\n          item.lectura = lectura;\n          item.cls = cls || null;\n        }\n      } catch (err) {\n        item.error = err && err.message ? err.message : \"No he podido leer este fichero.\";\n      }\n      item.pendiente = false;\n      paintPruebas();\n    }\n  } finally {\n    ui.pruebas.busy = false;\n    const ultimo = ui.pruebas.list[0];\n    setPruebaStatus(\n      ultimo\n        ? `Ya está: ${ultimo.name}. Esto no se ha guardado en ningún sitio.`\n        : \"Ningún documento probado todavía.\"\n    );\n    // Se vuelve a pintar la pantalla entera para que aparezcan los botones de\n    // copiar y guardar el informe, que antes no hacían falta.\n    render();\n  }\n}\n\n/**\n * Tres papeles de mentira para probar la pantalla sin tener el papel a mano.\n * Están escritos a mano, con los mismos nombres que traen los de verdad, para\n * poder comprobar de un vistazo si la pantalla enseña cada dato con su nombre.\n */\nconst EJEMPLOS_PRUEBA = {\n  nomina: {\n    nombre: \"Ejemplo de nómina\",\n    texto: [\n      \"RECIBO INDIVIDUAL DE SALARIOS\",\n      \"Trabajador: ANTONIO PÉREZ MARTÍN   NIF: 12345678Z\",\n      \"Período: 01/03/2025 a 31/03/2025   30 días\",\n      \"Salario base ..................... 1.200,00\",\n      \"Plus convenio .................... 300,00\",\n      \"Total devengado .................. 1.500,00\",\n      \"Seguridad Social (6,35 %) ........ 95,25\",\n      \"IRPF (8,00 %) .................... 120,00\",\n      \"Total a cargo del trabajador ..... 95,25\",\n      \"Líquido a percibir ............... 1.284,75\",\n      \"Total a cargo de la empresa ...... 450,00\",\n    ].join(\"\\n\"),\n  },\n  liquidacion: {\n    nombre: \"Ejemplo de liquidación de fruta\",\n",
+    "total_lines": 6947
+  },
+  "summary": "views.js: lines 2821–2880 of 6947 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 6947,
+    "next_offset": 2880
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

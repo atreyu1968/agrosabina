@@ -1,0 +1,54 @@
+{
+  "id": "ev_bdcaaf5fad454a6a83ec42ad22e3b8a6f027b234c129e13842a4bad4a8185c38",
+  "subject": {
+    "kind": "script",
+    "sha256": "46276ef6c2807ddd775e40c2fc8e601f95c58e49ab907e73e3d526a4fc111b40",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 541,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 28326,
+    "lines": 45,
+    "more": true,
+    "offset": 541,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "  save();\n}\n\nexport function setInvoiceStatus(id, status, paidDate) {\n  const patch = { status };\n  if (status === STATUS.PAID) {\n    // La fecha del cobro o del pago la elige la persona; si no dice nada, hoy.\n    const day = String(paidDate || \"\").slice(0, 10);\n    if (day) patch.paidDate = day;\n  } else {\n    // Vuelve a pendiente: no hay fecha que guardar.\n    patch.paidDate = \"\";\n  }\n  return updateInvoice(id, patch);\n}\n\nexport function toggleInvoiceStatus(id, paidDate) {\n  const inv = state.invoices.find((i) => i.id === id);\n  if (!inv) return null;\n  return setInvoiceStatus(id, inv.status === STATUS.PAID ? STATUS.PENDING : STATUS.PAID, paidDate);\n}\n\nexport function invoiceById(id) {\n  return state.invoices.find((i) => i.id === id) || null;\n}\n\n/* ------------------------------------------------------------------ */\n/* Los ficheros originales                                            */\n/* ------------------------------------------------------------------ */\n\n/**\n * Guarda el fichero del que salieron los datos (la foto, el PDF o el correo),\n * tal y como entró, para poder volver a mirarlo más adelante.\n * Los bytes van a IndexedDB (files.js); en el documento queda solo el nombre,\n * el tipo y el tamaño, que es lo que se enseña en su ficha.\n */\nexport async function keepInvoiceOriginal(id, blob) {\n  const inv = invoiceById(id);\n  if (!inv || !blob) return null;\n  // Solo se guardan ficheros de verdad: una nota de \"texto pegado\" no tiene bytes.\n  if (typeof Blob === \"undefined\" || !(blob instanceof Blob)) return null;\n  const size = Number(blob.size) || 0;\n  if (!size) return null;\n  try {\n    const info = await files.keepOriginal(id, blob, {\n",
+    "total_lines": 885
+  },
+  "summary": "store.js: lines 542–586 of 885 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 885,
+    "next_offset": 586
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

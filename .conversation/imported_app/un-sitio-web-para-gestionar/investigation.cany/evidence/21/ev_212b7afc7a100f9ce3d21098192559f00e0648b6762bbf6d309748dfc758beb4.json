@@ -1,0 +1,54 @@
+{
+  "id": "ev_212b7afc7a100f9ce3d21098192559f00e0648b6762bbf6d309748dfc758beb4",
+  "subject": {
+    "kind": "script",
+    "sha256": "aea2f632810a30a206bb5c03f817d42223cbbd6fc0a8616cce3c29f88a6f2449",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 30,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 29170,
+    "lines": 30,
+    "more": true,
+    "offset": 30,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "  { code: \"400\", name: \"Proveedores\", balance: \"PC_V\" },\n  { code: \"430\", name: \"Clientes\", balance: \"AC_III\" },\n  { code: \"472\", name: \"Hacienda Pública, IGIC soportado\", balance: \"AC_III\" },\n  { code: \"477\", name: \"Hacienda Pública, IGIC repercutido\", balance: \"PC_V\" },\n  { code: \"570\", name: \"Caja\", balance: \"AC_VII\" },\n  { code: \"572\", name: \"Bancos e instituciones de crédito c/c\", balance: \"AC_VII\" },\n  { code: \"602\", name: \"Compras de otros aprovisionamientos\", pl: \"4\" },\n  { code: \"623\", name: \"Servicios de profesionales independientes\", pl: \"7\" },\n  { code: \"628\", name: \"Suministros\", pl: \"7\" },\n  { code: \"629\", name: \"Otros servicios\", pl: \"7\" },\n  { code: \"630\", name: \"Impuesto sobre beneficios\", pl: \"17\" },\n  { code: \"631\", name: \"Otros tributos\", pl: \"7\" },\n  { code: \"640\", name: \"Sueldos y salarios\", pl: \"6\" },\n  { code: \"642\", name: \"Seguridad Social a cargo de la empresa\", pl: \"6\" },\n  { code: \"701\", name: \"Ventas de productos terminados\", pl: \"1\" },\n  { code: \"740\", name: \"Subvenciones a la explotación\", pl: \"5\" },\n  { code: \"759\", name: \"Ingresos por servicios diversos\", pl: \"5\" },\n]);\n\n/**\n * Epígrafe de balance que le toca a una cuenta que no está en la lista. Se\n * mira el grupo y, dentro del 4 y del 5, el subgrupo: 430 Clientes es dinero\n * que nos deben (activo) y 400 Proveedores es dinero que debemos (pasivo).\n */\nfunction balancePorDefecto(code) {\n  const c = String(code || \"\").slice(0, 3);\n  const first = c.charAt(0);\n  if (first === \"1\") return \"PN_V\";\n  if (first === \"2\") return \"AN_II\";\n  if (first === \"3\") return \"AC_II\";\n",
+    "total_lines": 732
+  },
+  "summary": "accounting.js: lines 31–60 of 732 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 732,
+    "next_offset": 60
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_1fd8e832ce0b1e408e10c47ff466ec46ddba8a0fa5ded55b3084a523566c50d6",
+  "subject": {
+    "kind": "script",
+    "sha256": "cdf7c8247f94b5117716be27fa78ae16dbe4d780a87edb02e7e0235d8c28249d",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 2700,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 280561,
+    "lines": 70,
+    "more": true,
+    "offset": 2700,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  const entero = String(texto || \"\");\n  const lineas = entero.split(/\\r?\\n/);\n  const cortes = [];\n  let visto = false;\n  lineas.forEach((l, i) => {\n    const limpia = l.trim();\n    if (limpia.length < 4 || limpia.length > 70) return;\n    if (!RE_TITULO_PAPEL.test(limpia)) return;\n    if (!visto) {\n      visto = true;\n      return;\n    }\n    cortes.push(i);\n  });\n  if (!cortes.length) return [entero];\n  const trozos = [];\n  let desde = 0;\n  for (const c of cortes) {\n    trozos.push(lineas.slice(desde, c).join(\"\\n\"));\n    desde = c;\n  }\n  trozos.push(lineas.slice(desde).join(\"\\n\"));\n  return trozos.filter((t) => t.replace(/\\s/g, \"\").length > 40);\n}\n\n/**\n * Separa un archivo en los papeles que trae de verdad: primero por hoja y,\n * dentro de cada hoja, cada vez que vuelve a empezar un título. Lo que no\n * vuelve a empezar (la segunda hoja de una factura larga) se queda con el papel\n * anterior, que es lo que es.\n */\nfunction trocearPapeles(textos, nombre) {\n  const porHoja = trocearPorPaginas(textos, nombre);\n  const salida = [];\n  for (const g of porHoja) {\n    const dentro = trocearPorTitulos(g.texto);\n    if (dentro.length <= 1) {\n      salida.push(g);\n      continue;\n    }\n    const donde =\n      g.hojas.length === 1 ? `página ${g.hojas[0]}` : `páginas ${g.hojas.join(\" y \")}`;\n    dentro.forEach((t, i) => {\n      salida.push({\n        texto: t,\n        hojas: g.hojas,\n        nombre: `${nombre} · ${donde}, papel ${i + 1}`,\n      });\n    });\n  }\n  return salida;\n}\n\nasync function runOne(job) {\n  job.state = \"reading\";\n  job.stage = \"Abriendo el archivo\";\n  job.pct = 4;\n  paintIngestSoon();\n\n  try {\n    let text = \"\";\n    let source = job.preSource || \"pdf-text\";\n    let hojas = null;\n\n    if (job.preTexto) {\n      // Esta entrada ya viene leída: es otra hoja del mismo archivo.\n      text = job.preTexto;\n      hojas = [job.preTexto];\n    } else {\n      const leido = await readFile(job.file, (stage, pct) => {\n",
+    "total_lines": 7060
+  },
+  "summary": "views.js: lines 2701–2770 of 7060 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 7060,
+    "next_offset": 2770
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

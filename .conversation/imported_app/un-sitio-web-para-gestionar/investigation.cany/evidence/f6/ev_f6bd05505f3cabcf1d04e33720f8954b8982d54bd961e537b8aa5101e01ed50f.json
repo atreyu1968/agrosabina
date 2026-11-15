@@ -1,0 +1,54 @@
+{
+  "id": "ev_f6bd05505f3cabcf1d04e33720f8954b8982d54bd961e537b8aa5101e01ed50f",
+  "subject": {
+    "kind": "script",
+    "sha256": "c15ac0adaf235ce3581c94efe38fd40425633ddbc5bab4a939965ea4cd9fee68",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 3465,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 135395,
+    "lines": 60,
+    "more": true,
+    "offset": 3465,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      return;\n    case \"clear-all\": {\n      const ok = await confirmDialog({\n        title: \"Borrar todo\",\n        message: \"Se borrarán todas las facturas y todos los proveedores. Descarga antes una copia si no estás seguro.\",\n        confirm: \"Sí, borrar todo\",\n        danger: true,\n      });\n      if (!ok) return;\n      clearAll();\n      closeModal();\n      toast(\"Todo borrado. Empiezas de cero.\");\n      render();\n      return;\n    }\n    case \"seed-demo\": {\n      const ok = await confirmDialog({\n        title: \"Cargar datos de ejemplo\",\n        message: \"Se añadirán 5 proveedores inventados y 11 facturas para que veas cómo funciona. Podrás borrarlo todo después.\",\n        confirm: \"Sí, cargar el ejemplo\",\n      });\n      if (!ok) return;\n      seedDemo();\n      toast(\"Datos de ejemplo cargados.\");\n      render();\n      return;\n    }\n    case \"retry-job\": {\n      const job = ui.jobs.find((j) => j.id === id);\n      if (job) {\n        job.state = \"queued\";\n        job.pct = 0;\n        job.error = \"\";\n        paintIngest();\n        runQueue();\n      }\n      return;\n    }\n    default:\n      return;\n  }\n}\n\n/* ------------------------------------------------------------------ */\n/* Buscadores                                                         */\n/* ------------------------------------------------------------------ */\n\nexport function onInput(event) {\n  const target = event.target;\n  if (!(target instanceof HTMLElement)) return;\n\n  if (target.id === \"invoiceSearch\") {\n    ui.filters.q = target.value;\n    refreshInvoiceTable();\n    return;\n  }\n  if (target.id === \"supplierSearch\") {\n    ui.supplierQuery = target.value;\n    const pos = target.selectionStart;\n    refreshSupplierGrid();\n",
+    "total_lines": 3603
+  },
+  "summary": "views.js: lines 3466–3525 of 3603 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 3603,
+    "next_offset": 3525
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

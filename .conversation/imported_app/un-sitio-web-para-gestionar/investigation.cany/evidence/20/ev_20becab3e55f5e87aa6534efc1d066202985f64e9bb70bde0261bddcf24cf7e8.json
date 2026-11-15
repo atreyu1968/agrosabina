@@ -1,0 +1,54 @@
+{
+  "id": "ev_20becab3e55f5e87aa6534efc1d066202985f64e9bb70bde0261bddcf24cf7e8",
+  "subject": {
+    "kind": "script",
+    "sha256": "c0289682ae3319a39044d0d80d8b78f5ccb4f95e31dc988fa7e0b0fa47a5eacf",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 3010,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 277690,
+    "lines": 60,
+    "more": true,
+    "offset": 3010,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "          <p class=\"hint\">Para probar sin tener el PDF a mano, o con un papel que ya tengas copiado. Tampoco se guarda ni sale de aquí.</p>\n          <textarea id=\"pruebaTexto\" class=\"prueba-textarea\" rows=\"7\" spellcheck=\"false\" placeholder=\"Pega aquí el texto de una nómina, una liquidación de fruta o una factura…\"></textarea>\n          <div class=\"row wrap\">\n            <button class=\"btn primary\" data-action=\"prueba-leer-texto\">${icon(\"file\")}<span>Leer este texto</span></button>\n            <button class=\"btn ghost\" data-action=\"prueba-ejemplo\" data-ejemplo=\"nomina\">${icon(\"plus\")}<span>Ejemplo: nómina</span></button>\n            <button class=\"btn ghost\" data-action=\"prueba-ejemplo\" data-ejemplo=\"liquidacion\">${icon(\"plus\")}<span>Ejemplo: liquidación</span></button>\n            <button class=\"btn ghost\" data-action=\"prueba-ejemplo\" data-ejemplo=\"factura\">${icon(\"plus\")}<span>Ejemplo: factura</span></button>\n          </div>\n        </div>\n      </div>\n    </section>\n    <div id=\"pruebaResults\">${pruebasResultadosHtml()}</div>`;\n}\n\nfunction pruebasResultadosHtml() {\n  if (!ui.pruebas.list.length) return \"\";\n  return ui.pruebas.list.map((r) => pruebaHtml(r)).join(\"\");\n}\n\n/** Un bloque por documento probado: la cabecera, los datos y los dos textos. */\nfunction pruebaHtml(r) {\n  const L = r.lectura;\n  const doc = L ? L.doc : null;\n  const comoSeLeyo = r.source ? sourceLabel(r.source) : \"\";\n  const cabecera = `\n    <div class=\"card-head\">\n      <div>\n        <h3>${esc(r.name)}</h3>\n        <p>${esc(`${r.kb} KB`)}${comoSeLeyo ? ` · ${esc(comoSeLeyo)}` : \"\"}${\n          doc ? ` · leído con el importador «${esc(L.etiqueta)}»` : \"\"\n        }</p>\n      </div>\n      <span class=\"spacer\"></span>\n      ${doc ? `<span class=\"tag\">${esc(kindInfo(doc.kind).label)}</span>` : \"\"}\n    </div>`;\n\n  if (r.pendiente) {\n    return `<section class=\"card prueba\">${cabecera}\n      <div class=\"card-body\"><p class=\"hint\">Leyendo… en cuanto termine salen aquí el texto y lo que entiendo.</p></div>\n    </section>`;\n  }\n\n  if (r.error || !doc) {\n    return `<section class=\"card prueba\">${cabecera}\n      <div class=\"card-body\"><p class=\"prueba-error\">${esc(r.error || \"No he podido leerlo.\")}</p></div>\n    </section>`;\n  }\n\n  const secciones = seccionesDeLectura(doc);\n  const avisos = Array.isArray(doc.notes) ? doc.notes : [];\n  const json = jsonDocumento(doc);\n  const explicacion = explicacionDeLectura(r, doc);\n\n  return `<section class=\"card prueba\">\n    ${cabecera}\n    <div class=\"card-body\">\n      ${explicacion ? `<p class=\"prueba-explica\">${esc(explicacion)}</p>` : \"\"}\n      ${\n        L.reconoce\n          ? \"\"\n",
+    "total_lines": 6975
+  },
+  "summary": "views.js: lines 3011–3070 of 6975 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 6975,
+    "next_offset": 3070
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

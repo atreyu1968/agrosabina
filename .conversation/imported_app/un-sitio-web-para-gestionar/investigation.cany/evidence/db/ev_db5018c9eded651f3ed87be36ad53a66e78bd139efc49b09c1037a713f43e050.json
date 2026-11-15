@@ -1,0 +1,54 @@
+{
+  "id": "ev_db5018c9eded651f3ed87be36ad53a66e78bd139efc49b09c1037a713f43e050",
+  "subject": {
+    "kind": "script",
+    "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 120,
+    "offset": 240,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24919,
+    "lines": 120,
+    "more": true,
+    "offset": 240,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "  // Copia de seguridad en texto: sirve si SQLite no arranca la próxima vez.\n  try {\n    localStorage.setItem(KEY, JSON.stringify(state));\n    stored = true;\n  } catch (err) {\n    console.warn(\"No se pudo guardar la copia en texto:\", err);\n  }\n\n  lastSaveOk = stored;\n  emit();\n  return lastSaveOk;\n}\n\n/** Vuelca la base de datos a IndexedDB sin esperar (con un pequeño retardo). */\nfunction schedulePersist() {\n  if (persistTimer) clearTimeout(persistTimer);\n  persistTimer = setTimeout(() => {\n    persistTimer = null;\n    sqlite.persist().catch(() => {});\n  }, 220);\n}\n\n/** Fuerza el guardado pendiente (al cerrar o cambiar de pestaña). */\nexport async function flush() {\n  if (persistTimer) {\n    clearTimeout(persistTimer);\n    persistTimer = null;\n  }\n  if (engine === \"sqlite\" && sqlite.isAvailable()) {\n    try {\n      sqlite.writeState(state);\n      return await sqlite.persist();\n    } catch (err) {\n      console.warn(\"No se pudo volcar la base de datos:\", err);\n    }\n  }\n  return false;\n}\n\nif (typeof window !== \"undefined\") {\n  window.addEventListener(\"pagehide\", () => {\n    if (engine === \"sqlite\" && sqlite.isAvailable()) {\n      try {\n        sqlite.writeState(state);\n        sqlite.persist();\n      } catch (err) {\n        /* sin tiempo para más */\n      }\n    }\n  });\n  document.addEventListener(\"visibilitychange\", () => {\n    if (document.visibilityState === \"hidden\" && persistTimer) {\n      flush();\n    }\n  });\n}\n\nexport function saveWorked() {\n  return lastSaveOk;\n}\n\n/** Dónde están los datos y cuánto hay: lo enseña Ajustes. */\nexport function storageInfo() {\n  const detail = sqlite.counts();\n  return {\n    engine,\n    sqlite: sqlite.isAvailable(),\n    reason: sqlite.why(),\n    suppliers: state.suppliers.length,\n    invoices: state.invoices.length,\n    detail,\n    savedAt: sqlite.lastPersistAt(),\n  };\n}\n\n/** El fichero .sqlite para descargar, o null si SQLite no está disponible. */\nexport function exportSqliteBytes() {\n  return sqlite.exportBytes();\n}\n\n/** Resumen del IGIC por proveedor y estado, calculado por SQLite. */\nexport function sqliteIgicSummary() {\n  return sqlite.igicSummary();\n}\n\nexport function subscribe(fn) {\n  listeners.add(fn);\n  return () => listeners.delete(fn);\n}\n\nfunction emit() {\n  for (const fn of listeners) {\n    try {\n      fn(state);\n    } catch (err) {\n      console.error(err);\n    }\n  }\n}\n\nexport function getState() {\n  return state;\n}\n\n/* ------------------------------------------------------------------ */\n/* Proveedores                                                        */\n/* ------------------------------------------------------------------ */\n\nfunction nameBase(name) {\n  return fold(name)\n    .replace(/\\b(sl|slu|sll|sa|sau|sc|scc|sccl|srl|cb|coop|sociedad|limitada|anonima|hermanos|eirl)\\b/g, \"\")\n    .replace(/\\s{2,}/g, \" \")\n    .trim();\n}\n\n/** Busca un proveedor ya existente por NIF o por nombre (aunque venga escrito distinto). */\nexport function findSupplierByNameOrNif(name, nif) {\n  const key = nifKey(nif);\n  if (key.length >= 8) {\n    const byNif = state.suppliers.find((s) => nifKey(s.nif) === key);\n",
+    "total_lines": 789
+  },
+  "summary": "store.js: lines 241–360 of 789 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 120,
+    "total": 789,
+    "next_offset": 360
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

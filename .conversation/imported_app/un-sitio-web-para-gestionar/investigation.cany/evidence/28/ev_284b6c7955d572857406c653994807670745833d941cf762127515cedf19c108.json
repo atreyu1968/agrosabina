@@ -1,0 +1,499 @@
+{
+  "id": "ev_284b6c7955d572857406c653994807670745833d941cf762127515cedf19c108",
+  "subject": {
+    "kind": "script",
+    "sha256": "4df541d1d50727cadbe26e669c55e8d1793e57bd47466d35718defc737f8b4e8",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "liquidacion"
+  },
+  "result": {
+    "file_size": 227905,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 24962,
+        "file_offset_hex": "0x6182",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 25000,
+        "file_offset_hex": "0x61a8",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 34876,
+        "file_offset_hex": "0x883c",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 49695,
+        "file_offset_hex": "0xc21f",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 50191,
+        "file_offset_hex": "0xc40f",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 50235,
+        "file_offset_hex": "0xc43b",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 51276,
+        "file_offset_hex": "0xc84c",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 51681,
+        "file_offset_hex": "0xc9e1",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 54902,
+        "file_offset_hex": "0xd676",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 56910,
+        "file_offset_hex": "0xde4e",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 57561,
+        "file_offset_hex": "0xe0d9",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 60702,
+        "file_offset_hex": "0xed1e",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 60757,
+        "file_offset_hex": "0xed55",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 64012,
+        "file_offset_hex": "0xfa0c",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 64057,
+        "file_offset_hex": "0xfa39",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 72305,
+        "file_offset_hex": "0x11a71",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 95569,
+        "file_offset_hex": "0x17551",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 95753,
+        "file_offset_hex": "0x17609",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 100345,
+        "file_offset_hex": "0x187f9",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 100363,
+        "file_offset_hex": "0x1880b",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 100384,
+        "file_offset_hex": "0x18820",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 100424,
+        "file_offset_hex": "0x18848",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 100475,
+        "file_offset_hex": "0x1887b",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 100842,
+        "file_offset_hex": "0x189ea",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 100893,
+        "file_offset_hex": "0x18a1d",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 100910,
+        "file_offset_hex": "0x18a2e",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 100975,
+        "file_offset_hex": "0x18a6f",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 100992,
+        "file_offset_hex": "0x18a80",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 101074,
+        "file_offset_hex": "0x18ad2",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 101175,
+        "file_offset_hex": "0x18b37",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 101214,
+        "file_offset_hex": "0x18b5e",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 105149,
+        "file_offset_hex": "0x19abd",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 105242,
+        "file_offset_hex": "0x19b1a",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 105283,
+        "file_offset_hex": "0x19b43",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 108385,
+        "file_offset_hex": "0x1a761",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 111934,
+        "file_offset_hex": "0x1b53e",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 111951,
+        "file_offset_hex": "0x1b54f",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 112242,
+        "file_offset_hex": "0x1b672",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 112259,
+        "file_offset_hex": "0x1b683",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 112804,
+        "file_offset_hex": "0x1b8a4",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 112821,
+        "file_offset_hex": "0x1b8b5",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 112855,
+        "file_offset_hex": "0x1b8d7",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 113112,
+        "file_offset_hex": "0x1b9d8",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 113129,
+        "file_offset_hex": "0x1b9e9",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 113166,
+        "file_offset_hex": "0x1ba0e",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 113319,
+        "file_offset_hex": "0x1baa7",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 113336,
+        "file_offset_hex": "0x1bab8",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 116446,
+        "file_offset_hex": "0x1c6de",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 116467,
+        "file_offset_hex": "0x1c6f3",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 117138,
+        "file_offset_hex": "0x1c992",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 117510,
+        "file_offset_hex": "0x1cb06",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 117617,
+        "file_offset_hex": "0x1cb71",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 131097,
+        "file_offset_hex": "0x20019",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 134066,
+        "file_offset_hex": "0x20bb2",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 135796,
+        "file_offset_hex": "0x21274",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 135811,
+        "file_offset_hex": "0x21283",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 178033,
+        "file_offset_hex": "0x2b771",
+        "length": 11,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e",
+        "file_offset": 192355,
+        "file_offset_hex": "0x2ef63",
+        "length": 11,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 11
+      }
+    ],
+    "total_matches": 58
+  },
+  "summary": "58 match(es) for utf8 in views.js; showing 58 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 58,
+    "total": 58
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x6182"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x61a8"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x883c"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xc21f"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xc40f"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xc43b"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xc84c"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xc9e1"
+    }
+  ],
+  "links": []
+}

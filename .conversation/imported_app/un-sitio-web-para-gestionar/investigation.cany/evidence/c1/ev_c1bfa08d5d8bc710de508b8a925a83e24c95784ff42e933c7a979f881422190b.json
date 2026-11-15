@@ -1,0 +1,54 @@
+{
+  "id": "ev_c1bfa08d5d8bc710de508b8a925a83e24c95784ff42e933c7a979f881422190b",
+  "subject": {
+    "kind": "script",
+    "sha256": "6412b9c3eba9e2c5b4d9640870df1abab88a4cf5ac18455e51a42105c7de18cf",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 20,
+    "offset": 2172,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 123763,
+    "lines": 20,
+    "more": true,
+    "offset": 2172,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      },\n    });\n  });\n}\n\nfunction bindForm(wrap, initial) {\n  const q = (id) => wrap.querySelector(id);\n  const base = q(\"#f-base\");\n  const rate = q(\"#f-rate\");\n  const igic = q(\"#f-igic\");\n  const total = q(\"#f-total\");\n  const name = q(\"#f-name\");\n  const nif = q(\"#f-nif\");\n  const number = q(\"#f-number\");\n  const seg = q(\"#f-status-seg\");\n  const hint = q(\"#supplierHint\");\n  const info = q(\"#supplierInfo\");\n  const dup = q(\"#dupWarning\");\n  const kindSel = q(\"#f-kind\");\n  const catSel = q(\"#f-cat\");\n",
+    "total_lines": 3308
+  },
+  "summary": "views.js: lines 2173–2192 of 3308 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 20,
+    "total": 3308,
+    "next_offset": 2192
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

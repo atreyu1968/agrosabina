@@ -1,0 +1,54 @@
+{
+  "id": "ev_8c369a33faae55056d92527668c6f01820390877bcc1083f5ad156d9256d8493",
+  "subject": {
+    "kind": "script",
+    "sha256": "cd48c5cf20b87e39095de591bed9b4aadd07c9211f3a562a2f958858a55644b0",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 80,
+    "offset": 1230,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 123883,
+    "lines": 80,
+    "more": true,
+    "offset": 1230,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "          <span class=\"meta\">${st.count} ${st.count === 1 ? \"factura\" : \"facturas\"}${st.lastDate ? ` · ${fmtDate(st.lastDate)}` : \"\"}</span>\n          <div class=\"spacer\"></div>\n          <button class=\"icon-btn\" data-action=\"edit-supplier\" data-id=\"${s.id}\" title=\"Editar\" aria-label=\"Editar proveedor\">${icon(\"edit\")}</button>\n          <button class=\"icon-btn\" data-action=\"delete-supplier\" data-id=\"${s.id}\" title=\"Borrar\" aria-label=\"Borrar proveedor\">${icon(\"trash\")}</button>\n          <button class=\"btn sm\" data-action=\"filter-supplier\" data-id=\"${s.id}\">Ver facturas</button>\n        </div>\n      </article>`;\n    }).join(\"\")}\n  </div>`;\n}\n\nfunction refreshSupplierGrid() {\n  const wrap = document.getElementById(\"supplierGridWrap\");\n  if (wrap) wrap.innerHTML = supplierGrid();\n}\n\n/* ------------------------------------------------------------------ */\n/* Correo electrónico                                                 */\n/* ------------------------------------------------------------------ */\n\nfunction mailDateText(raw) {\n  if (!raw) return \"\";\n  const d = new Date(raw);\n  if (Number.isNaN(d.getTime())) return String(raw).slice(0, 40);\n  return d.toLocaleDateString(\"es-ES\", { day: \"2-digit\", month: \"2-digit\", year: \"numeric\" });\n}\n\nfunction mailRow(m) {\n  const all = m.attachments || [];\n  const readable = all.filter((a) => a.readable);\n  const bits = [];\n  if (all.length) bits.push(`${all.length} adjunto${all.length === 1 ? \"\" : \"s\"}`);\n  else bits.push(\"sin adjuntos\");\n  if (readable.length && readable.length < all.length) bits.push(`${readable.length} legible${readable.length === 1 ? \"\" : \"s\"}`);\n  return `<div class=\"mail-item\">\n    <div class=\"mail-main\">\n      <div class=\"mail-subject\">${esc(m.subject || \"(sin asunto)\")}</div>\n      <div class=\"mail-meta\">${esc(m.from || \"remitente desconocido\")}${m.date ? ` · ${esc(mailDateText(m.date))}` : \"\"}</div>\n      <div class=\"mail-tags\">\n        ${bits.map((b) => `<span class=\"tag\">${esc(b)}</span>`).join(\"\")}\n        ${m.usedAt ? `<span class=\"tag is-in\">ya revisado</span>` : \"\"}\n      </div>\n    </div>\n    <div class=\"row-actions\">\n      <button class=\"btn sm\" data-action=\"use-mail\" data-id=\"${m.id}\">Leer y revisar</button>\n      <button class=\"icon-btn\" data-action=\"delete-mail\" data-id=\"${m.id}\" title=\"Borrar\" aria-label=\"Borrar correo\">${icon(\"trash\")}</button>\n    </div>\n  </div>`;\n}\n\nfunction viewCorreo() {\n  const list = messages();\n  const aiOn = aiConfigured(getState().settings);\n  return `\n  <div class=\"stack\">\n    <section class=\"card\">\n      <div class=\"card-body\">\n        <div id=\"mailDrop\" class=\"dropzone\">\n          <div class=\"dz-icon\">${icon(\"mail\")}</div>\n          <h3>Trae aquí el correo con la factura o la liquidación</h3>\n          <p>\n            En tu programa de correo abre el mensaje y elige <strong>«Guardar como…»</strong> o\n            <strong>«Descargar el original»</strong>: se guarda un archivo <strong>.eml</strong>.\n            Arrástralo aquí y leo su texto y sus adjuntos. Todo pasa en tu ordenador.\n          </p>\n          <div class=\"dz-actions\">\n            <button class=\"btn primary\" data-action=\"import-email\">${icon(\"mail\")} Elegir correos (.eml)</button>\n            <button class=\"btn ghost\" data-action=\"paste-mail\">${icon(\"text\")} Pegar el texto</button>\n          </div>\n          <p style=\"font-size:12.5px;color:var(--ink-3);margin-top:10px\">\n            Un navegador no puede entrar solo en tu buzón: por eso el correo se guarda antes como archivo.\n          </p>\n        </div>\n      </div>\n    </section>\n\n    <div class=\"hint-bar\">\n      ${icon(aiOn ? \"sparkle\" : \"info\")}\n      <span>${\n        aiOn\n",
+    "total_lines": 3310
+  },
+  "summary": "views.js: lines 1231–1310 of 3310 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 80,
+    "total": 3310,
+    "next_offset": 1310
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

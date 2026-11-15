@@ -1,0 +1,54 @@
+{
+  "id": "ev_b0bedc7c22b74f2abc4587f4413adea9970d3f193abb14c28ba92db90a008c14",
+  "subject": {
+    "kind": "script",
+    "sha256": "6ec57842818ead8f65029f95b4b820488a6dbfbb6233142f78099083827d16c7",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 330,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177631,
+    "lines": 70,
+    "more": true,
+    "offset": 330,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      };\n    }\n    case \"importar\":\n      return {\n        title: \"Importar documentos\",\n        sub: \"Sube una foto o un PDF y yo relleno los datos\",\n      };\n    default: {\n      const who = (getState().settings.businessName || \"Agrosabina SL\").trim();\n      const pending =\n        t.pendingCount > 0\n          ? `Tienes ${fmtEUR(t.pending)} pendientes de pago`\n          : \"Todo al día. Nada pendiente de pago.\";\n      return {\n        title: \"Resumen\",\n        sub: `${who} · ${pending}`,\n      };\n    }\n  }\n}\n\nfunction topActions(route) {\n  if (route === \"ventas\") {\n    return `\n      <button class=\"btn\" data-action=\"export-sales-csv\">${icon(\"download\")}<span>Exportar</span></button>\n      <button class=\"btn\" data-action=\"new-sale\">${icon(\"edit\")}<span>Añadir a mano</span></button>\n      <button class=\"btn primary\" data-action=\"import-files\">${icon(\"upload\")}<span>Subir liquidación</span></button>`;\n  }\n  if (route === \"contabilidad\") {\n    return `\n      <button class=\"btn\" data-action=\"acc-apertura\">${icon(\"gear\")}<span>Datos de partida</span></button>\n      <button class=\"btn\" data-action=\"export-acc-csv\">${icon(\"download\")}<span>Exportar</span></button>`;\n  }\n  if (route === \"compras\") {\n\n    return `\n      <button class=\"btn\" data-action=\"export-csv\">${icon(\"download\")}<span>Exportar</span></button>\n      <button class=\"btn primary\" data-action=\"new-invoice\">${icon(\"plus\")}<span>Nueva compra</span></button>`;\n  }\n  if (route === \"proveedores\") {\n    return `<button class=\"btn primary\" data-action=\"new-supplier\">${icon(\"plus\")}<span>Nuevo proveedor</span></button>`;\n  }\n  if (route === \"importar\") {\n    return `<button class=\"btn\" data-action=\"new-invoice\">${icon(\"edit\")}<span>Añadir a mano</span></button>`;\n  }\n  if (route === \"correo\") {\n    return `\n      <button class=\"btn\" data-action=\"settings\" aria-label=\"Ajustes\">${icon(\"gear\")}<span>Ajustes</span></button>\n      <button class=\"btn primary\" data-action=\"import-email\">${icon(\"mail\")}<span>Añadir correo</span></button>`;\n  }\n  return `\n    <button class=\"btn\" data-action=\"settings\" aria-label=\"Ajustes\">${icon(\"gear\")}<span>Ajustes</span></button>\n    <button class=\"btn primary\" data-action=\"import-files\">${icon(\"upload\")}<span>Importar factura</span></button>`;\n}\n\n/* ------------------------------------------------------------------ */\n/* Resumen                                                            */\n/* ------------------------------------------------------------------ */\n\nfunction viewResumen() {\n  const state = getState();\n  const invs = state.invoices;\n\n  if (!invs.length) return emptyResumen();\n\n  const t = totals(invs);\n  const months = lastMonths(6);\n  const byMonth = new Map(months.map((m) => [m, { paid: 0, pending: 0 }]));\n  for (const inv of invs) {\n    const k = monthKey(inv.issueDate);\n",
+    "total_lines": 4628
+  },
+  "summary": "views.js: lines 331–400 of 4628 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 4628,
+    "next_offset": 400
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

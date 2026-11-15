@@ -1,0 +1,54 @@
+{
+  "id": "ev_9101e6f25c79ff990152707db48aad3fb109c5d52eb8b5ea1aa927b9c4cdd4b5",
+  "subject": {
+    "kind": "script",
+    "sha256": "83704397ea89e45fa1af80334964cb8e67554af7773347bdc2b1474dc48b4b50",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 3740,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 245244,
+    "lines": 70,
+    "more": true,
+    "offset": 3740,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  };\n  const product = val(\"#l-product\").trim();\n  const category = val(\"#l-category\").trim();\n  // Los kilos llevan el punto en los miles («4.520»); el precio por kilo, en\n  // los decimales («0,853» y también «0.853»).\n  const kg = parseKg(val(\"#l-kg\"));\n  const price = parsePrice(val(\"#l-price\"));\n  const dtos = wrap.querySelector(\"#iv-dtos\");\n  const discounts = dtos\n    ? [...dtos.querySelectorAll(\".dto-line\")]\n        .map((row) => {\n          const labelEl = row.querySelector(\".dto-label\");\n          const amountEl = row.querySelector(\".dto-amount\");\n          const label = (labelEl ? labelEl.value : \"\").trim();\n          const amount = parseAmount(amountEl ? amountEl.value : \"\");\n          if (!label && amount == null) return null;\n          return { label, amount: amount == null ? 0 : amount };\n        })\n        .filter(Boolean)\n    : [];\n  const partidas = (() => {\n    const raw = val(\"#l-partidas\");\n    if (!raw) return [];\n    try {\n      const arr = JSON.parse(raw);\n      return Array.isArray(arr) ? arr.slice(0, 40) : [];\n    } catch {\n      return [];\n    }\n  })();\n  if (!product && !category && kg == null && price == null && !discounts.length && !partidas.length) return null;\n  return { product, category, kg, price, discounts, partidas };\n}\n\nfunction readForm(wrap) {\n  const q = (id) => wrap.querySelector(id);\n  const status = q(\"#f-status-seg\").dataset.value;\n  const base = parseAmount(q(\"#f-base\").value);\n  const rateRaw = q(\"#f-rate\").value;\n  const rate = rateRaw === \"\" ? null : Number(rateRaw);\n  const igic = parseAmount(q(\"#f-igic\").value);\n  const total = parseAmount(q(\"#f-total\").value);\n  const lines = readIgicLines(wrap);\n\n  return {\n    supplierName: q(\"#f-name\").value.trim(),\n    supplierNif: q(\"#f-nif\").value.trim(),\n    number: q(\"#f-number\").value.trim(),\n    issueDate: q(\"#f-issue\").value || \"\",\n    dueDate: q(\"#f-due\").value || \"\",\n    kind: (q(\"#f-kind\") && q(\"#f-kind\").value) || \"FACTURA\",\n    category: (q(\"#f-cat\") && q(\"#f-cat\").value) || \"\",\n    direction: directionOf((q(\"#f-kind\") && q(\"#f-kind\").value) || \"FACTURA\"),\n    base,\n    rate:\n      lines.length > 1 && base > 0 && igic != null\n        ? round2((igic / base) * 100)\n        : Number.isFinite(rate)\n          ? rate\n          : null,\n    igic,\n    total,\n    lines,\n    liquidacion: readLiquidacion(wrap),\n    nomina: readNomina(wrap),\n    status: status === STATUS.PAID ? STATUS.PAID : STATUS.PENDING,\n    paidDate:\n      status === STATUS.PAID\n        ? String((q(\"#f-paid-date\") && q(\"#f-paid-date\").value) || \"\").slice(0, 10)\n        : \"\",\n",
+    "total_lines": 6154
+  },
+  "summary": "views.js: lines 3741–3810 of 6154 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 6154,
+    "next_offset": 3810
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

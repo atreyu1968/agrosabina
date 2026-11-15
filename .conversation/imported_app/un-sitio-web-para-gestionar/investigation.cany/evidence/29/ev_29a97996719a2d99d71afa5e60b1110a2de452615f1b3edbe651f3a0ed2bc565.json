@@ -1,0 +1,54 @@
+{
+  "id": "ev_29a97996719a2d99d71afa5e60b1110a2de452615f1b3edbe651f3a0ed2bc565",
+  "subject": {
+    "kind": "script",
+    "sha256": "effbee695913dd70eb1d3b51952ecc8ed76c4969a93f6df5b3ddba29ce97f26c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 48,
+    "offset": 544,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 196170,
+    "lines": 48,
+    "more": true,
+    "offset": 544,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  const info = kindInfo(inv.kind || \"FACTURA\") || {};\n  const sup = docSupplier(inv) || {};\n  const isIn = docDirection(inv) === \"INGRESO\";\n  const lines = Array.isArray(inv.lines) ? inv.lines : [];\n  const liq = inv.liquidacion || null;\n  const liqNum = liquidacionNumbers(inv);\n  const notes = Array.isArray(inv.notes) ? inv.notes.join(\"\\n\") : String(inv.notes || \"\");\n  const raw = String(inv.rawText || \"\");\n\n  const filas = [\n    [\"Tipo\", esc(info.label || \"Documento\")],\n    [\"Sentido\", isIn ? \"Ingreso\" : \"Gasto\"],\n    [\"Proveedor\", esc(sup.name || \"Sin proveedor\")],\n    [\"NIF\", esc(sup.nif || \"—\")],\n    [\"Número\", esc(inv.number || \"—\")],\n    [\"Fecha\", inv.issueDate ? fmtDate(inv.issueDate) : \"—\"],\n    [\"Base imponible\", fmtEUR(inv.base)],\n    [\"IGIC\", `${fmtEUR(inv.igic)}${inv.rate ? ` · ${rateText(inv.rate)}` : \"\"}`],\n    [\"Total\", `<strong>${fmtEUR(inv.total)}</strong>`],\n    [\n      \"Estado\",\n      inv.status === STATUS.PAID\n        ? `${isIn ? \"Cobrado\" : \"Pagado\"}${inv.paidDate ? ` el ${fmtDate(inv.paidDate)}` : \" (sin fecha)\"}`\n        : \"Pendiente\",\n    ],\n    [\"Cómo entró\", esc(sourceLabel(inv.source))],\n    [\"Archivo\", inv.fileName ? esc(inv.fileName) : \"El archivo no se guardó, solo lo leído\"],\n  ];\n\n  const body = `\n    <div class=\"table-wrap\">\n      <table class=\"data\"><tbody>\n        ${filas.map(([k, v]) => `<tr><th style=\"width:38%\">${esc(k)}</th><td>${v}</td></tr>`).join(\"\")}\n      </tbody></table>\n    </div>\n    ${\n      lines.length\n        ? `<h3 style=\"margin:16px 0 6px\">Tipos de IGIC del documento</h3>\n           <div class=\"table-wrap\"><table class=\"data\">\n             <thead><tr><th>Tipo</th><th class=\"num\">Base</th><th class=\"num\">Cuota</th></tr></thead>\n             <tbody>\n               ${lines\n                 .map((l) => {\n                   const lr = l.rate != null ? l.rate : l.tipo;\n                   const lb = l.base != null ? l.base : l.importe;\n                   const li = l.igic != null ? l.igic : l.cuota;\n                   return `<tr><td>${esc(rateText(lr))}</td><td class=\"num\">${fmtEUR(lb)}</td><td class=\"num\">${fmtEUR(li)}</td></tr>`;\n                 })\n",
+    "total_lines": 5107
+  },
+  "summary": "views.js: lines 545–592 of 5107 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 48,
+    "total": 5107,
+    "next_offset": 592
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

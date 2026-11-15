@@ -1,0 +1,54 @@
+{
+  "id": "ev_98220244f99dc61570997b77bbd2c15c1def7e1c71223e0dd5480fc71b7f0308",
+  "subject": {
+    "kind": "script",
+    "sha256": "93498737d1a857f35aace091916d8da94ea451205ec99691a3b161f0d5b5f9a6",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 188,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 32003,
+    "lines": 30,
+    "more": true,
+    "offset": 188,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "  const ids = new Set(out.suppliers.map((s) => s.id));\n  out.invoices = out.invoices.filter((inv) => !inv.supplierId || ids.has(inv.supplierId));\n  // Cada tercero se coloca como cliente o como proveedor según sus documentos.\n  marcarRoles(out.suppliers, out.invoices);\n  return out;\n}\n\n/** Un tercero puede ser proveedor, cliente, o las dos cosas a la vez. */\nconst TERCERO_ROLES = [\"CLIENTE\", \"PROVEEDOR\", \"AMBOS\"];\n\nfunction rolValido(valor) {\n  const arriba = String(valor || \"\").trim().toUpperCase();\n  return TERCERO_ROLES.includes(arriba) ? arriba : \"\";\n}\n\n/** ¿Este documento es dinero que entra (cliente) o que sale (proveedor)? */\nfunction direccionDeDocumento(doc) {\n  const d = doc || {};\n  if (d.direction === \"INGRESO\") return \"INGRESO\";\n  if (d.direction === \"GASTO\") return \"GASTO\";\n  const tipo = String(d.kind || \"\").toUpperCase();\n  return [\"LIQUIDACION\", \"SUBVENCION\", \"COBRO\", \"VENTA\"].includes(tipo) ? \"INGRESO\" : \"GASTO\";\n}\n\n/** El medio de cobro o pago: en efectivo (caja), por banco, o sin decir. */\nexport function normaliseMedio(valor) {\n  const arriba = String(valor || \"\").trim().toUpperCase();\n  if ([\"CAJA\", \"EFECTIVO\", \"METALICO\", \"METÁLICO\"].includes(arriba)) return \"CAJA\";\n  if ([\"BANCO\", \"TRANSFERENCIA\", \"CUENTA\", \"TARJETA\"].includes(arriba)) return \"BANCO\";\n  return \"\";\n",
+    "total_lines": 980
+  },
+  "summary": "store.js: lines 189–218 of 980 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 980,
+    "next_offset": 218
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

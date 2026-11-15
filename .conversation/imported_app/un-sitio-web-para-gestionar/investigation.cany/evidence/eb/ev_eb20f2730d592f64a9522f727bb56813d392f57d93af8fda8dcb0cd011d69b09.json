@@ -1,0 +1,54 @@
+{
+  "id": "ev_eb20f2730d592f64a9522f727bb56813d392f57d93af8fda8dcb0cd011d69b09",
+  "subject": {
+    "kind": "script",
+    "sha256": "89cf21cebfc7736c1c17ac96de572c2df4ec1950a810ec88b3cd945081a2d411",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 115,
+    "offset": 525,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 25768,
+    "lines": 115,
+    "more": true,
+    "offset": 525,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "  inv.rate = complete.rate;\n  inv.lines = normaliseInvoice({ lines: inv.lines }).lines;\n  inv.liquidacion = normaliseLiquidacion(inv.liquidacion);\n  if (inv.status === STATUS.PAID && !inv.paidDate) inv.paidDate = todayISO();\n  if (inv.status === STATUS.PENDING) inv.paidDate = \"\";\n  inv.updatedAt = new Date().toISOString();\n  save();\n  return inv;\n}\n\nexport function deleteInvoice(id) {\n  state.invoices = state.invoices.filter((i) => i.id !== id);\n  save();\n}\n\nexport function setInvoiceStatus(id, status, paidDate) {\n  const patch = { status };\n  if (status === STATUS.PAID) {\n    // La fecha del cobro o del pago la elige la persona; si no dice nada, hoy.\n    const day = String(paidDate || \"\").slice(0, 10);\n    if (day) patch.paidDate = day;\n  } else {\n    // Vuelve a pendiente: no hay fecha que guardar.\n    patch.paidDate = \"\";\n  }\n  return updateInvoice(id, patch);\n}\n\nexport function toggleInvoiceStatus(id, paidDate) {\n  const inv = state.invoices.find((i) => i.id === id);\n  if (!inv) return null;\n  return setInvoiceStatus(id, inv.status === STATUS.PAID ? STATUS.PENDING : STATUS.PAID, paidDate);\n}\n\nexport function invoiceById(id) {\n  return state.invoices.find((i) => i.id === id) || null;\n}\n\nfunction numOrNull(v) {\n  if (v === \"\" || v == null) return null;\n  const n = Number(v);\n  return Number.isFinite(n) ? n : null;\n}\n\n/* ------------------------------------------------------------------ */\n/* Cifras                                                             */\n/* ------------------------------------------------------------------ */\n\n/** Totales de un conjunto de facturas. */\nexport function totals(invoices) {\n  const out = {\n    count: invoices.length,\n    base: 0,\n    igic: 0,\n    total: 0,\n    paid: 0,\n    pending: 0,\n    pendingCount: 0,\n    paidCount: 0,\n    igicPending: 0,\n    overdue: 0,\n    overdueCount: 0,\n    income: 0,\n    expense: 0,\n    incomeCount: 0,\n    expenseCount: 0,\n    incomePending: 0,\n    expensePending: 0,\n    byCategory: {},\n  };\n  const today = todayISO();\n  for (const inv of invoices) {\n    const base = Number(inv.base) || 0;\n    const igic = Number(inv.igic) || 0;\n    const total = Number(inv.total) || 0;\n    const isIncome = inv.direction === \"INGRESO\";\n    out.base += base;\n    out.igic += igic;\n    out.total += total;\n    if (isIncome) {\n      out.income = round2(out.income + total);\n      out.incomeCount++;\n      if (inv.status !== STATUS.PAID) out.incomePending = round2(out.incomePending + total);\n    } else {\n      out.expense = round2(out.expense + total);\n      out.expenseCount++;\n      if (inv.status !== STATUS.PAID) out.expensePending = round2(out.expensePending + total);\n    }\n    const cat = inv.category || \"SIN\";\n    const row = out.byCategory[cat] || { total: 0, count: 0, pending: 0, direction: isIncome ? \"INGRESO\" : \"GASTO\" };\n    row.total = round2(row.total + total);\n    row.count++;\n    if (inv.status !== STATUS.PAID) row.pending = round2(row.pending + total);\n    out.byCategory[cat] = row;\n    if (inv.status === STATUS.PAID) {\n      out.paid += total;\n      out.paidCount++;\n    } else {\n      out.pending += total;\n      out.igicPending += igic;\n      out.pendingCount++;\n      if (inv.dueDate && inv.dueDate < today) {\n        out.overdue += total;\n        out.overdueCount++;\n      }\n    }\n  }\n  out.base = round2(out.base);\n  out.igic = round2(out.igic);\n  out.total = round2(out.total);\n  out.paid = round2(out.paid);\n  out.pending = round2(out.pending);\n  out.igicPending = round2(out.igicPending);\n  out.overdue = round2(out.overdue);\n  return out;\n",
+    "total_lines": 810
+  },
+  "summary": "store.js: lines 526–640 of 810 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 115,
+    "total": 810,
+    "next_offset": 640
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

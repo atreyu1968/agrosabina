@@ -1,0 +1,54 @@
+{
+  "id": "ev_41e594fc92fead7552fef93ea00225792a6eb9a744a7ca2fcfe0bc6afe1cece7",
+  "subject": {
+    "kind": "script",
+    "sha256": "c9e79969d90fb7b5061f35ab5af1568203f04c3931ee6600c32d9f468b2d3c93",
+    "name": "ai.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 55,
+    "offset": 136,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 7940,
+    "lines": 55,
+    "more": true,
+    "offset": 136,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js",
+    "replaced_sequences": 0,
+    "text": "  const body = {\n    model: String(settings.aiModel || AI_DEFAULTS.aiModel),\n    temperature: 0,\n    messages: [\n      { role: \"system\", content: \"Contestas siempre con un objeto JSON válido y nada más.\" },\n      { role: \"user\", content: promptFor(String(text || \"\").slice(0, 6000)) },\n    ],\n  };\n\n  const ctrl = typeof AbortController === \"function\" ? new AbortController() : null;\n  const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;\n\n  let res;\n  try {\n    res = await fetch(url, {\n      method: \"POST\",\n      headers: {\n        \"Content-Type\": \"application/json\",\n        Authorization: `Bearer ${String(settings.aiKey || \"\").trim()}`,\n      },\n      body: JSON.stringify(body),\n      signal: ctrl ? ctrl.signal : undefined,\n    });\n  } catch (err) {\n    if (err && err.name === \"AbortError\") throw new Error(\"La IA ha tardado demasiado y lo he dejado estar.\");\n    throw new Error(\"No he podido llegar a la IA. ¿Hay conexión a internet?\");\n  } finally {\n    if (timer) clearTimeout(timer);\n  }\n\n  const raw = await res.text().catch(() => \"\");\n  if (!res.ok) throw new Error(explainHttpError(res.status, raw));\n\n  let content = \"\";\n  try {\n    const data = JSON.parse(raw);\n    content = data?.choices?.[0]?.message?.content || \"\";\n  } catch (_) {\n    throw new Error(\"La IA ha contestado algo que no entiendo.\");\n  }\n\n  const json = parseJsonLoose(content);\n  if (!json) throw new Error(\"La IA no ha devuelto la ficha del documento.\");\n\n  const kind = DOC_KINDS.some((k) => k.id === String(json.tipo || \"\").toUpperCase())\n    ? String(json.tipo).toUpperCase()\n    : \"\";\n  const catRaw = String(json.categoria || \"\").toUpperCase().trim();\n  const category = CATEGORIES.some((c) => c.id === catRaw) ? catRaw : \"\";\n\n  if (!kind && !category) throw new Error(\"La IA no ha reconocido el documento.\");\n\n  const conf = Number(json.confianza);\n  return {\n    kind: kind || \"\",\n",
+    "total_lines": 232
+  },
+  "summary": "ai.js: lines 137–191 of 232 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 55,
+    "total": 232,
+    "next_offset": 191
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js"
+    }
+  ],
+  "links": []
+}

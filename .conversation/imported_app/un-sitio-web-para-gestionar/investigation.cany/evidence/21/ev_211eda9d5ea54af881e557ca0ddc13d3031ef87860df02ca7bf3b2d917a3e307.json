@@ -1,0 +1,54 @@
+{
+  "id": "ev_211eda9d5ea54af881e557ca0ddc13d3031ef87860df02ca7bf3b2d917a3e307",
+  "subject": {
+    "kind": "script",
+    "sha256": "95ac2e5c4bec09c962bd87a3d7b4b2a6fddec11eadda8255eee762d54df4edea",
+    "name": "parse.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 606,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 29113,
+    "lines": 45,
+    "more": true,
+    "offset": 606,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js",
+    "replaced_sequences": 0,
+    "text": "/** El primer número que hay después de una etiqueta. */\nfunction numAfter(text, labelRe) {\n  const look = new RegExp(`(?:${labelRe.source})[^0-9%\\\\-]{0,40}?(${LIQ_NUM})`, \"i\");\n  const m = look.exec(text);\n  return m ? m[1] : null;\n}\n\n/** El número que hay justo antes de una unidad o etiqueta. */\nfunction numBefore(text, labelRe) {\n  const look = new RegExp(`(${LIQ_NUM})\\\\s*(?:${labelRe.source})`, \"i\");\n  const m = look.exec(text);\n  return m ? m[1] : null;\n}\n\n/** Un nombre para la persona («plátano» → «Plátano»). */\nfunction properCase(word) {\n  const w = String(word || \"\").trim();\n  if (!w) return \"\";\n  return w.charAt(0).toUpperCase() + w.slice(1);\n}\n\nfunction liquidacionProduct(text) {\n  const labelled = new RegExp(\n    `(?:producto|art[íi]culo|mercanc[íi]a|variedad|fruta)\\\\s*[:\\\\-]?\\\\s*([A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{3,32})`,\n    \"i\"\n  ).exec(text);\n  if (labelled) {\n    const name = labelled[1].replace(/\\s+/g, \" \").trim();\n    const key = fold(name);\n    const hit = LIQ_FRUITS.find(([k]) => key.includes(k));\n    if (hit) return hit[1];\n  }\n  const low = fold(text);\n  for (const [key, name] of LIQ_FRUITS) {\n    if (new RegExp(String.raw`\\b` + key + String.raw`s?\\b`).test(low)) return name;\n  }\n  return \"\";\n}\n\nfunction liquidacionCategory(text) {\n  const low = fold(text);\n  for (const c of LIQ_CATEGORIES) {\n    if (new RegExp(String.raw`\\b` + fold(c) + String.raw`\\b`).test(low)) return c;\n  }\n  return \"\";\n",
+    "total_lines": 781
+  },
+  "summary": "parse.js: lines 607–651 of 781 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 781,
+    "next_offset": 651
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_a90890747bf32515d9ee2c663120693bd98714d34f949b0c279df5aa435cd05e",
+  "subject": {
+    "kind": "script",
+    "sha256": "52be3e62c432d5fb6a02651299443d291b04749028c2d9225bdf44dd91f8dca5",
+    "name": "sqlite.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 440,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 18326,
+    "lines": 30,
+    "more": true,
+    "offset": 440,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js",
+    "replaced_sequences": 0,
+    "text": "          num(inv.igic),\n          num(inv.total),\n          inv.status === \"PAGADO\" ? \"PAGADO\" : \"PENDIENTE\",\n          inv.paidDate || \"\",\n          inv.kind || \"FACTURA\",\n          inv.category || \"\",\n          inv.direction === \"INGRESO\" ? \"INGRESO\" : \"GASTO\",\n          JSON.stringify(Array.isArray(inv.lines) ? inv.lines : []),\n          JSON.stringify(inv.liquidacion || null),\n          inv.source || \"manual\",\n          inv.fileName || \"\",\n          JSON.stringify(inv.original || null),\n          String(inv.rawText || \"\").slice(0, 8000),\n          JSON.stringify(inv.notes || []),\n          num(inv.confidence),\n          inv.createdAt || new Date().toISOString(),\n          inv.updatedAt || inv.createdAt || new Date().toISOString(),\n        ]\n      );\n    }\n\n    for (const m of messages) {\n      exec(\n        `INSERT INTO correos (id, de, asunto, fecha, texto, adjuntos, importado_en, usado_en)\n         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,\n        [\n          m.id,\n          m.from || \"\",\n          m.subject || \"(sin asunto)\",\n          m.date || \"\",\n",
+    "total_lines": 565
+  },
+  "summary": "sqlite.js: lines 441–470 of 565 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 565,
+    "next_offset": 470
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+    }
+  ],
+  "links": []
+}

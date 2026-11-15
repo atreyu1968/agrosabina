@@ -1,0 +1,54 @@
+{
+  "id": "ev_6f753786a510faf2f37fe3dcedbc0c35f667b0a9edc6cc6a3844f40d0f438856",
+  "subject": {
+    "kind": "script",
+    "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 200,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24919,
+    "lines": 200,
+    "more": true,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "/*\n * Los datos: proveedores, facturas y ajustes.\n * Se guardan en una base de datos SQLite que vive dentro del navegador (ver\n * sqlite.js). Si SQLite no puede cargarse, se guarda como antes, en\n * localStorage, y Ajustes lo avisa.\n */\n\nimport {\n  STATUS,\n  completeAmounts,\n  fold,\n  nifKey,\n  round2,\n  todayISO,\n  uid,\n} from \"./util.js\";\nimport * as sqlite from \"./sqlite.js\";\n\nconst KEY = \"facturas.igic.v1\";\nconst listeners = new Set();\n\nlet state = emptyState();\nlet lastSaveOk = true;\nlet engine = \"local\"; // \"sqlite\" | \"local\"\nlet persistTimer = null;\n\n/* ------------------------------------------------------------------ */\n/* Carga y guardado                                                   */\n/* ------------------------------------------------------------------ */\n\nfunction emptyState() {\n  return {\n    version: 1,\n    settings: {\n      defaultRate: 7,\n      businessName: \"Agrosabina SL\",\n      aiEnabled: false,\n      aiEndpoint: \"https://api.openai.com/v1\",\n      aiModel: \"gpt-4o-mini\",\n      aiKey: \"\",\n      createdAt: new Date().toISOString(),\n    },\n    suppliers: [],\n    invoices: [],\n    messages: [],\n  };\n}\n\nfunction normaliseMessage(m) {\n  if (!m || typeof m !== \"object\") return null;\n  const subject = String(m.subject || \"\").trim();\n  const text = String(m.text || \"\").slice(0, 20000);\n  if (!subject && !text) return null;\n  return {\n    id: m.id || uid(\"msg\"),\n    from: String(m.from || \"\").trim(),\n    subject: subject || \"(sin asunto)\",\n    date: String(m.date || \"\").trim(),\n    text,\n    attachments: Array.isArray(m.attachments)\n      ? m.attachments.slice(0, 30).map((a) => {\n          if (typeof a === \"string\") return { name: a, type: \"\", readable: false, size: 0 };\n          const bytes = a && a.bytes;\n          return {\n            name: String((a && a.name) || \"adjunto\"),\n            type: String((a && a.type) || \"\"),\n            readable: !!(a && a.readable),\n            size: Number((a && a.size) || 0) || (bytes && bytes.length ? bytes.length : 0),\n          };\n        })\n      : [],\n    importedAt: m.importedAt || new Date().toISOString(),\n    usedAt: m.usedAt || \"\",\n  };\n}\n\n/**\n * Una liquidación de fruta: kilos, precio por kilo, descuentos y líquido a\n * percibir. El bruto y el líquido se calculan, no se guardan.\n */\nfunction normaliseLiquidacion(liq) {\n  if (!liq || typeof liq !== \"object\") return null;\n  const n = (v) => (v !== null && v !== \"\" && Number.isFinite(+v) ? +v : null);\n  const kg = n(liq.kg);\n  const price = n(liq.price);\n  const product = String(liq.product || \"\").trim().slice(0, 120);\n  const category = String(liq.category || \"\").trim().slice(0, 40);\n  const discounts = Array.isArray(liq.discounts)\n    ? liq.discounts\n        .map((d) => {\n          if (!d || typeof d !== \"object\") return null;\n          const label = String(d.label || \"\").trim().slice(0, 120);\n          const amount = n(d.amount);\n          if (!label && amount == null) return null;\n          return { label, amount: amount == null ? 0 : amount };\n        })\n        .filter(Boolean)\n        .slice(0, 40)\n    : [];\n  if (!product && !category && kg == null && price == null && !discounts.length) return null;\n  return { product, category, kg, price, discounts };\n}\n\nfunction normaliseInvoice(inv) {\n  const base = Number.isFinite(+inv.base) && inv.base !== null && inv.base !== \"\" ? +inv.base : null;\n  const igic = Number.isFinite(+inv.igic) && inv.igic !== null && inv.igic !== \"\" ? +inv.igic : null;\n  const total = Number.isFinite(+inv.total) && inv.total !== null && inv.total !== \"\" ? +inv.total : null;\n  const rate = Number.isFinite(+inv.rate) && inv.rate !== null && inv.rate !== \"\" ? +inv.rate : null;\n  const complete = completeAmounts({ base, igic, total, rate });\n  return {\n    id: inv.id || uid(\"inv\"),\n    supplierId: inv.supplierId || null,\n    number: String(inv.number || \"\").trim(),\n    issueDate: inv.issueDate || \"\",\n    dueDate: inv.dueDate || \"\",\n    base: complete.base,\n    rate: complete.rate,\n    igic: complete.igic,\n    total: complete.total,\n    status: inv.status === STATUS.PAID ? STATUS.PAID : STATUS.PENDING,\n    paidDate: String(inv.paidDate || \"\").slice(0, 10),\n    kind: String(inv.kind || \"FACTURA\"),\n    category: String(inv.category || \"\"),\n    direction:\n      inv.direction === \"INGRESO\"\n        ? \"INGRESO\"\n        : inv.direction === \"GASTO\"\n          ? \"GASTO\"\n          : [\"LIQUIDACION\", \"SUBVENCION\", \"COBRO\"].includes(String(inv.kind || \"\"))\n            ? \"INGRESO\"\n            : \"GASTO\",\n    // Un documento puede llevar varios tipos de IGIC: cada línea guarda su base y su tipo.\n    lines: Array.isArray(inv.lines)\n      ? inv.lines\n          .map((l) => {\n            const lb = Number.isFinite(+l.base) && l.base !== null && l.base !== \"\" ? +l.base : null;\n            const lr = Number.isFinite(+l.rate) && l.rate !== null && l.rate !== \"\" ? +l.rate : null;\n            return lb == null || lr == null ? null : { base: lb, rate: lr };\n          })\n          .filter(Boolean)\n      : [],\n    // Liquidación de fruta: kilos, precio por kilo, descuentos y líquido a percibir.\n    liquidacion: normaliseLiquidacion(inv.liquidacion),\n    source: inv.source || \"manual\",\n    fileName: inv.fileName || \"\",\n    rawText: String(inv.rawText || \"\").slice(0, 8000),\n    notes: Array.isArray(inv.notes) ? inv.notes : [],\n    confidence: Number.isFinite(inv.confidence) ? inv.confidence : null,\n    createdAt: inv.createdAt || new Date().toISOString(),\n    updatedAt: inv.updatedAt || inv.createdAt || new Date().toISOString(),\n  };\n}\n\nfunction normalise(raw) {\n  const base = emptyState();\n  if (!raw || typeof raw !== \"object\") return base;\n  const out = {\n    version: 1,\n    settings: Object.assign(base.settings, raw.settings || {}),\n    suppliers: Array.isArray(raw.suppliers) ? raw.suppliers.map(normaliseSupplier).filter(Boolean) : [],\n    invoices: Array.isArray(raw.invoices) ? raw.invoices.map(normaliseInvoice) : [],\n    messages: Array.isArray(raw.messages) ? raw.messages.map(normaliseMessage).filter(Boolean) : [],\n  };\n  // Una factura sin proveedor válido se queda sin asignar en lugar de romper.\n  const ids = new Set(out.suppliers.map((s) => s.id));\n  out.invoices = out.invoices.filter((inv) => !inv.supplierId || ids.has(inv.supplierId));\n  return out;\n}\n\nfunction normaliseSupplier(s) {\n  if (!s || typeof s !== \"object\") return null;\n  const name = String(s.name || \"\").trim();\n  if (!name && !s.nif) return null;\n  return {\n    id: s.id || uid(\"sup\"),\n    name: name || String(s.nif || \"Proveedor\"),\n    nif: String(s.nif || \"\").trim(),\n    email: String(s.email || \"\").trim(),\n    phone: String(s.phone || \"\").trim(),\n    note: String(s.note || \"\").trim(),\n    createdAt: s.createdAt || new Date().toISOString(),\n  };\n}\n\nfunction load() {\n  try {\n    const raw = localStorage.getItem(KEY);\n    if (!raw) return emptyState();\n    return normalise(JSON.parse(raw));\n  } catch (err) {\n    console.warn(\"No se pudieron leer los datos guardados:\", err);\n    return emptyState();\n  }\n}\n\n/**\n * Arranca el almacén. Se llama una vez, antes de pintar nada.\n * - Abre la base de datos SQLite (o la crea con sus tablas).\n * - Si hay datos, los trae; si la base está vacía y había datos de la versión\n *   anterior en localStorage, los pasa a SQLite (migración de una sola vez).\n",
+    "total_lines": 789
+  },
+  "summary": "store.js: lines 1–200 of 789 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 200,
+    "total": 789,
+    "next_offset": 200
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

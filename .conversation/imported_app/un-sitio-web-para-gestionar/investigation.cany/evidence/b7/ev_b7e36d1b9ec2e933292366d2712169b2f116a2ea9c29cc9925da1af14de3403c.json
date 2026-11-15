@@ -1,0 +1,54 @@
+{
+  "id": "ev_b7e36d1b9ec2e933292366d2712169b2f116a2ea9c29cc9925da1af14de3403c",
+  "subject": {
+    "kind": "script",
+    "sha256": "cabadacb83e522652f928566f85a0f0aa4b3c072f4bbbe511770bdf3c467afb8",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 50,
+    "offset": 573,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 196660,
+    "lines": 50,
+    "more": true,
+    "offset": 573,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    [\"Archivo\", inv.fileName ? esc(inv.fileName) : \"El archivo no se guardó, solo lo leído\"],\n  ];\n\n  const body = `\n    <div class=\"table-wrap\">\n      <table class=\"data\"><tbody>\n        ${filas.map(([k, v]) => `<tr><th style=\"width:38%\">${esc(k)}</th><td>${v}</td></tr>`).join(\"\")}\n      </tbody></table>\n    </div>\n    ${\n      lines.length\n        ? `<h3 style=\"margin:16px 0 6px\">Tipos de IGIC del documento</h3>\n           <div class=\"table-wrap\"><table class=\"data\">\n             <thead><tr><th>Tipo</th><th class=\"num\">Base</th><th class=\"num\">Cuota</th></tr></thead>\n             <tbody>\n               ${lines\n                 .map((l) => {\n                   const lr = l.rate != null ? l.rate : l.tipo;\n                   const lb = l.base != null ? l.base : l.importe;\n                   const li = l.igic != null ? l.igic : l.cuota;\n                   return `<tr><td>${esc(rateText(lr))}</td><td class=\"num\">${fmtEUR(lb)}</td><td class=\"num\">${fmtEUR(li)}</td></tr>`;\n                 })\n                 .join(\"\")}\n             </tbody>\n           </table></div>`\n        : \"\"\n    }\n    ${\n      liq\n        ? `<h3 style=\"margin:16px 0 6px\">Liquidación de fruta</h3>\n           <div class=\"table-wrap\"><table class=\"data\"><tbody>\n             <tr><th>Producto</th><td>${esc(liq.product || \"—\")}</td></tr>\n             <tr><th>Categoría</th><td>${esc(liq.category || \"—\")}</td></tr>\n             <tr><th>Kilos</th><td>${liqNum.kg != null ? fmtNum(liqNum.kg) : \"—\"}</td></tr>\n             <tr><th>Precio €/kg</th><td>${liqNum.price != null ? fmtNum(liqNum.price, 3) : \"—\"}</td></tr>\n             <tr><th>Bruto</th><td>${fmtEUR(liqNum.gross)}</td></tr>\n             <tr><th>Descuentos</th><td>${fmtEUR(liqNum.discounts)}</td></tr>\n             <tr><th>Líquido a percibir</th><td><strong>${fmtEUR(liqNum.net)}</strong></td></tr>\n           </tbody></table></div>`\n        : \"\"\n    }\n    ${notes ? `<h3 style=\"margin:16px 0 6px\">Notas</h3><p class=\"sub\" style=\"white-space:pre-wrap\">${esc(notes)}</p>` : \"\"}\n    <h3 style=\"margin:16px 0 6px\">El texto que se leyó</h3>\n    ${\n      raw\n        ? `<div class=\"raw-text\">${esc(raw)}</div>`\n        : `<p class=\"sub\">De este documento no se guardó texto: se escribió a mano.</p>`\n    }`;\n\n  openModal(\n",
+    "total_lines": 5118
+  },
+  "summary": "views.js: lines 574–623 of 5118 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 50,
+    "total": 5118,
+    "next_offset": 623
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

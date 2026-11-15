@@ -1,0 +1,54 @@
+{
+  "id": "ev_c93f99216392dc709753442a5daf553a0724054cf9890b310024dbd29bafdbca",
+  "subject": {
+    "kind": "script",
+    "sha256": "6238b99ab8c1c0f10ce834ae43fb81a8055d05a8f9b20d7043327b18867475d9",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 38,
+    "offset": 3455,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 134368,
+    "lines": 38,
+    "more": true,
+    "offset": 3455,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "        message: \"Se añadirán 5 proveedores inventados y 11 facturas para que veas cómo funciona. Podrás borrarlo todo después.\",\n        confirm: \"Sí, cargar el ejemplo\",\n      });\n      if (!ok) return;\n      seedDemo();\n      toast(\"Datos de ejemplo cargados.\");\n      render();\n      return;\n    }\n    case \"retry-job\": {\n      const job = ui.jobs.find((j) => j.id === id);\n      if (job) {\n        job.state = \"queued\";\n        job.pct = 0;\n        job.error = \"\";\n        paintIngest();\n        runQueue();\n      }\n      return;\n    }\n    default:\n      return;\n  }\n}\n\n/* ------------------------------------------------------------------ */\n/* Buscadores                                                         */\n/* ------------------------------------------------------------------ */\n\nexport function onInput(event) {\n  const target = event.target;\n  if (!(target instanceof HTMLElement)) return;\n\n  if (target.id === \"invoiceSearch\") {\n    ui.filters.q = target.value;\n    refreshInvoiceTable();\n    return;\n  }\n",
+    "total_lines": 3575
+  },
+  "summary": "views.js: lines 3456–3493 of 3575 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 38,
+    "total": 3575,
+    "next_offset": 3493
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

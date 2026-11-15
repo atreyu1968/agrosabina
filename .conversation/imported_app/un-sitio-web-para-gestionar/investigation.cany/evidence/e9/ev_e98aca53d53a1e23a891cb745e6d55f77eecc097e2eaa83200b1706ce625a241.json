@@ -1,0 +1,54 @@
+{
+  "id": "ev_e98aca53d53a1e23a891cb745e6d55f77eecc097e2eaa83200b1706ce625a241",
+  "subject": {
+    "kind": "script",
+    "sha256": "e77d2b067087936538d3d840a88e5abb36fb4b329936b321d8810b38a1692838",
+    "name": "util.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 22,
+    "offset": 56,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 7872,
+    "lines": 22,
+    "more": true,
+    "offset": 56,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js",
+    "replaced_sequences": 0,
+    "text": "/** yyyy-mm-dd → dd/mm/aaaa */\nexport function fmtDate(iso) {\n  if (!iso) return \"—\";\n  const m = /^(\\d{4})-(\\d{2})-(\\d{2})$/.exec(String(iso));\n  if (!m) return String(iso);\n  return `${m[3]}/${m[2]}/${m[1]}`;\n}\n\n/** Fecha local de hoy en formato yyyy-mm-dd (sin líos de zona horaria). */\nexport function todayISO() {\n  const d = new Date();\n  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, \"0\")}-${String(d.getDate()).padStart(2, \"0\")}`;\n}\n\nexport function addDaysISO(iso, days) {\n  const d = new Date(`${iso}T12:00:00`);\n  d.setDate(d.getDate() + days);\n  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, \"0\")}-${String(d.getDate()).padStart(2, \"0\")}`;\n}\n\n/** Diferencia en días entre hoy y una fecha (negativo = ya pasó). */\nexport function daysUntil(iso) {\n",
+    "total_lines": 249
+  },
+  "summary": "util.js: lines 57–78 of 249 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 22,
+    "total": 249,
+    "next_offset": 78
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js"
+    }
+  ],
+  "links": []
+}

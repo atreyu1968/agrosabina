@@ -1,0 +1,54 @@
+{
+  "id": "ev_951fa7c45d5cfe08d8b3e38e4bcbae4e63a831fb7cc15d1d1a0e7eb84e58c6f2",
+  "subject": {
+    "kind": "script",
+    "sha256": "effbee695913dd70eb1d3b51952ecc8ed76c4969a93f6df5b3ddba29ce97f26c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 1429,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 196170,
+    "lines": 70,
+    "more": true,
+    "offset": 1429,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "                  </div>\n                </td>\n                <td>\n                  <span class=\"name\">${esc(product || kindInfo(inv.kind).short)}</span>\n                  ${category ? `<div class=\"sub\">${esc(category)}</div>` : \"\"}\n                  ${inv.number ? `<div class=\"sub mono\">${esc(inv.number)}</div>` : \"\"}\n                </td>\n                <td class=\"num\">${num.kg > 0 ? fmtNum(num.kg) : '<span class=\"muted\">—</span>'}</td>\n                <td class=\"num\">${num.price > 0 ? fmtNum(num.price, 3) : '<span class=\"muted\">—</span>'}</td>\n                <td class=\"num\">${num.discounts > 0 ? fmtEUR(num.discounts) : '<span class=\"muted\">—</span>'}</td>\n                <td class=\"num strong\">${fmtEUR(num.net)}</td>\n                <td>${statusPill(inv)}</td>\n                <td>\n                  <div class=\"row-actions\">\n                    <button class=\"icon-btn\" data-action=\"edit-invoice\" data-id=\"${inv.id}\" title=\"Editar\" aria-label=\"Editar liquidación\">${icon(\"edit\")}</button>\n                    <button class=\"icon-btn\" data-action=\"delete-invoice\" data-id=\"${inv.id}\" title=\"Borrar\" aria-label=\"Borrar liquidación\">${icon(\"trash\")}</button>\n                  </div>\n                </td>\n              </tr>`;\n            }).join(\"\")}\n          </tbody>\n          <tfoot>\n            <tr>\n              <td colspan=\"3\">${s.count} ${s.count === 1 ? \"documento\" : \"documentos\"}</td>\n              <td class=\"num\">${fmtNum(Math.round(s.kg))} kg</td>\n              <td class=\"num\">${s.kg > 0 ? fmtNum(s.avgPrice, 3) : \"—\"}</td>\n              <td class=\"num\">${fmtEUR(s.discounts)}</td>\n              <td class=\"num\">${fmtEUR(s.net)}</td>\n              <td colspan=\"2\">${fmtEUR(s.pending)} por cobrar</td>\n            </tr>\n          </tfoot>\n        </table>\n      </div>\n    </section>\n  </div>`;\n}\n\n/** Vuelve a pintar solo la pantalla de ventas (al cambiar el periodo). */\nfunction refreshSales() {\n  if (ui.route !== \"ventas\") return;\n  const view = document.getElementById(\"view\");\n  if (!view) return;\n  view.innerHTML = viewVentas();\n  const meta = pageMeta(\"ventas\");\n  const title = document.getElementById(\"viewTitle\");\n  const sub = document.getElementById(\"viewSub\");\n  if (title) title.textContent = meta.title;\n  if (sub) sub.textContent = meta.sub;\n  paintIngest();\n}\n\nfunction exportSalesCsv() {\n  const w = salesWindow();\n  const list = salesDocs();\n  if (!list.length) {\n    toast(\"No hay ventas en ese periodo.\", \"warn\");\n    return;\n  }\n  const headers = [\n    \"Fecha\",\n    \"Comprador\",\n    \"NIF\",\n    \"Documento\",\n    \"Tipo\",\n    \"Producto\",\n    \"Categoría\",\n    \"Kilos\",\n    \"Precio €/kg\",\n    \"Bruto\",\n    \"Descuentos\",\n",
+    "total_lines": 5107
+  },
+  "summary": "views.js: lines 1430–1499 of 5107 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 5107,
+    "next_offset": 1499
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

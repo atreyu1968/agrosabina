@@ -1,0 +1,76 @@
+{
+  "id": "ev_64e58617a5d31153b3f5efe70ed868accf1de3395a27cac83e9da962abf37dd6",
+  "subject": {
+    "kind": "script",
+    "sha256": "a4510bc407f405c81c92bae5c57e5803554023914907697e3758923543fdb4a9",
+    "name": "parse.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js",
+    "pattern": null,
+    "text": "export function parseInvoiceText"
+  },
+  "result": {
+    "file_size": 35481,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6578706f72742066756e6374696f6e207061727365496e766f69636554657874",
+        "file_offset": 13904,
+        "file_offset_hex": "0x3650",
+        "length": 32,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 32
+      },
+      {
+        "kind": "utf16le",
+        "length": 64
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 + utf16le in parse.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x3650"
+    }
+  ],
+  "links": []
+}

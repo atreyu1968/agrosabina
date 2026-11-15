@@ -1,0 +1,54 @@
+{
+  "id": "ev_cb483d760a6915c8a1b15e7aa9398e42026e8691de4979137429ae9adfef1f19",
+  "subject": {
+    "kind": "script",
+    "sha256": "2e63232f55380195988345859298b9f26dcc45a607da8dcdb623ebe7bba69d5f",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 3960,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 246017,
+    "lines": 70,
+    "more": true,
+    "offset": 3960,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    return;\n  }\n  downloadBytes(`facturas-igic-${todayISO()}.sqlite`, bytes, \"application/vnd.sqlite3\");\n  toast(\"Base de datos descargada. Se abre con DB Browser for SQLite o similar.\");\n}\n\nasync function reviewJob(job) {\n  const res = await openInvoiceModal({ mode: \"review\", job });\n  if (res) {\n    job.state = \"saved\";\n    job.savedLabel = `Guardada como ${res.invoice.number || \"sin número\"} · ${fmtEUR(res.invoice.total)}`;\n  } else {\n    job.state = \"skipped\";\n  }\n  paintIngest();\n}\n\n/* ------------------------------------------------------------------ */\n/* Pegar texto                                                        */\n/* ------------------------------------------------------------------ */\n\nexport function openPasteModal() {\n  openModal(\n    `<div class=\"modal-head\">\n      <div>\n        <h2>Pegar el texto de la factura</h2>\n        <p>Si tienes el texto (por ejemplo copiado de un correo), lo leo igual que una foto.</p>\n      </div>\n      <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"field\">\n        <label for=\"pasteArea\">Texto de la factura</label>\n        <textarea id=\"pasteArea\" rows=\"10\" placeholder=\"Proveedor: ...&#10;NIF: ...&#10;Factura nº: ...&#10;Base imponible: ...&#10;IGIC 7%: ...&#10;Total: ...\"></textarea>\n      </div>\n    </div>\n    <div class=\"modal-foot\">\n      <button class=\"btn primary\" data-read>Leer los datos</button>\n      <button class=\"btn ghost\" data-modal-cancel>Cancelar</button>\n    </div>`,\n    {\n      onMount(wrap) {\n        wrap.querySelectorAll(\"[data-modal-cancel]\").forEach((b) =>\n          b.addEventListener(\"click\", () => closeModal())\n        );\n        wrap.querySelector(\"[data-read]\").addEventListener(\"click\", async () => {\n          const text = wrap.querySelector(\"#pasteArea\").value.trim();\n          if (text.length < 10) {\n            toast(\"Pega un poco más de texto.\", \"bad\");\n            return;\n          }\n          const parsed = parseInvoiceText(text, {\n            defaultRate: getState().settings.defaultRate,\n          });\n          const cls = await classifyDocument(text, getState().settings, { fileName: \"texto pegado\" });\n          parsed.kind = cls.kind || \"FACTURA\";\n          parsed.category = cls.category || \"\";\n          parsed.direction = cls.direction || directionOf(parsed.kind);\n          parsed.classifyWhy = cls.why || \"\";\n          parsed.classifyNote = cls.note || \"\";\n          // Un recibo de salarios pegado a mano también se reconoce.\n          const nom = leerNomina(text);\n          if (nom.ok) {\n            parsed.kind = \"NOMINA\";\n            parsed.category = \"LABORALES\";\n            parsed.direction = \"GASTO\";\n            parsed.nomina = {\n              trabajador: nom.trabajador,\n              nif: nom.nif,\n              periodo: nom.periodo,\n",
+    "total_lines": 6180
+  },
+  "summary": "views.js: lines 3961–4030 of 6180 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 6180,
+    "next_offset": 4030
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_ba66a97f1e6d20b55a584b1c1462a0175219893f85c5e8ae41bd1ca13faae151",
+  "subject": {
+    "kind": "script",
+    "sha256": "eb13ad1c9be059197ae6bf5511c03c119a31bcb79e1cf572363121d6c0b27117",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 120,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\_check3\\pretty\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 23891,
+    "lines": 120,
+    "more": true,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\_check3\\pretty\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "/*\n* Los datos: proveedores, facturas y ajustes.\n* Se guardan en una base de datos SQLite que vive dentro del navegador (ver\n* sqlite.js). Si SQLite no puede cargarse, se guarda como antes, en\n* localStorage, y Ajustes lo avisa.\n*/\nimport { STATUS, completeAmounts, fold, nifKey, round2, todayISO, uid } from \"./util.js\";\nimport * as sqlite from \"./sqlite.js\";\nconst KEY = \"facturas.igic.v1\";\nconst listeners = new Set();\nlet state = emptyState();\nlet lastSaveOk = true;\nlet engine = \"local\";\nlet persistTimer = null;\n/* ------------------------------------------------------------------ */\n/* Carga y guardado                                                   */\n/* ------------------------------------------------------------------ */\nfunction emptyState() {\n\treturn {\n\t\tversion: 1,\n\t\tsettings: {\n\t\t\tdefaultRate: 7,\n\t\t\tbusinessName: \"Agrosabina SL\",\n\t\t\taiEnabled: false,\n\t\t\taiEndpoint: \"https://api.openai.com/v1\",\n\t\t\taiModel: \"gpt-4o-mini\",\n\t\t\taiKey: \"\",\n\t\t\tcreatedAt: new Date().toISOString()\n\t\t},\n\t\tsuppliers: [],\n\t\tinvoices: [],\n\t\tmessages: []\n\t};\n}\nfunction normaliseMessage(m) {\n\tif (!m || typeof m !== \"object\") return null;\n\tconst subject = String(m.subject || \"\").trim();\n\tconst text = String(m.text || \"\").slice(0, 2e4);\n\tif (!subject && !text) return null;\n\treturn {\n\t\tid: m.id || uid(\"msg\"),\n\t\tfrom: String(m.from || \"\").trim(),\n\t\tsubject: subject || \"(sin asunto)\",\n\t\tdate: String(m.date || \"\").trim(),\n\t\ttext,\n\t\tattachments: Array.isArray(m.attachments) ? m.attachments.slice(0, 30).map((a) => {\n\t\t\tif (typeof a === \"string\") return {\n\t\t\t\tname: a,\n\t\t\t\ttype: \"\",\n\t\t\t\treadable: false,\n\t\t\t\tsize: 0\n\t\t\t};\n\t\t\tconst bytes = a && a.bytes;\n\t\t\treturn {\n\t\t\t\tname: String(a && a.name || \"adjunto\"),\n\t\t\t\ttype: String(a && a.type || \"\"),\n\t\t\t\treadable: !!(a && a.readable),\n\t\t\t\tsize: Number(a && a.size || 0) || (bytes && bytes.length ? bytes.length : 0)\n\t\t\t};\n\t\t}) : [],\n\t\timportedAt: m.importedAt || new Date().toISOString(),\n\t\tusedAt: m.usedAt || \"\"\n\t};\n}\n/**\n* Una liquidación de fruta: kilos, precio por kilo, descuentos y líquido a\n* percibir. El bruto y el líquido se calculan, no se guardan.\n*/\nfunction normaliseLiquidacion(liq) {\n\tif (!liq || typeof liq !== \"object\") return null;\n\tconst n = (v) => v !== null && v !== \"\" && Number.isFinite(+v) ? +v : null;\n\tconst kg = n(liq.kg);\n\tconst price = n(liq.price);\n\tconst product = String(liq.product || \"\").trim().slice(0, 120);\n\tconst category = String(liq.category || \"\").trim().slice(0, 40);\n\tconst discounts = Array.isArray(liq.discounts) ? liq.discounts.map((d) => {\n\t\tif (!d || typeof d !== \"object\") return null;\n\t\tconst label = String(d.label || \"\").trim().slice(0, 120);\n\t\tconst amount = n(d.amount);\n\t\tif (!label && amount == null) return null;\n\t\treturn {\n\t\t\tlabel,\n\t\t\tamount: amount == null ? 0 : amount\n\t\t};\n\t}).filter(Boolean).slice(0, 40) : [];\n\tif (!product && !category && kg == null && price == null && !discounts.length) return null;\n\treturn {\n\t\tproduct,\n\t\tcategory,\n\t\tkg,\n\t\tprice,\n\t\tdiscounts\n\t};\n}\nfunction normaliseInvoice(inv) {\n\tconst base = Number.isFinite(+inv.base) && inv.base !== null && inv.base !== \"\" ? +inv.base : null;\n\tconst igic = Number.isFinite(+inv.igic) && inv.igic !== null && inv.igic !== \"\" ? +inv.igic : null;\n\tconst total = Number.isFinite(+inv.total) && inv.total !== null && inv.total !== \"\" ? +inv.total : null;\n\tconst rate = Number.isFinite(+inv.rate) && inv.rate !== null && inv.rate !== \"\" ? +inv.rate : null;\n\tconst complete = completeAmounts({\n\t\tbase,\n\t\tigic,\n\t\ttotal,\n\t\trate\n\t});\n\treturn {\n\t\tid: inv.id || uid(\"inv\"),\n\t\tsupplierId: inv.supplierId || null,\n\t\tnumber: String(inv.number || \"\").trim(),\n\t\tissueDate: inv.issueDate || \"\",\n\t\tdueDate: inv.dueDate || \"\",\n\t\tbase: complete.base,\n\t\trate: complete.rate,\n\t\tigic: complete.igic,\n\t\ttotal: complete.total,\n\t\tstatus: inv.status === STATUS.PAID ? STATUS.PAID : STATUS.PENDING,\n\t\tpaidDate: String(inv.paidDate || \"\").slice(0, 10),\n\t\tkind: String(inv.kind || \"FACTURA\"),\n\t\tcategory: String(inv.category || \"\"),\n\t\tdirection: inv.direction === \"INGRESO\" ? \"INGRESO\" : inv.direction === \"GASTO\" ? \"GASTO\" : [\n",
+    "total_lines": 812
+  },
+  "summary": "store.js: lines 1–120 of 812 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 120,
+    "total": 812,
+    "next_offset": 120
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\_check3\\pretty\\js\\store.js"
+    }
+  ],
+  "links": []
+}

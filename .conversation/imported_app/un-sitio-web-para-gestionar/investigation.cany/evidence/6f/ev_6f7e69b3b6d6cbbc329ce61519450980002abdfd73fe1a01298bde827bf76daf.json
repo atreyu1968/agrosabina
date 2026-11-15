@@ -1,0 +1,54 @@
+{
+  "id": "ev_6f7e69b3b6d6cbbc329ce61519450980002abdfd73fe1a01298bde827bf76daf",
+  "subject": {
+    "kind": "script",
+    "sha256": "6ec57842818ead8f65029f95b4b820488a6dbfbb6233142f78099083827d16c7",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 3330,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177631,
+    "lines": 30,
+    "more": true,
+    "offset": 3330,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    } catch (err) {\n      toast(err.message || \"No he podido leer esa copia.\", \"bad\");\n    }\n  });\n  input.click();\n}\n\n/* ------------------------------------------------------------------ */\n/* Acciones                                                           */\n/* ------------------------------------------------------------------ */\n\nexport async function onAction(action, el) {\n  const id = el.dataset.id;\n  switch (action) {\n    case \"new-sale\": {\n      openInvoiceModal({\n        mode: \"new\",\n        preset: { kind: \"LIQUIDACION\", direction: \"INGRESO\" },\n      });\n      return;\n    }\n    case \"export-sales-csv\": {\n      exportSalesCsv();\n      return;\n    }\n    case \"toggle-status\": {\n      const inv = getState().invoices.find((i) => i.id === id);\n      if (!inv) return;\n      const isIncome = directionOf(inv.kind) === \"INGRESO\";\n      // Si ya está cobrado o pagado, volver a pendiente borra la fecha y se dice.\n",
+    "total_lines": 4628
+  },
+  "summary": "views.js: lines 3331–3360 of 4628 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 4628,
+    "next_offset": 3360
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

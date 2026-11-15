@@ -1,0 +1,54 @@
+{
+  "id": "ev_7d0b45e8d8f720e792702abb14b83b0ee92fa203bbe3177e1ce7ca9fbbe62645",
+  "subject": {
+    "kind": "script",
+    "sha256": "7446b8ea7b393e04d26e3545f795cac917f2f35d924ca17ff8ad37982fc2aaf2",
+    "name": "ai.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 330,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 17998,
+    "lines": 30,
+    "more": true,
+    "offset": 330,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js",
+    "replaced_sequences": 0,
+    "text": "    } catch (err) {\n      nota = `La IA no ha leído el documento en imágenes (${\n        (err && err.message) || \"sin respuesta\"\n      }), así que le he mandado el texto que saqué del papel.`;\n      if (typeof onNote === \"function\") onNote(nota);\n      content = \"\";\n    }\n  }\n\n  if (!content) {\n    content = await requestContent(settings, {\n      system: EXTRACT_SYSTEM,\n      user: extractPrompt(text),\n      timeoutMs,\n      temperature: 0,\n    });\n    leido = \"texto\";\n  }\n\n  const json = parseJsonLoose(content);\n  if (!json || typeof json !== \"object\") throw new Error(\"La IA no ha devuelto los datos del documento.\");\n  const hojasLeidas = leido === \"papel\" ? pics.length : 0;\n\n  const kind = DOC_KINDS.some((k) => k.id === String(json.tipo || \"\").toUpperCase())\n    ? String(json.tipo).toUpperCase()\n    : \"\";\n  const catRaw = String(json.categoria || \"\").toUpperCase().trim();\n  const category = CATEGORIES.some((c) => c.id === catRaw) ? catRaw : \"\";\n\n  let liquidacion = null;\n",
+    "total_lines": 486
+  },
+  "summary": "ai.js: lines 331–360 of 486 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 486,
+    "next_offset": 360
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js"
+    }
+  ],
+  "links": []
+}

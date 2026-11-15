@@ -1,0 +1,54 @@
+{
+  "id": "ev_e7f5281359ee561b87ccc4040a3f78422b99309a68c2eb88796740d062bc85a6",
+  "subject": {
+    "kind": "script",
+    "sha256": "6238b99ab8c1c0f10ce834ae43fb81a8055d05a8f9b20d7043327b18867475d9",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 50,
+    "offset": 975,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 134368,
+    "lines": 50,
+    "more": true,
+    "offset": 975,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "                <td class=\"num\">${num.price > 0 ? fmtNum(num.price, 3) : '<span class=\"muted\">—</span>'}</td>\n                <td class=\"num\">${num.discounts > 0 ? fmtEUR(num.discounts) : '<span class=\"muted\">—</span>'}</td>\n                <td class=\"num strong\">${fmtEUR(num.net)}</td>\n                <td>${statusPill(inv)}</td>\n                <td>\n                  <div class=\"row-actions\">\n                    <button class=\"icon-btn\" data-action=\"edit-invoice\" data-id=\"${inv.id}\" title=\"Editar\" aria-label=\"Editar liquidación\">${icon(\"edit\")}</button>\n                    <button class=\"icon-btn\" data-action=\"delete-invoice\" data-id=\"${inv.id}\" title=\"Borrar\" aria-label=\"Borrar liquidación\">${icon(\"trash\")}</button>\n                  </div>\n                </td>\n              </tr>`;\n            }).join(\"\")}\n          </tbody>\n          <tfoot>\n            <tr>\n              <td colspan=\"3\">${s.count} ${s.count === 1 ? \"documento\" : \"documentos\"}</td>\n              <td class=\"num\">${fmtNum(Math.round(s.kg))} kg</td>\n              <td class=\"num\">${s.kg > 0 ? fmtNum(s.avgPrice, 3) : \"—\"}</td>\n              <td class=\"num\">${fmtEUR(s.discounts)}</td>\n              <td class=\"num\">${fmtEUR(s.net)}</td>\n              <td colspan=\"2\">${fmtEUR(s.pending)} por cobrar</td>\n            </tr>\n          </tfoot>\n        </table>\n      </div>\n    </section>\n  </div>`;\n}\n\n/** Vuelve a pintar solo la pantalla de ventas (al cambiar el periodo). */\nfunction refreshSales() {\n  if (ui.route !== \"ventas\") return;\n  const view = document.getElementById(\"view\");\n  if (!view) return;\n  view.innerHTML = viewVentas();\n  const meta = pageMeta(\"ventas\");\n  const title = document.getElementById(\"viewTitle\");\n  const sub = document.getElementById(\"viewSub\");\n  if (title) title.textContent = meta.title;\n  if (sub) sub.textContent = meta.sub;\n  paintIngest();\n}\n\nfunction exportSalesCsv() {\n  const w = salesWindow();\n  const list = salesDocs();\n  if (!list.length) {\n    toast(\"No hay ventas en ese periodo.\", \"warn\");\n    return;\n  }\n",
+    "total_lines": 3575
+  },
+  "summary": "views.js: lines 976–1025 of 3575 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 50,
+    "total": 3575,
+    "next_offset": 1025
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

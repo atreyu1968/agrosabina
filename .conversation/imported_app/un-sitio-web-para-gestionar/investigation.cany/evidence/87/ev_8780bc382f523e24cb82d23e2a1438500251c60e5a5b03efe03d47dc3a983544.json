@@ -1,0 +1,54 @@
+{
+  "id": "ev_8780bc382f523e24cb82d23e2a1438500251c60e5a5b03efe03d47dc3a983544",
+  "subject": {
+    "kind": "script",
+    "sha256": "97166a1908ad496cc3d9f4af7a91d78d9ed4111ba2c10b7ead96c138a8f040d1",
+    "name": "read.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 80,
+    "offset": 470,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\read.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 20700,
+    "lines": 80,
+    "more": true,
+    "offset": 470,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\read.js",
+    "replaced_sequences": 0,
+    "text": "    const doc = await pdfjs.getDocument({ data, isEvalSupported: false }).promise;\n    const total = doc.numPages;\n    const pages = Math.min(total, maxPages);\n    const images = [];\n    for (let p = 1; p <= pages; p++) {\n      const page = await doc.getPage(p);\n      const base = page.getViewport({ scale: 1 });\n      const scale = Math.min(2.6, Math.max(0.8, maxSide / Math.max(1, base.width)));\n      const viewport = page.getViewport({ scale });\n      const canvas = document.createElement(\"canvas\");\n      canvas.width = Math.round(viewport.width);\n      canvas.height = Math.round(viewport.height);\n      const ctx = canvas.getContext(\"2d\");\n      ctx.fillStyle = \"#fff\";\n      ctx.fillRect(0, 0, canvas.width, canvas.height);\n      await page.render({ canvasContext: ctx, viewport }).promise;\n      images.push(canvas.toDataURL(\"image/jpeg\", quality));\n    }\n    try {\n      doc.destroy();\n    } catch (_) {\n      /* nada */\n    }\n    return { images, total, pages };\n  }\n\n  if (kind === \"image\") {\n    const bitmap = await createImageBitmap(file);\n    const longest = Math.max(bitmap.width, bitmap.height) || 1;\n    const scale = longest > maxSide ? maxSide / longest : 1;\n    const w = Math.max(1, Math.round(bitmap.width * scale));\n    const h = Math.max(1, Math.round(bitmap.height * scale));\n    const canvas = document.createElement(\"canvas\");\n    canvas.width = w;\n    canvas.height = h;\n    const ctx = canvas.getContext(\"2d\");\n    ctx.fillStyle = \"#fff\";\n    ctx.fillRect(0, 0, w, h);\n    ctx.imageSmoothingQuality = \"high\";\n    ctx.drawImage(bitmap, 0, 0, w, h);\n    if (bitmap.close) bitmap.close();\n    return { images: [canvas.toDataURL(\"image/jpeg\", quality)], total: 1, pages: 1 };\n  }\n\n  return { images: [], total: 0, pages: 0 };\n}\n\n/**\n * Lee un fichero y devuelve su texto.\n * onProgress(etapa, 0..100)\n */\nexport async function readFile(file, onProgress = () => {}) {\n  const kind = describeFile(file);\n  if (kind === \"unknown\") {\n    throw new Error(\"Solo puedo leer fotos (JPG, PNG…) y PDF.\");\n  }\n  if (file.size > MAX_BYTES) {\n    throw new Error(\"El fichero es demasiado grande (más de 30 MB).\");\n  }\n\n  if (kind === \"pdf\") {\n    onProgress(\"Abriendo el PDF\", 5);\n    let leido = null;\n    try {\n      leido = await pdfTextLayer(file, onProgress);\n    } catch (err) {\n      throw new Error(\n        \"No he podido abrir el PDF. Si es un escaneo, prueba a subirlo como foto o comprueba la conexión.\"\n      );\n    }\n\n    const text = leido ? leido.text : \"\";\n    const compact = text.replace(/\\s/g, \"\");\n    if (compact.length >= 120) {\n      onProgress(\"Texto del PDF leído\", 100);\n      return {\n        text,\n        source: \"pdf-text\",\n        pages: leido ? leido.pages : 1,\n        total: leido ? leido.total : 1,\n",
+    "total_lines": 601
+  },
+  "summary": "read.js: lines 471–550 of 601 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 80,
+    "total": 601,
+    "next_offset": 550
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\read.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_9a5a547a64b3b4f5e6820ebcbd3ef5613e748515ad788c8e83f729543276b24d",
+  "subject": {
+    "kind": "script",
+    "sha256": "c48ded4f9cf5041b482b33ee217b0c9019182ba5922a959fb68cfe1f038baa21",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 230,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 246388,
+    "lines": 70,
+    "more": true,
+    "offset": 230,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  const medio = String((inv && inv.payMethod) || \"\").toUpperCase();\n  const cuenta = String((inv && inv.payAccount) || \"\").trim();\n  if (medio === \"CAJA\") return `Caja${cuenta ? ` · ${esc(cuenta)}` : \"\"}`;\n  if (medio === \"BANCO\") return `Banco${cuenta ? ` · ${esc(cuenta)}` : \"\"}`;\n  return cuenta ? esc(cuenta) : \"—\";\n}\n\n/** Recuerda la cuenta usada, para ofrecerla la próxima vez en la lista. */\nfunction rememberPayAccount(method, account) {\n  const nombre = String(account || \"\").trim();\n  if (!nombre || String(method || \"\").toUpperCase() !== \"BANCO\") return;\n  const ajustes = getState().settings || {};\n  const lista = Array.isArray(ajustes.bankAccounts) ? ajustes.bankAccounts.slice() : [];\n  if (lista.includes(nombre)) return;\n  lista.unshift(nombre);\n  updateSettings({ bankAccounts: lista.slice(0, 12) });\n}\n\nfunction statusPill(inv, interactive = true) {\n  const paid = inv.status === STATUS.PAID;\n  const cls = paid ? \"paid\" : \"pending\";\n  const isIncome = directionOf(inv.kind) === \"INGRESO\";\n  const label = paid ? (isIncome ? \"Cobrado\" : \"Pagado\") : \"Pendiente\";\n  const day = paid && inv.paidDate ? fmtDate(inv.paidDate) : \"\";\n  const via =\n    paid && inv.payMethod\n      ? inv.payMethod === \"CAJA\"\n        ? \" en efectivo (caja)\"\n        : \" por el banco\"\n      : \"\";\n  if (!interactive) {\n    return `<span class=\"status static ${cls}\" ${day ? `title=\"${isIncome ? \"Cobrado\" : \"Pagado\"} el ${day}${via}\"` : \"\"}>${label}${\n      day ? `<span class=\"status-day\">${esc(day)}</span>` : \"\"\n    }</span>`;\n  }\n  const nextLabel = paid ? \"pendiente\" : isIncome ? \"cobrado\" : \"pagado\";\n  return `<button class=\"status ${cls}\" data-action=\"toggle-status\" data-id=\"${inv.id}\"\n    title=\"${day ? `${isIncome ? \"Cobrado\" : \"Pagado\"} el ${day}${via}. ` : \"\"}Cambiar a ${nextLabel}\">${label}${\n    day ? `<span class=\"status-day\">${esc(day)}</span>` : \"\"\n  }</button>`;\n}\n\nfunction supplierName(id) {\n  const s = supplierById(id);\n  return s ? s.name : \"Sin proveedor\";\n}\n\nfunction rateText(rate) {\n  return Number.isFinite(rate) ? `${fmtNum(rate, rate % 1 === 0 ? 0 : 1)} %` : \"—\";\n}\n\n/** Etiqueta corta del tipo y del concepto, para las listas. */\nfunction tagOf(inv) {\n  const kind = kindInfo(inv.kind);\n  const cat = categoryInfo(inv.category);\n  const isIn = inv.direction === \"INGRESO\";\n  const cls = isIn ? \"tag is-in\" : \"tag\";\n  const label = inv.category && cat.id ? `${kind.short} · ${cat.label}` : kind.short;\n  return `<span class=\"${cls}\">${isIn ? \"+\" : \"−\"} ${esc(label)}</span>`;\n}\n\n/** Cómo se reparte el gasto por concepto (agua, luz, laborales…). */\nfunction categoryCard(t) {\n  const rows = Object.entries(t.byCategory)\n    .map(([id, row]) => ({ id, ...row }))\n    .filter((r) => r.total > 0)\n    .sort((a, b) => b.total - a.total)\n    .slice(0, 8);\n  if (!rows.length) return \"\";\n  const max = Math.max(...rows.map((r) => r.total), 1);\n",
+    "total_lines": 6175
+  },
+  "summary": "views.js: lines 231–300 of 6175 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 6175,
+    "next_offset": 300
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

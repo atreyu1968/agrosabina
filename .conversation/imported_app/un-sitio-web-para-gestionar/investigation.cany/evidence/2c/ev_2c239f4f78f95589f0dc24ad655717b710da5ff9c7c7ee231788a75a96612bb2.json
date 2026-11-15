@@ -1,0 +1,87 @@
+{
+  "id": "ev_2c239f4f78f95589f0dc24ad655717b710da5ff9c7c7ee231788a75a96612bb2",
+  "subject": {
+    "kind": "script",
+    "sha256": "479c0b5d585ce4e340a01c8c964abd39b1b238cda327fbbccdc5214504c813c4",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "applyAiReading"
+  },
+  "result": {
+    "file_size": 246123,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6170706c79416952656164696e67",
+        "file_offset": 103478,
+        "file_offset_hex": "0x19436",
+        "length": 14,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6170706c79416952656164696e67",
+        "file_offset": 104322,
+        "file_offset_hex": "0x19782",
+        "length": 14,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 14
+      },
+      {
+        "kind": "utf16le",
+        "length": 28
+      }
+    ],
+    "total_matches": 2
+  },
+  "summary": "2 match(es) for utf8 + utf16le in views.js; showing 2 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x19436"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x19782"
+    }
+  ],
+  "links": []
+}

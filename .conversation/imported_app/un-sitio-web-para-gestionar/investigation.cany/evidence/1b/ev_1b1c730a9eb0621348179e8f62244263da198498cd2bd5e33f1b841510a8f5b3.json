@@ -1,0 +1,54 @@
+{
+  "id": "ev_1b1c730a9eb0621348179e8f62244263da198498cd2bd5e33f1b841510a8f5b3",
+  "subject": {
+    "kind": "script",
+    "sha256": "3cef45174f6a52395d625097c1b39b52ab6d4e2dd916c2e5f0eb65b7b1704fc9",
+    "name": "reports.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 76,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\reports.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 5508,
+    "lines": 45,
+    "more": true,
+    "offset": 76,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\reports.js",
+    "replaced_sequences": 0,
+    "text": "  return trozos.length ? `\\n${trozos.slice(0, 6).join(\" · \")}` : \"\";\n}\n\nconst COLUMNAS = [\n  { label: \"Epígrafe\", weight: 6.4, align: \"left\" },\n  { label: \"Importe\", weight: 2, align: \"right\" },\n];\n\n/** El balance de situación, con la comprobación al final. */\nexport function informeBalancePdf(mayor, opts) {\n  const o = opts || {};\n  const saldos = saldosDelMayor(mayor);\n  const pyg = cuentaResultados(mayor || []);\n  const bal = balanceSituacion(mayor || [], pyg.resultado);\n\n  const rows = [];\n  for (const r of bal.rows) {\n    const total = /total/i.test(String(r.label || \"\"));\n    const detalle = r.value ? detalleDe(r.label, saldos) : \"\";\n    rows.push({\n      cells: [`${r.label}${detalle}`, r.value ? fmtEUR(r.value) : \"\"],\n      bold: total,\n      shade: total,\n    });\n  }\n  rows.push({\n    cells: [\"Comprobación: activo − (patrimonio neto + pasivo)\", fmtEUR(bal.descuadre)],\n    bold: true,\n    shade: true,\n  });\n\n  return informePdf({\n    filename: nombreFichero(\"balance-de-situacion\", o.from, o.to),\n    title: \"Agrosabina SL · Balance de situación\",\n    subtitle: `${periodoTexto(o.from, o.to)} · modelo oficial del Plan General de Contabilidad · emitido el ${hoyTexto()}`,\n    footer: \"Agrosabina SL · Balance de situación\",\n    horizontal: !!o.horizontal,\n    blocks: [\n      {\n        type: \"text\",\n        text: `Resultado del periodo: ${fmtEUR(pyg.resultado)}. El balance cuadra cuando la comprobación de la última línea da 0,00 €.`,\n      },\n      { type: \"space\", size: 6 },\n      { type: \"table\", columns: COLUMNAS, rows, size: 8, rowHeight: 16 },\n      {\n",
+    "total_lines": 164
+  },
+  "summary": "reports.js: lines 77–121 of 164 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 164,
+    "next_offset": 121
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\reports.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_ce6d7f68013b72ce010914cbdce92a3ea09acc9e903f2aa940a45fbc893c4f49",
+  "subject": {
+    "kind": "script",
+    "sha256": "b2e5934b5b5d5b0863dbcfd14ac048c613516ee3c6a204f3f3b2aac0c9263cae",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 80,
+    "offset": 3566,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 155982,
+    "lines": 80,
+    "more": true,
+    "offset": 3566,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "\nexport function onChange(event) {\n  const target = event.target;\n  if (!(target instanceof HTMLElement)) return;\n  if (target.id === \"accRange\") {\n    ui.conta.range = target.value;\n    if (ui.conta.range === \"custom\") {\n      if (!ui.conta.from) ui.conta.from = `${new Date().getFullYear()}-01-01`;\n      if (!ui.conta.to) ui.conta.to = todayISO();\n    }\n    render();\n    return;\n  }\n  if (target.id === \"accFrom\" || target.id === \"accTo\") {\n    ui.conta[target.id === \"accFrom\" ? \"from\" : \"to\"] = target.value;\n    render();\n    return;\n  }\n  if (target.id === \"salesRange\") {\n    ui.sales.range = target.value;\n    if (ui.sales.range === \"custom\") {\n      if (!ui.sales.from) ui.sales.from = `${new Date().getFullYear()}-01-01`;\n      if (!ui.sales.to) ui.sales.to = todayISO();\n    }\n    refreshSales();\n    return;\n  }\n  if (target.id === \"salesFrom\" || target.id === \"salesTo\") {\n    ui.sales[target.id === \"salesFrom\" ? \"from\" : \"to\"] = target.value;\n    refreshSales();\n    return;\n  }\n  if (target.matches(\"[data-filter-supplier]\")) {\n    ui.filters.supplier = target.value;\n    refreshInvoiceTable();\n  }\n}\n\nexport function onFilterButton(button) {\n  ui.filters.status = button.dataset.filterStatus;\n  refreshInvoiceTable();\n}\n\nexport function onDirectionButton(button) {\n  ui.filters.direction = button.dataset.filterDirection || \"all\";\n  document.querySelectorAll(\"[data-filter-direction]\").forEach((b) => {\n    b.classList.toggle(\"active\", b.dataset.filterDirection === ui.filters.direction);\n  });\n  refreshInvoiceTable();\n}\n\n/* ------------------------------------------------------------------ */\n/* Arrastrar y soltar                                                 */\n/* ------------------------------------------------------------------ */\n\nexport function wireDropzone() {\n  document.addEventListener(\"dragover\", (ev) => {\n    const dz = ev.target instanceof Element ? ev.target.closest(\"#dropzone, #mailDrop\") : null;\n    if (!dz) return;\n    ev.preventDefault();\n    dz.classList.add(\"drag\");\n  });\n  document.addEventListener(\"dragleave\", (ev) => {\n    const dz = ev.target instanceof Element ? ev.target.closest(\"#dropzone, #mailDrop\") : null;\n    if (dz) dz.classList.remove(\"drag\");\n  });\n  document.addEventListener(\"drop\", (ev) => {\n    const dz = ev.target instanceof Element ? ev.target.closest(\"#dropzone, #mailDrop\") : null;\n    if (!dz) return;\n    ev.preventDefault();\n    dz.classList.remove(\"drag\");\n    if (ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files.length) {\n      if (dz.id === \"mailDrop\") importEmails(ev.dataTransfer.files);\n      else queueFiles(ev.dataTransfer.files);\n    }\n  });\n}\n\nexport function hasJobs() {\n  return ui.jobs.length > 0;\n",
+    "total_lines": 4117
+  },
+  "summary": "views.js: lines 3567–3646 of 4117 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 80,
+    "total": 4117,
+    "next_offset": 3646
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

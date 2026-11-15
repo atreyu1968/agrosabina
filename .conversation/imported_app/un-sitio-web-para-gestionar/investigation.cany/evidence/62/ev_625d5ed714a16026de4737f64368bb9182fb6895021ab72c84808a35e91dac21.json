@@ -1,0 +1,54 @@
+{
+  "id": "ev_625d5ed714a16026de4737f64368bb9182fb6895021ab72c84808a35e91dac21",
+  "subject": {
+    "kind": "text",
+    "sha256": "1c11888f5ec682be7664f14ad58330bc74656eec5143a1d8c0380507ff7b36d4",
+    "name": "styles.css"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 270,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 42052,
+    "lines": 30,
+    "more": true,
+    "offset": 270,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "replaced_sequences": 0,
+    "text": "  box-shadow: var(--shadow-sm);\n}\n\n.card-head {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  padding: 16px 18px;\n  border-bottom: 1px solid var(--line);\n}\n.card-head h2 { font-size: 15px; font-weight: 660; letter-spacing: -.01em; }\n.card-head p { font-size: 12.5px; color: var(--ink-3); margin-top: 1px; }\n.card-head .spacer { margin-left: auto; }\n\n.card-body { padding: 18px; }\n.card-body.tight { padding: 0; }\n\n.stack { display: flex; flex-direction: column; gap: 18px; }\n.row { display: flex; align-items: center; gap: 10px; }\n.row.wrap { flex-wrap: wrap; }\n.spacer { margin-left: auto; }\n\n/* ---------- Indicadores ------------------------------------------------- */\n\n.kpis {\n  display: grid;\n  grid-template-columns: repeat(4, minmax(0, 1fr));\n  gap: 14px;\n}\n\n",
+    "total_lines": 1558
+  },
+  "summary": "styles.css: lines 271–300 of 1558 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 1558,
+    "next_offset": 300
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+    }
+  ],
+  "links": []
+}

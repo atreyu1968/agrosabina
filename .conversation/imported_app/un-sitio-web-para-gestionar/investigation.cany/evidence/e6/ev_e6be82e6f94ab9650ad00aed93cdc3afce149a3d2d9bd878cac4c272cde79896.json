@@ -1,0 +1,54 @@
+{
+  "id": "ev_e6be82e6f94ab9650ad00aed93cdc3afce149a3d2d9bd878cac4c272cde79896",
+  "subject": {
+    "kind": "script",
+    "sha256": "386ecd9139744ccd2496dea470f694074d9a3a2757344eff7673f391258de9a9",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 3762,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 245968,
+    "lines": 30,
+    "more": true,
+    "offset": 3762,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    ? [...dtos.querySelectorAll(\".dto-line\")]\n        .map((row) => {\n          const labelEl = row.querySelector(\".dto-label\");\n          const amountEl = row.querySelector(\".dto-amount\");\n          const label = (labelEl ? labelEl.value : \"\").trim();\n          const amount = parseAmount(amountEl ? amountEl.value : \"\");\n          if (!label && amount == null) return null;\n          return { label, amount: amount == null ? 0 : amount };\n        })\n        .filter(Boolean)\n    : [];\n  const partidas = (() => {\n    const raw = val(\"#l-partidas\");\n    if (!raw) return [];\n    try {\n      const arr = JSON.parse(raw);\n      return Array.isArray(arr) ? arr.slice(0, 40) : [];\n    } catch {\n      return [];\n    }\n  })();\n  if (!product && !category && kg == null && price == null && !discounts.length && !partidas.length) return null;\n  return { product, category, kg, price, discounts, partidas };\n}\n\nfunction readForm(wrap) {\n  const q = (id) => wrap.querySelector(id);\n  const status = q(\"#f-status-seg\").dataset.value;\n  const base = parseAmount(q(\"#f-base\").value);\n  const rateRaw = q(\"#f-rate\").value;\n",
+    "total_lines": 6167
+  },
+  "summary": "views.js: lines 3763–3792 of 6167 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 6167,
+    "next_offset": 3792
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

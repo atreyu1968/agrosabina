@@ -1,0 +1,54 @@
+{
+  "id": "ev_28128454ec300076287b577d23e1fb1676bcec4d24e9e8a9e6f6e672e4560525",
+  "subject": {
+    "kind": "script",
+    "sha256": "6ec57842818ead8f65029f95b4b820488a6dbfbb6233142f78099083827d16c7",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 50,
+    "offset": 520,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177631,
+    "lines": 50,
+    "more": true,
+    "offset": 520,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "          </div>` : `<div class=\"empty\" style=\"padding:30px 18px\">\n            <h3>Nada pendiente</h3>\n            <p>Todas las facturas están pagadas.</p>\n          </div>`}\n        </section>\n\n        <section class=\"card\">\n          <div class=\"card-head\">\n            <div>\n              <h2>Últimos 6 meses</h2>\n              <p>Pagado y pendiente por mes</p>\n            </div>\n            <div class=\"spacer\"></div>\n            <div class=\"legend\">\n              <span><i class=\"l-paid\"></i>Pagado</span>\n              <span><i class=\"l-pending\"></i>Pendiente</span>\n            </div>\n          </div>\n          <div class=\"card-body\">\n            <div class=\"bars\">\n              ${months.map((m) => {\n                const row = byMonth.get(m);\n                const paidH = Math.round((row.paid / monthMax) * 100);\n                const pendingH = Math.round((row.pending / monthMax) * 100);\n                const title = `${monthLabel(m)}: ${fmtEUR(row.paid)} pagado, ${fmtEUR(row.pending)} pendiente`;\n                return `<div class=\"bar-col\" title=\"${esc(title)}\">\n                  <div class=\"bar-stack\">\n                    <div class=\"bar pending\" style=\"height:${pendingH}%\"></div>\n                    <div class=\"bar paid\" style=\"height:${paidH}%\"></div>\n                  </div>\n                  <div class=\"bar-label\">${monthLabel(m)}</div>\n                </div>`;\n              }).join(\"\")}\n            </div>\n          </div>\n        </section>\n      </div>\n    </div>\n\n    ${topSuppliers.length ? `\n    <section class=\"card\">\n      <div class=\"card-head\">\n        <div>\n          <h2>Proveedores con más pendiente</h2>\n          <p>A quién tienes que pagar antes</p>\n        </div>\n        <div class=\"spacer\"></div>\n        <a class=\"btn sm ghost\" href=\"#/proveedores\">Ver proveedores ${icon(\"arrow\")}</a>\n      </div>\n      <div class=\"mini-list\">\n",
+    "total_lines": 4628
+  },
+  "summary": "views.js: lines 521–570 of 4628 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 50,
+    "total": 4628,
+    "next_offset": 570
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

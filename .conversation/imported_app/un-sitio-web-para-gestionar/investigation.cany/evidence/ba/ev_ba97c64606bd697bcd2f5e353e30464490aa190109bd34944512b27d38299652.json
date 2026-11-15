@@ -1,0 +1,54 @@
+{
+  "id": "ev_ba97c64606bd697bcd2f5e353e30464490aa190109bd34944512b27d38299652",
+  "subject": {
+    "kind": "script",
+    "sha256": "972b1b7be9bc1577cb6086bdfd834369effd809ab3790f15ed31e98a92be3786",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 4290,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 200323,
+    "lines": 70,
+    "more": true,
+    "offset": 4290,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  [\"diario\", \"Diario\"],\n  [\"mayor\", \"Mayor\"],\n  [\"sumas\", \"Sumas y saldos\"],\n  [\"balance\", \"Balance de situación\"],\n  [\"resultados\", \"Pérdidas y ganancias\"],\n  [\"cuentas\", \"Cuentas\"],\n];\n\n/** El periodo contable que se está mirando. */\nfunction contaWindow() {\n  return windowFor(ui.conta);\n}\n\n/** Los documentos con el nombre de su proveedor o comprador, listos para contabilizar. */\nfunction accDocs() {\n  const state = getState();\n  const names = new Map((state.suppliers || []).map((s) => [s.id, s.name]));\n  return (state.invoices || []).map((inv) =>\n    Object.assign({}, inv, { party: names.get(inv.supplierId) || \"\" })\n  );\n}\n\n/** El asiento de apertura, si ya se han dicho el capital y el saldo de bancos. */\nfunction accApertura() {\n  const s = getState().settings || {};\n  const capital = Number(s.openingCapital) || 0;\n  const tesoreria = Number(s.openingCash) || 0;\n  if (!capital && !tesoreria) return null;\n  return { capital, tesoreria, fecha: String(s.openingDate || \"\").slice(0, 10) };\n}\n\n/** Los asientos escritos a mano que hay guardados. */\nfunction accManuales() {\n  const s = getState().settings || {};\n  const list = Array.isArray(s.asientosManuales) ? s.asientosManuales : [];\n  return list.filter((a) => a && a.id && Array.isArray(a.lineas) && a.lineas.length);\n}\n\n/** Guarda la lista de asientos escritos a mano. */\nfunction saveAccManuales(list) {\n  updateSettings({ asientosManuales: Array.isArray(list) ? list : [] });\n}\n\n/**\n * El plan de cuentas que se está usando: una subcuenta por cada cliente y cada\n * proveedor que aparece en los documentos (430001, 400001…), más las cuentas\n * que haya añadido la persona. Se calcula siempre igual, en orden alfabético,\n * para que los números no cambien al añadir un documento nuevo.\n */\nfunction accPlan() {\n  const s = getState().settings || {};\n  const propias = (Array.isArray(s.cuentasPropias) ? s.cuentasPropias : [])\n    .map((c) => ({ code: String((c && c.code) || \"\").trim(), name: String((c && c.name) || \"\").trim() }))\n    .filter((c) => /^\\d{3,6}$/.test(c.code) && c.name);\n\n  const guardadas = (Array.isArray(s.subcuentas) ? s.subcuentas : [])\n    .map((c) => ({\n      code: String((c && c.code) || \"\").trim(),\n      name: String((c && c.name) || \"\").trim(),\n      key: String((c && c.key) || \"\"),\n      cuenta: String((c && c.cuenta) || String((c && c.code) || \"\").slice(0, 3)),\n    }))\n    .filter((c) => /^\\d{6}$/.test(c.code) && c.name);\n\n  const subcuentas = guardadas.slice();\n  const abiertas = subcuentas.map((c) => c.code);\n  const yaEsta = new Set(subcuentas.map((c) => `${c.cuenta}|${c.key}`));\n\n  const terceros = new Map();\n  for (const doc of accDocs()) {\n",
+    "total_lines": 5201
+  },
+  "summary": "views.js: lines 4291–4360 of 5201 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 5201,
+    "next_offset": 4360
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

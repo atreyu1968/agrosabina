@@ -1,0 +1,54 @@
+{
+  "id": "ev_2b06d063103b400a0ab49f805c340c8a985d2119f3d746d374ab731c3085622e",
+  "subject": {
+    "kind": "script",
+    "sha256": "e694a79c0fd22ea8c00684da290c4556aced463bb78e5466f3be90ead3c96f7f",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 4140,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 195333,
+    "lines": 45,
+    "more": true,
+    "offset": 4140,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  });\n  document.addEventListener(\"drop\", (ev) => {\n    const dz = ev.target instanceof Element ? ev.target.closest(\"#dropzone, #mailDrop\") : null;\n    if (!dz) return;\n    ev.preventDefault();\n    dz.classList.remove(\"drag\");\n    if (ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files.length) {\n      if (dz.id === \"mailDrop\") importEmails(ev.dataTransfer.files);\n      else queueFiles(ev.dataTransfer.files);\n    }\n  });\n}\n\nexport function hasJobs() {\n  return ui.jobs.length > 0;\n}\n\n/* ------------------------------------------------------------------ */\n/* Contabilidad                                                       */\n/* ------------------------------------------------------------------ */\n\nconst ACC_TABS = [\n  [\"diario\", \"Diario\"],\n  [\"mayor\", \"Mayor\"],\n  [\"sumas\", \"Sumas y saldos\"],\n  [\"balance\", \"Balance de situación\"],\n  [\"resultados\", \"Pérdidas y ganancias\"],\n  [\"cuentas\", \"Cuentas\"],\n];\n\n/** El periodo contable que se está mirando. */\nfunction contaWindow() {\n  return windowFor(ui.conta);\n}\n\n/** Los documentos con el nombre de su proveedor o comprador, listos para contabilizar. */\nfunction accDocs() {\n  const state = getState();\n  const names = new Map((state.suppliers || []).map((s) => [s.id, s.name]));\n  return (state.invoices || []).map((inv) =>\n    Object.assign({}, inv, { party: names.get(inv.supplierId) || \"\" })\n  );\n}\n\n/** El asiento de apertura, si ya se han dicho el capital y el saldo de bancos. */\n",
+    "total_lines": 5073
+  },
+  "summary": "views.js: lines 4141–4185 of 5073 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 5073,
+    "next_offset": 4185
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

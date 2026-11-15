@@ -1,0 +1,54 @@
+{
+  "id": "ev_65135d65d872ab4f4468183099b2b4573de46bfd09672e7af4a942f7cabfc5f5",
+  "subject": {
+    "kind": "script",
+    "sha256": "2e5158a4deb98b4c0245087c1c5c7dea29ae7b281e3ae7d1fd9904b24e639132",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 26,
+    "offset": 318,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177940,
+    "lines": 26,
+    "more": true,
+    "offset": 318,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      } catch (err) {\n        console.error(\"Contabilidad:\", err);\n        return { title: \"Contabilidad\", sub: \"No he podido calcular los asientos\" };\n      }\n    }\n    case \"compras\":\n\n      return {\n        title: \"Compras\",\n        sub: `${t.expenseCount} ${t.expenseCount === 1 ? \"compra\" : \"compras\"} y ${t.incomeCount} ${t.incomeCount === 1 ? \"ingreso\" : \"ingresos\"} · ${t.pendingCount} sin pagar`,\n      };\n    case \"proveedores\":\n      return {\n        title: \"Proveedores\",\n        sub: `${supCount} ${supCount === 1 ? \"proveedor\" : \"proveedores\"} en tu lista`,\n      };\n    case \"correo\": {\n      const count = messages().length;\n      return {\n        title: \"Correo\",\n        sub:\n          count === 0\n            ? \"Trae aquí los correos con facturas o liquidaciones\"\n            : `${count} ${count === 1 ? \"correo guardado\" : \"correos guardados\"} en el buzón`,\n      };\n    }\n",
+    "total_lines": 4640
+  },
+  "summary": "views.js: lines 319–344 of 4640 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 26,
+    "total": 4640,
+    "next_offset": 344
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_14abe89828f38e9d01994162aafb154a002713361cd89f31b62797a428b6f9a7",
+  "subject": {
+    "kind": "script",
+    "sha256": "cd72c4a0be9f6e196bf8bef6dc7dd3bb00aba0b531f44f9710bdb6816465224f",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 1478,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 99337,
+    "lines": 60,
+    "more": true,
+    "offset": 1478,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "          category: \"\",\n          direction: \"GASTO\",\n        };\n\n  const title = editing ? \"Editar factura\" : job ? \"Revisa lo que he leído\" : \"Nueva factura\";\n  const sub = editing\n    ? \"Cambia lo que haga falta y guarda.\"\n    : job\n      ? `${sourceLabel(job.source)} · ${esc(job.file.name)}`\n      : \"Escribe los datos de la factura.\";\n\n  const conf = job ? Math.round((job.parsed.confidence || 0) * 100) : null;\n\n  const html = `\n    <div class=\"modal-head\">\n      <div>\n        <h2>${title}</h2>\n        <p>${sub}</p>\n      </div>\n      <div class=\"spacer\"></div>\n      ${conf != null ? `<span class=\"tag ${conf >= 65 ? \"kind\" : \"\"}\">${conf} % leído</span>` : \"\"}\n      <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n    </div>\n    <div class=\"modal-body\">\n      ${job ? notesHtml(job.parsed.notes) : \"\"}\n      <div id=\"dupWarning\" class=\"summary-box warn\" hidden style=\"margin-bottom:14px\">${icon(\"alert\")}<div></div></div>\n      <div class=\"review-layout\">\n        <div>\n          ${invoiceFormHtml(values)}\n        </div>\n        <div>\n          <div class=\"summary-box\" style=\"margin-bottom:12px\">\n            ${icon(\"info\")}\n            <div id=\"supplierInfo\">Al guardar, el proveedor se añade solo a tu lista.</div>\n          </div>\n          ${job && job.parsed.rawText ? `\n          <details>\n            <summary style=\"cursor:pointer;font-size:13px;color:var(--ink-2);font-weight:600\">Ver el texto que he leído</summary>\n            <div class=\"raw-text\" style=\"margin-top:8px\">${esc(job.parsed.rawText)}</div>\n          </details>` : \"\"}\n        </div>\n      </div>\n    </div>\n    <div class=\"modal-foot\">\n      <button class=\"btn primary\" data-save>${editing ? \"Guardar cambios\" : \"Guardar factura\"}</button>\n      <button class=\"btn ghost\" data-modal-cancel>${job ? \"Descartar\" : \"Cancelar\"}</button>\n      <div class=\"spacer\"></div>\n      ${job ? `<span class=\"muted\" style=\"font-size:12px;color:var(--ink-3)\">Comprueba los importes antes de guardar</span>` : \"\"}\n    </div>`;\n\n  return new Promise((resolve) => {\n    let settled = false;\n    const finish = (result) => {\n      if (settled) return;\n      settled = true;\n      resolve(result);\n    };\n\n    openModal(html, {\n      onMount(wrap) {\n",
+    "total_lines": 2660
+  },
+  "summary": "views.js: lines 1479–1538 of 2660 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 2660,
+    "next_offset": 1538
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

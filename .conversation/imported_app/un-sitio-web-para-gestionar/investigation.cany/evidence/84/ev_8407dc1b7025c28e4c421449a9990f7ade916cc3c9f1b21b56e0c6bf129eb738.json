@@ -1,0 +1,53 @@
+{
+  "id": "ev_8407dc1b7025c28e4c421449a9990f7ade916cc3c9f1b21b56e0c6bf129eb738",
+  "subject": {
+    "kind": "text",
+    "sha256": "b0001cf3529b4fa87bdbf0cc34bb09bce24ce0a36878112b0569af3154b05f26",
+    "name": "styles.css"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 1246,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 35133,
+    "lines": 39,
+    "more": false,
+    "offset": 1246,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "replaced_sequences": 0,
+    "text": "  grid-template-columns: minmax(0, 1fr) 148px 34px;\n}\n.dto-line input[type=\"text\"] { width: 100%; min-width: 0; }\n\n@media (max-width: 620px) {\n  .liq-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }\n  .liq-grid .field:first-child { grid-column: 1 / -1; }\n  .dto-line { grid-template-columns: minmax(0, 1fr) 108px 32px; }\n}\n\n/* ------------------------------------------------------------------ */\n/* Ventas e ingresos: periodo y acumulados                            */\n/* ------------------------------------------------------------------ */\n\n#salesRange { width: auto; min-width: 156px; }\n\n.date-filter {\n  display: inline-flex;\n  align-items: center;\n  gap: 7px;\n  font-size: 12.5px;\n  font-weight: 550;\n  color: var(--ink-3);\n}\n.date-filter input[type=\"date\"] {\n  width: auto;\n  min-width: 134px;\n  padding: 8px 10px;\n  font-size: 13px;\n}\n\n.two-col > .card { min-width: 0; }\n.two-col table.data .cat-track { max-width: 220px; }\n\n@media (max-width: 620px) {\n  #salesRange { width: 100%; }\n  .date-filter { flex: 1 1 100%; }\n  .date-filter input[type=\"date\"] { flex: 1 1 auto; min-width: 0; width: 100%; }\n}\n",
+    "total_lines": 1285
+  },
+  "summary": "styles.css: lines 1247–1285 of 1285 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 39,
+    "total": 1285
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+    }
+  ],
+  "links": []
+}

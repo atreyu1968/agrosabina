@@ -1,0 +1,54 @@
+{
+  "id": "ev_24b1d6e3d339e466a318994cdb84918f6a13c835601b4a2242c6d7e7512e9eff",
+  "subject": {
+    "kind": "script",
+    "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 50,
+    "offset": 122,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24919,
+    "lines": 50,
+    "more": true,
+    "offset": 122,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "    category: String(inv.category || \"\"),\n    direction:\n      inv.direction === \"INGRESO\"\n        ? \"INGRESO\"\n        : inv.direction === \"GASTO\"\n          ? \"GASTO\"\n          : [\"LIQUIDACION\", \"SUBVENCION\", \"COBRO\"].includes(String(inv.kind || \"\"))\n            ? \"INGRESO\"\n            : \"GASTO\",\n    // Un documento puede llevar varios tipos de IGIC: cada línea guarda su base y su tipo.\n    lines: Array.isArray(inv.lines)\n      ? inv.lines\n          .map((l) => {\n            const lb = Number.isFinite(+l.base) && l.base !== null && l.base !== \"\" ? +l.base : null;\n            const lr = Number.isFinite(+l.rate) && l.rate !== null && l.rate !== \"\" ? +l.rate : null;\n            return lb == null || lr == null ? null : { base: lb, rate: lr };\n          })\n          .filter(Boolean)\n      : [],\n    // Liquidación de fruta: kilos, precio por kilo, descuentos y líquido a percibir.\n    liquidacion: normaliseLiquidacion(inv.liquidacion),\n    source: inv.source || \"manual\",\n    fileName: inv.fileName || \"\",\n    rawText: String(inv.rawText || \"\").slice(0, 8000),\n    notes: Array.isArray(inv.notes) ? inv.notes : [],\n    confidence: Number.isFinite(inv.confidence) ? inv.confidence : null,\n    createdAt: inv.createdAt || new Date().toISOString(),\n    updatedAt: inv.updatedAt || inv.createdAt || new Date().toISOString(),\n  };\n}\n\nfunction normalise(raw) {\n  const base = emptyState();\n  if (!raw || typeof raw !== \"object\") return base;\n  const out = {\n    version: 1,\n    settings: Object.assign(base.settings, raw.settings || {}),\n    suppliers: Array.isArray(raw.suppliers) ? raw.suppliers.map(normaliseSupplier).filter(Boolean) : [],\n    invoices: Array.isArray(raw.invoices) ? raw.invoices.map(normaliseInvoice) : [],\n    messages: Array.isArray(raw.messages) ? raw.messages.map(normaliseMessage).filter(Boolean) : [],\n  };\n  // Una factura sin proveedor válido se queda sin asignar en lugar de romper.\n  const ids = new Set(out.suppliers.map((s) => s.id));\n  out.invoices = out.invoices.filter((inv) => !inv.supplierId || ids.has(inv.supplierId));\n  return out;\n}\n\nfunction normaliseSupplier(s) {\n  if (!s || typeof s !== \"object\") return null;\n  const name = String(s.name || \"\").trim();\n",
+    "total_lines": 789
+  },
+  "summary": "store.js: lines 123–172 of 789 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 50,
+    "total": 789,
+    "next_offset": 172
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

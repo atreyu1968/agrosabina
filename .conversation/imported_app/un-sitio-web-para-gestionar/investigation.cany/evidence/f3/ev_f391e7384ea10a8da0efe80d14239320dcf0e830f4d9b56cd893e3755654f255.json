@@ -1,0 +1,54 @@
+{
+  "id": "ev_f391e7384ea10a8da0efe80d14239320dcf0e830f4d9b56cd893e3755654f255",
+  "subject": {
+    "kind": "script",
+    "sha256": "46276ef6c2807ddd775e40c2fc8e601f95c58e49ab907e73e3d526a4fc111b40",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 352,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 28326,
+    "lines": 60,
+    "more": true,
+    "offset": 352,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "  for (const fn of listeners) {\n    try {\n      fn(state);\n    } catch (err) {\n      console.error(err);\n    }\n  }\n}\n\nexport function getState() {\n  return state;\n}\n\n/* ------------------------------------------------------------------ */\n/* Proveedores                                                        */\n/* ------------------------------------------------------------------ */\n\nfunction nameBase(name) {\n  return fold(name)\n    .replace(/\\b(sl|slu|sll|sa|sau|sc|scc|sccl|srl|cb|coop|sociedad|limitada|anonima|hermanos|eirl)\\b/g, \"\")\n    .replace(/\\s{2,}/g, \" \")\n    .trim();\n}\n\n/** Busca un proveedor ya existente por NIF o por nombre (aunque venga escrito distinto). */\nexport function findSupplierByNameOrNif(name, nif) {\n  const key = nifKey(nif);\n  if (key.length >= 8) {\n    const byNif = state.suppliers.find((s) => nifKey(s.nif) === key);\n    if (byNif) return byNif;\n  }\n  const wanted = nameBase(name);\n  if (wanted.length < 3) return null;\n\n  const exact = state.suppliers.find((s) => nameBase(s.name) === wanted);\n  if (exact) return exact;\n\n  const loose = state.suppliers.find((s) => {\n    const other = nameBase(s.name);\n    if (other.length < 6 || wanted.length < 6) return false;\n    return other.startsWith(wanted) || wanted.startsWith(other);\n  });\n  return loose || null;\n}\n\n/** Devuelve el proveedor que corresponde y, si no existía, lo crea. */\nexport function ensureSupplier(name, nif) {\n  const cleanName = String(name || \"\").trim();\n  const cleanNif = String(nif || \"\").trim().toUpperCase();\n  const existing = findSupplierByNameOrNif(cleanName, cleanNif);\n\n  if (existing) {\n    let touched = false;\n    if (!existing.nif && cleanNif) {\n      existing.nif = cleanNif;\n      touched = true;\n    }\n    if (!existing.name && cleanName) {\n      existing.name = cleanName;\n      touched = true;\n",
+    "total_lines": 885
+  },
+  "summary": "store.js: lines 353–412 of 885 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 885,
+    "next_offset": 412
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

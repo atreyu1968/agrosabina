@@ -1,0 +1,105 @@
+{
+  "id": "ev_6cb8453b3a7737af438166af9e00a10617cc8174d0f1e026a988389035e808c9",
+  "subject": {
+    "kind": "script",
+    "sha256": "e5f108b7692f9ce85e81cb2ee14263540ab9bbe5d1bd9bef0a5c8bc49fb41123",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "accRange"
+  },
+  "result": {
+    "file_size": 224839,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "61636352616e6765",
+        "file_offset": 168179,
+        "file_offset_hex": "0x290f3",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "61636352616e6765",
+        "file_offset": 176326,
+        "file_offset_hex": "0x2b0c6",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "61636352616e6765",
+        "file_offset": 176398,
+        "file_offset_hex": "0x2b10e",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "61636352616e6765",
+        "file_offset": 203971,
+        "file_offset_hex": "0x31cc3",
+        "length": 8,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 8
+      }
+    ],
+    "total_matches": 4
+  },
+  "summary": "4 match(es) for utf8 in views.js; showing 4 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 4,
+    "total": 4
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x290f3"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x2b0c6"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x2b10e"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x31cc3"
+    }
+  ],
+  "links": []
+}

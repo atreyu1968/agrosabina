@@ -1,0 +1,1840 @@
+{
+  "id": "ev_36996101167edba1756bfd622e2781297561c7b337b3d74cdf8648c69433485c",
+  "subject": {
+    "kind": "script",
+    "sha256": "88be6e3dff8fc26bcc76f04b90e1db18661f2b7004a8d5f704b043113873abf7",
+    "name": "parse.js"
+  },
+  "operation": "js_app_map",
+  "params": {
+    "include_node_modules": false,
+    "input_path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\parse.js",
+    "limit": 500,
+    "max_nodes": 25000,
+    "offset": 0,
+    "source_paths": []
+  },
+  "result": {
+    "api_operations": [],
+    "app_kind": "unknown",
+    "bundlers": [],
+    "edges": [
+      {
+        "from": "fn:parse.js#cuotaFromLine@313",
+        "kind": "calls",
+        "to": "fn:parse.js#moneyIn@40"
+      },
+      {
+        "from": "fn:parse.js#datesIn@95",
+        "kind": "calls",
+        "to": "fn:parse.js#isoFrom@86"
+      },
+      {
+        "from": "fn:parse.js#liqAntes@696",
+        "kind": "calls",
+        "to": "fn:parse.js#liqSinPct@659"
+      },
+      {
+        "from": "fn:parse.js#liqDespues@689",
+        "kind": "calls",
+        "to": "fn:parse.js#liqSinPct@659"
+      },
+      {
+        "from": "fn:parse.js#liqIgic@703",
+        "kind": "calls",
+        "to": "fn:parse.js#parsePrice@625"
+      },
+      {
+        "from": "fn:parse.js#liqSinPct@659",
+        "kind": "calls",
+        "to": "fn:parse.js#liqLimpio@651"
+      },
+      {
+        "from": "fn:parse.js#liqTokens@664",
+        "kind": "calls",
+        "to": "fn:parse.js#liqLimpio@651"
+      },
+      {
+        "from": "fn:parse.js#liquidacionDiscounts@884",
+        "kind": "calls",
+        "to": "fn:parse.js#cuadra@684"
+      },
+      {
+        "from": "fn:parse.js#liquidacionDiscounts@884",
+        "kind": "calls",
+        "to": "fn:parse.js#liqSinPct@659"
+      },
+      {
+        "from": "fn:parse.js#liquidacionDiscounts@884",
+        "kind": "calls",
+        "to": "fn:parse.js#parseKg@596"
+      },
+      {
+        "from": "fn:parse.js#liquidacionDiscounts@884",
+        "kind": "calls",
+        "to": "fn:parse.js#parsePrice@625"
+      },
+      {
+        "from": "fn:parse.js#liquidacionDiscounts@884",
+        "kind": "calls",
+        "to": "fn:parse.js#properCase@727"
+      },
+      {
+        "from": "fn:parse.js#liquidacionFromTable@835",
+        "kind": "calls",
+        "to": "fn:parse.js#cuadra@684"
+      },
+      {
+        "from": "fn:parse.js#liquidacionFromTable@835",
+        "kind": "calls",
+        "to": "fn:parse.js#liqTokens@664"
+      },
+      {
+        "from": "fn:parse.js#liquidacionFromTable@835",
+        "kind": "calls",
+        "to": "fn:parse.js#parseKg@596"
+      },
+      {
+        "from": "fn:parse.js#liquidacionFromTable@835",
+        "kind": "calls",
+        "to": "fn:parse.js#parsePrice@625"
+      },
+      {
+        "from": "fn:parse.js#liquidacionPorCategoria@802",
+        "kind": "calls",
+        "to": "fn:parse.js#categoriaDeTexto@787"
+      },
+      {
+        "from": "fn:parse.js#liquidacionPorCategoria@802",
+        "kind": "calls",
+        "to": "fn:parse.js#cuadra@684"
+      },
+      {
+        "from": "fn:parse.js#liquidacionPorCategoria@802",
+        "kind": "calls",
+        "to": "fn:parse.js#liqSinPct@659"
+      },
+      {
+        "from": "fn:parse.js#liquidacionPorCategoria@802",
+        "kind": "calls",
+        "to": "fn:parse.js#parseKg@596"
+      },
+      {
+        "from": "fn:parse.js#liquidacionPorCategoria@802",
+        "kind": "calls",
+        "to": "fn:parse.js#parsePrice@625"
+      },
+      {
+        "from": "fn:parse.js#moneyAfterLabel@64",
+        "kind": "calls",
+        "to": "fn:parse.js#moneyIn@40"
+      },
+      {
+        "from": "fn:parse.js#moneyIn@40",
+        "kind": "calls",
+        "to": "fn:parse.js#fixDigits@28"
+      },
+      {
+        "from": "fn:parse.js#parseInvoiceText@410",
+        "kind": "calls",
+        "to": "fn:parse.js#findNifs@174"
+      },
+      {
+        "from": "fn:parse.js#parseInvoiceText@410",
+        "kind": "calls",
+        "to": "fn:parse.js#pickClientName@223"
+      },
+      {
+        "from": "fn:parse.js#parseInvoiceText@410",
+        "kind": "calls",
+        "to": "fn:parse.js#pickInvoiceNumber@259"
+      },
+      {
+        "from": "fn:parse.js#parseInvoiceText@410",
+        "kind": "calls",
+        "to": "fn:parse.js#pickSupplierName@189"
+      },
+      {
+        "from": "fn:parse.js#parseInvoiceText@410",
+        "kind": "calls",
+        "to": "fn:parse.js#readAmounts@325"
+      },
+      {
+        "from": "fn:parse.js#parseInvoiceText@410",
+        "kind": "calls",
+        "to": "fn:parse.js#readStatus@385"
+      },
+      {
+        "from": "fn:parse.js#parseLiquidacion@933",
+        "kind": "calls",
+        "to": "fn:parse.js#cuadra@684"
+      },
+      {
+        "from": "fn:parse.js#parseLiquidacion@933",
+        "kind": "calls",
+        "to": "fn:parse.js#liqAntes@696"
+      },
+      {
+        "from": "fn:parse.js#parseLiquidacion@933",
+        "kind": "calls",
+        "to": "fn:parse.js#liqDespues@689"
+      },
+      {
+        "from": "fn:parse.js#parseLiquidacion@933",
+        "kind": "calls",
+        "to": "fn:parse.js#liqIgic@703"
+      },
+      {
+        "from": "fn:parse.js#parseLiquidacion@933",
+        "kind": "calls",
+        "to": "fn:parse.js#liquidacionCategory@751"
+      },
+      {
+        "from": "fn:parse.js#parseLiquidacion@933",
+        "kind": "calls",
+        "to": "fn:parse.js#liquidacionDiscounts@884"
+      },
+      {
+        "from": "fn:parse.js#parseLiquidacion@933",
+        "kind": "calls",
+        "to": "fn:parse.js#liquidacionFromTable@835"
+      },
+      {
+        "from": "fn:parse.js#parseLiquidacion@933",
+        "kind": "calls",
+        "to": "fn:parse.js#liquidacionPorCategoria@802"
+      },
+      {
+        "from": "fn:parse.js#parseLiquidacion@933",
+        "kind": "calls",
+        "to": "fn:parse.js#liquidacionProduct@733"
+      },
+      {
+        "from": "fn:parse.js#parseLiquidacion@933",
+        "kind": "calls",
+        "to": "fn:parse.js#parseKg@596"
+      },
+      {
+        "from": "fn:parse.js#parseLiquidacion@933",
+        "kind": "calls",
+        "to": "fn:parse.js#parsePrice@625"
+      },
+      {
+        "from": "fn:parse.js#pickClientName@223",
+        "kind": "calls",
+        "to": "fn:parse.js#cleanName@165"
+      },
+      {
+        "from": "fn:parse.js#pickClientName@223",
+        "kind": "calls",
+        "to": "fn:parse.js#looksLikeName@154"
+      },
+      {
+        "from": "fn:parse.js#pickSupplierName@189",
+        "kind": "calls",
+        "to": "fn:parse.js#cleanName@165"
+      },
+      {
+        "from": "fn:parse.js#pickSupplierName@189",
+        "kind": "calls",
+        "to": "fn:parse.js#looksLikeName@154"
+      },
+      {
+        "from": "fn:parse.js#readAmounts@325",
+        "kind": "calls",
+        "to": "fn:parse.js#cuotaFromLine@313"
+      },
+      {
+        "from": "fn:parse.js#readAmounts@325",
+        "kind": "calls",
+        "to": "fn:parse.js#moneyAfterLabel@64"
+      },
+      {
+        "from": "fn:parse.js#readAmounts@325",
+        "kind": "calls",
+        "to": "fn:parse.js#normLabels@306"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#categoriaDeTexto@787"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#cleanName@165"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#cuadra@684"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#cuotaFromLine@313"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#datesIn@95"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#findNifs@174"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#fixDigits@28"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#isoFrom@86"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#liqAntes@696"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#liqDespues@689"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#liqIgic@703"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#liqLimpio@651"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#liqSinPct@659"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#liqTokens@664"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#liquidacionCategory@751"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#liquidacionDiscounts@884"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#liquidacionFromTable@835"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#liquidacionPorCategoria@802"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#liquidacionProduct@733"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#looksLikeDocNumber@251"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#looksLikeInvoice@546"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#looksLikeName@154"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#moneyAfterLabel@64"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#moneyIn@40"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#normLabels@306"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#parseInvoiceText@410"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#parseKg@596"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#parseLiquidacion@933"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#parsePrice@625"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#pickClientName@223"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#pickInvoiceNumber@259"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#pickSupplierName@189"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#properCase@727"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#readAmounts@325"
+      },
+      {
+        "from": "module:parse.js",
+        "kind": "defines",
+        "to": "fn:parse.js#readStatus@385"
+      }
+    ],
+    "effects": [],
+    "endpoints": [],
+    "entry_points": {
+      "pages": [],
+      "preloads": [],
+      "renderers": [],
+      "workers": []
+    },
+    "exposed": [],
+    "graph_id": "ag_c735d8e04dc746c5389087ed705f5e34d19b5c8d0666016cbf9fd15d717d8823",
+    "input_format": "file",
+    "ipc": [],
+    "label": "parse.js",
+    "limitations": [],
+    "modules": [
+      {
+        "bundle_modules": [],
+        "bundlers": [],
+        "bytes": 40608,
+        "chunk_ids": [],
+        "exports": {
+          "cjs": [],
+          "esm": [
+            "moneyIn",
+            "datesIn",
+            "parseInvoiceText",
+            "looksLikeInvoice",
+            "parseKg",
+            "parsePrice",
+            "parseLiquidacion"
+          ]
+        },
+        "fingerprint": "d5a9a72f9ece73af36b5bc6e1e133400f536995104288fc7da93f6bf4502919e",
+        "functions": [
+          "fixDigits",
+          "moneyIn",
+          "moneyAfterLabel",
+          "isoFrom",
+          "datesIn",
+          "looksLikeName",
+          "cleanName",
+          "findNifs",
+          "pickSupplierName",
+          "pickClientName",
+          "looksLikeDocNumber",
+          "pickInvoiceNumber",
+          "normLabels",
+          "cuotaFromLine",
+          "readAmounts",
+          "readStatus",
+          "parseInvoiceText",
+          "looksLikeInvoice",
+          "parseKg",
+          "parsePrice",
+          "liqLimpio",
+          "liqSinPct",
+          "liqTokens",
+          "cuadra",
+          "liqDespues",
+          "liqAntes",
+          "liqIgic",
+          "properCase",
+          "liquidacionProduct",
+          "liquidacionCategory",
+          "categoriaDeTexto",
+          "liquidacionPorCategoria",
+          "liquidacionFromTable",
+          "liquidacionDiscounts",
+          "parseLiquidacion"
+        ],
+        "imports": [
+          {
+            "kind": "import",
+            "line": 7,
+            "specifier": "./util.js"
+          }
+        ],
+        "kind": "script",
+        "parse_mode": "parsed",
+        "path": "parse.js",
+        "role": "unknown",
+        "sha256": "88be6e3dff8fc26bcc76f04b90e1db18661f2b7004a8d5f704b043113873abf7",
+        "strings": [
+          "0",
+          "1",
+          "5",
+          "8",
+          "d{1,3}(?:[.s]d{3})*[.,][dOoIlSsBb]{2}|d{1,7}[.,][dOoIlSsBb]{2}",
+          "-?d{1,3}(?:[.s]d{3})*(?:[.,]d{1,2})?|-?d+(?:[.,]d{1,2})?",
+          "g",
+          "%",
+          "/",
+          "cliente",
+          "facturar a",
+          "facturado a",
+          "destinatario",
+          "receptor",
+          "datos del cliente",
+          "nombre del cliente",
+          "a la atencion de",
+          "a la atención de",
+          "proveedor",
+          "emisor",
+          "vendedor",
+          "expedidor",
+          "datos del emisor",
+          "factura",
+          "facturas",
+          "fra.",
+          "fra ",
+          "fecha",
+          "cif",
+          "nif",
+          "n.i.f",
+          "c.i.f",
+          "telefono",
+          "teléfono",
+          "tel.",
+          "movil",
+          "móvil",
+          "email",
+          "e-mail",
+          "correo",
+          "calle",
+          "avda",
+          "avenida",
+          "c/",
+          "plaza",
+          "poligono",
+          "polígono",
+          "cp ",
+          "c.p.",
+          "codigo postal",
+          "código postal",
+          "www",
+          "http",
+          "@",
+          "pedido",
+          "albaran",
+          "albarán",
+          "total",
+          "base",
+          "igic",
+          "iva",
+          "forma de pago",
+          "vencimiento",
+          "domicilio",
+          "iban",
+          "banco",
+          "tel",
+          "fax",
+          "pagina",
+          "página",
+          "ref.",
+          "referencia",
+          " ",
+          "El documento habla de pago y de pendiente a la vez. La he dejado como pendiente.",
+          "\n",
+          "No he visto el NIF del proveedor. Búscalo en la factura y escríbelo.",
+          "No he reconocido el nombre del proveedor. Escribelo tú.",
+          "No he encontrado el número de factura.",
+          "No he encontrado la fecha de la factura: he puesto la de hoy.",
+          "No he encontrado el total. Escribelo tú y el IGIC se calcula solo.",
+          "No he encontrado la base imponible; la he calculado.",
+          "No he visto el tipo de IGIC: he puesto el que tengas por defecto.",
+          "-?d{1,3}(?:[.s]d{3})+(?:,d{1,4})?|-?d+(?:[.,]d{1,4})?",
+          "platano",
+          "Plátano",
+          "aguacate",
+          "Aguacate",
+          "tomate",
+          "Tomate",
+          "mango",
+          "Mango",
+          "papaya",
+          "Papaya",
+          "pepino",
+          "Pepino",
+          "calabacin",
+          "Calabacín",
+          "naranja",
+          "Naranja",
+          "mandarina",
+          "Mandarina",
+          "limon",
+          "Limón",
+          "uva",
+          "Uva",
+          "melon",
+          "Melón",
+          "sandia",
+          "Sandía",
+          "pina",
+          "Piña",
+          "chirimoya",
+          "Chirimoya",
+          "granadilla",
+          "Granadilla",
+          "higo",
+          "Higo",
+          "pimiento",
+          "Pimiento",
+          "judia",
+          "Judía",
+          "batata",
+          "Batata",
+          "boniato",
+          "Boniato",
+          "aguacates",
+          "Extra",
+          "Primera",
+          "Segunda",
+          "Tercera",
+          "Destrío",
+          "number",
+          "-",
+          ",",
+          ".",
+          "(?:",
+          ")[^0-9]{0,24}?(",
+          ")",
+          "i",
+          "(",
+          ")\\s*(?:",
+          "(?:producto|art[íi]culo|mercanc[íi]a|variedad|fruta)\\s*[:\\-]?\\s*([A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{3,32})",
+          "\b",
+          "s?\b",
+          "Cuarta",
+          "Quinta",
+          "Industria",
+          "Gruesa",
+          "Mediana",
+          "Pequeña",
+          "Comercial",
+          "Descuento",
+          ", ",
+          "En el papel no aparece IGIC: entra al 0 %, así que el total que se guarda es el líquido a percibir.",
+          "Aparece el IGIC pero no he sabido leer su tipo: entra al 0 %. Cámbialo en la ficha si hace falta.",
+          "No he sabido leer los kilos o el precio por kilo de esta liquidación. Escríbelos a mano antes de guardar."
+        ]
+      }
+    ],
+    "modules_total": 1,
+    "native_modules": [],
+    "nodes": [
+      {
+        "id": "module:parse.js",
+        "kind": "module",
+        "label": "parse.js",
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().replace().replace().replace().replace",
+            "String().replace().replace().replace",
+            "String().replace().replace",
+            "String().replace",
+            "String"
+          ],
+          "end": 932,
+          "end_line": 34,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "raw"
+          ],
+          "parent": null,
+          "start": 766,
+          "strings": [
+            "0",
+            "1",
+            "5",
+            "8"
+          ]
+        },
+        "id": "fn:parse.js#fixDigits@28",
+        "kind": "function",
+        "label": "fixDigits",
+        "line": 28,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String",
+            "new RegExp",
+            "re2.exec",
+            "./util.js.parseAmount",
+            "fixDigits",
+            "out.push",
+            "reAny.exec",
+            "Math.abs"
+          ],
+          "end": 1908,
+          "end_line": 61,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 1200,
+          "strings": [
+            "g",
+            "%",
+            "/"
+          ]
+        },
+        "id": "fn:parse.js#moneyIn@40",
+        "kind": "function",
+        "label": "moneyIn",
+        "line": 40,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "labelRe.exec",
+            "line.slice",
+            "moneyIn"
+          ],
+          "end": 2195,
+          "end_line": 70,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "line",
+            "labelRe"
+          ],
+          "parent": null,
+          "start": 1972,
+          "strings": []
+        },
+        "id": "fn:parse.js#moneyAfterLabel@64",
+        "kind": "function",
+        "label": "moneyAfterLabel",
+        "line": 64,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Number",
+            "String().padStart",
+            "String"
+          ],
+          "end": 3120,
+          "end_line": 92,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "y",
+            "m",
+            "d"
+          ],
+          "parent": null,
+          "start": 2851,
+          "strings": [
+            "0"
+          ]
+        },
+        "id": "fn:parse.js#isoFrom@86",
+        "kind": "function",
+        "label": "isoFrom",
+        "line": 86,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String",
+            "reNum.exec",
+            "Number",
+            "isoFrom",
+            "found.push",
+            "reIso.exec",
+            "reText.exec",
+            "./util.js.fold"
+          ],
+          "end": 4139,
+          "end_line": 128,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "line"
+          ],
+          "parent": null,
+          "start": 3186,
+          "strings": []
+        },
+        "id": "fn:parse.js#datesIn@95",
+        "kind": "function",
+        "label": "datesIn",
+        "line": 95,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim",
+            "String",
+            "./util.js.fold",
+            "NOISE_WORDS.some"
+          ],
+          "end": 5817,
+          "end_line": 163,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "line"
+          ],
+          "parent": null,
+          "start": 5464,
+          "strings": []
+        },
+        "id": "fn:parse.js#looksLikeName@154",
+        "kind": "function",
+        "label": "looksLikeName",
+        "line": 154,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().replace().replace().replace().replace().trim",
+            "String().replace().replace().replace().replace",
+            "String().replace().replace().replace",
+            "String().replace().replace",
+            "String().replace",
+            "String"
+          ],
+          "end": 6165,
+          "end_line": 172,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "name"
+          ],
+          "parent": null,
+          "start": 5819,
+          "strings": [
+            " "
+          ]
+        },
+        "id": "fn:parse.js#cleanName@165",
+        "kind": "function",
+        "label": "cleanName",
+        "line": 165,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "lines.forEach"
+          ],
+          "end": 6525,
+          "end_line": 187,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "lines"
+          ],
+          "parent": null,
+          "start": 6167,
+          "strings": []
+        },
+        "id": "fn:parse.js#findNifs@174",
+        "kind": "function",
+        "label": "findNifs",
+        "line": 174,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Math.min",
+            "looksLikeName",
+            "line.trim",
+            "LEGAL_SUFFIX.test",
+            "raw.toUpperCase",
+            "Math.abs",
+            "candidates.push",
+            "cleanName",
+            "candidates.sort"
+          ],
+          "end": 7449,
+          "end_line": 213,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "lines",
+            "nifLineIndex"
+          ],
+          "parent": null,
+          "start": 6527,
+          "strings": []
+        },
+        "id": "fn:parse.js#pickSupplierName@189",
+        "kind": "function",
+        "label": "pickSupplierName",
+        "line": 189,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "CLIENT_LABELS.exec",
+            "line.slice().trim",
+            "line.slice",
+            "cleanName",
+            "CLIENT_LABELS.test",
+            "looksLikeName",
+            "LEGAL_SUFFIX.test"
+          ],
+          "end": 8631,
+          "end_line": 243,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "lines"
+          ],
+          "parent": null,
+          "start": 7855,
+          "strings": []
+        },
+        "id": "fn:parse.js#pickClientName@223",
+        "kind": "function",
+        "label": "pickClientName",
+        "line": 223,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim",
+            "String"
+          ],
+          "end": 9555,
+          "end_line": 257,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "token"
+          ],
+          "parent": null,
+          "start": 9251,
+          "strings": []
+        },
+        "id": "fn:parse.js#looksLikeDocNumber@251",
+        "kind": "function",
+        "label": "looksLikeDocNumber",
+        "line": 251,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "lines.forEach",
+            "lines.slice().forEach",
+            "lines.slice",
+            "candidates.sort"
+          ],
+          "end": 10686,
+          "end_line": 292,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "lines"
+          ],
+          "parent": null,
+          "start": 9557,
+          "strings": []
+        },
+        "id": "fn:parse.js#pickInvoiceNumber@259",
+        "kind": "function",
+        "label": "pickInvoiceNumber",
+        "line": 259,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().replace().replace().replace",
+            "String().replace().replace",
+            "String().replace",
+            "String"
+          ],
+          "end": 11826,
+          "end_line": 311,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "line"
+          ],
+          "parent": null,
+          "start": 11565,
+          "strings": [
+            "igic",
+            "iva"
+          ]
+        },
+        "id": "fn:parse.js#normLabels@306",
+        "kind": "function",
+        "label": "normLabels",
+        "line": 306,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "line.search",
+            "line.indexOf",
+            "line.slice",
+            "moneyIn"
+          ],
+          "end": 12179,
+          "end_line": 323,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "line"
+          ],
+          "parent": null,
+          "start": 11828,
+          "strings": [
+            "%"
+          ]
+        },
+        "id": "fn:parse.js#cuotaFromLine@313",
+        "kind": "function",
+        "label": "cuotaFromLine",
+        "line": 313,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "normLabels().replace().trim",
+            "normLabels().replace",
+            "normLabels",
+            "BASE_LABEL.test",
+            "moneyAfterLabel",
+            "TOTAL_LABEL.test",
+            "./util.js.parseAmount",
+            "CUOTA_LABEL.test",
+            "cuotaFromLine",
+            "Math.abs"
+          ],
+          "end": 13978,
+          "end_line": 379,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "lines"
+          ],
+          "parent": null,
+          "start": 12181,
+          "strings": [
+            " "
+          ]
+        },
+        "id": "fn:parse.js#readAmounts@325",
+        "kind": "function",
+        "label": "readAmounts",
+        "line": 325,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.fold"
+          ],
+          "end": 14831,
+          "end_line": 399,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 14200,
+          "strings": [
+            "El documento habla de pago y de pendiente a la vez. La he dejado como pendiente."
+          ]
+        },
+        "id": "fn:parse.js#readStatus@385",
+        "kind": "function",
+        "label": "readStatus",
+        "line": 385,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().replace",
+            "String",
+            "text.split(\n).map",
+            "text.split",
+            "lines.filter",
+            "nonEmpty.join",
+            "./util.js.todayISO",
+            "findNifs",
+            "new Set",
+            "lines.forEach",
+            "nifs.find",
+            "pickSupplierName",
+            "String().replace().replace().replace().replace().replace().trim",
+            "String().replace().replace().replace().replace().replace",
+            "String().replace().replace().replace().replace",
+            "String().replace().replace().replace",
+            "String().replace().replace",
+            "pickClientName",
+            "notes.push",
+            "pickInvoiceNumber",
+            "nonEmpty.forEach",
+            "allDates.slice().sort",
+            "allDates.slice",
+            "readAmounts",
+            "./util.js.completeAmounts",
+            "Math.abs",
+            "./util.js.round2",
+            "./util.js.completeAmounts().total.toFixed",
+            "readStatus",
+            "./util.js.completeAmounts().derived.includes",
+            "Math.max",
+            "Math.min",
+            "flat.slice"
+          ],
+          "end": 20009,
+          "end_line": 543,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "rawText",
+            "options"
+          ],
+          "parent": null,
+          "start": 15216,
+          "strings": [
+            "\n",
+            " ",
+            "No he visto el NIF del proveedor. Búscalo en la factura y escríbelo.",
+            "No he reconocido el nombre del proveedor. Escribelo tú.",
+            "No he encontrado el número de factura.",
+            "No he encontrado la fecha de la factura: he puesto la de hoy.",
+            "No he encontrado el total. Escribelo tú y el IGIC se calcula solo.",
+            "No he encontrado la base imponible; la he calculado.",
+            "No he visto el tipo de IGIC: he puesto el que tengas por defecto.",
+            "total"
+          ]
+        },
+        "id": "fn:parse.js#parseInvoiceText@410",
+        "kind": "function",
+        "label": "parseInvoiceText",
+        "line": 410,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.fold"
+          ],
+          "end": 20321,
+          "end_line": 552,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 20097,
+          "strings": []
+        },
+        "id": "fn:parse.js#looksLikeInvoice@546",
+        "kind": "function",
+        "label": "looksLikeInvoice",
+        "line": 546,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Number.isFinite",
+            "String().replace",
+            "String",
+            "s.startsWith",
+            "s.replace",
+            "s.lastIndexOf",
+            "s.replace().replace",
+            "s.slice",
+            "Number"
+          ],
+          "end": 23635,
+          "end_line": 619,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "raw"
+          ],
+          "parent": null,
+          "start": 22714,
+          "strings": [
+            "number",
+            "-",
+            ",",
+            ".",
+            "0"
+          ]
+        },
+        "id": "fn:parse.js#parseKg@596",
+        "kind": "function",
+        "label": "parseKg",
+        "line": 596,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Number.isFinite",
+            "String().replace",
+            "String",
+            "s.startsWith",
+            "s.replace",
+            "s.lastIndexOf",
+            "s.replace().replace",
+            "Number"
+          ],
+          "end": 24437,
+          "end_line": 642,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "raw"
+          ],
+          "parent": null,
+          "start": 23813,
+          "strings": [
+            "number",
+            "-",
+            ",",
+            "."
+          ]
+        },
+        "id": "fn:parse.js#parsePrice@625",
+        "kind": "function",
+        "label": "parsePrice",
+        "line": 625,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().replace().replace().replace",
+            "String().replace().replace",
+            "String().replace",
+            "String"
+          ],
+          "end": 24955,
+          "end_line": 656,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 24762,
+          "strings": [
+            " "
+          ]
+        },
+        "id": "fn:parse.js#liqLimpio@651",
+        "kind": "function",
+        "label": "liqLimpio",
+        "line": 651,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "liqLimpio().replace",
+            "liqLimpio"
+          ],
+          "end": 25129,
+          "end_line": 661,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 25038,
+          "strings": [
+            " "
+          ]
+        },
+        "id": "fn:parse.js#liqSinPct@659",
+        "kind": "function",
+        "label": "liqSinPct",
+        "line": 659,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "liqLimpio",
+            "new RegExp",
+            "re.exec",
+            "out.push",
+            "limpio.slice"
+          ],
+          "end": 25632,
+          "end_line": 681,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 25218,
+          "strings": [
+            "g"
+          ]
+        },
+        "id": "fn:parse.js#liqTokens@664",
+        "kind": "function",
+        "label": "liqTokens",
+        "line": 664,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Math.abs",
+            "Math.max"
+          ],
+          "end": 25804,
+          "end_line": 686,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "uno",
+            "otro"
+          ],
+          "parent": null,
+          "start": 25705,
+          "strings": []
+        },
+        "id": "fn:parse.js#cuadra@684",
+        "kind": "function",
+        "label": "cuadra",
+        "line": 684,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "new RegExp",
+            "look.exec",
+            "liqSinPct"
+          ],
+          "end": 26086,
+          "end_line": 693,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text",
+            "labelRe"
+          ],
+          "parent": null,
+          "start": 25890,
+          "strings": [
+            "(?:",
+            ")[^0-9]{0,24}?(",
+            ")",
+            "i"
+          ]
+        },
+        "id": "fn:parse.js#liqDespues@689",
+        "kind": "function",
+        "label": "liqDespues",
+        "line": 689,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "new RegExp",
+            "look.exec",
+            "liqSinPct"
+          ],
+          "end": 26338,
+          "end_line": 700,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text",
+            "labelRe"
+          ],
+          "parent": null,
+          "start": 26153,
+          "strings": [
+            "(",
+            ")\\s*(?:",
+            ")",
+            "i"
+          ]
+        },
+        "id": "fn:parse.js#liqAntes@696",
+        "kind": "function",
+        "label": "liqAntes",
+        "line": 696,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().replace",
+            "String",
+            "todo.split",
+            "parsePrice",
+            "linea.replace",
+            "resto.match",
+            "new RegExp",
+            "Math.abs",
+            "./util.js.parseAmount",
+            "./util.js.round2"
+          ],
+          "end": 27241,
+          "end_line": 724,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 26408,
+          "strings": [
+            " ",
+            "g"
+          ]
+        },
+        "id": "fn:parse.js#liqIgic@703",
+        "kind": "function",
+        "label": "liqIgic",
+        "line": 703,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim",
+            "String",
+            "w.charAt().toUpperCase",
+            "w.charAt",
+            "w.slice"
+          ],
+          "end": 27447,
+          "end_line": 731,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "word"
+          ],
+          "parent": null,
+          "start": 27309,
+          "strings": []
+        },
+        "id": "fn:parse.js#properCase@727",
+        "kind": "function",
+        "label": "properCase",
+        "line": 727,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "new RegExp",
+            "./util.js.fold",
+            "LIQ_FRUITS.find"
+          ],
+          "end": 28027,
+          "end_line": 749,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 27449,
+          "strings": [
+            "(?:producto|art[íi]culo|mercanc[íi]a|variedad|fruta)\\s*[:\\-]?\\s*([A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]{3,32})",
+            "i",
+            " ",
+            "\b",
+            "s?\b"
+          ]
+        },
+        "id": "fn:parse.js#liquidacionProduct@733",
+        "kind": "function",
+        "label": "liquidacionProduct",
+        "line": 733,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.fold",
+            "new RegExp"
+          ],
+          "end": 28229,
+          "end_line": 757,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 28029,
+          "strings": [
+            "\b"
+          ]
+        },
+        "id": "fn:parse.js#liquidacionCategory@751",
+        "kind": "function",
+        "label": "liquidacionCategory",
+        "line": 751,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./util.js.fold",
+            "String",
+            "re.test"
+          ],
+          "end": 29638,
+          "end_line": 793,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "txt"
+          ],
+          "parent": null,
+          "start": 29457,
+          "strings": []
+        },
+        "id": "fn:parse.js#categoriaDeTexto@787",
+        "kind": "function",
+        "label": "categoriaDeTexto",
+        "line": 787,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().split",
+            "String",
+            "new RegExp",
+            "categoriaDeTexto",
+            "liqSinPct().match",
+            "liqSinPct",
+            "parseKg",
+            "parsePrice",
+            "./util.js.parseAmount",
+            "cuadra",
+            "filas.push"
+          ],
+          "end": 31055,
+          "end_line": 833,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 30010,
+          "strings": [
+            "g"
+          ]
+        },
+        "id": "fn:parse.js#liquidacionPorCategoria@802",
+        "kind": "function",
+        "label": "liquidacionPorCategoria",
+        "line": 802,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "liqTokens",
+            "new Set",
+            "usados.has",
+            "noEsFila.test",
+            "./util.js.fold",
+            "parseKg",
+            "parsePrice",
+            "./util.js.parseAmount",
+            "cuadra",
+            "filas.push",
+            "usados.add"
+          ],
+          "end": 32407,
+          "end_line": 875,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 31057,
+          "strings": []
+        },
+        "id": "fn:parse.js#liquidacionFromTable@835",
+        "kind": "function",
+        "label": "liquidacionFromTable",
+        "line": 835,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().split",
+            "String",
+            "liqSinPct().trim",
+            "liqSinPct",
+            "RE_LIQ_DTO.test",
+            "RE_LIQ_GROSS.test",
+            "RE_LIQ_NET.test",
+            "line.match",
+            "new RegExp",
+            "parseKg",
+            "parsePrice",
+            "Math.abs",
+            "./util.js.parseAmount",
+            "cuadra",
+            "line.replace().replace().trim().slice",
+            "line.replace().replace().trim",
+            "line.replace().replace",
+            "line.replace",
+            "label.split",
+            "rows.push",
+            "properCase",
+            "./util.js.round2",
+            "rows.filter",
+            "usar.map"
+          ],
+          "end": 34454,
+          "end_line": 923,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 32780,
+          "strings": [
+            "g",
+            " ",
+            "Descuento"
+          ]
+        },
+        "id": "fn:parse.js#liquidacionDiscounts@884",
+        "kind": "function",
+        "label": "liquidacionDiscounts",
+        "line": 884,
+        "module": "parse.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().replace",
+            "String",
+            "original.trim",
+            "liquidacionProduct",
+            "liquidacionCategory",
+            "liquidacionFromTable",
+            "./util.js.round2",
+            "partidas.reduce",
+            "partidas.map",
+            "Math.round",
+            "out.notes.push",
+            "./util.js.fmtNum",
+            "./util.js.fmtEUR",
+            "out.partidas.some",
+            "liquidacionPorCategoria",
+            "porCat.map",
+            "porCat.reduce",
+            "porCat.map().join",
+            "parseKg",
+            "liqDespues",
+            "cuadra",
+            "parsePrice",
+            "liqAntes",
+            "./util.js.parseAmount",
+            "liquidacionDiscounts",
+            "out.discounts.reduce",
+            "liqIgic"
+          ],
+          "end": 40607,
+          "end_line": 1076,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "rawText"
+          ],
+          "parent": null,
+          "start": 34844,
+          "strings": [
+            " ",
+            ", ",
+            "En el papel no aparece IGIC: entra al 0 %, así que el total que se guarda es el líquido a percibir.",
+            "Aparece el IGIC pero no he sabido leer su tipo: entra al 0 %. Cámbialo en la ficha si hace falta.",
+            "No he sabido leer los kilos o el precio por kilo de esta liquidación. Escríbelos a mano antes de guardar."
+          ]
+        },
+        "id": "fn:parse.js#parseLiquidacion@933",
+        "kind": "function",
+        "label": "parseLiquidacion",
+        "line": 933,
+        "module": "parse.js",
+        "role": "unknown"
+      }
+    ],
+    "package": null,
+    "routes": [],
+    "source_maps": [],
+    "stats": {
+      "api_operations": 0,
+      "bundle_modules": 0,
+      "edges": 82,
+      "endpoints": 0,
+      "files": 1,
+      "functions": 35,
+      "ipc_channels": 0,
+      "listed": 1,
+      "modules": 1,
+      "nodes": 36,
+      "paired_channels": 0
+    },
+    "storage": [],
+    "summary": "JavaScript code parse.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+    "vendors": [],
+    "windows": []
+  },
+  "summary": "JavaScript code parse.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "static_only",
+      "message": "Static reading only: code built at run time (eval, computed requires, remote content) is invisible; IPC pairs need literal channel names."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\parse.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_b50d57f9b4031c270d4039b3a591aad9b6e7a7aca5177930016035faac643e29",
+  "subject": {
+    "kind": "script",
+    "sha256": "109a740b4833101eb06da233acf482b9795e7d492908398e6b18f982dc295507",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 215,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 30512,
+    "lines": 40,
+    "more": true,
+    "offset": 215,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "    .trim();\n  return limpio || \"sin-nombre\";\n}\n\n/** La subcuenta que le toca a un tercero, si ya se le abrió una. */\nexport function cuentaTerceroPorClave(ingreso, clave) {\n  const prefijo = ingreso ? \"430\" : \"400\";\n  const buscada = String(clave == null ? \"\" : clave);\n  const found = PLANO.subcuentas.find((s) => s.cuenta === prefijo && s.key === buscada);\n  return found && found.code ? found.code : prefijo;\n}\n\n/** La subcuenta de un documento concreto: 430001, 400003… o la cuenta madre. */\nexport function cuentaTercero(inv, ingreso) {\n  return cuentaTerceroPorClave(ingreso, claveDeTercero(inv));\n}\n\n/**\n * La cuenta de tesorería donde entra o sale el dinero: 570 Caja si se cobró o\n * se pagó en efectivo, 572 Bancos si fue por el banco. Si el documento no dice\n * el medio (los antiguos), se supone banco, que es lo habitual.\n */\nexport function cuentaDeTesoreria(inv) {\n  const d = inv || {};\n  return String(d.payMethod || \"\").toUpperCase() === \"CAJA\" ? \"570\" : \"572\";\n}\n\n/** Cómo se llama el medio y la cuenta, para escribirlo en el asiento. */\nexport function medioDePagoTexto(inv) {\n  const d = inv || {};\n  const medio = String(d.payMethod || \"\").toUpperCase();\n  const cuenta = String(d.payAccount || \"\").trim();\n  if (medio === \"CAJA\") return cuenta ? `Caja · ${cuenta}` : \"Caja\";\n  if (medio === \"BANCO\") return cuenta ? `Banco · ${cuenta}` : \"Banco\";\n  return cuenta;\n}\n\n/** Base, cuota y total de un documento, cuadrados entre sí. */\nfunction importes(inv) {\n  let base = round2(Number(inv.base) || 0);\n",
+    "total_lines": 762
+  },
+  "summary": "accounting.js: lines 216–255 of 762 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 762,
+    "next_offset": 255
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

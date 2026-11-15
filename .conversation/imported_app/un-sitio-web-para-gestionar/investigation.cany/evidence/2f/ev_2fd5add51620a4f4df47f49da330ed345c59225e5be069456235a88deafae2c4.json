@@ -1,0 +1,83 @@
+{
+  "id": "ev_2fd5add51620a4f4df47f49da330ed345c59225e5be069456235a88deafae2c4",
+  "subject": {
+    "kind": "script",
+    "sha256": "109a740b4833101eb06da233acf482b9795e7d492908398e6b18f982dc295507",
+    "name": "accounting.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "pattern": null,
+    "text": "cuentaDeTesoreria"
+  },
+  "result": {
+    "file_size": 30512,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6375656e746144655465736f7265726961",
+        "file_offset": 9199,
+        "file_offset_hex": "0x23ef",
+        "length": 17,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6375656e746144655465736f7265726961",
+        "file_offset": 15017,
+        "file_offset_hex": "0x3aa9",
+        "length": 17,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 17
+      }
+    ],
+    "total_matches": 2
+  },
+  "summary": "2 match(es) for utf8 in accounting.js; showing 2 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x23ef"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x3aa9"
+    }
+  ],
+  "links": []
+}

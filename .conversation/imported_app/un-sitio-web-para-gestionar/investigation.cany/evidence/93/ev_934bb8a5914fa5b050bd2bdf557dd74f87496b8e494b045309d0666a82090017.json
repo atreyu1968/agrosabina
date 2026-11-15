@@ -1,0 +1,127 @@
+{
+  "id": "ev_934bb8a5914fa5b050bd2bdf557dd74f87496b8e494b045309d0666a82090017",
+  "subject": {
+    "kind": "script",
+    "sha256": "585ac25cb9a3893b5655703759df6766c4ee20441c38781151bbcd99960f8bd0",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 20,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "liquidacionRead"
+  },
+  "result": {
+    "file_size": 125439,
+    "limit": 20,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6c69717569646163696f6e52656164",
+        "file_offset": 65993,
+        "file_offset_hex": "0x101c9",
+        "length": 15,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e52656164",
+        "file_offset": 70593,
+        "file_offset_hex": "0x113c1",
+        "length": 15,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e52656164",
+        "file_offset": 70686,
+        "file_offset_hex": "0x1141e",
+        "length": 15,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e52656164",
+        "file_offset": 73322,
+        "file_offset_hex": "0x11e6a",
+        "length": 15,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e52656164",
+        "file_offset": 80988,
+        "file_offset_hex": "0x13c5c",
+        "length": 15,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6c69717569646163696f6e52656164",
+        "file_offset": 94232,
+        "file_offset_hex": "0x17018",
+        "length": 15,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 15
+      }
+    ],
+    "total_matches": 6
+  },
+  "summary": "6 match(es) for utf8 in views.js; showing 6 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 6,
+    "total": 6
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x101c9"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x113c1"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x1141e"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x11e6a"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x13c5c"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x17018"
+    }
+  ],
+  "links": []
+}

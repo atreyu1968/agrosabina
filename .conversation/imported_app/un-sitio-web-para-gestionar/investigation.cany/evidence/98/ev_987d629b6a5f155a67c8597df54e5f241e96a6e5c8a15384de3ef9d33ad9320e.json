@@ -1,0 +1,884 @@
+{
+  "id": "ev_987d629b6a5f155a67c8597df54e5f241e96a6e5c8a15384de3ef9d33ad9320e",
+  "subject": {
+    "kind": "script",
+    "sha256": "bd1a7c4db1d211c35d40bee0f35fdff38dc09caa217fb954d8985cac13e061de",
+    "name": "importers.js"
+  },
+  "operation": "js_app_map",
+  "params": {
+    "include_node_modules": false,
+    "input_path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\importers.js",
+    "limit": 500,
+    "max_nodes": 25000,
+    "offset": 0,
+    "source_paths": []
+  },
+  "result": {
+    "api_operations": [],
+    "app_kind": "unknown",
+    "bundlers": [],
+    "edges": [
+      {
+        "from": "fn:importers.js#COBRO.leer@319",
+        "kind": "calls",
+        "to": "fn:importers.js#leerFactura@234"
+      },
+      {
+        "from": "fn:importers.js#COBRO.puntua@309",
+        "kind": "calls",
+        "to": "fn:importers.js#puntuaMarcas@69"
+      },
+      {
+        "from": "fn:importers.js#FACTURA.leer@270",
+        "kind": "calls",
+        "to": "fn:importers.js#leerFactura@234"
+      },
+      {
+        "from": "fn:importers.js#FACTURA.puntua@258",
+        "kind": "calls",
+        "to": "fn:importers.js#puntuaMarcas@69"
+      },
+      {
+        "from": "fn:importers.js#LIQUIDACION.leer@181",
+        "kind": "calls",
+        "to": "fn:importers.js#documentoVacio@24"
+      },
+      {
+        "from": "fn:importers.js#LIQUIDACION.leer@181",
+        "kind": "calls",
+        "to": "fn:importers.js#identidad@56"
+      },
+      {
+        "from": "fn:importers.js#LIQUIDACION.puntua@164",
+        "kind": "calls",
+        "to": "fn:importers.js#esReciboDeSalarios@81"
+      },
+      {
+        "from": "fn:importers.js#LIQUIDACION.puntua@164",
+        "kind": "calls",
+        "to": "fn:importers.js#puntuaMarcas@69"
+      },
+      {
+        "from": "fn:importers.js#NOMINA.leer@113",
+        "kind": "calls",
+        "to": "fn:importers.js#documentoVacio@24"
+      },
+      {
+        "from": "fn:importers.js#NOMINA.leer@113",
+        "kind": "calls",
+        "to": "fn:importers.js#identidad@56"
+      },
+      {
+        "from": "fn:importers.js#NOMINA.puntua@97",
+        "kind": "calls",
+        "to": "fn:importers.js#puntuaMarcas@69"
+      },
+      {
+        "from": "fn:importers.js#OTRO.leer@335",
+        "kind": "calls",
+        "to": "fn:importers.js#leerFactura@234"
+      },
+      {
+        "from": "fn:importers.js#SUBVENCION.leer@295",
+        "kind": "calls",
+        "to": "fn:importers.js#leerFactura@234"
+      },
+      {
+        "from": "fn:importers.js#SUBVENCION.puntua@284",
+        "kind": "calls",
+        "to": "fn:importers.js#puntuaMarcas@69"
+      },
+      {
+        "from": "fn:importers.js#leerDocumento@381",
+        "kind": "calls",
+        "to": "fn:importers.js#importadorDe@356"
+      },
+      {
+        "from": "fn:importers.js#leerFactura@234",
+        "kind": "calls",
+        "to": "fn:importers.js#documentoVacio@24"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#COBRO.leer@319"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#COBRO.puntua@309"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#FACTURA.leer@270"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#FACTURA.puntua@258"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#LIQUIDACION.leer@181"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#LIQUIDACION.puntua@164"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#NOMINA.leer@113"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#NOMINA.puntua@97"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#OTRO.leer@335"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#OTRO.puntua@332"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#SUBVENCION.leer@295"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#SUBVENCION.puntua@284"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#documentoVacio@24"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#esReciboDeSalarios@81"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#identidad@56"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#importadorDe@356"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#importadoresDisponibles@347"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#leerDocumento@381"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#leerFactura@234"
+      },
+      {
+        "from": "module:importers.js",
+        "kind": "defines",
+        "to": "fn:importers.js#puntuaMarcas@69"
+      }
+    ],
+    "effects": [],
+    "endpoints": [],
+    "entry_points": {
+      "pages": [],
+      "preloads": [],
+      "renderers": [],
+      "workers": []
+    },
+    "exposed": [],
+    "graph_id": "ag_4da45197cfc54fede7e02641b376788d503e42cb8b67f46ea2bdeddb3016dcb0",
+    "input_format": "file",
+    "ipc": [],
+    "label": "importers.js",
+    "limitations": [],
+    "modules": [
+      {
+        "bundle_modules": [],
+        "bundlers": [],
+        "bytes": 13151,
+        "chunk_ids": [],
+        "exports": {
+          "cjs": [],
+          "esm": [
+            "IMPORTADORES",
+            "importadoresDisponibles",
+            "importadorDe",
+            "leerDocumento"
+          ]
+        },
+        "fingerprint": "8b29ea907b9601dab266480587ca710c40fe5081f58423b0eedb9c5558d9fe9a",
+        "functions": [
+          "documentoVacio",
+          "identidad",
+          "puntuaMarcas",
+          "esReciboDeSalarios",
+          "NOMINA.puntua",
+          "NOMINA.leer",
+          "LIQUIDACION.puntua",
+          "LIQUIDACION.leer",
+          "leerFactura",
+          "FACTURA.puntua",
+          "FACTURA.leer",
+          "SUBVENCION.puntua",
+          "SUBVENCION.leer",
+          "COBRO.puntua",
+          "COBRO.leer",
+          "OTRO.puntua",
+          "OTRO.leer",
+          "importadoresDisponibles",
+          "importadorDe",
+          "leerDocumento"
+        ],
+        "imports": [
+          {
+            "kind": "import",
+            "line": 18,
+            "specifier": "./parse.js"
+          },
+          {
+            "kind": "import",
+            "line": 19,
+            "specifier": "./nomina.js"
+          },
+          {
+            "kind": "import",
+            "line": 20,
+            "specifier": "./model.js"
+          },
+          {
+            "kind": "import",
+            "line": 21,
+            "specifier": "./util.js"
+          }
+        ],
+        "kind": "script",
+        "parse_mode": "parsed",
+        "path": "importers.js",
+        "role": "unknown",
+        "sha256": "bd1a7c4db1d211c35d40bee0f35fdff38dc09caa217fb954d8985cac13e061de",
+        "strings": [
+          "nomina",
+          "Nómina (recibo de salarios)",
+          "NOMINA",
+          "LABORALES",
+          "No he sabido leer el bruto de esta nómina. Escríbelo a mano: la Seguridad Social, el IRPF y el líquido salen solos.",
+          "un trabajador",
+          "liquidacion",
+          "Liquidación de fruta",
+          "LIQUIDACION",
+          "FRUTA",
+          "FACTURA",
+          "factura",
+          "Factura recibida",
+          "subvencion",
+          "Subvención o ayuda",
+          "SUBVENCION",
+          "SUBVENCIONES",
+          "cobro",
+          "Cobro o abono recibido",
+          "COBRO",
+          "otro",
+          "Otro documento",
+          "OTRO"
+        ]
+      }
+    ],
+    "modules_total": 1,
+    "native_modules": [],
+    "nodes": [
+      {
+        "id": "module:importers.js",
+        "kind": "module",
+        "label": "importers.js",
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./model.js.directionOf",
+            "./util.js.todayISO"
+          ],
+          "end": 1560,
+          "end_line": 49,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "kind"
+          ],
+          "parent": null,
+          "start": 1075,
+          "strings": []
+        },
+        "id": "fn:importers.js#documentoVacio@24",
+        "kind": "function",
+        "label": "documentoVacio",
+        "line": 24,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./parse.js.parseInvoiceText",
+            "./util.js.todayISO"
+          ],
+          "end": 2109,
+          "end_line": 66,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "texto",
+            "opciones"
+          ],
+          "parent": null,
+          "start": 1768,
+          "strings": []
+        },
+        "id": "fn:importers.js#identidad@56",
+        "kind": "function",
+        "label": "identidad",
+        "line": 56,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().toLowerCase",
+            "String",
+            "re.test",
+            "Math.min"
+          ],
+          "end": 2392,
+          "end_line": 74,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "texto",
+            "marcas",
+            "tope"
+          ],
+          "parent": null,
+          "start": 2175,
+          "strings": []
+        },
+        "id": "fn:importers.js#puntuaMarcas@69",
+        "kind": "function",
+        "label": "puntuaMarcas",
+        "line": 69,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().toLowerCase",
+            "String"
+          ],
+          "end": 2932,
+          "end_line": 86,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "texto"
+          ],
+          "parent": null,
+          "start": 2637,
+          "strings": []
+        },
+        "id": "fn:importers.js#esReciboDeSalarios@81",
+        "kind": "function",
+        "label": "esReciboDeSalarios",
+        "line": 81,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./nomina.js.leerNomina",
+            "puntuaMarcas"
+          ],
+          "end": 3747,
+          "end_line": 112,
+          "exported": false,
+          "kind": "expression",
+          "params": [
+            "texto"
+          ],
+          "parent": null,
+          "start": 3277,
+          "strings": []
+        },
+        "id": "fn:importers.js#NOMINA.puntua@97",
+        "kind": "function",
+        "label": "NOMINA.puntua",
+        "line": 97,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./nomina.js.leerNomina",
+            "documentoVacio",
+            "identidad",
+            "Array.isArray",
+            "./nomina.js.leerNomina().notas.slice",
+            "doc.notes.push",
+            "./util.js.fmtEUR"
+          ],
+          "end": 5281,
+          "end_line": 152,
+          "exported": false,
+          "kind": "expression",
+          "params": [
+            "texto",
+            "opciones"
+          ],
+          "parent": null,
+          "start": 3755,
+          "strings": [
+            "NOMINA",
+            "LABORALES",
+            "No he sabido leer el bruto de esta nómina. Escríbelo a mano: la Seguridad Social, el IRPF y el líquido salen solos.",
+            "un trabajador"
+          ]
+        },
+        "id": "fn:importers.js#NOMINA.leer@113",
+        "kind": "function",
+        "label": "NOMINA.leer",
+        "line": 113,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "esReciboDeSalarios",
+            "./parse.js.parseLiquidacion",
+            "puntuaMarcas"
+          ],
+          "end": 6339,
+          "end_line": 180,
+          "exported": false,
+          "kind": "expression",
+          "params": [
+            "texto"
+          ],
+          "parent": null,
+          "start": 5638,
+          "strings": []
+        },
+        "id": "fn:importers.js#LIQUIDACION.puntua@164",
+        "kind": "function",
+        "label": "LIQUIDACION.puntua",
+        "line": 164,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./parse.js.parseLiquidacion",
+            "documentoVacio",
+            "identidad",
+            "Array.isArray",
+            "Number.isFinite",
+            "Number",
+            "./util.js.round2",
+            "./parse.js.parseLiquidacion().notes.slice",
+            "./util.js.fmtNum",
+            "./util.js.fmtEUR"
+          ],
+          "end": 8155,
+          "end_line": 227,
+          "exported": false,
+          "kind": "expression",
+          "params": [
+            "texto",
+            "opciones"
+          ],
+          "parent": null,
+          "start": 6347,
+          "strings": [
+            "LIQUIDACION",
+            "FRUTA"
+          ]
+        },
+        "id": "fn:importers.js#LIQUIDACION.leer@181",
+        "kind": "function",
+        "label": "LIQUIDACION.leer",
+        "line": 181,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./parse.js.parseInvoiceText",
+            "documentoVacio",
+            "./util.js.todayISO",
+            "Array.isArray",
+            "./parse.js.parseInvoiceText().notes.slice"
+          ],
+          "end": 9028,
+          "end_line": 251,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "texto",
+            "opciones"
+          ],
+          "parent": null,
+          "start": 8381,
+          "strings": [
+            "FACTURA"
+          ]
+        },
+        "id": "fn:importers.js#leerFactura@234",
+        "kind": "function",
+        "label": "leerFactura",
+        "line": 234,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "puntuaMarcas"
+          ],
+          "end": 9453,
+          "end_line": 269,
+          "exported": false,
+          "kind": "expression",
+          "params": [
+            "texto"
+          ],
+          "parent": null,
+          "start": 9142,
+          "strings": []
+        },
+        "id": "fn:importers.js#FACTURA.puntua@258",
+        "kind": "function",
+        "label": "FACTURA.puntua",
+        "line": 258,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "leerFactura"
+          ],
+          "end": 9530,
+          "end_line": 272,
+          "exported": false,
+          "kind": "expression",
+          "params": [
+            "texto",
+            "opciones"
+          ],
+          "parent": null,
+          "start": 9461,
+          "strings": []
+        },
+        "id": "fn:importers.js#FACTURA.leer@270",
+        "kind": "function",
+        "label": "FACTURA.leer",
+        "line": 270,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "puntuaMarcas"
+          ],
+          "end": 10195,
+          "end_line": 294,
+          "exported": false,
+          "kind": "expression",
+          "params": [
+            "texto"
+          ],
+          "parent": null,
+          "start": 9881,
+          "strings": []
+        },
+        "id": "fn:importers.js#SUBVENCION.puntua@284",
+        "kind": "function",
+        "label": "SUBVENCION.puntua",
+        "line": 284,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "leerFactura"
+          ],
+          "end": 10392,
+          "end_line": 301,
+          "exported": false,
+          "kind": "expression",
+          "params": [
+            "texto",
+            "opciones"
+          ],
+          "parent": null,
+          "start": 10203,
+          "strings": [
+            "SUBVENCION",
+            "SUBVENCIONES"
+          ]
+        },
+        "id": "fn:importers.js#SUBVENCION.leer@295",
+        "kind": "function",
+        "label": "SUBVENCION.leer",
+        "line": 295,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "puntuaMarcas"
+          ],
+          "end": 10786,
+          "end_line": 318,
+          "exported": false,
+          "kind": "expression",
+          "params": [
+            "texto"
+          ],
+          "parent": null,
+          "start": 10510,
+          "strings": []
+        },
+        "id": "fn:importers.js#COBRO.puntua@309",
+        "kind": "function",
+        "label": "COBRO.puntua",
+        "line": 309,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "leerFactura"
+          ],
+          "end": 10943,
+          "end_line": 324,
+          "exported": false,
+          "kind": "expression",
+          "params": [
+            "texto",
+            "opciones"
+          ],
+          "parent": null,
+          "start": 10794,
+          "strings": [
+            "COBRO"
+          ]
+        },
+        "id": "fn:importers.js#COBRO.leer@319",
+        "kind": "function",
+        "label": "COBRO.leer",
+        "line": 319,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [],
+          "end": 11072,
+          "end_line": 334,
+          "exported": false,
+          "kind": "expression",
+          "params": [],
+          "parent": null,
+          "start": 11050,
+          "strings": []
+        },
+        "id": "fn:importers.js#OTRO.puntua@332",
+        "kind": "function",
+        "label": "OTRO.puntua",
+        "line": 332,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "leerFactura"
+          ],
+          "end": 11229,
+          "end_line": 340,
+          "exported": false,
+          "kind": "expression",
+          "params": [
+            "texto",
+            "opciones"
+          ],
+          "parent": null,
+          "start": 11080,
+          "strings": [
+            "OTRO"
+          ]
+        },
+        "id": "fn:importers.js#OTRO.leer@335",
+        "kind": "function",
+        "label": "OTRO.leer",
+        "line": 335,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "IMPORTADORES.map"
+          ],
+          "end": 11586,
+          "end_line": 349,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 11458,
+          "strings": []
+        },
+        "id": "fn:importers.js#importadoresDisponibles@347",
+        "kind": "function",
+        "label": "importadoresDisponibles",
+        "line": 347,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "IMPORTADORES.find",
+            "pedido.puntua",
+            "imp.puntua"
+          ],
+          "end": 12457,
+          "end_line": 374,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "texto",
+            "tipoElegido"
+          ],
+          "parent": null,
+          "start": 11838,
+          "strings": []
+        },
+        "id": "fn:importers.js#importadorDe@356",
+        "kind": "function",
+        "label": "importadorDe",
+        "line": 356,
+        "module": "importers.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "importadorDe",
+            "importador.leer",
+            "doc.notes.push",
+            "importador.label.toLowerCase"
+          ],
+          "end": 13150,
+          "end_line": 397,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "texto",
+            "opciones"
+          ],
+          "parent": null,
+          "start": 12645,
+          "strings": []
+        },
+        "id": "fn:importers.js#leerDocumento@381",
+        "kind": "function",
+        "label": "leerDocumento",
+        "line": 381,
+        "module": "importers.js",
+        "role": "unknown"
+      }
+    ],
+    "package": null,
+    "routes": [],
+    "source_maps": [],
+    "stats": {
+      "api_operations": 0,
+      "bundle_modules": 0,
+      "edges": 36,
+      "endpoints": 0,
+      "files": 1,
+      "functions": 20,
+      "ipc_channels": 0,
+      "listed": 1,
+      "modules": 1,
+      "nodes": 21,
+      "paired_channels": 0
+    },
+    "storage": [],
+    "summary": "JavaScript code importers.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+    "vendors": [],
+    "windows": []
+  },
+  "summary": "JavaScript code importers.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "static_only",
+      "message": "Static reading only: code built at run time (eval, computed requires, remote content) is invisible; IPC pairs need literal channel names."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\importers.js"
+    }
+  ],
+  "links": []
+}

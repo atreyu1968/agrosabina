@@ -1,0 +1,54 @@
+{
+  "id": "ev_d4e28a953296501b8cbc79fb76af4a30952436a37e4c692eab37775fa8dcecfd",
+  "subject": {
+    "kind": "script",
+    "sha256": "d3429cdf47110ecd732d2fb98412f312890b35e1ceb799fe3800a1c8466fea32",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 65,
+    "offset": 1800,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 119171,
+    "lines": 65,
+    "more": true,
+    "offset": 1800,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "}\n\n/**\n * De una liquidación de fruta interesan sobre todo dos datos: los kilos y el\n * precio por kilo. Se buscan en el texto ya leído, con cuidado de no confundir\n * el precio con el total.\n */\nfunction guessLiquidacion(text) {\n  if (!text) return null;\n  const t = String(text).replace(/\\s+/g, \" \");\n  const numero = \"([0-9]{1,3}(?:\\\\.[0-9]{3})*(?:,[0-9]{1,3})?|[0-9]+(?:[.,][0-9]{1,3})?)\";\n  const kgHit =\n    t.match(new RegExp(\"kilos?\\\\s*[:.]?\\\\s*\" + numero, \"i\")) ||\n    t.match(new RegExp(numero + \"\\\\s*(?:kg|kilos?)\\\\b\", \"i\"));\n  const precioHit =\n    t.match(new RegExp(numero + \"\\\\s*(?:€|eur|euros?)\\\\s*(?:\\\\/|por|la)?\\\\s*(?:kg|kilo)\", \"i\"));\n  const kg = kgHit ? parseAmount(kgHit[1]) : null;\n  const price = precioHit ? parseAmount(precioHit[1]) : null;\n  return kg == null && price == null ? null : { product: \"\", kg, price, discounts: [] };\n}\n\nfunction invoiceFormHtml(v) {\n  const state = getState();\n  const kind = v.kind || \"FACTURA\";\n  const direction = v.direction || directionOf(kind);\n  return `\n  <div class=\"form-grid\">\n    <div class=\"field\">\n      <label for=\"f-kind\">Tipo de documento</label>\n      <select id=\"f-kind\">${kindOptions(kind)}</select>\n    </div>\n    <div class=\"field\">\n      <label for=\"f-cat\">Concepto</label>\n      <select id=\"f-cat\">${categoryOptions(v.category, direction)}</select>\n    </div>\n    ${v.classifyWhy || v.classifyNote ? `<div class=\"classify-why span-2\" id=\"f-why\">${icon(\"sparkle\")}<span>${esc(\n      [v.classifyWhy, v.classifyNote].filter(Boolean).join(\" · \")\n    )}</span></div>` : `<div class=\"classify-why span-2\" id=\"f-why\" hidden></div>`}\n    <div class=\"field span-2\">\n      <label for=\"f-name\">Proveedor <span class=\"tag\" id=\"supplierHint\" hidden></span></label>\n      <input id=\"f-name\" type=\"text\" list=\"supplierNames\" autocomplete=\"off\" value=\"${esc(v.supplierName || \"\")}\" placeholder=\"Nombre del proveedor\">\n      <datalist id=\"supplierNames\">\n        ${state.suppliers.map((s) => `<option value=\"${esc(s.name)}\">`).join(\"\")}\n      </datalist>\n    </div>\n    <div class=\"field\">\n      <label for=\"f-nif\">NIF / CIF</label>\n      <input id=\"f-nif\" type=\"text\" autocomplete=\"off\" value=\"${esc(v.supplierNif || \"\")}\" placeholder=\"B12345678\">\n    </div>\n    <div class=\"field\">\n      <label for=\"f-number\">Número de factura</label>\n      <input id=\"f-number\" type=\"text\" autocomplete=\"off\" value=\"${esc(v.number || \"\")}\" placeholder=\"2024/0184\">\n    </div>\n    <div class=\"field\">\n      <label for=\"f-issue\">Fecha de la factura</label>\n      <input id=\"f-issue\" type=\"date\" value=\"${esc(v.issueDate || \"\")}\">\n    </div>\n    <div class=\"field\">\n      <label for=\"f-due\">Vencimiento <span class=\"hint\">(opcional)</span></label>\n      <input id=\"f-due\" type=\"date\" value=\"${esc(v.dueDate || \"\")}\">\n    </div>\n    <div class=\"field\">\n      <label for=\"f-base\">Base imponible</label>\n      <div class=\"with-suffix\"><input id=\"f-base\" type=\"text\" inputmode=\"decimal\" value=\"${v.base != null ? fmtNum(v.base) : \"\"}\" placeholder=\"0,00\"><span>€</span></div>\n    </div>\n",
+    "total_lines": 3196
+  },
+  "summary": "views.js: lines 1801–1865 of 3196 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 65,
+    "total": 3196,
+    "next_offset": 1865
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

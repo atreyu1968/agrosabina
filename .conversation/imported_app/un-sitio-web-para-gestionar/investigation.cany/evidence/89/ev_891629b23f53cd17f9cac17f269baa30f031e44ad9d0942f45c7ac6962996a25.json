@@ -1,0 +1,54 @@
+{
+  "id": "ev_891629b23f53cd17f9cac17f269baa30f031e44ad9d0942f45c7ac6962996a25",
+  "subject": {
+    "kind": "text",
+    "sha256": "3db480224effa4b9d211e596ed9d47f2a363fef9510e14cffbc71a449f3b6e8a",
+    "name": "styles.css"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 8,
+    "offset": 914,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 35654,
+    "lines": 8,
+    "more": true,
+    "offset": 914,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "replaced_sequences": 0,
+    "text": "    animation-iteration-count: 1 !important;\n    transition-duration: .001ms !important;\n  }\n}\n\n/* ---------- Pantallas pequeñas ----------------------------------------- */\n\n@media (max-width: 1080px) {\n",
+    "total_lines": 1303
+  },
+  "summary": "styles.css: lines 915–922 of 1303 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 8,
+    "total": 1303,
+    "next_offset": 922
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+    }
+  ],
+  "links": []
+}

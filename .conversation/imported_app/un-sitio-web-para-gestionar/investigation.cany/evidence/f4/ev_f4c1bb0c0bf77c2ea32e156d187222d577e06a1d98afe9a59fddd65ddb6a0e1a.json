@@ -1,0 +1,54 @@
+{
+  "id": "ev_f4c1bb0c0bf77c2ea32e156d187222d577e06a1d98afe9a59fddd65ddb6a0e1a",
+  "subject": {
+    "kind": "script",
+    "sha256": "effbee695913dd70eb1d3b51952ecc8ed76c4969a93f6df5b3ddba29ce97f26c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 150,
+    "offset": 4210,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 196170,
+    "lines": 150,
+    "more": true,
+    "offset": 4210,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "function accDocs() {\n  const state = getState();\n  const names = new Map((state.suppliers || []).map((s) => [s.id, s.name]));\n  return (state.invoices || []).map((inv) =>\n    Object.assign({}, inv, { party: names.get(inv.supplierId) || \"\" })\n  );\n}\n\n/** El asiento de apertura, si ya se han dicho el capital y el saldo de bancos. */\nfunction accApertura() {\n  const s = getState().settings || {};\n  const capital = Number(s.openingCapital) || 0;\n  const tesoreria = Number(s.openingCash) || 0;\n  if (!capital && !tesoreria) return null;\n  return { capital, tesoreria, fecha: String(s.openingDate || \"\").slice(0, 10) };\n}\n\n/** Los asientos escritos a mano que hay guardados. */\nfunction accManuales() {\n  const s = getState().settings || {};\n  const list = Array.isArray(s.asientosManuales) ? s.asientosManuales : [];\n  return list.filter((a) => a && a.id && Array.isArray(a.lineas) && a.lineas.length);\n}\n\n/** Guarda la lista de asientos escritos a mano. */\nfunction saveAccManuales(list) {\n  updateSettings({ asientosManuales: Array.isArray(list) ? list : [] });\n}\n\n/**\n * El plan de cuentas que se está usando: una subcuenta por cada cliente y cada\n * proveedor que aparece en los documentos (430001, 400001…), más las cuentas\n * que haya añadido la persona. Se calcula siempre igual, en orden alfabético,\n * para que los números no cambien al añadir un documento nuevo.\n */\nfunction accPlan() {\n  const s = getState().settings || {};\n  const propias = (Array.isArray(s.cuentasPropias) ? s.cuentasPropias : [])\n    .map((c) => ({ code: String((c && c.code) || \"\").trim(), name: String((c && c.name) || \"\").trim() }))\n    .filter((c) => /^\\d{3,6}$/.test(c.code) && c.name);\n\n  const guardadas = (Array.isArray(s.subcuentas) ? s.subcuentas : [])\n    .map((c) => ({\n      code: String((c && c.code) || \"\").trim(),\n      name: String((c && c.name) || \"\").trim(),\n      key: String((c && c.key) || \"\"),\n      cuenta: String((c && c.cuenta) || String((c && c.code) || \"\").slice(0, 3)),\n    }))\n    .filter((c) => /^\\d{6}$/.test(c.code) && c.name);\n\n  const subcuentas = guardadas.slice();\n  const abiertas = subcuentas.map((c) => c.code);\n  const yaEsta = new Set(subcuentas.map((c) => `${c.cuenta}|${c.key}`));\n\n  const terceros = new Map();\n  for (const doc of accDocs()) {\n    const tipo = String(doc.kind || \"\").toUpperCase();\n    const ingreso =\n      String(doc.direction || \"\") === \"INGRESO\" ||\n      [\"LIQUIDACION\", \"SUBVENCION\", \"COBRO\", \"VENTA\"].indexOf(tipo) >= 0;\n    const madre = ingreso ? \"430\" : \"400\";\n    const key = claveDeTercero({ party: doc.party, supplierId: doc.supplierId });\n    if (!key || yaEsta.has(`${madre}|${key}`) || terceros.has(`${madre}|${key}`)) continue;\n    terceros.set(`${madre}|${key}`, { madre, key, nombre: String(doc.party || \"\").trim() });\n  }\n\n  const orden = [...terceros.values()].sort((a, b) =>\n    a.madre === b.madre ? a.key.localeCompare(b.key) : a.madre.localeCompare(b.madre)\n  );\n  for (const t of orden) {\n    const code = siguienteSubcuenta(t.madre, abiertas);\n    abiertas.push(code);\n    const etiqueta = t.madre === \"430\" ? \"Clientes\" : \"Proveedores\";\n    const nombre = `${etiqueta} · ${t.nombre || t.key}`;\n    subcuentas.push({ code, cuenta: t.madre, key: t.key, name: nombre.slice(0, 70) });\n  }\n\n  return { subcuentas, propias };\n}\n\n/** Los asientos del periodo elegido. */\nfunction asientosContables(w) {\n  const win = w || contaWindow();\n  setPlanDeCuentas(accPlan());\n  return asientosDe(accDocs(), {\n    from: win.from,\n    to: win.to,\n    apertura: accApertura(),\n    manuales: accManuales(),\n  });\n}\n\n/** Un número escrito a mano: vale «1.234,56» y «1234.56». */\nfunction accNum(value) {\n  const txt = String(value == null ? \"\" : value).replace(/[€\\s]/g, \"\");\n  if (!txt) return 0;\n  const last = Math.max(txt.lastIndexOf(\",\"), txt.lastIndexOf(\".\"));\n  const clean =\n    last > -1 && txt.length - last <= 3 && txt.indexOf(\",\", last + 1) === -1\n      ? txt.slice(0, last).replace(/[.,]/g, \"\") + \".\" + txt.slice(last + 1)\n      : txt.replace(/[.,]/g, \"\");\n  const n = Number(clean);\n  return Number.isFinite(n) ? round2(n) : 0;\n}\n\nfunction accRangeBar(w) {\n  return `\n    <div class=\"filters\">\n      <select id=\"accRange\" aria-label=\"Elegir el periodo\">\n        ${SALES_RANGES.map((r) => `<option value=\"${r.id}\"${ui.conta.range === r.id ? \" selected\" : \"\"}>${r.label}</option>`).join(\"\")}\n      </select>\n      ${ui.conta.range === \"custom\" ? `\n      <label class=\"date-filter\"><span>Desde</span><input id=\"accFrom\" type=\"date\" value=\"${esc(ui.conta.from)}\" aria-label=\"Desde\"></label>\n      <label class=\"date-filter\"><span>Hasta</span><input id=\"accTo\" type=\"date\" value=\"${esc(ui.conta.to)}\" aria-label=\"Hasta\"></label>` : \"\"}\n      <div class=\"spacer\"></div>\n      <button class=\"btn sm\" data-action=\"acc-entry-new\">${icon(\"plus\")}<span>Nuevo asiento</span></button>\n      <span class=\"tag kind\">Contabilidad · versión 3</span>\n      <span class=\"tag kind\">${esc(w.label)}</span>\n    </div>`;\n}\n\nfunction accTabBar() {\n  return `<div class=\"acc-tabs\" role=\"tablist\">\n    ${ACC_TABS.map(([id, label]) =>\n      `<button class=\"acc-tab${ui.conta.tab === id ? \" is-on\" : \"\"}\" data-action=\"acc-tab\" data-id=\"${id}\" role=\"tab\" aria-selected=\"${ui.conta.tab === id}\">${label}</button>`\n    ).join(\"\")}\n  </div>`;\n}\n\nfunction accEmpty(text) {\n  const docs = getState().invoices || [];\n  const fuera = docs.length > 0 && ui.conta.range !== \"all\";\n  const sinFecha = docs.filter((d) => !String(d.issueDate || d.createdAt || \"\").slice(0, 10)).length;\n  let titulo = \"Todavía no hay nada que contabilizar\";\n  let motivo =\n    text ||\n    \"Los asientos salen solos de lo que ya tienes guardado: facturas, liquidaciones, subvenciones y nóminas. En cuanto haya un documento con fecha e importe, aparece aquí.\";\n  if (fuera) {\n    titulo = \"Ningún asiento en estas fechas\";\n    motivo = `Tienes ${docs.length} ${docs.length === 1 ? \"documento guardado\" : \"documentos guardados\"}, pero ninguno con fecha dentro de «${contaWindow().label}».`;\n  } else if (sinFecha) {\n    titulo = \"Faltan fechas\";\n    motivo = `Hay ${sinFecha} ${sinFecha === 1 ? \"documento\" : \"documentos\"} sin fecha. En cuanto les pongas la fecha, aparecen aquí como asientos.`;\n  }\n  return `<section class=\"card\"><div class=\"empty\">\n    <div class=\"e-icon\">${icon(\"file\")}</div>\n    <h3>${titulo}</h3>\n    <p>${esc(motivo)}</p>\n    <div class=\"e-actions\">\n      ${fuera ? `<button class=\"btn primary\" data-action=\"acc-all\">${icon(\"arrow\")} Ver todo lo registrado</button>` : \"\"}\n",
+    "total_lines": 5107
+  },
+  "summary": "views.js: lines 4211–4360 of 5107 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 150,
+    "total": 5107,
+    "next_offset": 4360
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

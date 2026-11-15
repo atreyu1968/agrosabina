@@ -1,0 +1,54 @@
+{
+  "id": "ev_b4f9acbc56ba2a2f864181229050fb6119d7b5cebf4c1eef1f04013d236551ff",
+  "subject": {
+    "kind": "script",
+    "sha256": "c15ac0adaf235ce3581c94efe38fd40425633ddbc5bab4a939965ea4cd9fee68",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 3508,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 135395,
+    "lines": 45,
+    "more": true,
+    "offset": 3508,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "/* ------------------------------------------------------------------ */\n/* Buscadores                                                         */\n/* ------------------------------------------------------------------ */\n\nexport function onInput(event) {\n  const target = event.target;\n  if (!(target instanceof HTMLElement)) return;\n\n  if (target.id === \"invoiceSearch\") {\n    ui.filters.q = target.value;\n    refreshInvoiceTable();\n    return;\n  }\n  if (target.id === \"supplierSearch\") {\n    ui.supplierQuery = target.value;\n    const pos = target.selectionStart;\n    refreshSupplierGrid();\n    const again = document.getElementById(\"supplierSearch\");\n    if (again) {\n      again.focus();\n      try {\n        again.setSelectionRange(pos, pos);\n      } catch (_) {\n        /* nada */\n      }\n    }\n  }\n}\n\nexport function onChange(event) {\n  const target = event.target;\n  if (!(target instanceof HTMLElement)) return;\n  if (target.id === \"salesRange\") {\n    ui.sales.range = target.value;\n    if (ui.sales.range === \"custom\") {\n      if (!ui.sales.from) ui.sales.from = `${new Date().getFullYear()}-01-01`;\n      if (!ui.sales.to) ui.sales.to = todayISO();\n    }\n    refreshSales();\n    return;\n  }\n  if (target.id === \"salesFrom\" || target.id === \"salesTo\") {\n    ui.sales[target.id === \"salesFrom\" ? \"from\" : \"to\"] = target.value;\n    refreshSales();\n    return;\n",
+    "total_lines": 3603
+  },
+  "summary": "views.js: lines 3509–3553 of 3603 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 3603,
+    "next_offset": 3553
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_16e992f737bf14a013d602b3fb6c42be1dcc785f4a55ca62d9b47aa38ee8189b",
+  "subject": {
+    "kind": "script",
+    "sha256": "2996faf029efc1017f4dc10adb816e60d3d5235df8604836778307e81294a870",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 90,
+    "offset": 592,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 155962,
+    "lines": 90,
+    "more": true,
+    "offset": 592,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "        </div>\n      </div>\n    </section>\n\n    <section class=\"card\">\n      <div class=\"card-head\">\n        <div>\n          <h2>Cómo funciona</h2>\n          <p>Tres pasos y la factura queda guardada</p>\n        </div>\n      </div>\n      <div class=\"card-body\">\n        <div class=\"howto\">\n          <div class=\"step\">\n            <div class=\"n\">1</div>\n            <h4>Sube la factura</h4>\n            <p>Una foto del móvil, un escaneo o el PDF que te ha mandado el proveedor.</p>\n          </div>\n          <div class=\"step\">\n            <div class=\"n\">2</div>\n            <h4>Revisa lo que he leído</h4>\n            <p>Relleno proveedor, número, fechas, base, IGIC y total. Puedes corregir cualquier cosa.</p>\n          </div>\n          <div class=\"step\">\n            <div class=\"n\">3</div>\n            <h4>Marca pagado o pendiente</h4>\n            <p>Con un clic cambias el estado. El resumen te dice cuánto debes y cuánto IGIC llevas.</p>\n          </div>\n        </div>\n      </div>\n    </section>\n  </div>`;\n}\n\n/* ------------------------------------------------------------------ */\n/* Ventas e ingresos                                                  */\n/* ------------------------------------------------------------------ */\n\nconst SALES_RANGES = [\n  { id: \"year\", label: \"Este año\" },\n  { id: \"quarter\", label: \"Este trimestre\" },\n  { id: \"month\", label: \"Este mes\" },\n  { id: \"campaign\", label: \"Últimos 12 meses\" },\n  { id: \"all\", label: \"Todo lo registrado\" },\n  { id: \"custom\", label: \"Elegir fechas\" },\n];\n\n/** El periodo que se está mirando: fechas desde/hasta y su nombre. */\nfunction salesWindow() {\n  return windowFor(ui.sales);\n}\n\n/** Lo mismo, para cualquier pantalla que elija un periodo. */\nfunction windowFor(state) {\n  const now = new Date();\n  const y = now.getFullYear();\n  const two = (n) => String(n).padStart(2, \"0\");\n  const today = todayISO();\n  const monthFrom = `${y}-${two(now.getMonth() + 1)}-01`;\n  const quarterFrom = `${y}-${two(Math.floor(now.getMonth() / 3) * 3 + 1)}-01`;\n  const yearAgo = `${y - 1}-${two(now.getMonth() + 1)}-${two(now.getDate())}`;\n  const range = state.range;\n\n  if (range === \"month\") return { id: range, from: monthFrom, to: today, label: \"Este mes\" };\n  if (range === \"quarter\") return { id: range, from: quarterFrom, to: today, label: \"Este trimestre\" };\n  if (range === \"campaign\") return { id: range, from: yearAgo, to: today, label: \"Últimos 12 meses\" };\n  if (range === \"all\") return { id: range, from: \"\", to: \"\", label: \"Todo lo registrado\" };\n  if (range === \"custom\") {\n    const from = state.from || \"\";\n    const to = state.to || \"\";\n    const label = from && to\n      ? `Del ${fmtDate(from)} al ${fmtDate(to)}`\n      : from\n        ? `Desde el ${fmtDate(from)}`\n        : to\n          ? `Hasta el ${fmtDate(to)}`\n          : \"Elige las fechas\";\n    return { id: range, from, to, label };\n  }\n  return { id: \"year\", from: `${y}-01-01`, to: today, label: \"Este año\" };\n}\n\nfunction inSalesWindow(date, w) {\n  const d = date || \"\";\n  if (w.from && (!d || d < w.from)) return false;\n  if (w.to && (!d || d > w.to)) return false;\n  return true;\n}\n\n/** Todo lo que entra: liquidaciones de fruta, subvenciones, cobros… */\n",
+    "total_lines": 4117
+  },
+  "summary": "views.js: lines 593–682 of 4117 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 90,
+    "total": 4117,
+    "next_offset": 682
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

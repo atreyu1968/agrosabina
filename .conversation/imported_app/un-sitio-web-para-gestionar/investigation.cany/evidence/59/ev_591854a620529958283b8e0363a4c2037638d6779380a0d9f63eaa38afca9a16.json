@@ -1,0 +1,54 @@
+{
+  "id": "ev_591854a620529958283b8e0363a4c2037638d6779380a0d9f63eaa38afca9a16",
+  "subject": {
+    "kind": "script",
+    "sha256": "5e17d89c337b593cb05d0ca1b1c9e70e16a2366aecc10979f182f9dc07a35d2f",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 100,
+    "offset": 200,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\_check3\\pretty\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 23521,
+    "lines": 100,
+    "more": true,
+    "offset": 200,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\_check3\\pretty\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "\t\ttotal\n\t};\n}\n/**\n* Convierte una lista de [cuenta, importe] en renglones con debe y haber.\n* Un importe positivo va al debe; uno negativo, al haber. Si bailan céntimos,\n* se los lleva la cuenta de mayor importe para que el asiento cuadre.\n*/\nexport function lineas(raw) {\n\tconst rows = (raw || []).map((pair) => ({\n\t\tcode: String(pair[0]),\n\t\tvalue: round2(Number(pair[1]) || 0)\n\t})).filter((r) => Math.abs(r.value) >= .005);\n\tif (!rows.length) return [];\n\tconst suma = round2(rows.reduce((n, r) => n + r.value, 0));\n\tif (suma !== 0) {\n\t\tlet biggest = rows[0];\n\t\tfor (const r of rows) if (Math.abs(r.value) > Math.abs(biggest.value)) biggest = r;\n\t\tbiggest.value = round2(biggest.value - suma);\n\t}\n\treturn rows.filter((r) => Math.abs(r.value) >= .005).map((r) => ({\n\t\taccount: r.code,\n\t\tname: cuenta(r.code).name,\n\t\tdebit: r.value > 0 ? r.value : 0,\n\t\tcredit: r.value < 0 ? Math.abs(r.value) : 0\n\t}));\n}\nfunction totalLineas(lines) {\n\treturn round2((lines || []).reduce((n, l) => n + l.debit, 0));\n}\n/* ------------------------------------------------------------------ */\n/* Asientos                                                           */\n/* ------------------------------------------------------------------ */\nconst ORDEN = {\n\tapertura: 0,\n\tdevengo: 1,\n\tcobro: 2,\n\tpago: 3\n};\n/**\n* Los asientos del periodo. Uno por documento (cuando se emite) y, si está\n* cobrado o pagado, otro por el movimiento de tesorería. Más el asiento de\n* apertura, si se han dicho el capital y el saldo de bancos.\n*\n* `invoices` son los documentos guardados; se les puede añadir `party` con el\n* nombre del proveedor o del comprador para que salga en el concepto.\n*/\nexport function asientosDe(invoices, opts = {}) {\n\tconst from = String(opts.from || \"\").slice(0, 10);\n\tconst to = String(opts.to || \"\").slice(0, 10);\n\tconst dentro = (day) => {\n\t\tconst d = String(day || \"\").slice(0, 10);\n\t\tif (!d) return false;\n\t\tif (from && d < from) return false;\n\t\tif (to && d > to) return false;\n\t\treturn true;\n\t};\n\tconst out = [];\n\tconst ap = opts.apertura;\n\tif (ap) {\n\t\tconst capital = round2(Number(ap.capital) || 0);\n\t\tconst tesoreria = round2(Number(ap.tesoreria) || 0);\n\t\tif (capital || tesoreria) {\n\t\t\t// La apertura entra siempre, aunque el periodo elegido empiece más\n\t\t\t// tarde: es la posición de partida y sin ella el balance no cuadra.\n\t\t\tconst dia = String(ap.fecha || \"\").slice(0, 10) || from || `${new Date().getFullYear()}-01-01`;\n\t\t\t{\n\t\t\t\tconst resto = round2(tesoreria - capital);\n\t\t\t\tconst raw = [\n\t\t\t\t\t[\"572\", tesoreria],\n\t\t\t\t\t[\"100\", -capital],\n\t\t\t\t\tresto >= 0 ? [\"113\", -resto] : [\"121\", -resto]\n\t\t\t\t];\n\t\t\t\tconst lines = lineas(raw);\n\t\t\t\tif (lines.length) {\n\t\t\t\t\tout.push({\n\t\t\t\t\t\tid: \"apertura\",\n\t\t\t\t\t\tdate: dia || from,\n\t\t\t\t\t\tconcept: \"Asiento de apertura\",\n\t\t\t\t\t\tref: \"\",\n\t\t\t\t\t\tkind: \"apertura\",\n\t\t\t\t\t\tlines\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\tfor (const inv of invoices || []) {\n\t\tif (!inv) continue;\n\t\tconst dia = String(inv.issueDate || inv.createdAt || \"\").slice(0, 10);\n\t\tif (!dentro(dia)) continue;\n\t\tconst { base, igic, total } = importes(inv);\n\t\tif (!total) continue;\n\t\tconst ingreso = directionOf(inv.kind) === \"INGRESO\";\n\t\tconst cuentaDoc = cuentaDeDocumento(inv);\n\t\tconst numero = String(inv.number || \"\").trim();\n\t\tconst quien = inv.party ? ` · ${String(inv.party)}` : \"\";\n\t\tconst tipo = ingreso ? \"Ingreso\" : \"Gasto\";\n\t\tconst concept = `${tipo}${numero ? ` ${numero}` : \"\"}${quien}`;\n\t\tconst raw = ingreso ? [\n",
+    "total_lines": 986
+  },
+  "summary": "accounting.js: lines 201–300 of 986 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 100,
+    "total": 986,
+    "next_offset": 300
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\_check3\\pretty\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

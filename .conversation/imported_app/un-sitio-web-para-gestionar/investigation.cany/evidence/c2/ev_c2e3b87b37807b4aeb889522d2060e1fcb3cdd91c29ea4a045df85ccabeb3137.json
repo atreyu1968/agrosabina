@@ -1,0 +1,72 @@
+{
+  "id": "ev_c2e3b87b37807b4aeb889522d2060e1fcb3cdd91c29ea4a045df85ccabeb3137",
+  "subject": {
+    "kind": "script",
+    "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b",
+    "name": "store.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 4,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\store.js",
+    "pattern": null,
+    "text": "setInvoiceStatus(id, status, paidDate)"
+  },
+  "result": {
+    "file_size": 24919,
+    "limit": 4,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "736574496e766f6963655374617475732869642c207374617475732c20706169644461746529",
+        "file_offset": 16008,
+        "file_offset_hex": "0x3e88",
+        "length": 38,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\store.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 38
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 in store.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x3e88"
+    }
+  ],
+  "links": []
+}

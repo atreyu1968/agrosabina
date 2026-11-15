@@ -1,0 +1,54 @@
+{
+  "id": "ev_31055496e8dbedcc1429668ac4753f0f7392891bd85a07525d1df47bd09b812f",
+  "subject": {
+    "kind": "script",
+    "sha256": "a184588da01bbaaff7f7e9b3028b69a729173e09996373b78baeb039c091ccf7",
+    "name": "dom.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 58,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 9091,
+    "lines": 40,
+    "more": true,
+    "offset": 58,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js",
+    "replaced_sequences": 0,
+    "text": "let activeModal = null;\n\nexport function openModal(html, { narrow = false, onMount, onClose } = {}) {\n  closeModal();\n  const root = document.getElementById(\"modalRoot\");\n  const wrap = document.createElement(\"div\");\n  wrap.className = \"modal\";\n  wrap.setAttribute(\"role\", \"dialog\");\n  wrap.setAttribute(\"aria-modal\", \"true\");\n  wrap.innerHTML = `<div class=\"modal-card${narrow ? \" narrow\" : \"\"}\">${html}</div>`;\n\n  wrap.addEventListener(\"mousedown\", (ev) => {\n    if (ev.target === wrap) {\n      const cancel = wrap.querySelector(\"[data-modal-cancel]\");\n      if (cancel) cancel.click();\n      else closeModal();\n    }\n  });\n\n  root.appendChild(wrap);\n  activeModal = { wrap, onClose };\n  document.body.style.overflow = \"hidden\";\n\n  const focusTarget = wrap.querySelector(\"[autofocus], input, select, textarea, button\");\n  if (focusTarget && typeof focusTarget.focus === \"function\") {\n    setTimeout(() => focusTarget.focus({ preventScroll: true }), 40);\n  }\n  if (typeof onMount === \"function\") onMount(wrap);\n\n  return wrap;\n}\n\nexport function closeModal() {\n  if (!activeModal) return;\n  const { wrap, onClose } = activeModal;\n  activeModal = null;\n  document.body.style.overflow = \"\";\n  wrap.remove();\n  if (typeof onClose === \"function\") onClose();\n}\n",
+    "total_lines": 153
+  },
+  "summary": "dom.js: lines 59–98 of 153 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 153,
+    "next_offset": 98
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\dom.js"
+    }
+  ],
+  "links": []
+}

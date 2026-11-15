@@ -1,0 +1,718 @@
+{
+  "id": "ev_77de6b542bc37406ba9abd003a8e3b2af2e1940f92e7114e3ca76e76114d835b",
+  "subject": {
+    "kind": "script",
+    "sha256": "4df541d1d50727cadbe26e669c55e8d1793e57bd47466d35718defc737f8b4e8",
+    "name": "views.js"
+  },
+  "operation": "core_evidence_browse",
+  "params": {
+    "show": {
+      "fields": [
+        "label",
+        "line",
+        "kind"
+      ],
+      "kind": "rows",
+      "limit": 130,
+      "list": "nodes",
+      "matching": {
+        "kind": "function"
+      },
+      "offset": 60
+    },
+    "source": {
+      "evidence_id": "ev_8148ea33a2532680e5c5061746f12249108d95c3ca2832be899475f6ca879f68",
+      "kind": "saved"
+    }
+  },
+  "result": {
+    "coverage": {
+      "at_end": false,
+      "examined": 130,
+      "next_offset": 190,
+      "status": "page",
+      "total": 208
+    },
+    "from_evidence": "ev_8148ea33a2532680e5c5061746f12249108d95c3ca2832be899475f6ca879f68",
+    "from_tool": "js_app_map",
+    "shown": {
+      "items": [
+        {
+          "kind": "function",
+          "label": "supplierGrid",
+          "line": 1882
+        },
+        {
+          "kind": "function",
+          "label": "refreshSupplierGrid",
+          "line": 1940
+        },
+        {
+          "kind": "function",
+          "label": "mailDateText",
+          "line": 1949
+        },
+        {
+          "kind": "function",
+          "label": "mailRow",
+          "line": 1956
+        },
+        {
+          "kind": "function",
+          "label": "viewCorreo",
+          "line": 1979
+        },
+        {
+          "kind": "function",
+          "label": "pickEmails",
+          "line": 2037
+        },
+        {
+          "kind": "function",
+          "label": "input.addEventListener(change)",
+          "line": 2042
+        },
+        {
+          "kind": "function",
+          "label": "importEmails",
+          "line": 2048
+        },
+        {
+          "kind": "function",
+          "label": "useMail",
+          "line": 2119
+        },
+        {
+          "kind": "function",
+          "label": "openMailPasteModal",
+          "line": 2153
+        },
+        {
+          "kind": "function",
+          "label": "onMount",
+          "line": 2177
+        },
+        {
+          "kind": "function",
+          "label": "b.addEventListener(click)",
+          "line": 2179
+        },
+        {
+          "kind": "function",
+          "label": "wrap.querySelector([data-save-mail]).addEventListener(click)",
+          "line": 2181
+        },
+        {
+          "kind": "function",
+          "label": "testAi",
+          "line": 2204
+        },
+        {
+          "kind": "function",
+          "label": "viewImportar",
+          "line": 2250
+        },
+        {
+          "kind": "function",
+          "label": "paintIngestSoon",
+          "line": 2317
+        },
+        {
+          "kind": "function",
+          "label": "paintIngest",
+          "line": 2326
+        },
+        {
+          "kind": "function",
+          "label": "queueFiles",
+          "line": 2370
+        },
+        {
+          "kind": "function",
+          "label": "runQueue",
+          "line": 2409
+        },
+        {
+          "kind": "function",
+          "label": "runOne",
+          "line": 2424
+        },
+        {
+          "kind": "function",
+          "label": "applyAiReading",
+          "line": 2540
+        },
+        {
+          "kind": "function",
+          "label": "setIfEmpty",
+          "line": 2559
+        },
+        {
+          "kind": "function",
+          "label": "noMoney",
+          "line": 2582
+        },
+        {
+          "kind": "function",
+          "label": "rateOptions",
+          "line": 2659
+        },
+        {
+          "kind": "function",
+          "label": "lineRowHtml",
+          "line": 2672
+        },
+        {
+          "kind": "function",
+          "label": "dtoRowHtml",
+          "line": 2682
+        },
+        {
+          "kind": "function",
+          "label": "guessLiquidacion",
+          "line": 2696
+        },
+        {
+          "kind": "function",
+          "label": "liquidacionReadHtml",
+          "line": 2716
+        },
+        {
+          "kind": "function",
+          "label": "row",
+          "line": 2730
+        },
+        {
+          "kind": "function",
+          "label": "invoiceFormHtml",
+          "line": 2767
+        },
+        {
+          "kind": "function",
+          "label": "notesHtml",
+          "line": 2896
+        },
+        {
+          "kind": "function",
+          "label": "openInvoiceModal",
+          "line": 2906
+        },
+        {
+          "kind": "function",
+          "label": "finish",
+          "line": 3013
+        },
+        {
+          "kind": "function",
+          "label": "onMount",
+          "line": 3020
+        },
+        {
+          "kind": "function",
+          "label": "wrap.querySelector([data-save]).addEventListener(click)",
+          "line": 3023
+        },
+        {
+          "kind": "function",
+          "label": "b.addEventListener(click)",
+          "line": 3031
+        },
+        {
+          "kind": "function",
+          "label": "onClose",
+          "line": 3037
+        },
+        {
+          "kind": "function",
+          "label": "bindForm",
+          "line": 3044
+        },
+        {
+          "kind": "function",
+          "label": "q",
+          "line": 3045
+        },
+        {
+          "kind": "function",
+          "label": "showWhy",
+          "line": 3061
+        },
+        {
+          "kind": "function",
+          "label": "repaintCategories",
+          "line": 3072
+        },
+        {
+          "kind": "function",
+          "label": "catSel.addEventListener(change)",
+          "line": 3092
+        },
+        {
+          "kind": "function",
+          "label": "num",
+          "line": 3097
+        },
+        {
+          "kind": "function",
+          "label": "setIfNotFocused",
+          "line": 3099
+        },
+        {
+          "kind": "function",
+          "label": "recalcFromBase",
+          "line": 3104
+        },
+        {
+          "kind": "function",
+          "label": "recalcFromIgic",
+          "line": 3113
+        },
+        {
+          "kind": "function",
+          "label": "recalcFromTotal",
+          "line": 3125
+        },
+        {
+          "kind": "function",
+          "label": "syncRate",
+          "line": 3136
+        },
+        {
+          "kind": "function",
+          "label": "el.addEventListener(blur)",
+          "line": 3156
+        },
+        {
+          "kind": "function",
+          "label": "b.addEventListener(click)",
+          "line": 3165
+        },
+        {
+          "kind": "function",
+          "label": "updateHints",
+          "line": 3178
+        },
+        {
+          "kind": "function",
+          "label": "lineTotals",
+          "line": 3221
+        },
+        {
+          "kind": "function",
+          "label": "paintLines",
+          "line": 3228
+        },
+        {
+          "kind": "function",
+          "label": "recalcFromLines",
+          "line": 3242
+        },
+        {
+          "kind": "function",
+          "label": "linesBox.addEventListener(click)",
+          "line": 3257
+        },
+        {
+          "kind": "function",
+          "label": "addLineBtn.addEventListener(click)",
+          "line": 3268
+        },
+        {
+          "kind": "function",
+          "label": "paintLiq",
+          "line": 3285
+        },
+        {
+          "kind": "function",
+          "label": "recalcFromLiq",
+          "line": 3305
+        },
+        {
+          "kind": "function",
+          "label": "liqBox.addEventListener(click)",
+          "line": 3318
+        },
+        {
+          "kind": "function",
+          "label": "addDtoBtn.addEventListener(click)",
+          "line": 3329
+        },
+        {
+          "kind": "function",
+          "label": "syncLiqVisibility",
+          "line": 3339
+        },
+        {
+          "kind": "function",
+          "label": "readIgicLines",
+          "line": 3359
+        },
+        {
+          "kind": "function",
+          "label": "readLiquidacion",
+          "line": 3375
+        },
+        {
+          "kind": "function",
+          "label": "val",
+          "line": 3378
+        },
+        {
+          "kind": "function",
+          "label": "readForm",
+          "line": 3405
+        },
+        {
+          "kind": "function",
+          "label": "q",
+          "line": 3406
+        },
+        {
+          "kind": "function",
+          "label": "submitInvoice",
+          "line": 3448
+        },
+        {
+          "kind": "function",
+          "label": "importFromCamera",
+          "line": 3524
+        },
+        {
+          "kind": "function",
+          "label": "sqlitePanel",
+          "line": 3554
+        },
+        {
+          "kind": "function",
+          "label": "exportSqlite",
+          "line": 3584
+        },
+        {
+          "kind": "function",
+          "label": "reviewJob",
+          "line": 3599
+        },
+        {
+          "kind": "function",
+          "label": "openPasteModal",
+          "line": 3614
+        },
+        {
+          "kind": "function",
+          "label": "onMount",
+          "line": 3634
+        },
+        {
+          "kind": "function",
+          "label": "b.addEventListener(click)",
+          "line": 3636
+        },
+        {
+          "kind": "function",
+          "label": "wrap.querySelector([data-read]).addEventListener(click)",
+          "line": 3638
+        },
+        {
+          "kind": "function",
+          "label": "openSupplierModal",
+          "line": 3672
+        },
+        {
+          "kind": "function",
+          "label": "onMount",
+          "line": 3720
+        },
+        {
+          "kind": "function",
+          "label": "b.addEventListener(click)",
+          "line": 3722
+        },
+        {
+          "kind": "function",
+          "label": "wrap.querySelector([data-save]).addEventListener(click)",
+          "line": 3724
+        },
+        {
+          "kind": "function",
+          "label": "openSettings",
+          "line": 3767
+        },
+        {
+          "kind": "function",
+          "label": "onMount",
+          "line": 3888
+        },
+        {
+          "kind": "function",
+          "label": "b.addEventListener(click)",
+          "line": 3890
+        },
+        {
+          "kind": "function",
+          "label": "providerSel.addEventListener(change)",
+          "line": 3900
+        },
+        {
+          "kind": "function",
+          "label": "wrap.querySelector([data-save]).addEventListener(click)",
+          "line": 3922
+        },
+        {
+          "kind": "function",
+          "label": "csvCell",
+          "line": 3951
+        },
+        {
+          "kind": "function",
+          "label": "exportCsv",
+          "line": 3956
+        },
+        {
+          "kind": "function",
+          "label": "exportBackup",
+          "line": 3990
+        },
+        {
+          "kind": "function",
+          "label": "askImportBackup",
+          "line": 3995
+        },
+        {
+          "kind": "function",
+          "label": "input.addEventListener(change)",
+          "line": 3999
+        },
+        {
+          "kind": "function",
+          "label": "onAction",
+          "line": 4026
+        },
+        {
+          "kind": "function",
+          "label": "onInput",
+          "line": 4327
+        },
+        {
+          "kind": "function",
+          "label": "onChange",
+          "line": 4357
+        },
+        {
+          "kind": "function",
+          "label": "onFilterButton",
+          "line": 4428
+        },
+        {
+          "kind": "function",
+          "label": "onDirectionButton",
+          "line": 4433
+        },
+        {
+          "kind": "function",
+          "label": "wireDropzone",
+          "line": 4445
+        },
+        {
+          "kind": "function",
+          "label": "document.addEventListener(dragover)",
+          "line": 4446
+        },
+        {
+          "kind": "function",
+          "label": "document.addEventListener(dragleave)",
+          "line": 4452
+        },
+        {
+          "kind": "function",
+          "label": "document.addEventListener(drop)",
+          "line": 4456
+        },
+        {
+          "kind": "function",
+          "label": "hasJobs",
+          "line": 4468
+        },
+        {
+          "kind": "function",
+          "label": "contaWindow",
+          "line": 4489
+        },
+        {
+          "kind": "function",
+          "label": "accDocs",
+          "line": 4494
+        },
+        {
+          "kind": "function",
+          "label": "accApertura",
+          "line": 4503
+        },
+        {
+          "kind": "function",
+          "label": "accManuales",
+          "line": 4512
+        },
+        {
+          "kind": "function",
+          "label": "saveAccManuales",
+          "line": 4519
+        },
+        {
+          "kind": "function",
+          "label": "accPlan",
+          "line": 4529
+        },
+        {
+          "kind": "function",
+          "label": "asientosContables",
+          "line": 4575
+        },
+        {
+          "kind": "function",
+          "label": "accNum",
+          "line": 4587
+        },
+        {
+          "kind": "function",
+          "label": "accRangeBar",
+          "line": 4599
+        },
+        {
+          "kind": "function",
+          "label": "accTabBar",
+          "line": 4615
+        },
+        {
+          "kind": "function",
+          "label": "accEmpty",
+          "line": 4623
+        },
+        {
+          "kind": "function",
+          "label": "accDiarioHtml",
+          "line": 4651
+        },
+        {
+          "kind": "function",
+          "label": "accMayorHtml",
+          "line": 4708
+        },
+        {
+          "kind": "function",
+          "label": "accSumasHtml",
+          "line": 4753
+        },
+        {
+          "kind": "function",
+          "label": "accBalanceHtml",
+          "line": 4796
+        },
+        {
+          "kind": "function",
+          "label": "accResultadosHtml",
+          "line": 4839
+        },
+        {
+          "kind": "function",
+          "label": "accKpi",
+          "line": 4876
+        },
+        {
+          "kind": "function",
+          "label": "accKpiStrip",
+          "line": 4885
+        },
+        {
+          "kind": "function",
+          "label": "accIgicHtml",
+          "line": 4912
+        },
+        {
+          "kind": "function",
+          "label": "fila",
+          "line": 4927
+        },
+        {
+          "kind": "function",
+          "label": "cuadra",
+          "line": 4938
+        },
+        {
+          "kind": "function",
+          "label": "accTesoreriaHtml",
+          "line": 5029
+        },
+        {
+          "kind": "function",
+          "label": "accVencimientosHtml",
+          "line": 5132
+        },
+        {
+          "kind": "function",
+          "label": "diasTexto",
+          "line": 5135
+        },
+        {
+          "kind": "function",
+          "label": "bloque",
+          "line": 5143
+        },
+        {
+          "kind": "function",
+          "label": "accBody",
+          "line": 5191
+        },
+        {
+          "kind": "function",
+          "label": "viewContabilidad",
+          "line": 5223
+        },
+        {
+          "kind": "function",
+          "label": "accAperturaModal",
+          "line": 5239
+        },
+        {
+          "kind": "function",
+          "label": "onMount",
+          "line": 5272
+        },
+        {
+          "kind": "function",
+          "label": "el.addEventListener(click)",
+          "line": 5274
+        },
+        {
+          "kind": "function",
+          "label": "saveApertura",
+          "line": 5282
+        }
+      ],
+      "list": "nodes",
+      "list_total": 241,
+      "offset": 60,
+      "total": 208
+    }
+  },
+  "summary": "Part of js_app_map evidence (page).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "partial",
+    "examined": 130,
+    "total": 208,
+    "next_offset": 190
+  },
+  "locations": [],
+  "links": [
+    "ev_8148ea33a2532680e5c5061746f12249108d95c3ca2832be899475f6ca879f68"
+  ]
+}

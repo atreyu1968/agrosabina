@@ -1,0 +1,54 @@
+{
+  "id": "ev_43923587e6dedec4703dc60e3165757a7153a691915e0e5adff39481c997912c",
+  "subject": {
+    "kind": "script",
+    "sha256": "22c9516ced3b3de1c33a9fb38d26048a837f6179b47a891b5b559de50c49365c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 2960,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 276490,
+    "lines": 60,
+    "more": true,
+    "offset": 2960,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "function paintPruebas() {\n  const host = document.getElementById(\"pruebaResults\");\n  if (!host) return;\n  host.innerHTML = pruebasResultadosHtml();\n  const el = document.getElementById(\"pruebaStatus\");\n  if (el) el.textContent = ui.pruebas.status || \"Ningún documento probado todavía.\";\n}\n\nfunction viewPruebas() {\n  const hay = ui.pruebas.list.length > 0;\n  return `\n    <section class=\"card\">\n      <div class=\"card-head\">\n        <div>\n          <h2>Probar cómo leo un documento</h2>\n          <p>Elige un PDF o una foto de ejemplo y te enseño el texto que saco y lo que entiendo de él. Sin guardar nada y sin mandarlo a ningún sitio.</p>\n        </div>\n      </div>\n      <div class=\"card-body\">\n        <div class=\"row wrap\">\n          <button class=\"btn primary\" data-action=\"prueba-open\">${icon(\"upload\")}<span>Elegir un PDF o una foto</span></button>\n          ${\n            hay\n              ? `<button class=\"btn\" data-action=\"prueba-copy\">${icon(\"file\")}<span>Copiar el informe</span></button>\n                 <button class=\"btn\" data-action=\"prueba-export\">${icon(\"download\")}<span>Guardar el informe</span></button>\n                 <button class=\"btn ghost\" data-action=\"prueba-clear\">${icon(\"trash\")}<span>Vaciar</span></button>`\n              : \"\"\n          }\n        </div>\n        <input id=\"pruebaPicker\" type=\"file\" accept=\"application/pdf,image/*\" multiple hidden>\n        <p class=\"hint\" id=\"pruebaStatus\">${esc(ui.pruebas.status || \"Ningún documento probado todavía.\")}</p>\n        <p class=\"hint\">Si el PDF trae el texto incrustado se copia tal cual, y eso es exacto. Si es un escaneo o una foto, se pasa por el lector de fotos en español. La primera vez hace falta internet para bajar las dos bibliotecas (PDF.js y el lector de fotos); después ya se quedan guardadas.</p>\n        <div class=\"prueba-pega\">\n          <h3>…o pega aquí el texto del papel</h3>\n          <p class=\"hint\">Para probar sin tener el PDF a mano, o con un papel que ya tengas copiado. Tampoco se guarda ni sale de aquí.</p>\n          <textarea id=\"pruebaTexto\" class=\"prueba-textarea\" rows=\"7\" spellcheck=\"false\" placeholder=\"Pega aquí el texto de una nómina, una liquidación de fruta o una factura…\"></textarea>\n          <div class=\"row wrap\">\n            <button class=\"btn primary\" data-action=\"prueba-leer-texto\">${icon(\"file\")}<span>Leer este texto</span></button>\n            <button class=\"btn ghost\" data-action=\"prueba-ejemplo\" data-ejemplo=\"nomina\">${icon(\"plus\")}<span>Ejemplo: nómina</span></button>\n            <button class=\"btn ghost\" data-action=\"prueba-ejemplo\" data-ejemplo=\"liquidacion\">${icon(\"plus\")}<span>Ejemplo: liquidación</span></button>\n            <button class=\"btn ghost\" data-action=\"prueba-ejemplo\" data-ejemplo=\"factura\">${icon(\"plus\")}<span>Ejemplo: factura</span></button>\n          </div>\n        </div>\n      </div>\n    </section>\n    <div id=\"pruebaResults\">${pruebasResultadosHtml()}</div>`;\n}\n\nfunction pruebasResultadosHtml() {\n  if (!ui.pruebas.list.length) return \"\";\n  return ui.pruebas.list.map((r) => pruebaHtml(r)).join(\"\");\n}\n\n/** Un bloque por documento probado: la cabecera, los datos y los dos textos. */\nfunction pruebaHtml(r) {\n  const L = r.lectura;\n  const doc = L ? L.doc : null;\n  const comoSeLeyo = r.source ? sourceLabel(r.source) : \"\";\n  const cabecera = `\n    <div class=\"card-head\">\n",
+    "total_lines": 6947
+  },
+  "summary": "views.js: lines 2961–3020 of 6947 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 6947,
+    "next_offset": 3020
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

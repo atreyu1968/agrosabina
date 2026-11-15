@@ -1,0 +1,1072 @@
+{
+  "id": "ev_d49251015e05519a16b765059a98f2c138f0a48560e19d96b852334a8a48a965",
+  "subject": {
+    "kind": "script",
+    "sha256": "c6572e21b977404dc00c09acc8c337ef1bb64250674de30d8eef05f25d51088b",
+    "name": "ai.js"
+  },
+  "operation": "js_app_map",
+  "params": {
+    "include_node_modules": false,
+    "input_path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\ai.js",
+    "limit": 1,
+    "max_nodes": 25000,
+    "offset": 0,
+    "source_paths": []
+  },
+  "result": {
+    "api_operations": [],
+    "app_kind": "unknown",
+    "bundlers": [],
+    "edges": [
+      {
+        "from": "fn:ai.js#aiClassify@432",
+        "kind": "calls",
+        "to": "fn:ai.js#parseJsonLoose@113"
+      },
+      {
+        "from": "fn:ai.js#aiClassify@432",
+        "kind": "calls",
+        "to": "fn:ai.js#promptFor@94"
+      },
+      {
+        "from": "fn:ai.js#aiClassify@432",
+        "kind": "calls",
+        "to": "fn:ai.js#requestContent@143"
+      },
+      {
+        "from": "fn:ai.js#aiExtract@320",
+        "kind": "calls",
+        "to": "fn:ai.js#asIsoDate@238"
+      },
+      {
+        "from": "fn:ai.js#aiExtract@320",
+        "kind": "calls",
+        "to": "fn:ai.js#extractPrompt@196"
+      },
+      {
+        "from": "fn:ai.js#aiExtract@320",
+        "kind": "calls",
+        "to": "fn:ai.js#extractPromptPapel@258"
+      },
+      {
+        "from": "fn:ai.js#aiExtract@320",
+        "kind": "calls",
+        "to": "fn:ai.js#onlyDataImages@308"
+      },
+      {
+        "from": "fn:ai.js#aiExtract@320",
+        "kind": "calls",
+        "to": "fn:ai.js#parseJsonLoose@113"
+      },
+      {
+        "from": "fn:ai.js#aiExtract@320",
+        "kind": "calls",
+        "to": "fn:ai.js#requestContent@143"
+      },
+      {
+        "from": "fn:ai.js#aiExtract@320",
+        "kind": "calls",
+        "to": "fn:ai.js#toNum@228"
+      },
+      {
+        "from": "fn:ai.js#aiPing@417",
+        "kind": "calls",
+        "to": "fn:ai.js#requestContent@143"
+      },
+      {
+        "from": "fn:ai.js#classifyDocument@464",
+        "kind": "calls",
+        "to": "fn:ai.js#aiClassify@432"
+      },
+      {
+        "from": "fn:ai.js#classifyDocument@464",
+        "kind": "calls",
+        "to": "fn:ai.js#aiConfigured@78"
+      },
+      {
+        "from": "fn:ai.js#requestContent@143",
+        "kind": "requests",
+        "to": "endpoint:POST {url}"
+      },
+      {
+        "from": "fn:ai.js#requestContent@143",
+        "kind": "calls",
+        "to": "fn:ai.js#completionsUrl@87"
+      },
+      {
+        "from": "fn:ai.js#requestContent@143",
+        "kind": "calls",
+        "to": "fn:ai.js#explainHttpError@130"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "mentions",
+        "to": "endpoint:https://api.deepseek.com/v1"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "mentions",
+        "to": "endpoint:https://api.groq.com/openai/v1"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "mentions",
+        "to": "endpoint:https://api.openai.com/v1"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#aiClassify@432"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#aiConfigured@78"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#aiExtract@320"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#aiPing@417"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#aiProviderOf@70"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#asIsoDate@238"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#classifyDocument@464"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#completionsUrl@87"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#explainHttpError@130"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#extractPrompt@196"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#extractPromptPapel@258"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#onlyDataImages@308"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#parseJsonLoose@113"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#promptFor@94"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#requestContent@143"
+      },
+      {
+        "from": "module:ai.js",
+        "kind": "defines",
+        "to": "fn:ai.js#toNum@228"
+      }
+    ],
+    "effects": [],
+    "endpoints": [
+      {
+        "api": "literal",
+        "function": null,
+        "line": 27,
+        "literal": true,
+        "method": null,
+        "module": "ai.js",
+        "role": "unknown",
+        "url": "https://api.deepseek.com/v1"
+      },
+      {
+        "api": "literal",
+        "function": null,
+        "line": 49,
+        "literal": true,
+        "method": null,
+        "module": "ai.js",
+        "role": "unknown",
+        "url": "https://api.openai.com/v1"
+      },
+      {
+        "api": "literal",
+        "function": null,
+        "line": 56,
+        "literal": true,
+        "method": null,
+        "module": "ai.js",
+        "role": "unknown",
+        "url": "https://api.groq.com/openai/v1"
+      },
+      {
+        "api": "fetch",
+        "function": "requestContent",
+        "line": 161,
+        "literal": false,
+        "method": "POST",
+        "module": "ai.js",
+        "role": "unknown",
+        "url": "{url}"
+      }
+    ],
+    "entry_points": {
+      "pages": [],
+      "preloads": [],
+      "renderers": [],
+      "workers": []
+    },
+    "exposed": [],
+    "graph_id": "ag_56a43e06f204a128da14db79f4b923682b1dbb47c951a9481fe94a4d16116ab8",
+    "input_format": "file",
+    "ipc": [],
+    "label": "ai.js",
+    "limitations": [],
+    "modules": [
+      {
+        "bundle_modules": [],
+        "bundlers": [],
+        "bytes": 18200,
+        "chunk_ids": [],
+        "exports": {
+          "cjs": [],
+          "esm": [
+            "AI_DEFAULTS",
+            "AI_PROVIDERS",
+            "aiProviderOf",
+            "aiConfigured",
+            "aiExtract",
+            "aiPing",
+            "aiClassify",
+            "classifyDocument"
+          ]
+        },
+        "fingerprint": "4a8eafa80aeeb8e82171923b7ff32e1e58bf1b3a5fd24d15193ab648a828e00d",
+        "functions": [
+          "aiProviderOf",
+          "aiConfigured",
+          "completionsUrl",
+          "promptFor",
+          "parseJsonLoose",
+          "explainHttpError",
+          "requestContent",
+          "extractPrompt",
+          "toNum",
+          "asIsoDate",
+          "extractPromptPapel",
+          "onlyDataImages",
+          "aiExtract",
+          "aiPing",
+          "aiClassify",
+          "classifyDocument"
+        ],
+        "imports": [
+          {
+            "kind": "import",
+            "line": 18,
+            "specifier": "./model.js"
+          },
+          {
+            "kind": "import",
+            "line": 19,
+            "specifier": "./util.js"
+          }
+        ],
+        "kind": "script",
+        "parse_mode": "parsed",
+        "path": "ai.js",
+        "role": "unknown",
+        "sha256": "c6572e21b977404dc00c09acc8c337ef1bb64250674de30d8eef05f25d51088b",
+        "strings": [
+          "https://api.deepseek.com/v1",
+          "deepseek-chat",
+          "deepseek",
+          "DeepSeek",
+          "Barato y lee bien el castellano. La clave se saca en platform.deepseek.com.",
+          "openai",
+          "OpenAI",
+          "https://api.openai.com/v1",
+          "gpt-4o-mini",
+          "La clave se saca en platform.openai.com.",
+          "groq",
+          "Groq",
+          "https://api.groq.com/openai/v1",
+          "llama-3.3-70b-versatile",
+          "El más rápido. La clave se saca en console.groq.com.",
+          "otro",
+          "Otro servicio compatible",
+          "Cualquier servicio que hable el idioma de OpenAI, o una IA en tu propio ordenador.",
+          "; ",
+          "Eres el auxiliar contable de Agrosabina SL, una empresa agrícola de las Islas Canarias.",
+          "No emite facturas: recibe liquidaciones y pagos de fruta y subvenciones de la explotación,",
+          "y paga agua, electricidad, laborales, servicios externos, fitosanitarios y abonos.",
+          "Devuelve SOLO un objeto JSON, sin explicaciones fuera del JSON, con esta forma:",
+          "{\"tipo\":\"FACTURA\",\"categoria\":\"AGUA\",\"confianza\":0.8,\"motivo\":\"una frase corta\"}",
+          "Texto del documento:",
+          "\n",
+          " ",
+          "La clave de la IA no es válida o no tiene permiso.",
+          "La IA ha dicho que ahora no: demasiadas peticiones o sin saldo.",
+          "Esa dirección de IA no existe. Revisa la dirección y el modelo.",
+          "La IA no está disponible en este momento.",
+          "Falta la dirección de la IA en los ajustes.",
+          "system",
+          "user",
+          "function",
+          "POST",
+          "Content-Type",
+          "application/json",
+          "AbortError",
+          "La IA ha tardado demasiado y lo he dejado estar.",
+          "No he podido llegar a la IA. ¿Hay conexión a internet?",
+          "La IA ha contestado algo que no entiendo.",
+          "Eres un auxiliar contable que rellena fichas a partir del texto de un documento. ",
+          "Contestas solo con un objeto JSON válido, sin nada alrededor. Nunca inventas un dato: si no está en el texto, pones null.",
+          "Documento de una empresa agrícola de las Islas Canarias (IGIC, no IVA).",
+          "Devuelve SOLO este JSON, con null en lo que no aparezca:",
+          "{",
+          "  \"tipo\": \"FACTURA\",",
+          "  \"categoria\": \"AGUA\",",
+          "  \"proveedor\": \"nombre o razón social\",",
+          "  \"nif\": \"A12345678\",",
+          "  \"numero\": \"número del documento\",",
+          "  \"fecha\": \"AAAA-MM-DD\",",
+          "  \"vencimiento\": \"AAAA-MM-DD\",",
+          "  \"base\": 0, \"igic\": 0, \"total\": 0,",
+          "  \"liquidacion\": {\"producto\": \"\", \"categoria\": \"\", \"kilos\": 0, \"precio\": 0,",
+          "    \"descuentos\": [{\"concepto\": \"\", \"importe\": 0}], \"liquido\": 0},",
+          "  \"motivo\": \"una frase corta de por qué\"",
+          "}",
+          "Reglas de los números (importante):",
+          "- Importes en euros, con punto decimal: 1.234,56 € se escribe 1234.56.",
+          "- Kilos en kilogramos: 4.520 kg se escribe 4520.",
+          "- Precio por kilo en euros por kilo, con punto decimal: «0,853 €/kg» es 0.853, no 853.",
+          "- Si el documento no es una liquidación de fruta, deja liquidacion en null.",
+          "number",
+          "0",
+          "Eres un auxiliar contable que lee documentos mirando el papel: te mandan la foto o las hojas del propio documento. ",
+          "Lees lo que está escrito en él, no lo que te digan de palabra. Contestas solo con un objeto JSON válido, sin nada alrededor. ",
+          "Nunca inventas un dato: si no está en el papel, pones null.",
+          "Te mando un documento de una empresa agrícola de las Islas Canarias (IGIC, no IVA).",
+          "Míralo bien: puede venir en varias hojas y cada hoja puede ser un papel distinto",
+          "(por ejemplo, tres nóminas seguidas). Lee el papel tal cual y sácale TODOS sus datos con cuidado:",
+          "el texto de abajo puede tener erratas del lector automático, así que manda lo que ves en la imagen.",
+          "Rellena una sola ficha con el documento que te mando. Si son varios papeles distintos,",
+          "fíjate en el primero de ellos y no mezcles sus importes con los de los demás.",
+          "text",
+          "image_url",
+          "high",
+          "string",
+          "texto",
+          "papel",
+          "sin respuesta",
+          "object",
+          "La IA no ha devuelto los datos del documento.",
+          "Descuento",
+          "Contestas en una sola línea.",
+          "Responde solo con la palabra: GRACIAS",
+          "La IA ha contestado vacío.",
+          "Contestas siempre con un objeto JSON válido y nada más.",
+          "La IA no ha devuelto la ficha del documento.",
+          "La IA no ha reconocido el documento.",
+          "ia",
+          "la IA no ha contestado"
+        ]
+      }
+    ],
+    "modules_total": 1,
+    "native_modules": [],
+    "nodes": [
+      {
+        "id": "module:ai.js",
+        "kind": "module",
+        "label": "ai.js",
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().replace().toLowerCase",
+            "String().replace",
+            "String",
+            "AI_PROVIDERS.find"
+          ],
+          "end": 2826,
+          "end_line": 76,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "settings"
+          ],
+          "parent": null,
+          "start": 2538,
+          "strings": []
+        },
+        "id": "fn:ai.js#aiProviderOf@70",
+        "kind": "function",
+        "label": "aiProviderOf",
+        "line": 70,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim",
+            "String"
+          ],
+          "end": 3018,
+          "end_line": 85,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "settings"
+          ],
+          "parent": null,
+          "start": 2835,
+          "strings": []
+        },
+        "id": "fn:ai.js#aiConfigured@78",
+        "kind": "function",
+        "label": "aiConfigured",
+        "line": 78,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim().replace",
+            "String().trim",
+            "String"
+          ],
+          "end": 3243,
+          "end_line": 92,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "endpoint"
+          ],
+          "parent": null,
+          "start": 3020,
+          "strings": []
+        },
+        "id": "fn:ai.js#completionsUrl@87",
+        "kind": "function",
+        "label": "completionsUrl",
+        "line": 87,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./model.js.DOC_KINDS.map().join",
+            "./model.js.DOC_KINDS.map",
+            "./model.js.CATEGORIES.filter().map().join",
+            "./model.js.CATEGORIES.filter().map",
+            "./model.js.CATEGORIES.filter"
+          ],
+          "end": 4149,
+          "end_line": 111,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 3245,
+          "strings": [
+            "; ",
+            "Eres el auxiliar contable de Agrosabina SL, una empresa agrícola de las Islas Canarias.",
+            "No emite facturas: recibe liquidaciones y pagos de fruta y subvenciones de la explotación,",
+            "y paga agua, electricidad, laborales, servicios externos, fitosanitarios y abonos.",
+            "Devuelve SOLO un objeto JSON, sin explicaciones fuera del JSON, con esta forma:",
+            "{\"tipo\":\"FACTURA\",\"categoria\":\"AGUA\",\"confianza\":0.8,\"motivo\":\"una frase corta\"}",
+            "Texto del documento:",
+            "\n"
+          ]
+        },
+        "id": "fn:ai.js#promptFor@94",
+        "kind": "function",
+        "label": "promptFor",
+        "line": 94,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim",
+            "String",
+            "JSON.parse",
+            "s.match"
+          ],
+          "end": 4453,
+          "end_line": 128,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "raw"
+          ],
+          "parent": null,
+          "start": 4151,
+          "strings": []
+        },
+        "id": "fn:ai.js#parseJsonLoose@113",
+        "kind": "function",
+        "label": "parseJsonLoose",
+        "line": 113,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().slice().replace().trim",
+            "String().slice().replace",
+            "String().slice",
+            "String"
+          ],
+          "end": 5033,
+          "end_line": 137,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "status",
+            "body"
+          ],
+          "parent": null,
+          "start": 4455,
+          "strings": [
+            " ",
+            "La clave de la IA no es válida o no tiene permiso.",
+            "La IA ha dicho que ahora no: demasiadas peticiones o sin saldo.",
+            "Esa dirección de IA no existe. Revisa la dirección y el modelo.",
+            "La IA no está disponible en este momento."
+          ]
+        },
+        "id": "fn:ai.js#explainHttpError@130",
+        "kind": "function",
+        "label": "explainHttpError",
+        "line": 130,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "completionsUrl",
+            "new Error",
+            "String",
+            "new AbortController",
+            "setTimeout",
+            "fetch",
+            "String().trim",
+            "JSON.stringify",
+            "clearTimeout",
+            "res.text().catch",
+            "res.text",
+            "explainHttpError",
+            "JSON.parse"
+          ],
+          "end": 6635,
+          "end_line": 186,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "settings",
+            "{…}"
+          ],
+          "parent": null,
+          "start": 5181,
+          "strings": [
+            "Falta la dirección de la IA en los ajustes.",
+            "system",
+            "user",
+            "function",
+            "POST",
+            "Content-Type",
+            "application/json",
+            "AbortError",
+            "La IA ha tardado demasiado y lo he dejado estar.",
+            "No he podido llegar a la IA. ¿Hay conexión a internet?",
+            "La IA ha contestado algo que no entiendo."
+          ]
+        },
+        "id": "fn:ai.js#requestContent@143",
+        "kind": "function",
+        "label": "requestContent",
+        "line": 143,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./model.js.DOC_KINDS.map().join",
+            "./model.js.DOC_KINDS.map",
+            "String().slice",
+            "String"
+          ],
+          "end": 8377,
+          "end_line": 226,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 7099,
+          "strings": [
+            "; ",
+            "Documento de una empresa agrícola de las Islas Canarias (IGIC, no IVA).",
+            "Devuelve SOLO este JSON, con null en lo que no aparezca:",
+            "{",
+            "  \"tipo\": \"FACTURA\",",
+            "  \"categoria\": \"AGUA\",",
+            "  \"proveedor\": \"nombre o razón social\",",
+            "  \"nif\": \"A12345678\",",
+            "  \"numero\": \"número del documento\",",
+            "  \"fecha\": \"AAAA-MM-DD\",",
+            "  \"vencimiento\": \"AAAA-MM-DD\",",
+            "  \"base\": 0, \"igic\": 0, \"total\": 0,",
+            "  \"liquidacion\": {\"producto\": \"\", \"categoria\": \"\", \"kilos\": 0, \"precio\": 0,",
+            "    \"descuentos\": [{\"concepto\": \"\", \"importe\": 0}], \"liquido\": 0},",
+            "  \"motivo\": \"una frase corta de por qué\"",
+            "}",
+            "Reglas de los números (importante):",
+            "- Importes en euros, con punto decimal: 1.234,56 € se escribe 1234.56.",
+            "- Kilos en kilogramos: 4.520 kg se escribe 4520.",
+            "- Precio por kilo en euros por kilo, con punto decimal: «0,853 €/kg» es 0.853, no 853.",
+            "- Si el documento no es una liquidación de fruta, deja liquidacion en null.",
+            "Texto del documento:",
+            "\n"
+          ]
+        },
+        "id": "fn:ai.js#extractPrompt@196",
+        "kind": "function",
+        "label": "extractPrompt",
+        "line": 196,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Number.isFinite",
+            "String().trim",
+            "String",
+            "raw.match",
+            "./util.js.parseAmount"
+          ],
+          "end": 8703,
+          "end_line": 236,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "value"
+          ],
+          "parent": null,
+          "start": 8379,
+          "strings": [
+            "number"
+          ]
+        },
+        "id": "fn:ai.js#toNum@228",
+        "kind": "function",
+        "label": "toNum",
+        "line": 228,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().trim",
+            "String",
+            "raw.match"
+          ],
+          "end": 9077,
+          "end_line": 246,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "value"
+          ],
+          "parent": null,
+          "start": 8705,
+          "strings": [
+            "0"
+          ]
+        },
+        "id": "fn:ai.js#asIsoDate@238",
+        "kind": "function",
+        "label": "asIsoDate",
+        "line": 238,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./model.js.DOC_KINDS.map().join",
+            "./model.js.DOC_KINDS.map",
+            "String().trim",
+            "String",
+            "ayuda.slice",
+            "partes.push"
+          ],
+          "end": 11767,
+          "end_line": 305,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text",
+            "images",
+            "contexto"
+          ],
+          "parent": null,
+          "start": 9610,
+          "strings": [
+            "; ",
+            "Te mando un documento de una empresa agrícola de las Islas Canarias (IGIC, no IVA).",
+            "Míralo bien: puede venir en varias hojas y cada hoja puede ser un papel distinto",
+            "(por ejemplo, tres nóminas seguidas). Lee el papel tal cual y sácale TODOS sus datos con cuidado:",
+            "el texto de abajo puede tener erratas del lector automático, así que manda lo que ves en la imagen.",
+            "Rellena una sola ficha con el documento que te mando. Si son varios papeles distintos,",
+            "fíjate en el primero de ellos y no mezcles sus importes con los de los demás.",
+            "Devuelve SOLO este JSON, con null en lo que no aparezca:",
+            "{",
+            "  \"tipo\": \"FACTURA\",",
+            "  \"categoria\": \"AGUA\",",
+            "  \"proveedor\": \"nombre o razón social\",",
+            "  \"nif\": \"A12345678\",",
+            "  \"numero\": \"número del documento\",",
+            "  \"fecha\": \"AAAA-MM-DD\",",
+            "  \"vencimiento\": \"AAAA-MM-DD\",",
+            "  \"base\": 0, \"igic\": 0, \"total\": 0,",
+            "  \"liquidacion\": {\"producto\": \"\", \"categoria\": \"\", \"kilos\": 0, \"precio\": 0,",
+            "    \"descuentos\": [{\"concepto\": \"\", \"importe\": 0}], \"liquido\": 0},",
+            "  \"motivo\": \"una frase corta de por qué\"",
+            "}",
+            "Reglas de los números (importante):",
+            "- Importes en euros, con punto decimal: 1.234,56 € se escribe 1234.56.",
+            "- Kilos en kilogramos: 4.520 kg se escribe 4520.",
+            "- Precio por kilo en euros por kilo, con punto decimal: «0,853 €/kg» es 0.853, no 853.",
+            "- Si el documento no es una liquidación de fruta, deja liquidacion en null.",
+            "\n",
+            "text",
+            "image_url",
+            "high"
+          ]
+        },
+        "id": "fn:ai.js#extractPromptPapel@258",
+        "kind": "function",
+        "label": "extractPromptPapel",
+        "line": 258,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Array.isArray"
+          ],
+          "end": 12022,
+          "end_line": 312,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "images"
+          ],
+          "parent": null,
+          "start": 11825,
+          "strings": []
+        },
+        "id": "fn:ai.js#onlyDataImages@308",
+        "kind": "function",
+        "label": "onlyDataImages",
+        "line": 308,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "onlyDataImages",
+            "requestContent",
+            "extractPromptPapel",
+            "Math.max",
+            "onNote",
+            "extractPrompt",
+            "parseJsonLoose",
+            "new Error",
+            "./model.js.DOC_KINDS.some",
+            "String().toUpperCase",
+            "String",
+            "String().toUpperCase().trim",
+            "./model.js.CATEGORIES.some",
+            "Array.isArray",
+            "liq.descuentos.map().filter().slice",
+            "liq.descuentos.map().filter",
+            "liq.descuentos.map",
+            "toNum",
+            "String().trim().slice",
+            "String().trim",
+            "Number",
+            "Number.isFinite",
+            "Math.min",
+            "String().slice",
+            "./util.js.nifKey",
+            "asIsoDate"
+          ],
+          "end": 15539,
+          "end_line": 414,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "text",
+            "settings",
+            "{…}"
+          ],
+          "parent": null,
+          "start": 12346,
+          "strings": [
+            "texto",
+            "papel",
+            "sin respuesta",
+            "function",
+            "object",
+            "La IA no ha devuelto los datos del documento."
+          ]
+        },
+        "id": "fn:ai.js#aiExtract@320",
+        "kind": "function",
+        "label": "aiExtract",
+        "line": 320,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "requestContent",
+            "String().trim().slice",
+            "String().trim",
+            "String",
+            "new Error"
+          ],
+          "end": 15987,
+          "end_line": 427,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "settings"
+          ],
+          "parent": null,
+          "start": 15620,
+          "strings": [
+            "Contestas en una sola línea.",
+            "Responde solo con la palabra: GRACIAS",
+            "La IA ha contestado vacío."
+          ]
+        },
+        "id": "fn:ai.js#aiPing@417",
+        "kind": "function",
+        "label": "aiPing",
+        "line": 417,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "requestContent",
+            "promptFor",
+            "String().slice",
+            "String",
+            "parseJsonLoose",
+            "new Error",
+            "./model.js.DOC_KINDS.some",
+            "String().toUpperCase",
+            "String().toUpperCase().trim",
+            "./model.js.CATEGORIES.some",
+            "Number",
+            "Number.isFinite",
+            "Math.max",
+            "Math.min"
+          ],
+          "end": 17074,
+          "end_line": 458,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "text",
+            "settings",
+            "{…}"
+          ],
+          "parent": null,
+          "start": 16081,
+          "strings": [
+            "Contestas siempre con un objeto JSON válido y nada más.",
+            "La IA no ha devuelto la ficha del documento.",
+            "La IA no ha reconocido el documento."
+          ]
+        },
+        "id": "fn:ai.js#aiClassify@432",
+        "kind": "function",
+        "label": "aiClassify",
+        "line": 432,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./model.js.classifyLocal",
+            "aiConfigured",
+            "aiClassify",
+            "./model.js.DOC_KINDS.find",
+            "./model.js.kindInfo().label.toLowerCase",
+            "./model.js.kindInfo",
+            "./model.js.categoryInfo"
+          ],
+          "end": 18199,
+          "end_line": 494,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "text",
+            "settings",
+            "hints"
+          ],
+          "parent": null,
+          "start": 17278,
+          "strings": [
+            "ia",
+            "la IA no ha contestado"
+          ]
+        },
+        "id": "fn:ai.js#classifyDocument@464",
+        "kind": "function",
+        "label": "classifyDocument",
+        "line": 464,
+        "module": "ai.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "api": "literal",
+          "literal": true
+        },
+        "id": "endpoint:https://api.deepseek.com/v1",
+        "kind": "endpoint",
+        "label": "https://api.deepseek.com/v1"
+      },
+      {
+        "attrs": {
+          "api": "literal",
+          "literal": true
+        },
+        "id": "endpoint:https://api.openai.com/v1",
+        "kind": "endpoint",
+        "label": "https://api.openai.com/v1"
+      },
+      {
+        "attrs": {
+          "api": "literal",
+          "literal": true
+        },
+        "id": "endpoint:https://api.groq.com/openai/v1",
+        "kind": "endpoint",
+        "label": "https://api.groq.com/openai/v1"
+      },
+      {
+        "attrs": {
+          "api": "fetch",
+          "literal": false
+        },
+        "id": "endpoint:POST {url}",
+        "kind": "endpoint",
+        "label": "POST {url}"
+      }
+    ],
+    "package": null,
+    "routes": [],
+    "source_maps": [],
+    "stats": {
+      "api_operations": 0,
+      "bundle_modules": 0,
+      "edges": 35,
+      "endpoints": 4,
+      "files": 1,
+      "functions": 16,
+      "ipc_channels": 0,
+      "listed": 1,
+      "modules": 1,
+      "nodes": 21,
+      "paired_channels": 0
+    },
+    "storage": [],
+    "summary": "JavaScript code ai.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 1 endpoint(s), 0 route(s).",
+    "vendors": [],
+    "windows": []
+  },
+  "summary": "JavaScript code ai.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 1 endpoint(s), 0 route(s).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "static_only",
+      "message": "Static reading only: code built at run time (eval, computed requires, remote content) is invisible; IPC pairs need literal channel names."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\ai.js"
+    }
+  ],
+  "links": []
+}

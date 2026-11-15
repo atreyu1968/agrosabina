@@ -1,0 +1,72 @@
+{
+  "id": "ev_f78df4b2879431b8693ad4db012695486152dc0250ce04f24d6d2aa3c2c2b397",
+  "subject": {
+    "kind": "script",
+    "sha256": "28976ef0b4ef03923c32ce5f2db74a9030e7f5edecdd61a324e727a23dd2598b",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "function openSupplierModal"
+  },
+  "result": {
+    "file_size": 207752,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "66756e6374696f6e206f70656e537570706c6965724d6f64616c",
+        "file_offset": 142641,
+        "file_offset_hex": "0x22d31",
+        "length": 26,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 26
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 in views.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x22d31"
+    }
+  ],
+  "links": []
+}

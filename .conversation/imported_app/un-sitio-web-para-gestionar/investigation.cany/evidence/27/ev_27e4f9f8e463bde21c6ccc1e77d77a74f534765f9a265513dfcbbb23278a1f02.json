@@ -1,0 +1,54 @@
+{
+  "id": "ev_27e4f9f8e463bde21c6ccc1e77d77a74f534765f9a265513dfcbbb23278a1f02",
+  "subject": {
+    "kind": "script",
+    "sha256": "7e98e599cd551f7e67ec504b14ed383ec90014db80fd487c43eab9b37f77df59",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 32,
+    "offset": 2778,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 289212,
+    "lines": 32,
+    "more": true,
+    "offset": 2778,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "        job.stage = stage;\n        job.pct = pct;\n        paintIngestSoon();\n      });\n      text = leido.text;\n      source = leido.source;\n      hojas = leido.textos || null;\n    }\n\n    // Varias hojas en el mismo archivo: puede haber varios papeles dentro (dos\n    // nóminas, una liquidación y una factura…). Se separan antes de leer, para\n    // que los importes de una hoja no se mezclen con los de la de al lado.\n    if (!job.preTexto) {\n      const trozos = trocearPapeles(hojas, job.name || job.file.name);\n      if (trozos.length > 1) {\n        for (let i = 1; i < trozos.length; i += 1) {\n          ui.jobs.push({\n            id: `job_${Math.random().toString(36).slice(2, 9)}`,\n            file: job.file,\n            name: trozos[i].nombre,\n            state: \"queued\",\n            pct: 0,\n            stage: \"En cola (otra hoja del mismo archivo)\",\n            preTexto: trozos[i].texto,\n            preSource: source,\n          });\n        }\n        job.name = trozos[0].nombre;\n        job.trozos = trozos.length;\n        text = trozos[0].texto;\n      }\n    }\n",
+    "total_lines": 7272
+  },
+  "summary": "views.js: lines 2779–2810 of 7272 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 32,
+    "total": 7272,
+    "next_offset": 2810
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

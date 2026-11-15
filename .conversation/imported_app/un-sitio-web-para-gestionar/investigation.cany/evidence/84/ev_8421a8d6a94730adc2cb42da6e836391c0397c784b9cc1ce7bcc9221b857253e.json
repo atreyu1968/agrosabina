@@ -1,0 +1,68 @@
+{
+  "id": "ev_8421a8d6a94730adc2cb42da6e836391c0397c784b9cc1ce7bcc9221b857253e",
+  "subject": {
+    "kind": "script",
+    "sha256": "7dc65b82b4317e99dd4328b90ea708072b6b2d34ea88b3efef058f0276c3e0b1",
+    "name": "views.js"
+  },
+  "operation": "core_evidence_browse",
+  "params": {
+    "show": {
+      "fields": [
+        "path",
+        "parse_mode",
+        "sha256",
+        "bytes"
+      ],
+      "kind": "rows",
+      "list": "modules"
+    },
+    "source": {
+      "evidence_id": "ev_e77edf18a69c7f4d15da934d7b7a725334b1c2cc750d1a0d99e4abc258db96b5",
+      "kind": "saved"
+    }
+  },
+  "result": {
+    "coverage": {
+      "at_end": true,
+      "examined": 1,
+      "next_offset": null,
+      "status": "page",
+      "total": 1
+    },
+    "from_evidence": "ev_e77edf18a69c7f4d15da934d7b7a725334b1c2cc750d1a0d99e4abc258db96b5",
+    "from_tool": "js_app_map",
+    "shown": {
+      "items": [
+        {
+          "bytes": 246891,
+          "parse_mode": "parsed",
+          "path": "views.js",
+          "sha256": "7dc65b82b4317e99dd4328b90ea708072b6b2d34ea88b3efef058f0276c3e0b1"
+        }
+      ],
+      "list": "modules",
+      "offset": 0,
+      "total": 1
+    }
+  },
+  "summary": "Part of js_app_map evidence (page).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [],
+  "links": [
+    "ev_e77edf18a69c7f4d15da934d7b7a725334b1c2cc750d1a0d99e4abc258db96b5"
+  ]
+}

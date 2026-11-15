@@ -1,0 +1,226 @@
+{
+  "id": "ev_c63c390b520344d3099f4738c6880b8ae1c63862c5b32c9b86f4d12a898c3c13",
+  "subject": {
+    "kind": "javascript",
+    "name": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js"
+  },
+  "operation": "js_sources_restore",
+  "params": {
+    "additional_paths": [],
+    "extraction_mode": "inspection",
+    "output_directory": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\_check",
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js",
+    "rewrite_level": "none"
+  },
+  "result": {
+    "inputs": [
+      {
+        "bytes": 23887,
+        "input": "js/accounting.js",
+        "input_index": 0,
+        "sha256": "5424c53cadc6967fd41cb2d41f506ef1289ebd4290305ebd0dd21bd6dfeca4f8"
+      },
+      {
+        "bytes": 13720,
+        "input": "js/ai.js",
+        "input_index": 1,
+        "sha256": "1e585cc49b078fbe974665ab51132669cb2bc7c416a346bae7db13c338c2a41c"
+      },
+      {
+        "bytes": 9227,
+        "input": "js/camera.js",
+        "input_index": 2,
+        "sha256": "ba282a08876e06a9ae4092e28b8c58fe5ef83b9d824ecfec6c0f3a7d3c33f354"
+      },
+      {
+        "bytes": 9091,
+        "input": "js/dom.js",
+        "input_index": 3,
+        "sha256": "a184588da01bbaaff7f7e9b3028b69a729173e09996373b78baeb039c091ccf7"
+      },
+      {
+        "bytes": 8279,
+        "input": "js/mail.js",
+        "input_index": 4,
+        "sha256": "f520ccdd5a3ab0549aa7f45c8a8057ba1b299d1917f99fbffddca35f3afdcd77"
+      },
+      {
+        "bytes": 4118,
+        "input": "js/main.js",
+        "input_index": 5,
+        "sha256": "c083869caa24d87b794addab6e810fadbfbdd9f92e51cf3a20d8e1aed96cc0e2"
+      },
+      {
+        "bytes": 10340,
+        "input": "js/model.js",
+        "input_index": 6,
+        "sha256": "95cfec9262b76d4a06e9da1f5aa03517b468bd8e6341b387341adabc3c2d11cb"
+      },
+      {
+        "bytes": 29113,
+        "input": "js/parse.js",
+        "input_index": 7,
+        "sha256": "95ac2e5c4bec09c962bd87a3d7b4b2a6fddec11eadda8255eee762d54df4edea"
+      },
+      {
+        "bytes": 17330,
+        "input": "js/read.js",
+        "input_index": 8,
+        "sha256": "c7354c4304a3218d2fdd79102cc1044647cc5d91ba73d12ee17fb118e6c31de3"
+      },
+      {
+        "bytes": 17820,
+        "input": "js/sqlite.js",
+        "input_index": 9,
+        "sha256": "74d04d86a9e267ad2036e387eae84d9dac1474b696d523baafcaae4fd6496266"
+      },
+      {
+        "bytes": 24919,
+        "input": "js/store.js",
+        "input_index": 10,
+        "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b"
+      },
+      {
+        "bytes": 7872,
+        "input": "js/util.js",
+        "input_index": 11,
+        "sha256": "e77d2b067087936538d3d840a88e5abb36fb4b329936b321d8810b38a1692838"
+      },
+      {
+        "bytes": 154318,
+        "input": "js/views.js",
+        "input_index": 12,
+        "sha256": "ba06c9c8563afcb1214245c7b22e5cabfd8beb973036ce38eb989816f919b255"
+      }
+    ],
+    "manifest": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\_check\\manifest.json",
+    "notes": [],
+    "originals_truncated": false,
+    "output_directory": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\_check",
+    "outputs": [
+      {
+        "from": "js/accounting.js",
+        "kind": "pretty",
+        "path": "pretty/js/accounting.js",
+        "rewrites": 0,
+        "sha256": "5e17d89c337b593cb05d0ca1b1c9e70e16a2366aecc10979f182f9dc07a35d2f"
+      },
+      {
+        "from": "js/ai.js",
+        "kind": "pretty",
+        "path": "pretty/js/ai.js",
+        "rewrites": 0,
+        "sha256": "a784037e8d090a7b7ab1feac2f8e3b740c005128eca64903565a111cdb46bb2a"
+      },
+      {
+        "from": "js/camera.js",
+        "kind": "pretty",
+        "path": "pretty/js/camera.js",
+        "rewrites": 0,
+        "sha256": "87e4ef062cdb74167d1adf0eb7f9b27be3cc55a7036f571a8189cef4b8ece0c4"
+      },
+      {
+        "from": "js/dom.js",
+        "kind": "pretty",
+        "path": "pretty/js/dom.js",
+        "rewrites": 0,
+        "sha256": "b1df7628670b62cf22aa65e690da8133dbf76cdc12d5f43775dd47b945a77ad0"
+      },
+      {
+        "from": "js/mail.js",
+        "kind": "pretty",
+        "path": "pretty/js/mail.js",
+        "rewrites": 0,
+        "sha256": "9235ff11c9e1d061c049c302f67950aeed3bbaeac7bd897575cbd00321774b3a"
+      },
+      {
+        "from": "js/main.js",
+        "kind": "pretty",
+        "path": "pretty/js/main.js",
+        "rewrites": 0,
+        "sha256": "072040fe6b9dd8f6a823c68f8d3a0d7d9b6608673305bb7b77fba94340fbd2c2"
+      },
+      {
+        "from": "js/model.js",
+        "kind": "pretty",
+        "path": "pretty/js/model.js",
+        "rewrites": 0,
+        "sha256": "5ee1e4a1273584c201b5dbc8788a99d84fb2869d692137196512af3372a6ebb5"
+      },
+      {
+        "from": "js/parse.js",
+        "kind": "pretty",
+        "path": "pretty/js/parse.js",
+        "rewrites": 0,
+        "sha256": "d1ce3cd5899a89d0d6022d31aa3ac2236f79b541c52a410e7e541622aceb02df"
+      },
+      {
+        "from": "js/read.js",
+        "kind": "pretty",
+        "path": "pretty/js/read.js",
+        "rewrites": 0,
+        "sha256": "69d7685e8c014b046b5e14163088f88b3081ffbaab040710ed532a2c3cd17a89"
+      },
+      {
+        "from": "js/sqlite.js",
+        "kind": "pretty",
+        "path": "pretty/js/sqlite.js",
+        "rewrites": 0,
+        "sha256": "d11d356eec9352fbd1ccd32c37cf8fa96a25aaee4859f887dfb6762070a510be"
+      },
+      {
+        "from": "js/store.js",
+        "kind": "pretty",
+        "path": "pretty/js/store.js",
+        "rewrites": 0,
+        "sha256": "eb13ad1c9be059197ae6bf5511c03c119a31bcb79e1cf572363121d6c0b27117"
+      },
+      {
+        "from": "js/util.js",
+        "kind": "pretty",
+        "path": "pretty/js/util.js",
+        "rewrites": 0,
+        "sha256": "aea50d2855db0a9e1961247a08e817abfa7e1cab4d915d9751c10c29b5722d88"
+      },
+      {
+        "from": "js/views.js",
+        "kind": "pretty",
+        "path": "pretty/js/views.js",
+        "rewrites": 0,
+        "sha256": "33edcb60d35691bd6ad27a03920bba5f67ebe1ad9a5cc7d615c103c45bf5e86d"
+      }
+    ],
+    "outputs_total": 13
+  },
+  "summary": "Recovered 13 input(s) into C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\_check: 13 pretty-printed, 0 bundle module file(s), 0 original source(s) from maps.",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "rewrites_conservative",
+      "message": "Only rewrites that provably keep meaning are applied; local variable names stay minified."
+    },
+    {
+      "code": "scope_hoisted",
+      "message": "Rollup/Vite production chunks merge modules into one scope; they are pretty-printed but not split."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 13,
+    "total": 13
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\_check"
+    }
+  ],
+  "links": []
+}

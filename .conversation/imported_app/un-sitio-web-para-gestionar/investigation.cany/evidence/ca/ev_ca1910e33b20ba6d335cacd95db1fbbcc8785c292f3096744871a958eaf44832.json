@@ -1,0 +1,76 @@
+{
+  "id": "ev_ca1910e33b20ba6d335cacd95db1fbbcc8785c292f3096744871a958eaf44832",
+  "subject": {
+    "kind": "script",
+    "sha256": "604c9da353cac69a89598447201ad13750f70aee3128676392d96196299e71a0",
+    "name": "accounting.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "both",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "pattern": null,
+    "text": "if (c >= \"430\" && c <= \"449\") return \"AC_III\";"
+  },
+  "result": {
+    "file_size": 32312,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6966202863203e3d2022343330222026262063203c3d202234343922292072657475726e202241435f494949223b",
+        "file_offset": 3087,
+        "file_offset_hex": "0xc0f",
+        "length": 46,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 46
+      },
+      {
+        "kind": "utf16le",
+        "length": 92
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 + utf16le in accounting.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0xc0f"
+    }
+  ],
+  "links": []
+}

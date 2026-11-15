@@ -1,0 +1,54 @@
+{
+  "id": "ev_03bf8ed64d6614b68ad7a168bd20349a84c992742daf0de4edcdbd64b6f3cd23",
+  "subject": {
+    "kind": "script",
+    "sha256": "8281c07a6c6e0e591b3d171028ac0385d2e4d6c7e6e685816c745534065f2b7d",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 62,
+    "offset": 299,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 23722,
+    "lines": 62,
+    "more": true,
+    "offset": 299,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "  const map = new Map();\n  for (const e of entries || []) {\n    for (const l of e.lines || []) {\n      let row = map.get(l.account);\n      if (!row) {\n        const c = cuenta(l.account);\n        row = {\n          code: l.account,\n          name: c.name,\n          balance: c.balance,\n          pl: c.pl,\n          debit: 0,\n          credit: 0,\n          moves: [],\n        };\n        map.set(l.account, row);\n      }\n      row.debit = round2(row.debit + (l.debit || 0));\n      row.credit = round2(row.credit + (l.credit || 0));\n      row.moves.push({\n        date: e.date,\n        number: e.number,\n        concept: e.concept,\n        debit: l.debit || 0,\n        credit: l.credit || 0,\n        running: 0,\n      });\n    }\n  }\n  const rows = [...map.values()];\n  for (const r of rows) {\n    let acc = 0;\n    for (const m of r.moves) {\n      acc = round2(acc + m.debit - m.credit);\n      m.running = acc;\n    }\n    r.saldo = round2(r.debit - r.credit);\n  }\n  rows.sort((a, b) => (a.code < b.code ? -1 : a.code > b.code ? 1 : 0));\n  return rows;\n}\n\n/* ------------------------------------------------------------------ */\n/* Balance de sumas y saldos                                          */\n/* ------------------------------------------------------------------ */\n\n/**\n * Sumas y saldos: por cuenta, cuánto se ha movido al debe y al haber y el\n * saldo que queda, deudor o acreedor. Las dos últimas columnas tienen que\n * sumar lo mismo: si no, algo se ha quedado fuera.\n */\nexport function balanceSumasYSaldos(mayor) {\n  const rows = (mayor || []).map((r) => ({\n    code: r.code,\n    name: r.name,\n    debit: r.debit,\n    credit: r.credit,\n    deudor: r.saldo > 0.004 ? r.saldo : 0,\n    acreedor: r.saldo < -0.004 ? round2(-r.saldo) : 0,\n  }));\n  const totals = rows.reduce(\n    (t, r) => ({\n",
+    "total_lines": 586
+  },
+  "summary": "accounting.js: lines 300–361 of 586 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 62,
+    "total": 586,
+    "next_offset": 361
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

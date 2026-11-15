@@ -1,0 +1,1364 @@
+{
+  "id": "ev_2f783cd39fa29f7286a2369b458c05146dc4180143278ad25f2c2c4a75c10b14",
+  "subject": {
+    "kind": "script",
+    "sha256": "ebcac35616019f36fd5ba77302d7c7dd59d513d2f7d4565e01096327e8085115",
+    "name": "read.js"
+  },
+  "operation": "js_app_map",
+  "params": {
+    "include_node_modules": false,
+    "input_path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\read.js",
+    "limit": 1,
+    "max_nodes": 25000,
+    "offset": 0,
+    "source_paths": []
+  },
+  "result": {
+    "api_operations": [],
+    "app_kind": "unknown",
+    "bundlers": [],
+    "edges": [
+      {
+        "from": "event:read.js#el:error",
+        "kind": "handled-by",
+        "to": "fn:read.js#el.addEventListener(error)@47"
+      },
+      {
+        "from": "event:read.js#el:load",
+        "kind": "handled-by",
+        "to": "fn:read.js#el.addEventListener(load)@43"
+      },
+      {
+        "from": "event:read.js#existing:error",
+        "kind": "handled-by",
+        "to": "fn:read.js#existing.addEventListener(error)@35"
+      },
+      {
+        "from": "event:read.js#existing:load",
+        "kind": "handled-by",
+        "to": "fn:read.js#existing.addEventListener(load)@34"
+      },
+      {
+        "from": "fn:read.js#getOcrWorker@80",
+        "kind": "mentions",
+        "to": "endpoint:https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/worker.min.js"
+      },
+      {
+        "from": "fn:read.js#getOcrWorker@80",
+        "kind": "calls",
+        "to": "fn:read.js#getTesseract@69"
+      },
+      {
+        "from": "fn:read.js#getTesseract@69",
+        "kind": "calls",
+        "to": "fn:read.js#loadScriptOnce@27"
+      },
+      {
+        "from": "fn:read.js#ocrCanvas@395",
+        "kind": "calls",
+        "to": "fn:read.js#getOcrWorker@80"
+      },
+      {
+        "from": "fn:read.js#ocrCanvas@395",
+        "kind": "calls",
+        "to": "fn:read.js#run@404"
+      },
+      {
+        "from": "fn:read.js#ocrOnce@374",
+        "kind": "calls",
+        "to": "fn:read.js#scoreText@277"
+      },
+      {
+        "from": "fn:read.js#ocrOnce@374",
+        "kind": "calls",
+        "to": "fn:read.js#tidyOcr@364"
+      },
+      {
+        "from": "fn:read.js#pdfScanCanvases@170",
+        "kind": "calls",
+        "to": "fn:read.js#getPdfjs@55"
+      },
+      {
+        "from": "fn:read.js#pdfTextLayer@143",
+        "kind": "calls",
+        "to": "fn:read.js#getPdfjs@55"
+      },
+      {
+        "from": "fn:read.js#pdfTextLayer@143",
+        "kind": "calls",
+        "to": "fn:read.js#itemsToLines@121"
+      },
+      {
+        "from": "fn:read.js#readFile@461",
+        "kind": "calls",
+        "to": "fn:read.js#describeFile@450"
+      },
+      {
+        "from": "fn:read.js#readFile@461",
+        "kind": "calls",
+        "to": "fn:read.js#ocrCanvas@395"
+      },
+      {
+        "from": "fn:read.js#readFile@461",
+        "kind": "calls",
+        "to": "fn:read.js#pdfScanCanvases@170"
+      },
+      {
+        "from": "fn:read.js#readFile@461",
+        "kind": "calls",
+        "to": "fn:read.js#pdfTextLayer@143"
+      },
+      {
+        "from": "fn:read.js#readFile@461",
+        "kind": "calls",
+        "to": "fn:read.js#prepareImage@206"
+      },
+      {
+        "from": "fn:read.js#run@404",
+        "kind": "calls",
+        "to": "fn:read.js#ocrOnce@374"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "mentions",
+        "to": "endpoint:https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "mentions",
+        "to": "endpoint:https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.min.mjs"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "mentions",
+        "to": "endpoint:https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "mentions",
+        "to": "endpoint:https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "mentions",
+        "to": "endpoint:https://tessdata.projectnaptha.com/4.0.0"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "listens",
+        "to": "event:read.js#el:error"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "listens",
+        "to": "event:read.js#el:load"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "listens",
+        "to": "event:read.js#existing:error"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "listens",
+        "to": "event:read.js#existing:load"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "dynamic-import",
+        "to": "external:https:"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#binarize@317"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#describeFile@450"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#disposeReader@110"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#el.addEventListener(error)@47"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#el.addEventListener(load)@43"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#existing.addEventListener(error)@35"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#existing.addEventListener(load)@34"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#getOcrWorker@80"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#getPdfjs@55"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#getTesseract@69"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#itemsToLines@121"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#loadScriptOnce@27"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#logger@87"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#ocrCanvas@395"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#ocrOnce@374"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#pdfScanCanvases@170"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#pdfTextLayer@143"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#prepareImage@206"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#readFile@461"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#rotateCanvas@299"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#run@404"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#scoreText@277"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#sourceLabel@519"
+      },
+      {
+        "from": "module:read.js",
+        "kind": "defines",
+        "to": "fn:read.js#tidyOcr@364"
+      }
+    ],
+    "effects": [],
+    "endpoints": [
+      {
+        "api": "literal",
+        "function": null,
+        "line": 10,
+        "literal": true,
+        "method": null,
+        "module": "read.js",
+        "role": "unknown",
+        "url": "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs"
+      },
+      {
+        "api": "literal",
+        "function": null,
+        "line": 11,
+        "literal": true,
+        "method": null,
+        "module": "read.js",
+        "role": "unknown",
+        "url": "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.min.mjs"
+      },
+      {
+        "api": "literal",
+        "function": null,
+        "line": 13,
+        "literal": true,
+        "method": null,
+        "module": "read.js",
+        "role": "unknown",
+        "url": "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js"
+      },
+      {
+        "api": "literal",
+        "function": null,
+        "line": 14,
+        "literal": true,
+        "method": null,
+        "module": "read.js",
+        "role": "unknown",
+        "url": "https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0"
+      },
+      {
+        "api": "literal",
+        "function": null,
+        "line": 15,
+        "literal": true,
+        "method": null,
+        "module": "read.js",
+        "role": "unknown",
+        "url": "https://tessdata.projectnaptha.com/4.0.0"
+      },
+      {
+        "api": "literal",
+        "function": "getOcrWorker",
+        "line": 84,
+        "literal": true,
+        "method": null,
+        "module": "read.js",
+        "role": "unknown",
+        "url": "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/worker.min.js"
+      }
+    ],
+    "entry_points": {
+      "pages": [],
+      "preloads": [],
+      "renderers": [],
+      "workers": []
+    },
+    "exposed": [],
+    "graph_id": "ag_e8be561b0f71d50bfe90afe180d109817b2c9a7e58d48bed7ca1963175e82f9d",
+    "input_format": "file",
+    "ipc": [],
+    "label": "read.js",
+    "limitations": [],
+    "modules": [
+      {
+        "bundle_modules": [],
+        "bundlers": [],
+        "bytes": 18047,
+        "chunk_ids": [],
+        "exports": {
+          "cjs": [],
+          "esm": [
+            "MAX_BYTES",
+            "disposeReader",
+            "describeFile",
+            "readFile",
+            "sourceLabel"
+          ]
+        },
+        "fingerprint": "c4b1b0fa0252b9f181a45e7c3326d1e1737731d4e72727dc9351196f6dbe2855",
+        "functions": [
+          "loadScriptOnce",
+          "existing.addEventListener(load)",
+          "existing.addEventListener(error)",
+          "el.addEventListener(load)",
+          "el.addEventListener(error)",
+          "getPdfjs",
+          "getTesseract",
+          "getOcrWorker",
+          "logger",
+          "disposeReader",
+          "itemsToLines",
+          "pdfTextLayer",
+          "pdfScanCanvases",
+          "prepareImage",
+          "scoreText",
+          "rotateCanvas",
+          "binarize",
+          "tidyOcr",
+          "ocrOnce",
+          "ocrCanvas",
+          "run",
+          "describeFile",
+          "readFile",
+          "sourceLabel"
+        ],
+        "imports": [
+          {
+            "kind": "import",
+            "line": 8,
+            "specifier": "./parse.js"
+          },
+          {
+            "kind": "dynamic-import",
+            "line": 57,
+            "specifier": "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs"
+          }
+        ],
+        "kind": "script",
+        "parse_mode": "parsed",
+        "path": "read.js",
+        "role": "unknown",
+        "sha256": "ebcac35616019f36fd5ba77302d7c7dd59d513d2f7d4565e01096327e8085115",
+        "strings": [
+          "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs",
+          "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.min.mjs",
+          "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js",
+          "https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0",
+          "https://tessdata.projectnaptha.com/4.0.0",
+          "ready",
+          "error",
+          "No se pudo cargar el lector.",
+          "load",
+          "script",
+          "El lector de fotos no está disponible.",
+          "spa",
+          "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/worker.min.js",
+          "object",
+          "1",
+          "6",
+          " ",
+          "\n",
+          "texto del PDF",
+          "\n\n",
+          "canvas",
+          "2d",
+          "#fff",
+          "high",
+          "4",
+          "300",
+          "0",
+          "OCR",
+          "leyendo la factura",
+          "leída",
+          "buscando columnas de importes",
+          "acentuando el contraste",
+          "probando girada 90°",
+          "probando girada 270°",
+          "probando del revés",
+          "application/pdf",
+          "pdf",
+          "image/",
+          "image",
+          "unknown",
+          "Solo puedo leer fotos (JPG, PNG…) y PDF.",
+          "El fichero es demasiado grande (más de 30 MB).",
+          "Abriendo el PDF",
+          "No he podido abrir el PDF. Si es un escaneo, prueba a subirlo como foto o comprueba la conexión.",
+          "Texto del PDF leído",
+          "pdf-text",
+          "Es un PDF escaneado: pasando al lector de imágenes",
+          "leyendo",
+          "pdf-ocr",
+          "Preparando la foto",
+          "image-ocr",
+          "Texto del PDF",
+          "Escaneo del PDF",
+          "Foto leída con OCR",
+          "manual",
+          "Escrita a mano",
+          "pasted",
+          "Texto pegado",
+          "email",
+          "Correo electrónico",
+          "Origen desconocido"
+        ]
+      }
+    ],
+    "modules_total": 1,
+    "native_modules": [],
+    "nodes": [
+      {
+        "id": "module:read.js",
+        "kind": "module",
+        "label": "read.js",
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "id": "external:https:",
+        "kind": "external",
+        "label": "https:"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "new Promise"
+          ],
+          "end": 2033,
+          "end_line": 53,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "src"
+          ],
+          "parent": null,
+          "start": 1076,
+          "strings": []
+        },
+        "id": "fn:read.js#loadScriptOnce@27",
+        "kind": "function",
+        "label": "loadScriptOnce",
+        "line": 27,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "resolve"
+          ],
+          "end": 1474,
+          "end_line": 34,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@28>",
+          "start": 1459,
+          "strings": []
+        },
+        "id": "fn:read.js#existing.addEventListener(load)@34",
+        "kind": "function",
+        "label": "existing.addEventListener(load)",
+        "line": 34,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "reject",
+            "new Error"
+          ],
+          "end": 1591,
+          "end_line": 35,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@28>",
+          "start": 1536,
+          "strings": [
+            "No se pudo cargar el lector."
+          ]
+        },
+        "id": "fn:read.js#existing.addEventListener(error)@35",
+        "kind": "function",
+        "label": "existing.addEventListener(error)",
+        "line": 35,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "resolve"
+          ],
+          "end": 1848,
+          "end_line": 46,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@28>",
+          "start": 1784,
+          "strings": [
+            "ready"
+          ]
+        },
+        "id": "fn:read.js#el.addEventListener(load)@43",
+        "kind": "function",
+        "label": "el.addEventListener(load)",
+        "line": 43,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "reject",
+            "new Error"
+          ],
+          "end": 1988,
+          "end_line": 50,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "<anonymous@28>",
+          "start": 1884,
+          "strings": [
+            "error",
+            "No se pudo cargar el lector."
+          ]
+        },
+        "id": "fn:read.js#el.addEventListener(error)@47",
+        "kind": "function",
+        "label": "el.addEventListener(error)",
+        "line": 47,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [],
+          "end": 2369,
+          "end_line": 67,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 2035,
+          "strings": []
+        },
+        "id": "fn:read.js#getPdfjs@55",
+        "kind": "function",
+        "label": "getPdfjs",
+        "line": 55,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "loadScriptOnce().then",
+            "loadScriptOnce"
+          ],
+          "end": 2654,
+          "end_line": 77,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 2371,
+          "strings": []
+        },
+        "id": "fn:read.js#getTesseract@69",
+        "kind": "function",
+        "label": "getTesseract",
+        "line": 69,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "getTesseract",
+            "Tesseract.createWorker(spa).catch",
+            "Tesseract.createWorker",
+            "worker.setParameters"
+          ],
+          "end": 3581,
+          "end_line": 108,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "onProgress"
+          ],
+          "parent": null,
+          "start": 2714,
+          "strings": [
+            "spa",
+            "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/worker.min.js",
+            "1",
+            "6"
+          ]
+        },
+        "id": "fn:read.js#getOcrWorker@80",
+        "kind": "function",
+        "label": "getOcrWorker",
+        "line": 80,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "__ocrListener"
+          ],
+          "end": 3193,
+          "end_line": 91,
+          "exported": false,
+          "kind": "arrow",
+          "params": [
+            "msg"
+          ],
+          "parent": "getOcrWorker",
+          "start": 3033,
+          "strings": [
+            "object"
+          ]
+        },
+        "id": "fn:read.js#logger@87",
+        "kind": "function",
+        "label": "logger",
+        "line": 87,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "workerPromise.then().catch",
+            "workerPromise.then"
+          ],
+          "end": 3733,
+          "end_line": 115,
+          "exported": true,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 3590,
+          "strings": []
+        },
+        "id": "fn:read.js#disposeReader@110",
+        "kind": "function",
+        "label": "disposeReader",
+        "line": 110,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "new Map",
+            "str.trim",
+            "Math.round",
+            "rows.has",
+            "rows.set",
+            "rows.get().push",
+            "rows.get",
+            "rows.keys",
+            "keys.map"
+          ],
+          "end": 4513,
+          "end_line": 141,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "items"
+          ],
+          "parent": null,
+          "start": 3955,
+          "strings": []
+        },
+        "id": "fn:read.js#itemsToLines@121",
+        "kind": "function",
+        "label": "itemsToLines",
+        "line": 121,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "getPdfjs",
+            "new Uint8Array",
+            "file.arrayBuffer",
+            "pdfjs.getDocument",
+            "Math.min",
+            "doc.getPage",
+            "page.getTextContent",
+            "out.push",
+            "itemsToLines().join",
+            "itemsToLines",
+            "onProgress",
+            "Math.round",
+            "doc.destroy",
+            "out.join"
+          ],
+          "end": 5490,
+          "end_line": 168,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "file",
+            "onProgress"
+          ],
+          "parent": null,
+          "start": 4515,
+          "strings": [
+            "\n",
+            "texto del PDF",
+            "\n\n"
+          ]
+        },
+        "id": "fn:read.js#pdfTextLayer@143",
+        "kind": "function",
+        "label": "pdfTextLayer",
+        "line": 143,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "getPdfjs",
+            "new Uint8Array",
+            "file.arrayBuffer",
+            "pdfjs.getDocument",
+            "Math.min",
+            "doc.getPage",
+            "page.getViewport",
+            "Math.max",
+            "document.createElement",
+            "Math.round",
+            "canvas.getContext",
+            "ctx.fillRect",
+            "page.render",
+            "out.push",
+            "doc.destroy"
+          ],
+          "end": 6665,
+          "end_line": 199,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "file",
+            "maxPages"
+          ],
+          "parent": null,
+          "start": 5492,
+          "strings": [
+            "canvas",
+            "2d",
+            "#fff"
+          ]
+        },
+        "id": "fn:read.js#pdfScanCanvases@170",
+        "kind": "function",
+        "label": "pdfScanCanvases",
+        "line": 170,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "createImageBitmap",
+            "Math.max",
+            "Math.min",
+            "Math.round",
+            "document.createElement",
+            "canvas.getContext",
+            "ctx.fillRect",
+            "ctx.drawImage",
+            "bitmap.close",
+            "ctx.getImageData",
+            "new Uint32Array",
+            "ctx.putImageData"
+          ],
+          "end": 8647,
+          "end_line": 257,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "source"
+          ],
+          "parent": null,
+          "start": 6964,
+          "strings": [
+            "canvas",
+            "2d",
+            "#fff",
+            "high"
+          ]
+        },
+        "id": "fn:read.js#prepareImage@206",
+        "kind": "function",
+        "label": "prepareImage",
+        "line": 206,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String",
+            "clean.replace",
+            "Math.max",
+            "Math.min",
+            "Number",
+            "./parse.js.parseInvoiceText"
+          ],
+          "end": 10287,
+          "end_line": 296,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text",
+            "confidence"
+          ],
+          "parent": null,
+          "start": 9603,
+          "strings": []
+        },
+        "id": "fn:read.js#scoreText@277",
+        "kind": "function",
+        "label": "scoreText",
+        "line": 277,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "document.createElement",
+            "out.getContext",
+            "ctx.fillRect",
+            "ctx.translate",
+            "ctx.rotate",
+            "ctx.drawImage"
+          ],
+          "end": 10863,
+          "end_line": 314,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "canvas",
+            "deg"
+          ],
+          "parent": null,
+          "start": 10349,
+          "strings": [
+            "canvas",
+            "2d",
+            "#fff"
+          ]
+        },
+        "id": "fn:read.js#rotateCanvas@299",
+        "kind": "function",
+        "label": "rotateCanvas",
+        "line": 299,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "canvas.getContext",
+            "ctx.getImageData",
+            "new Uint32Array",
+            "new Uint8ClampedArray",
+            "document.createElement",
+            "copy.getContext(2d).putImageData",
+            "copy.getContext",
+            "new ImageData"
+          ],
+          "end": 12260,
+          "end_line": 361,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "canvas"
+          ],
+          "parent": null,
+          "start": 10925,
+          "strings": [
+            "2d",
+            "canvas"
+          ]
+        },
+        "id": "fn:read.js#binarize@317",
+        "kind": "function",
+        "label": "binarize",
+        "line": 317,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().replace().replace().replace().replace().replace().trim",
+            "String().replace().replace().replace().replace().replace",
+            "String().replace().replace().replace().replace",
+            "String().replace().replace().replace",
+            "String().replace().replace",
+            "String().replace",
+            "String"
+          ],
+          "end": 12552,
+          "end_line": 372,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "text"
+          ],
+          "parent": null,
+          "start": 12328,
+          "strings": [
+            "\n",
+            " ",
+            "\n\n"
+          ]
+        },
+        "id": "fn:read.js#tidyOcr@364",
+        "kind": "function",
+        "label": "tidyOcr",
+        "line": 364,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "worker.setParameters",
+            "worker.recognize",
+            "tidyOcr",
+            "Number",
+            "scoreText"
+          ],
+          "end": 13099,
+          "end_line": 389,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "worker",
+            "canvas",
+            "psm"
+          ],
+          "parent": null,
+          "start": 12554,
+          "strings": [
+            "1",
+            "300",
+            "0"
+          ]
+        },
+        "id": "fn:read.js#ocrOnce@374",
+        "kind": "function",
+        "label": "ocrOnce",
+        "line": 374,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "getOcrWorker",
+            "run",
+            "onProgress",
+            "plan.push",
+            "step"
+          ],
+          "end": 14824,
+          "end_line": 444,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "canvas",
+            "onProgress"
+          ],
+          "parent": null,
+          "start": 13204,
+          "strings": [
+            "leyendo la factura",
+            "leída",
+            "buscando columnas de importes"
+          ]
+        },
+        "id": "fn:read.js#ocrCanvas@395",
+        "kind": "function",
+        "label": "ocrCanvas",
+        "line": 395,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "onProgress",
+            "Math.min",
+            "ocrOnce"
+          ],
+          "end": 13694,
+          "end_line": 410,
+          "exported": false,
+          "kind": "arrow",
+          "params": [
+            "image",
+            "psm",
+            "label"
+          ],
+          "parent": "ocrCanvas",
+          "start": 13454,
+          "strings": []
+        },
+        "id": "fn:read.js#run@404",
+        "kind": "function",
+        "label": "run",
+        "line": 404,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String",
+            "type.startsWith"
+          ],
+          "end": 15332,
+          "end_line": 455,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "file"
+          ],
+          "parent": null,
+          "start": 15053,
+          "strings": [
+            "application/pdf",
+            "pdf",
+            "image/",
+            "image",
+            "unknown"
+          ]
+        },
+        "id": "fn:read.js#describeFile@450",
+        "kind": "function",
+        "label": "describeFile",
+        "line": 450,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "describeFile",
+            "new Error",
+            "onProgress",
+            "pdfTextLayer",
+            "text.replace",
+            "pdfScanCanvases",
+            "Math.round",
+            "ocrCanvas",
+            "parts.push",
+            "parts.join",
+            "prepareImage"
+          ],
+          "end": 17649,
+          "end_line": 517,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "file",
+            "onProgress"
+          ],
+          "parent": null,
+          "start": 15417,
+          "strings": [
+            "unknown",
+            "Solo puedo leer fotos (JPG, PNG…) y PDF.",
+            "El fichero es demasiado grande (más de 30 MB).",
+            "pdf",
+            "Abriendo el PDF",
+            "No he podido abrir el PDF. Si es un escaneo, prueba a subirlo como foto o comprueba la conexión.",
+            "Texto del PDF leído",
+            "pdf-text",
+            "Es un PDF escaneado: pasando al lector de imágenes",
+            "\n\n",
+            "pdf-ocr",
+            "Preparando la foto",
+            "image-ocr"
+          ]
+        },
+        "id": "fn:read.js#readFile@461",
+        "kind": "function",
+        "label": "readFile",
+        "line": 461,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [],
+          "end": 18046,
+          "end_line": 527,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "source"
+          ],
+          "parent": null,
+          "start": 17658,
+          "strings": [
+            "pdf-text",
+            "Texto del PDF",
+            "pdf-ocr",
+            "Escaneo del PDF",
+            "image-ocr",
+            "Foto leída con OCR",
+            "manual",
+            "Escrita a mano",
+            "pasted",
+            "Texto pegado",
+            "email",
+            "Correo electrónico",
+            "Origen desconocido"
+          ]
+        },
+        "id": "fn:read.js#sourceLabel@519",
+        "kind": "function",
+        "label": "sourceLabel",
+        "line": 519,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "api": "literal",
+          "literal": true
+        },
+        "id": "endpoint:https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs",
+        "kind": "endpoint",
+        "label": "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs"
+      },
+      {
+        "attrs": {
+          "api": "literal",
+          "literal": true
+        },
+        "id": "endpoint:https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.min.mjs",
+        "kind": "endpoint",
+        "label": "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.min.mjs"
+      },
+      {
+        "attrs": {
+          "api": "literal",
+          "literal": true
+        },
+        "id": "endpoint:https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js",
+        "kind": "endpoint",
+        "label": "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js"
+      },
+      {
+        "attrs": {
+          "api": "literal",
+          "literal": true
+        },
+        "id": "endpoint:https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0",
+        "kind": "endpoint",
+        "label": "https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0"
+      },
+      {
+        "attrs": {
+          "api": "literal",
+          "literal": true
+        },
+        "id": "endpoint:https://tessdata.projectnaptha.com/4.0.0",
+        "kind": "endpoint",
+        "label": "https://tessdata.projectnaptha.com/4.0.0"
+      },
+      {
+        "attrs": {
+          "api": "literal",
+          "literal": true
+        },
+        "id": "endpoint:https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/worker.min.js",
+        "kind": "endpoint",
+        "label": "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/worker.min.js"
+      },
+      {
+        "id": "event:read.js#existing:load",
+        "kind": "event",
+        "label": "existing:load",
+        "line": 34,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:read.js#existing:error",
+        "kind": "event",
+        "label": "existing:error",
+        "line": 35,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:read.js#el:load",
+        "kind": "event",
+        "label": "el:load",
+        "line": 43,
+        "module": "read.js",
+        "role": "unknown"
+      },
+      {
+        "id": "event:read.js#el:error",
+        "kind": "event",
+        "label": "el:error",
+        "line": 47,
+        "module": "read.js",
+        "role": "unknown"
+      }
+    ],
+    "package": null,
+    "routes": [],
+    "source_maps": [],
+    "stats": {
+      "api_operations": 0,
+      "bundle_modules": 0,
+      "edges": 54,
+      "endpoints": 6,
+      "files": 1,
+      "functions": 24,
+      "ipc_channels": 0,
+      "listed": 1,
+      "modules": 1,
+      "nodes": 36,
+      "paired_channels": 0
+    },
+    "storage": [],
+    "summary": "JavaScript code read.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+    "vendors": [],
+    "windows": []
+  },
+  "summary": "JavaScript code read.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "static_only",
+      "message": "Static reading only: code built at run time (eval, computed requires, remote content) is invisible; IPC pairs need literal channel names."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\read.js"
+    }
+  ],
+  "links": []
+}

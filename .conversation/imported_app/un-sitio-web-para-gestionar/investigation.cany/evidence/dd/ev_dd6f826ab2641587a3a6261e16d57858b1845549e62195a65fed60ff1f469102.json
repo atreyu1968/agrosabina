@@ -1,0 +1,127 @@
+{
+  "id": "ev_dd6f826ab2641587a3a6261e16d57858b1845549e62195a65fed60ff1f469102",
+  "subject": {
+    "kind": "script",
+    "sha256": "cd48c5cf20b87e39095de591bed9b4aadd07c9211f3a562a2f958858a55644b0",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 40,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "id=\"set-"
+  },
+  "result": {
+    "file_size": 123883,
+    "limit": 40,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "69643d227365742d",
+        "file_offset": 109071,
+        "file_offset_hex": "0x1aa0f",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "69643d227365742d",
+        "file_offset": 109426,
+        "file_offset_hex": "0x1ab72",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "69643d227365742d",
+        "file_offset": 111071,
+        "file_offset_hex": "0x1b1df",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "69643d227365742d",
+        "file_offset": 111315,
+        "file_offset_hex": "0x1b2d3",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "69643d227365742d",
+        "file_offset": 111704,
+        "file_offset_hex": "0x1b458",
+        "length": 8,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "69643d227365742d",
+        "file_offset": 111937,
+        "file_offset_hex": "0x1b541",
+        "length": 8,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 8
+      }
+    ],
+    "total_matches": 6
+  },
+  "summary": "6 match(es) for utf8 in views.js; showing 6 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 6,
+    "total": 6
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x1aa0f"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x1ab72"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x1b1df"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x1b2d3"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x1b458"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x1b541"
+    }
+  ],
+  "links": []
+}

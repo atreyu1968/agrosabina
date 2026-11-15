@@ -1,0 +1,64 @@
+{
+  "id": "ev_92ed1a7eb95ec74e07ed745b144735e8a0b1212769ffefc159b68bd1322db73d",
+  "subject": {
+    "kind": "script",
+    "sha256": "98e8665486357dcef06a36b2384371ed6ed6f0e54fc0b707be563c47ee02739e",
+    "name": "views.js"
+  },
+  "operation": "core_evidence_browse",
+  "params": {
+    "show": {
+      "fields": [
+        "path",
+        "parse_mode"
+      ],
+      "kind": "rows",
+      "list": "modules"
+    },
+    "source": {
+      "evidence_id": "ev_760670217e8a141af8c289abb9e47ae982cd8f0deb884f416cfb579c6fa128dc",
+      "kind": "saved"
+    }
+  },
+  "result": {
+    "coverage": {
+      "at_end": true,
+      "examined": 1,
+      "next_offset": null,
+      "status": "page",
+      "total": 1
+    },
+    "from_evidence": "ev_760670217e8a141af8c289abb9e47ae982cd8f0deb884f416cfb579c6fa128dc",
+    "from_tool": "js_app_map",
+    "shown": {
+      "items": [
+        {
+          "parse_mode": "parsed",
+          "path": "views.js"
+        }
+      ],
+      "list": "modules",
+      "offset": 0,
+      "total": 1
+    }
+  },
+  "summary": "Part of js_app_map evidence (page).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [],
+  "links": [
+    "ev_760670217e8a141af8c289abb9e47ae982cd8f0deb884f416cfb579c6fa128dc"
+  ]
+}

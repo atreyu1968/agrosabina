@@ -1,0 +1,54 @@
+{
+  "id": "ev_c3bbe0ad10651caa3cda7cc7cd635a5e5650b59cc002172c5eff6d5dcfc8faff",
+  "subject": {
+    "kind": "script",
+    "sha256": "6238b99ab8c1c0f10ce834ae43fb81a8055d05a8f9b20d7043327b18867475d9",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 150,
+    "offset": 965,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 134368,
+    "lines": 150,
+    "more": true,
+    "offset": 965,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "                    <span class=\"name\">${esc(supplierName(inv.supplierId))}</span>\n                    ${tagOf(inv)}\n                  </div>\n                </td>\n                <td>\n                  <span class=\"name\">${esc(product || kindInfo(inv.kind).short)}</span>\n                  ${category ? `<div class=\"sub\">${esc(category)}</div>` : \"\"}\n                  ${inv.number ? `<div class=\"sub mono\">${esc(inv.number)}</div>` : \"\"}\n                </td>\n                <td class=\"num\">${num.kg > 0 ? fmtNum(num.kg) : '<span class=\"muted\">—</span>'}</td>\n                <td class=\"num\">${num.price > 0 ? fmtNum(num.price, 3) : '<span class=\"muted\">—</span>'}</td>\n                <td class=\"num\">${num.discounts > 0 ? fmtEUR(num.discounts) : '<span class=\"muted\">—</span>'}</td>\n                <td class=\"num strong\">${fmtEUR(num.net)}</td>\n                <td>${statusPill(inv)}</td>\n                <td>\n                  <div class=\"row-actions\">\n                    <button class=\"icon-btn\" data-action=\"edit-invoice\" data-id=\"${inv.id}\" title=\"Editar\" aria-label=\"Editar liquidación\">${icon(\"edit\")}</button>\n                    <button class=\"icon-btn\" data-action=\"delete-invoice\" data-id=\"${inv.id}\" title=\"Borrar\" aria-label=\"Borrar liquidación\">${icon(\"trash\")}</button>\n                  </div>\n                </td>\n              </tr>`;\n            }).join(\"\")}\n          </tbody>\n          <tfoot>\n            <tr>\n              <td colspan=\"3\">${s.count} ${s.count === 1 ? \"documento\" : \"documentos\"}</td>\n              <td class=\"num\">${fmtNum(Math.round(s.kg))} kg</td>\n              <td class=\"num\">${s.kg > 0 ? fmtNum(s.avgPrice, 3) : \"—\"}</td>\n              <td class=\"num\">${fmtEUR(s.discounts)}</td>\n              <td class=\"num\">${fmtEUR(s.net)}</td>\n              <td colspan=\"2\">${fmtEUR(s.pending)} por cobrar</td>\n            </tr>\n          </tfoot>\n        </table>\n      </div>\n    </section>\n  </div>`;\n}\n\n/** Vuelve a pintar solo la pantalla de ventas (al cambiar el periodo). */\nfunction refreshSales() {\n  if (ui.route !== \"ventas\") return;\n  const view = document.getElementById(\"view\");\n  if (!view) return;\n  view.innerHTML = viewVentas();\n  const meta = pageMeta(\"ventas\");\n  const title = document.getElementById(\"viewTitle\");\n  const sub = document.getElementById(\"viewSub\");\n  if (title) title.textContent = meta.title;\n  if (sub) sub.textContent = meta.sub;\n  paintIngest();\n}\n\nfunction exportSalesCsv() {\n  const w = salesWindow();\n  const list = salesDocs();\n  if (!list.length) {\n    toast(\"No hay ventas en ese periodo.\", \"warn\");\n    return;\n  }\n  const headers = [\n    \"Fecha\",\n    \"Comprador\",\n    \"NIF\",\n    \"Documento\",\n    \"Tipo\",\n    \"Producto\",\n    \"Categoría\",\n    \"Kilos\",\n    \"Precio €/kg\",\n    \"Bruto\",\n    \"Descuentos\",\n    \"Líquido\",\n    \"Total documento\",\n    \"Estado\",\n    \"Fecha de cobro\",\n  ];\n  const rows = list.map((inv) => {\n    const num = liquidacionNumbers(inv);\n    const liq = inv.liquidacion || {};\n    const sup = supplierById(inv.supplierId) || {};\n    return [\n      inv.issueDate || \"\",\n      supplierName(inv.supplierId),\n      sup.nif || \"\",\n      inv.number || \"\",\n      kindInfo(inv.kind).label,\n      liq.product || \"\",\n      liq.category || \"\",\n      num.kg ? fmtNum(num.kg) : \"\",\n      num.price ? fmtNum(num.price, 3) : \"\",\n      num.gross ? fmtNum(num.gross) : \"\",\n      num.discounts ? fmtNum(num.discounts) : \"\",\n      fmtNum(num.net),\n      fmtNum(inv.total),\n      inv.status === STATUS.PAID ? \"Cobrado\" : \"Por cobrar\",\n      inv.status === STATUS.PAID && inv.paidDate ? fmtDate(inv.paidDate) : \"\",\n    ].map(csvCell).join(\";\");\n  });\n  const csv = \"\\ufeff\" + [headers.map(csvCell).join(\";\"), ...rows].join(\"\\r\\n\");\n  downloadText(`ventas-${w.from || \"todo\"}-${todayISO()}.csv`, csv);\n  toast(`Exportadas ${list.length} ${list.length === 1 ? \"venta\" : \"ventas\"} del periodo.`);\n}\n\n/* ------------------------------------------------------------------ */\n/* Facturas                                                           */\n/* ------------------------------------------------------------------ */\n\nfunction filteredInvoices() {\n  const { status, supplier, q, direction } = ui.filters;\n  const needle = q.trim().toLowerCase();\n  let list = getState().invoices;\n\n  if (status === \"pending\") list = list.filter((i) => i.status !== STATUS.PAID);\n  else if (status === \"paid\") list = list.filter((i) => i.status === STATUS.PAID);\n  if (supplier) list = list.filter((i) => i.supplierId === supplier);\n  if (direction && direction !== \"all\") list = list.filter((i) => (i.direction || \"GASTO\") === direction);\n\n  if (needle) {\n    list = list.filter((inv) => {\n      const sup = supplierById(inv.supplierId);\n      const hay = [inv.number, sup && sup.name, sup && sup.nif, inv.issueDate, String(inv.total)]\n        .filter(Boolean)\n        .join(\" \")\n        .toLowerCase();\n      return hay.includes(needle);\n    });\n  }\n  return sortedInvoices(list);\n}\n\nfunction viewFacturas() {\n  const state = getState();\n  if (!state.invoices.length) {\n    return `<section class=\"card\"><div class=\"empty\">\n      <div class=\"e-icon\">${icon(\"file\")}</div>\n      <h3>Todavía no hay compras</h3>\n      <p>Sube una foto o un PDF y la relleno yo. También puedes escribirla a mano si la tienes delante.</p>\n      <div class=\"e-actions\">\n        <button class=\"btn primary\" data-action=\"import-files\">${icon(\"upload\")} Subir documento</button>\n        <button class=\"btn\" data-action=\"new-invoice\">${icon(\"plus\")} Añadir a mano</button>\n      </div>\n    </div></section>`;\n  }\n\n  return `\n  <section class=\"card\">\n    <div class=\"filters\">\n      <div class=\"segmented\" data-filter-group=\"status\">\n        <button data-filter-status=\"all\" class=\"${ui.filters.status === \"all\" ? \"active\" : \"\"}\">Todas</button>\n",
+    "total_lines": 3575
+  },
+  "summary": "views.js: lines 966–1115 of 3575 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 150,
+    "total": 3575,
+    "next_offset": 1115
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

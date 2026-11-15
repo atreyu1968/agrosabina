@@ -1,0 +1,54 @@
+{
+  "id": "ev_93272d68b4682205270986032dfaac094fef83bbb8093d271c0f273af9d4c231",
+  "subject": {
+    "kind": "text",
+    "sha256": "e7c774313cf832eba0ca61a10572e2419a4f8097ab29b0e878d7c7e394b6660e",
+    "name": "README.md"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 88,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\README.md"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 13367,
+    "lines": 30,
+    "more": true,
+    "offset": 88,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\README.md",
+    "replaced_sequences": 0,
+    "text": "## El correo\n\nUn navegador **no puede conectarse a un buzón** (IMAP/POP necesita un servidor, y este sitio\nson ficheros estáticos). Lo que sí puede: leer los correos **guardados como fichero `.eml`**.\n\nEn la pantalla **Correo** se sueltan uno o varios `.eml`:\n\n- Gmail — abrir el mensaje → «Mostrar original» → descargar.\n- Outlook — arrastrar el mensaje al escritorio (o «Guardar como»).\n- Thunderbird — «Guardar como» → «Archivo».\n\nEl programa lee la cabecera (de, asunto, fecha), el cuerpo (incluidos los adjuntos en\nBase64, los codificados «quoted-printable» y los acentos del asunto) y los adjuntos. Los\nadjuntos que son PDF o imagen **entran solos en la cola de lectura**, como si se hubieran\nsubido a mano. Cada correo se puede revisar después con «Leer y revisar», o borrar. También\nhay un botón para **pegar el texto** de un correo que no se pueda guardar.\n\nLos correos se guardan dentro del navegador, junto a los documentos: no salen del ordenador.\n\n## La clasificación con IA (opcional)\n\nEn **Ajustes → Clasificación con IA** se puede encender una ayuda con IA para decidir tipo y\nconcepto de cada documento. Funciona con cualquier servicio **compatible con OpenAI**: OpenAI,\nGroq, OpenRouter, o un modelo local (Ollama, LM Studio). Se pega la dirección, el nombre del\nmodelo y la clave de ese servicio; la clave se guarda solo en este navegador.\n\n- Va **apagada** por defecto.\n- Solo se envía el **texto ya extraído** del documento (unas líneas), nunca la foto ni el PDF.\n- Las reglas se aplican **primero**; la IA solo afina. Si falla (sin clave, sin internet, el\n  servicio responde mal), se queda el resultado de las reglas y se avisa con un mensaje.\n",
+    "total_lines": 245
+  },
+  "summary": "README.md: lines 89–118 of 245 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 245,
+    "next_offset": 118
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\README.md"
+    }
+  ],
+  "links": []
+}

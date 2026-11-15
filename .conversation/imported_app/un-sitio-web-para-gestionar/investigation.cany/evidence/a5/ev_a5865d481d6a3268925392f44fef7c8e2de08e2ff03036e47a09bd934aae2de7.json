@@ -1,0 +1,54 @@
+{
+  "id": "ev_a5865d481d6a3268925392f44fef7c8e2de08e2ff03036e47a09bd934aae2de7",
+  "subject": {
+    "kind": "script",
+    "sha256": "c48ded4f9cf5041b482b33ee217b0c9019182ba5922a959fb68cfe1f038baa21",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 55,
+    "offset": 4400,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 246388,
+    "lines": 55,
+    "more": true,
+    "offset": 4400,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      closeModal();\n      render();\n    } catch (err) {\n      toast(err.message || \"No he podido leer esa copia.\", \"bad\");\n    }\n  });\n  input.click();\n}\n\n/* ------------------------------------------------------------------ */\n/* Acciones                                                           */\n/* ------------------------------------------------------------------ */\n\nexport async function onAction(action, el) {\n  const id = el.dataset.id;\n  switch (action) {\n    case \"new-sale\": {\n      openInvoiceModal({\n        mode: \"new\",\n        preset: { kind: \"LIQUIDACION\", direction: \"INGRESO\" },\n      });\n      return;\n    }\n    case \"export-sales-csv\": {\n      exportSalesCsv();\n      return;\n    }\n    case \"toggle-status\": {\n      const inv = getState().invoices.find((i) => i.id === id);\n      if (!inv) return;\n      const isIncome = directionOf(inv.kind) === \"INGRESO\";\n      // Si ya está cobrado o pagado, volver a pendiente borra la fecha y se dice.\n      if (inv.status === STATUS.PAID) {\n        setInvoiceStatus(id, STATUS.PENDING);\n        toast(\n          isIncome\n            ? \"Vuelve a estar por cobrar: se ha borrado la fecha de cobro.\"\n            : \"Vuelve a estar pendiente: se ha borrado la fecha de pago.\"\n        );\n        render();\n        return;\n      }\n      askPaidDate(inv, isIncome, (day, pay) => {\n        setInvoiceStatus(id, STATUS.PAID, day, pay);\n        rememberPayAccount(pay && pay.method, pay && pay.account);\n        const como =\n          pay && pay.method === \"CAJA\"\n            ? \" en efectivo (caja)\"\n            : pay && pay.method === \"BANCO\"\n              ? \" por el banco\"\n              : \"\";\n        toast(\n          isIncome\n            ? `Cobrado el ${fmtDate(day)}${como}.`\n            : `Pagado el ${fmtDate(day)}${como}.`\n",
+    "total_lines": 6175
+  },
+  "summary": "views.js: lines 4401–4455 of 6175 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 55,
+    "total": 6175,
+    "next_offset": 4455
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

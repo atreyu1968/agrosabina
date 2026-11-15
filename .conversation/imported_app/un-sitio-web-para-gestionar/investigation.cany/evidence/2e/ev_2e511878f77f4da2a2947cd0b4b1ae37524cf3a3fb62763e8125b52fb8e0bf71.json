@@ -1,0 +1,54 @@
+{
+  "id": "ev_2e511878f77f4da2a2947cd0b4b1ae37524cf3a3fb62763e8125b52fb8e0bf71",
+  "subject": {
+    "kind": "script",
+    "sha256": "6238b99ab8c1c0f10ce834ae43fb81a8055d05a8f9b20d7043327b18867475d9",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 302,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 134368,
+    "lines": 60,
+    "more": true,
+    "offset": 302,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "            : `${count} ${count === 1 ? \"correo guardado\" : \"correos guardados\"} en el buzón`,\n      };\n    }\n    case \"importar\":\n      return {\n        title: \"Importar documentos\",\n        sub: \"Sube una foto o un PDF y yo relleno los datos\",\n      };\n    default: {\n      const who = (getState().settings.businessName || \"Agrosabina SL\").trim();\n      const pending =\n        t.pendingCount > 0\n          ? `Tienes ${fmtEUR(t.pending)} pendientes de pago`\n          : \"Todo al día. Nada pendiente de pago.\";\n      return {\n        title: \"Resumen\",\n        sub: `${who} · ${pending}`,\n      };\n    }\n  }\n}\n\nfunction topActions(route) {\n  if (route === \"ventas\") {\n    return `\n      <button class=\"btn\" data-action=\"export-sales-csv\">${icon(\"download\")}<span>Exportar</span></button>\n      <button class=\"btn\" data-action=\"new-sale\">${icon(\"edit\")}<span>Añadir a mano</span></button>\n      <button class=\"btn primary\" data-action=\"import-files\">${icon(\"upload\")}<span>Subir liquidación</span></button>`;\n  }\n  if (route === \"compras\") {\n\n    return `\n      <button class=\"btn\" data-action=\"export-csv\">${icon(\"download\")}<span>Exportar</span></button>\n      <button class=\"btn primary\" data-action=\"new-invoice\">${icon(\"plus\")}<span>Nueva compra</span></button>`;\n  }\n  if (route === \"proveedores\") {\n    return `<button class=\"btn primary\" data-action=\"new-supplier\">${icon(\"plus\")}<span>Nuevo proveedor</span></button>`;\n  }\n  if (route === \"importar\") {\n    return `<button class=\"btn\" data-action=\"new-invoice\">${icon(\"edit\")}<span>Añadir a mano</span></button>`;\n  }\n  if (route === \"correo\") {\n    return `\n      <button class=\"btn\" data-action=\"settings\" aria-label=\"Ajustes\">${icon(\"gear\")}<span>Ajustes</span></button>\n      <button class=\"btn primary\" data-action=\"import-email\">${icon(\"mail\")}<span>Añadir correo</span></button>`;\n  }\n  return `\n    <button class=\"btn\" data-action=\"settings\" aria-label=\"Ajustes\">${icon(\"gear\")}<span>Ajustes</span></button>\n    <button class=\"btn primary\" data-action=\"import-files\">${icon(\"upload\")}<span>Importar factura</span></button>`;\n}\n\n/* ------------------------------------------------------------------ */\n/* Resumen                                                            */\n/* ------------------------------------------------------------------ */\n\nfunction viewResumen() {\n  const state = getState();\n  const invs = state.invoices;\n\n  if (!invs.length) return emptyResumen();\n",
+    "total_lines": 3575
+  },
+  "summary": "views.js: lines 303–362 of 3575 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 3575,
+    "next_offset": 362
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

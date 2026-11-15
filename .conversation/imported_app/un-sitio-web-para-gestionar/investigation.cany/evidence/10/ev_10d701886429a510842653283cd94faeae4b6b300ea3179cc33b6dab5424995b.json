@@ -1,0 +1,54 @@
+{
+  "id": "ev_10d701886429a510842653283cd94faeae4b6b300ea3179cc33b6dab5424995b",
+  "subject": {
+    "kind": "script",
+    "sha256": "2d1d6e6e5f28b7aa700b22692de33bf3905b8ab13daf4b4e0f6dd98408815b40",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 50,
+    "offset": 3480,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 154119,
+    "lines": 50,
+    "more": true,
+    "offset": 3480,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    case \"seed-demo\": {\n      const ok = await confirmDialog({\n        title: \"Cargar datos de ejemplo\",\n        message: \"Se añadirán 5 proveedores inventados y 11 facturas para que veas cómo funciona. Podrás borrarlo todo después.\",\n        confirm: \"Sí, cargar el ejemplo\",\n      });\n      if (!ok) return;\n      seedDemo();\n      toast(\"Datos de ejemplo cargados.\");\n      render();\n      return;\n    }\n    case \"retry-job\": {\n      const job = ui.jobs.find((j) => j.id === id);\n      if (job) {\n        job.state = \"queued\";\n        job.pct = 0;\n        job.error = \"\";\n        paintIngest();\n        runQueue();\n      }\n      return;\n    }\n    case \"acc-tab\": {\n      ui.conta.tab = id || \"diario\";\n      render();\n      return;\n    }\n    case \"acc-apertura\":\n    case \"acc-settings\": {\n      accAperturaModal();\n      return;\n    }\n    case \"acc-save-apertura\": {\n      saveApertura();\n      return;\n    }\n    case \"export-acc-csv\": {\n      exportAccCsv();\n      return;\n    }\n    default:\n      return;\n  }\n}\n\n/* ------------------------------------------------------------------ */\n/* Buscadores                                                         */\n/* ------------------------------------------------------------------ */\n\n",
+    "total_lines": 4068
+  },
+  "summary": "views.js: lines 3481–3530 of 4068 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 50,
+    "total": 4068,
+    "next_offset": 3530
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

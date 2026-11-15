@@ -1,0 +1,72 @@
+{
+  "id": "ev_615dbd04679a2fff6e205149763e589570332980a4bd5e2da2a1d94624de90e1",
+  "subject": {
+    "kind": "text",
+    "sha256": "72b06e296b6662d207d7e4ff01c0d0fab001826345c816a2454d526776bd5473",
+    "name": "styles.css"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 5,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\assets\\styles.css",
+    "pattern": null,
+    "text": "max-height: calc(100dvh - 48px)"
+  },
+  "result": {
+    "file_size": 36019,
+    "limit": 5,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6d61782d6865696768743a2063616c6328313030647668202d203438707829",
+        "file_offset": 16742,
+        "file_offset_hex": "0x4166",
+        "length": 31,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\assets\\styles.css",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 31
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 in styles.css; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x4166"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_24110e0034a4414017bf2968aeae40e86fa081df0bdba738199148dd8439b4c3",
+  "subject": {
+    "kind": "script",
+    "sha256": "386ecd9139744ccd2496dea470f694074d9a3a2757344eff7673f391258de9a9",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 3792,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 245968,
+    "lines": 30,
+    "more": true,
+    "offset": 3792,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  const rate = rateRaw === \"\" ? null : Number(rateRaw);\n  const igic = parseAmount(q(\"#f-igic\").value);\n  const total = parseAmount(q(\"#f-total\").value);\n  const lines = readIgicLines(wrap);\n\n  return {\n    supplierName: q(\"#f-name\").value.trim(),\n    supplierNif: q(\"#f-nif\").value.trim(),\n    number: q(\"#f-number\").value.trim(),\n    issueDate: q(\"#f-issue\").value || \"\",\n    dueDate: q(\"#f-due\").value || \"\",\n    kind: (q(\"#f-kind\") && q(\"#f-kind\").value) || \"FACTURA\",\n    category: (q(\"#f-cat\") && q(\"#f-cat\").value) || \"\",\n    direction: directionOf((q(\"#f-kind\") && q(\"#f-kind\").value) || \"FACTURA\"),\n    base,\n    rate:\n      lines.length > 1 && base > 0 && igic != null\n        ? round2((igic / base) * 100)\n        : Number.isFinite(rate)\n          ? rate\n          : null,\n    igic,\n    total,\n    lines,\n    liquidacion: readLiquidacion(wrap),\n    nomina: readNomina(wrap),\n    status: status === STATUS.PAID ? STATUS.PAID : STATUS.PENDING,\n    paidDate:\n      status === STATUS.PAID\n        ? String((q(\"#f-paid-date\") && q(\"#f-paid-date\").value) || \"\").slice(0, 10)\n",
+    "total_lines": 6167
+  },
+  "summary": "views.js: lines 3793–3822 of 6167 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 6167,
+    "next_offset": 3822
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

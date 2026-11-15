@@ -1,0 +1,54 @@
+{
+  "id": "ev_5ebc75587da75374fd4e862a2df1bd8d13b48b8da3b99550ed3bf5dd6b186a41",
+  "subject": {
+    "kind": "script",
+    "sha256": "d2cbd2f3594852fd8d45b4b4856992f6347f827cada152484c39b6e4b10105cd",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 2402,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 132921,
+    "lines": 60,
+    "more": true,
+    "offset": 2402,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "        : \"Documento de gasto: se resta del resultado.\"\n    );\n    if (catSel.value !== keep) showWhy(`He cambiado el concepto porque no encaja con «${ki.label}».`);\n  }\n\n  if (kindSel && catSel) {\n    if (kindSel.value && directionOf(kindSel.value) !== (catSel.dataset.direction || directionOf(kindSel.value))) {\n      catSel.innerHTML = categoryOptions(catSel.value, directionOf(kindSel.value));\n    }\n    kindSel.addEventListener(\"change\", repaintCategories);\n    catSel.dataset.direction = directionOf(kindSel.value);\n    catSel.addEventListener(\"change\", () => {\n      catSel.dataset.direction = directionOf(kindSel.value);\n    });\n  }\n\n  const num = (el) => parseAmount(el.value);\n\n  function setIfNotFocused(el, value) {\n    if (document.activeElement === el) return;\n    el.value = value == null ? \"\" : fmtNum(value);\n  }\n\n  function recalcFromBase() {\n    const b = num(base);\n    const r = Number(rate.value);\n    if (b == null || !Number.isFinite(r)) return;\n    const i = round2((b * r) / 100);\n    setIfNotFocused(igic, i);\n    setIfNotFocused(total, round2(b + i));\n  }\n\n  function recalcFromIgic() {\n    const b = num(base);\n    const i = num(igic);\n    if (i == null) return;\n    if (b != null) {\n      setIfNotFocused(total, round2(b + i));\n      if (b > 0) syncRate(round2((i / b) * 100));\n    } else {\n      setIfNotFocused(total, i);\n    }\n  }\n\n  function recalcFromTotal() {\n    const b = num(base);\n    const t = num(total);\n    if (t == null) return;\n    if (b != null) {\n      const i = round2(t - b);\n      setIfNotFocused(igic, i);\n      if (b > 0) syncRate(round2((i / b) * 100));\n    }\n  }\n\n  function syncRate(value) {\n    if (!Number.isFinite(value) || value < 0 || value > 60) return;\n    const match = [...rate.options].find((o) => Math.abs(Number(o.value) - value) < 0.06);\n    if (match) {\n      rate.value = match.value;\n",
+    "total_lines": 3544
+  },
+  "summary": "views.js: lines 2403–2462 of 3544 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 3544,
+    "next_offset": 2462
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_ebfc5ad78b524f3494bd80fdafe77dd01e0a36f4423cb4c8edc9001a2b169b91",
+  "subject": {
+    "kind": "text",
+    "sha256": "c90af09157cec6c2774528828d8faa1d8cee8c6bd33f85d762a91e5f5f799fd2",
+    "name": "README.md"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 10,
+    "offset": 150,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\README.md"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 13244,
+    "lines": 10,
+    "more": true,
+    "offset": 150,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\README.md",
+    "replaced_sequences": 0,
+    "text": "fichero `.sqlite`** tal cual, que se abre con DB Browser for SQLite o con cualquier\nprograma de SQLite. Los datos de la versión anterior (solo `localStorage`) se pasan a\nSQLite la primera vez que se abre.\n\nSi el navegador no puede cargar sql.js (sin conexión la primera vez, o algo lo bloquea),\nel sitio guarda como antes en `localStorage` y avisa con un mensaje: todo sigue\nfuncionando.\n\n## La cámara\n\n",
+    "total_lines": 244
+  },
+  "summary": "README.md: lines 151–160 of 244 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 10,
+    "total": 244,
+    "next_offset": 160
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\README.md"
+    }
+  ],
+  "links": []
+}

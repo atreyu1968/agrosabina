@@ -1,0 +1,54 @@
+{
+  "id": "ev_70388eab8e831e2b963c112f7f315ef263429a587e386111cf85b75e31872c5a",
+  "subject": {
+    "kind": "script",
+    "sha256": "0f9db7677d65cf5f149b24edbb3ff1a0d5b93da0ae418ca16711ef1a26a679c7",
+    "name": "parse.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 560,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 35023,
+    "lines": 60,
+    "more": true,
+    "offset": 560,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js",
+    "replaced_sequences": 0,
+    "text": "  if (typeof raw === \"number\") return Number.isFinite(raw) ? raw : null;\n  let s = String(raw).replace(/[^\\d.,-]/g, \"\");\n  if (!s) return null;\n  const neg = s.startsWith(\"-\");\n  s = s.replace(/-/g, \"\");\n  const lastComma = s.lastIndexOf(\",\");\n  const lastDot = s.lastIndexOf(\".\");\n  if (lastComma > -1 && lastDot > -1) {\n    s = lastComma > lastDot ? s.replace(/\\./g, \"\").replace(\",\", \".\") : s.replace(/,/g, \"\");\n  } else if (lastComma > -1) {\n    const d = s.length - lastComma - 1;\n    const entero = s.slice(0, lastComma);\n    s = d === 3 && entero !== \"0\" ? s.replace(/,/g, \"\") : s.replace(\",\", \".\");\n  } else if (lastDot > -1) {\n    const d = s.length - lastDot - 1;\n    const entero = s.slice(0, lastDot);\n    if (d === 3 && entero !== \"0\") s = s.replace(/\\./g, \"\");\n  }\n  const n = Number(s);\n  if (!Number.isFinite(n)) return null;\n  return neg ? -n : n;\n}\n\n/**\n * Precio por kilo. Aquí es al revés: «0,853» y «0.853» son 0,853 €/kg, y un\n * punto suelto siempre es decimal, porque nadie paga 1.234 euros por kilo.\n */\nexport function parsePrice(raw) {\n  if (raw == null) return null;\n  if (typeof raw === \"number\") return Number.isFinite(raw) ? raw : null;\n  let s = String(raw).replace(/[^\\d.,-]/g, \"\");\n  if (!s) return null;\n  const neg = s.startsWith(\"-\");\n  s = s.replace(/-/g, \"\");\n  const lastComma = s.lastIndexOf(\",\");\n  const lastDot = s.lastIndexOf(\".\");\n  if (lastComma > -1 && lastDot > -1) {\n    s = lastComma > lastDot ? s.replace(/\\./g, \"\").replace(\",\", \".\") : s.replace(/,/g, \"\");\n  } else if (lastComma > -1) {\n    s = s.replace(\",\", \".\");\n  }\n  const n = Number(s);\n  if (!Number.isFinite(n)) return null;\n  return neg ? -n : n;\n}\n\n/** El total de kilos, si el papel lo dice con nombre propio. */\nconst RE_LIQ_TOTAL_KG = /(?:total\\s*(?:de\\s*)?kilos|kilos?\\s*(?:netos|totales)|total\\s*kgs?)/i;\n\n/**\n * El texto quitando las fechas: «15/04/2024» no es un importe y, al buscar el\n * número que va detrás de «kilos», se colaba el día del albarán.\n */\nfunction liqLimpio(text) {\n  return String(text == null ? \"\" : text)\n    .replace(/\\u00a0/g, \" \")\n    .replace(/\\d{1,2}[/.-]\\d{1,2}[/.-]\\d{2,4}/g, \" \")\n    .replace(/\\d{1,2}\\/\\d{1,2}/g, \" \");\n}\n\n",
+    "total_lines": 934
+  },
+  "summary": "parse.js: lines 561–620 of 934 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 934,
+    "next_offset": 620
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\parse.js"
+    }
+  ],
+  "links": []
+}

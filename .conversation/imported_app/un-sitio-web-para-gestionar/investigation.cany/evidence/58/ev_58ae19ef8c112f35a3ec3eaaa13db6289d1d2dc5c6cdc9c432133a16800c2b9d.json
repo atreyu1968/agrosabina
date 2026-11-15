@@ -1,0 +1,54 @@
+{
+  "id": "ev_58ae19ef8c112f35a3ec3eaaa13db6289d1d2dc5c6cdc9c432133a16800c2b9d",
+  "subject": {
+    "kind": "script",
+    "sha256": "fdfb4ef8d169876d44e4ac64d2ab6cc507c1a80689142dba4cb96daacc9d6ecb",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 120,
+    "offset": 5060,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 288128,
+    "lines": 120,
+    "more": true,
+    "offset": 5060,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "          openInvoiceModal({\n            mode: \"review\",\n            job: {\n              file: { name: \"Texto pegado\" },\n              source: \"pasted\",\n              parsed: { ...parsed, rawText: text.slice(0, 6000) },\n            },\n          });\n        });\n      },\n    }\n  );\n}\n\n/* ------------------------------------------------------------------ */\n/* Proveedor: alta y edición                                          */\n/* ------------------------------------------------------------------ */\n\nexport function openSupplierModal(supplier = null) {\n  const editing = !!supplier;\n  openModal(\n    `<div class=\"modal-head\">\n      <div>\n        <h2>${editing ? \"Editar proveedor o cliente\" : \"Nuevo proveedor o cliente\"}</h2>\n        <p>Lo normal es que se creen solos al subir una factura o una liquidación.</p>\n      </div>\n      <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"form-grid\">\n        <div class=\"field span-2\">\n          <label for=\"s-name\">Nombre</label>\n          <input id=\"s-name\" type=\"text\" value=\"${esc(supplier ? supplier.name : \"\")}\" placeholder=\"Distribuciones Timanfaya S.L.\">\n        </div>\n        <div class=\"field\">\n          <label for=\"s-nif\">NIF / CIF</label>\n          <input id=\"s-nif\" type=\"text\" value=\"${esc(supplier ? supplier.nif : \"\")}\" placeholder=\"B12345678\">\n        </div>\n        <div class=\"field span-2\">\n          <label for=\"s-role\">¿Qué es para ti?</label>\n          <select id=\"s-role\">\n            <option value=\"PROVEEDOR\" ${!supplier || supplier.role === \"PROVEEDOR\" || !supplier.role ? \"selected\" : \"\"}>Proveedor · le compras</option>\n            <option value=\"CLIENTE\" ${supplier && supplier.role === \"CLIENTE\" ? \"selected\" : \"\"}>Cliente · le vendes</option>\n            <option value=\"AMBOS\" ${supplier && supplier.role === \"AMBOS\" ? \"selected\" : \"\"}>Las dos cosas</option>\n          </select>\n          <span class=\"hint\">Decide en qué lista sale (proveedores o clientes). También se pone solo, mirando los documentos que tenga.</span>\n        </div>\n        <div class=\"field\">\n          <label for=\"s-phone\">Teléfono <span class=\"hint\">(opcional)</span></label>\n          <input id=\"s-phone\" type=\"text\" value=\"${esc(supplier ? supplier.phone : \"\")}\" placeholder=\"922 000 000\">\n        </div>\n        <div class=\"field span-2\">\n          <label for=\"s-email\">Correo <span class=\"hint\">(opcional)</span></label>\n          <input id=\"s-email\" type=\"text\" value=\"${esc(supplier ? supplier.email : \"\")}\" placeholder=\"facturas@proveedor.com\">\n        </div>\n        <div class=\"field span-2\">\n          <label for=\"s-note\">Nota <span class=\"hint\">(opcional)</span></label>\n          <input id=\"s-note\" type=\"text\" value=\"${esc(supplier ? supplier.note : \"\")}\" placeholder=\"Forma de pago, persona de contacto…\">\n        </div>\n      </div>\n    </div>\n    <div class=\"modal-foot\">\n      <button class=\"btn primary\" data-save>${editing ? \"Guardar cambios\" : \"Crear proveedor\"}</button>\n      <button class=\"btn ghost\" data-modal-cancel>Cancelar</button>\n    </div>`,\n    {\n      onMount(wrap) {\n        wrap.querySelectorAll(\"[data-modal-cancel]\").forEach((b) =>\n          b.addEventListener(\"click\", () => closeModal())\n        );\n        wrap.querySelector(\"[data-save]\").addEventListener(\"click\", () => {\n          const name = wrap.querySelector(\"#s-name\").value.trim();\n          if (!name) {\n            toast(\"El proveedor necesita un nombre.\", \"bad\");\n            return;\n          }\n          const data = {\n            name,\n            nif: wrap.querySelector(\"#s-nif\").value.trim(),\n            role: (wrap.querySelector(\"#s-role\") && wrap.querySelector(\"#s-role\").value) || \"PROVEEDOR\",\n            phone: wrap.querySelector(\"#s-phone\").value.trim(),\n            email: wrap.querySelector(\"#s-email\").value.trim(),\n            note: wrap.querySelector(\"#s-note\").value.trim(),\n          };\n          if (editing) {\n            updateSupplier(supplier.id, data);\n            toast(\"Ficha actualizada.\");\n          } else {\n            const res = ensureSupplier(data.name, data.nif, data.role);\n            if (res.created) {\n              updateSupplier(res.supplier.id, {\n                role: data.role,\n                phone: data.phone,\n                email: data.email,\n                note: data.note,\n              });\n              toast(`«${res.supplier.name}» creado.`);\n            } else {\n              toast(\"Ya estaba en tu lista.\", \"bad\");\n            }\n          }\n          closeModal();\n          render();\n        });\n      },\n    }\n  );\n}\n\n/* ------------------------------------------------------------------ */\n/* Ajustes                                                            */\n/* ------------------------------------------------------------------ */\n\nexport function openSettings() {\n  const s = getState().settings;\n  const provider = aiProviderOf(s);\n  openModal(\n    `<div class=\"modal-head\">\n      <div>\n        <h2>Ajustes</h2>\n",
+    "total_lines": 7256
+  },
+  "summary": "views.js: lines 5061–5180 of 7256 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 120,
+    "total": 7256,
+    "next_offset": 5180
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

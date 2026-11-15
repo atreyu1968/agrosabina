@@ -1,0 +1,11 @@
+{
+  "name": "facturas-proveedores-igic",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Gestor de facturas de proveedores: lee fotos y PDF, crea la base de proveedores y controla lo pagado, lo pendiente y el IGIC.",
+  "type": "module",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "build:windows": "build.bat"
+  }
+}

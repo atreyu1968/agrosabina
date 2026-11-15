@@ -1,0 +1,54 @@
+{
+  "id": "ev_9ebfe7ceb15977dfccc6b033f34925e8218c67cb0b17496cefd61f4288fb3fda",
+  "subject": {
+    "kind": "script",
+    "sha256": "83704397ea89e45fa1af80334964cb8e67554af7773347bdc2b1474dc48b4b50",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 3120,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 245244,
+    "lines": 70,
+    "more": true,
+    "offset": 3120,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  <div class=\"form-grid\">\n    <div class=\"field\">\n      <label for=\"f-kind\">Tipo de documento</label>\n      <select id=\"f-kind\">${kindOptions(kind)}</select>\n    </div>\n    <div class=\"field\">\n      <label for=\"f-cat\">Concepto</label>\n      <select id=\"f-cat\">${categoryOptions(v.category, direction)}</select>\n    </div>\n    ${v.classifyWhy || v.classifyNote ? `<div class=\"classify-why span-2\" id=\"f-why\">${icon(\"sparkle\")}<span>${esc(\n      [v.classifyWhy, v.classifyNote].filter(Boolean).join(\" · \")\n    )}</span></div>` : `<div class=\"classify-why span-2\" id=\"f-why\" hidden></div>`}\n    ${liquidacionReadHtml(v)}\n    ${nominaReadHtml(v)}\n    <div class=\"field span-2\">\n      <label for=\"f-name\">${kind === \"NOMINA\" ? \"Trabajador\" : kind === \"LIQUIDACION\" ? \"Cliente o comprador\" : \"Proveedor\"} <span class=\"tag\" id=\"supplierHint\" hidden></span></label>\n      <input id=\"f-name\" type=\"text\" list=\"supplierNames\" autocomplete=\"off\" value=\"${esc(v.supplierName || \"\")}\" placeholder=\"Nombre del proveedor\">\n      <datalist id=\"supplierNames\">\n        ${state.suppliers.map((s) => `<option value=\"${esc(s.name)}\">`).join(\"\")}\n      </datalist>\n    </div>\n    <div class=\"field\">\n      <label for=\"f-nif\">NIF / CIF</label>\n      <input id=\"f-nif\" type=\"text\" autocomplete=\"off\" value=\"${esc(v.supplierNif || \"\")}\" placeholder=\"B12345678\">\n    </div>\n    <div class=\"field\">\n      <label for=\"f-number\">Número de factura</label>\n      <input id=\"f-number\" type=\"text\" autocomplete=\"off\" value=\"${esc(v.number || \"\")}\" placeholder=\"2024/0184\">\n    </div>\n    <div class=\"field\">\n      <label for=\"f-issue\">Fecha de la factura</label>\n      <input id=\"f-issue\" type=\"date\" value=\"${esc(v.issueDate || \"\")}\">\n    </div>\n    <div class=\"field\">\n      <label for=\"f-due\">Vencimiento <span class=\"hint\">(opcional)</span></label>\n      <input id=\"f-due\" type=\"date\" value=\"${esc(v.dueDate || \"\")}\">\n    </div>\n    <div class=\"field\">\n      <label for=\"f-base\">Base imponible</label>\n      <div class=\"with-suffix\"><input id=\"f-base\" type=\"text\" inputmode=\"decimal\" value=\"${v.base != null ? fmtNum(v.base) : \"\"}\" placeholder=\"0,00\"><span>€</span></div>\n    </div>\n    <div class=\"field\">\n      <label for=\"f-rate\">Tipo de IGIC</label>\n      <select id=\"f-rate\">${rateOptions(v.rate)}</select>\n    </div>\n    <div class=\"field\">\n      <label for=\"f-igic\">Cuota de IGIC</label>\n      <div class=\"with-suffix\"><input id=\"f-igic\" type=\"text\" inputmode=\"decimal\" value=\"${v.igic != null ? fmtNum(v.igic) : \"\"}\" placeholder=\"0,00\"><span>€</span></div>\n    </div>\n    <div class=\"field\">\n      <label for=\"f-total\">Total de la factura</label>\n      <div class=\"with-suffix\"><input id=\"f-total\" type=\"text\" inputmode=\"decimal\" value=\"${v.total != null ? fmtNum(v.total) : \"\"}\" placeholder=\"0,00\"><span>€</span></div>\n    </div>\n    <div class=\"field span-2\">\n      <div class=\"lines-head\">\n        <div>\n          <label for=\"iv-lines\">Varios tipos de IGIC en el mismo documento</label>\n          <p class=\"lines-hint\">Cada producto o servicio lleva su tipo (0 · 3 · 7 · 9,5 · 15 · 20 %). Añade una línea por tipo y la base, la cuota y el total se suman solos.</p>\n        </div>\n        <button type=\"button\" class=\"btn sm ghost\" data-add-line>${icon(\"plus\")}<span>Añadir tipo</span></button>\n      </div>\n      <div class=\"igic-lines\" id=\"iv-lines\">\n        ${(v.lines || []).map((l) => lineRowHtml(l.base, l.rate)).join(\"\")}\n      </div>\n      <p class=\"lines-sum\" id=\"iv-lines-sum\" hidden></p>\n    </div>\n    <div class=\"field span-2\" id=\"f-liq\" ${kind === \"LIQUIDACION\" ? \"\" : \"hidden\"}>\n      <div class=\"lines-head\">\n        <div>\n          <label for=\"l-kg\">Liquidación de fruta</label>\n",
+    "total_lines": 6154
+  },
+  "summary": "views.js: lines 3121–3190 of 6154 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 6154,
+    "next_offset": 3190
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

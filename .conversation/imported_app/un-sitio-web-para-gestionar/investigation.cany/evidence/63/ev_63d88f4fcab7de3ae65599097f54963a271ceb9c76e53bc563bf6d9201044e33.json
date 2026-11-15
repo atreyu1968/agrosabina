@@ -1,0 +1,54 @@
+{
+  "id": "ev_63d88f4fcab7de3ae65599097f54963a271ceb9c76e53bc563bf6d9201044e33",
+  "subject": {
+    "kind": "script",
+    "sha256": "f7e06f16ee9ae0caa63ca4b96411cd483ef48df5ec22f476106ad958940d4b6e",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 50,
+    "offset": 2114,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177612,
+    "lines": 50,
+    "more": true,
+    "offset": 2114,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "function liquidacionReadHtml(v) {\n  if ((v.kind || \"\") !== \"LIQUIDACION\") return \"\";\n  const read = v.liquidacionRead || null;\n  const liq = v.liquidacion || null;\n  const kg = read && read.kg != null ? read.kg : liq ? liq.kg : null;\n  const price = read && read.price != null ? read.price : liq ? liq.price : null;\n  const dtos = (read && read.discounts) || (liq && liq.discounts) || [];\n  const dto = round2(dtos.reduce((a, d) => a + (d.amount || 0), 0));\n  const gross =\n    read && read.gross != null ? read.gross : kg != null && price != null ? round2(kg * price) : null;\n  const net = read && read.net != null ? read.net : gross != null ? round2(gross - dto) : null;\n  if (kg == null && price == null && net == null) return \"\";\n\n  const rows = [];\n  const row = (k, val, strong) => rows.push([k, val, strong]);\n  if (read && read.product) row(\"Producto\", esc(read.product));\n  if (read && read.category) row(\"Categoría\", esc(read.category));\n  if (read && Array.isArray(read.partidas) && read.partidas.length > 1) {\n    row(\"Partidas leídas\", `${read.partidas.length} (sumadas)`);\n  }\n  if (kg != null) row(\"Kilos\", `${fmtNum(kg, 2)} kg`, true);\n  if (price != null) row(\"Precio por kilo\", `${fmtNum(price, 3)} €/kg`, true);\n  if (gross != null) row(\"Bruto (kilos × precio)\", fmtEUR(gross));\n  if (dto) row(`Descuentos (${dtos.length})`, fmtEUR(dto));\n  if (net != null) row(\"Líquido a percibir\", fmtEUR(net), true);\n  if (net != null) {\n    const rate = read && read.rate != null ? Number(read.rate) : 0;\n    const cuota = read && read.igic != null ? read.igic : round2((net * (rate || 0)) / 100);\n    row(\"IGIC del papel\", rate ? `${rateText(rate)} · ${fmtEUR(cuota)}` : \"0 % (no aparece)\");\n    row(\"Total a cobrar\", fmtEUR(round2(net + cuota)), true);\n  }\n\n  return `<div class=\"summary-box span-2\" style=\"margin-bottom:12px\">\n    ${icon(\"info\")}\n    <div>\n      <div style=\"font-weight:600;margin-bottom:4px\">Datos que voy a importar</div>\n      <div style=\"display:grid;grid-template-columns:auto auto;gap:2px 14px;font-size:13px\">\n        ${rows\n          .map(\n            ([k, val, strong]) =>\n              `<span>${k}</span><span${strong ? ' style=\"font-weight:600\"' : \"\"}>${val}</span>`\n          )\n          .join(\"\")}\n      </div>\n      <div style=\"font-size:12px;color:var(--ink-3);margin-top:6px\">\n        La base y el total se han puesto con el líquido. Si algo no te cuadra, cámbialo antes de guardar.\n      </div>\n    </div>\n  </div>`;\n}\n",
+    "total_lines": 4628
+  },
+  "summary": "views.js: lines 2115–2164 of 4628 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 50,
+    "total": 4628,
+    "next_offset": 2164
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_e6e4b79ba351701768414adfaaf1fd7b415280d38312d5b7bbe61d9cb9acbb75",
+  "subject": {
+    "kind": "script",
+    "sha256": "46276ef6c2807ddd775e40c2fc8e601f95c58e49ab907e73e3d526a4fc111b40",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 80,
+    "offset": 380,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 28326,
+    "lines": 80,
+    "more": true,
+    "offset": 380,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "    const byNif = state.suppliers.find((s) => nifKey(s.nif) === key);\n    if (byNif) return byNif;\n  }\n  const wanted = nameBase(name);\n  if (wanted.length < 3) return null;\n\n  const exact = state.suppliers.find((s) => nameBase(s.name) === wanted);\n  if (exact) return exact;\n\n  const loose = state.suppliers.find((s) => {\n    const other = nameBase(s.name);\n    if (other.length < 6 || wanted.length < 6) return false;\n    return other.startsWith(wanted) || wanted.startsWith(other);\n  });\n  return loose || null;\n}\n\n/** Devuelve el proveedor que corresponde y, si no existía, lo crea. */\nexport function ensureSupplier(name, nif) {\n  const cleanName = String(name || \"\").trim();\n  const cleanNif = String(nif || \"\").trim().toUpperCase();\n  const existing = findSupplierByNameOrNif(cleanName, cleanNif);\n\n  if (existing) {\n    let touched = false;\n    if (!existing.nif && cleanNif) {\n      existing.nif = cleanNif;\n      touched = true;\n    }\n    if (!existing.name && cleanName) {\n      existing.name = cleanName;\n      touched = true;\n    }\n    if (touched) save();\n    return { supplier: existing, created: false };\n  }\n\n  const supplier = {\n    id: uid(\"sup\"),\n    name: cleanName || cleanNif || \"Proveedor sin nombre\",\n    nif: cleanNif,\n    email: \"\",\n    phone: \"\",\n    note: \"\",\n    createdAt: new Date().toISOString(),\n  };\n  state.suppliers.push(supplier);\n  emit();\n  return { supplier, created: true };\n}\n\nexport function updateSupplier(id, patch) {\n  const s = state.suppliers.find((x) => x.id === id);\n  if (!s) return null;\n  Object.assign(s, patch);\n  save();\n  return s;\n}\n\nexport function deleteSupplier(id) {\n  state.suppliers = state.suppliers.filter((s) => s.id !== id);\n  state.invoices = state.invoices.filter((inv) => inv.supplierId !== id);\n  save();\n}\n\nexport function supplierById(id) {\n  return state.suppliers.find((s) => s.id === id) || null;\n}\n\n/* ------------------------------------------------------------------ */\n/* Facturas                                                           */\n/* ------------------------------------------------------------------ */\n\nfunction invoiceNumbersMatch(a, b) {\n  const x = fold(a).replace(/\\s/g, \"\");\n  const y = fold(b).replace(/\\s/g, \"\");\n  return x.length > 1 && x === y;\n}\n\n/** ¿Ya tenemos esta factura? Mismo proveedor y mismo número. */\n",
+    "total_lines": 885
+  },
+  "summary": "store.js: lines 381–460 of 885 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 80,
+    "total": 885,
+    "next_offset": 460
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

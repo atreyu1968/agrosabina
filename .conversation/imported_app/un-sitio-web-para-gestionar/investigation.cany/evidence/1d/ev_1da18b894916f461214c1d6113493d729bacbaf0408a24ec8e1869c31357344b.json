@@ -1,0 +1,54 @@
+{
+  "id": "ev_1da18b894916f461214c1d6113493d729bacbaf0408a24ec8e1869c31357344b",
+  "subject": {
+    "kind": "text",
+    "sha256": "7f94ec7523fdd2c01bf7ddb18fb7ffde65a146363b5e37989dd9f2e76a6cb2d0",
+    "name": "styles.css"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 75,
+    "offset": 845,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 36000,
+    "lines": 75,
+    "more": true,
+    "offset": 845,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "replaced_sequences": 0,
+    "text": "  color: var(--ink-3);\n}\n.empty .e-icon svg { width: 26px; height: 26px; }\n.empty h3 { font-size: 16px; font-weight: 650; letter-spacing: -.01em; }\n.empty p { font-size: 13.5px; color: var(--ink-3); margin: 5px auto 0; max-width: 430px; }\n.empty .e-actions { display: flex; gap: 9px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }\n\n.howto { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }\n.howto .step {\n  border: 1px solid var(--line);\n  border-radius: var(--radius-sm);\n  padding: 14px;\n  background: var(--surface-2);\n}\n.howto .step .n {\n  width: 22px; height: 22px;\n  border-radius: 50%;\n  display: grid; place-items: center;\n  background: var(--brand);\n  color: #fff;\n  font-size: 12px;\n  font-weight: 700;\n  margin-bottom: 8px;\n}\n.howto .step h4 { font-size: 13.5px; font-weight: 650; margin-bottom: 2px; }\n.howto .step p { font-size: 12.5px; color: var(--ink-3); line-height: 1.45; }\n\n.two-col {\n  display: grid;\n  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);\n  gap: 18px;\n  align-items: start;\n}\n\n.mini-list { display: flex; flex-direction: column; }\n.mini-row {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  padding: 11px 18px;\n  border-bottom: 1px solid var(--line);\n  font-size: 13.5px;\n}\n.mini-row:last-child { border-bottom: none; }\n.mini-row .m-main { min-width: 0; }\n.mini-row .m-main .t { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }\n.mini-row .m-main .s { font-size: 12px; color: var(--ink-3); }\n.mini-row .num { margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 640; white-space: nowrap; }\n\n.hint-bar {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n  padding: 11px 14px;\n  border-radius: var(--radius-sm);\n  background: var(--surface-2);\n  border: 1px solid var(--line);\n  font-size: 13px;\n  color: var(--ink-2);\n}\n.hint-bar svg { width: 17px; height: 17px; flex: 0 0 auto; color: var(--brand); }\n\n.sr-only {\n  position: absolute;\n  width: 1px; height: 1px;\n  padding: 0; margin: -1px;\n  overflow: hidden;\n  clip: rect(0 0 0 0);\n  white-space: nowrap;\n  border: 0;\n}\n\n/* ---------- Animaciones ------------------------------------------------- */\n\n@keyframes spin { to { transform: rotate(360deg); } }\n",
+    "total_lines": 1317
+  },
+  "summary": "styles.css: lines 846–920 of 1317 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 75,
+    "total": 1317,
+    "next_offset": 920
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+    }
+  ],
+  "links": []
+}

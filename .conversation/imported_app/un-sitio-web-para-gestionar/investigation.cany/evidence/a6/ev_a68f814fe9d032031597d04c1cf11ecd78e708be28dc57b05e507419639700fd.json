@@ -1,0 +1,818 @@
+{
+  "id": "ev_a68f814fe9d032031597d04c1cf11ecd78e708be28dc57b05e507419639700fd",
+  "subject": {
+    "kind": "js-app",
+    "sha256": "9a1d2f4fc2b4a007b3bf0311b96195ec821018326f643baac2c77c8d473e69ab",
+    "name": "site"
+  },
+  "operation": "core_evidence_browse",
+  "params": {
+    "show": {
+      "fields": [
+        "label",
+        "line"
+      ],
+      "kind": "rows",
+      "limit": 200,
+      "list": "nodes",
+      "matching": {
+        "kind": "function",
+        "module": "assets/js/views.js"
+      }
+    },
+    "source": {
+      "evidence_id": "ev_117b679a5fd5fb43d697321817cdce278654098910877d936b27ff45e3d10cbd",
+      "kind": "saved"
+    }
+  },
+  "result": {
+    "coverage": {
+      "at_end": true,
+      "examined": 188,
+      "next_offset": null,
+      "status": "page",
+      "total": 188
+    },
+    "from_evidence": "ev_117b679a5fd5fb43d697321817cdce278654098910877d936b27ff45e3d10cbd",
+    "from_tool": "js_app_map",
+    "shown": {
+      "items": [
+        {
+          "label": "askPaidDate",
+          "line": 123
+        },
+        {
+          "label": "onMount",
+          "line": 145
+        },
+        {
+          "label": "b.addEventListener(click)",
+          "line": 147
+        },
+        {
+          "label": "go",
+          "line": 150
+        },
+        {
+          "label": "input.addEventListener(keydown)",
+          "line": 157
+        },
+        {
+          "label": "statusPill",
+          "line": 167
+        },
+        {
+          "label": "supplierName",
+          "line": 185
+        },
+        {
+          "label": "rateText",
+          "line": 190
+        },
+        {
+          "label": "tagOf",
+          "line": 195
+        },
+        {
+          "label": "categoryCard",
+          "line": 205
+        },
+        {
+          "label": "renderLoading",
+          "line": 246
+        },
+        {
+          "label": "render",
+          "line": 261
+        },
+        {
+          "label": "docDay",
+          "line": 299
+        },
+        {
+          "label": "docDirection",
+          "line": 303
+        },
+        {
+          "label": "docSupplier",
+          "line": 308
+        },
+        {
+          "label": "docList",
+          "line": 314
+        },
+        {
+          "label": "nameOf",
+          "line": 349
+        },
+        {
+          "label": "docsFilters",
+          "line": 358
+        },
+        {
+          "label": "seg",
+          "line": 361
+        },
+        {
+          "label": "docTableHtml",
+          "line": 408
+        },
+        {
+          "label": "docResults",
+          "line": 464
+        },
+        {
+          "label": "viewDocumentos",
+          "line": 514
+        },
+        {
+          "label": "refreshDocResults",
+          "line": 537
+        },
+        {
+          "label": "docPreviewModal",
+          "line": 544
+        },
+        {
+          "label": "exportDocsCsv",
+          "line": 637
+        },
+        {
+          "label": "updateNavBadge",
+          "line": 685
+        },
+        {
+          "label": "pageMeta",
+          "line": 697
+        },
+        {
+          "label": "topActions",
+          "line": 772
+        },
+        {
+          "label": "viewResumen",
+          "line": 815
+        },
+        {
+          "label": "emptyResumen",
+          "line": 1010
+        },
+        {
+          "label": "salesWindow",
+          "line": 1070
+        },
+        {
+          "label": "windowFor",
+          "line": 1075
+        },
+        {
+          "label": "two",
+          "line": 1078
+        },
+        {
+          "label": "inSalesWindow",
+          "line": 1104
+        },
+        {
+          "label": "isIncomeDoc",
+          "line": 1112
+        },
+        {
+          "label": "salesDocs",
+          "line": 1116
+        },
+        {
+          "label": "liquidacionNumbers",
+          "line": 1125
+        },
+        {
+          "label": "salesStats",
+          "line": 1137
+        },
+        {
+          "label": "bump",
+          "line": 1155
+        },
+        {
+          "label": "salesGroupTable",
+          "line": 1219
+        },
+        {
+          "label": "salesRangeBar",
+          "line": 1249
+        },
+        {
+          "label": "viewVentas",
+          "line": 1263
+        },
+        {
+          "label": "rowsOf",
+          "line": 1300
+        },
+        {
+          "label": "refreshSales",
+          "line": 1468
+        },
+        {
+          "label": "exportSalesCsv",
+          "line": 1481
+        },
+        {
+          "label": "filteredInvoices",
+          "line": 1536
+        },
+        {
+          "label": "viewFacturas",
+          "line": 1559
+        },
+        {
+          "label": "invoiceTable",
+          "line": 1599
+        },
+        {
+          "label": "refreshInvoiceTable",
+          "line": 1668
+        },
+        {
+          "label": "viewProveedores",
+          "line": 1681
+        },
+        {
+          "label": "supplierGrid",
+          "line": 1709
+        },
+        {
+          "label": "refreshSupplierGrid",
+          "line": 1764
+        },
+        {
+          "label": "mailDateText",
+          "line": 1773
+        },
+        {
+          "label": "mailRow",
+          "line": 1780
+        },
+        {
+          "label": "viewCorreo",
+          "line": 1803
+        },
+        {
+          "label": "pickEmails",
+          "line": 1861
+        },
+        {
+          "label": "input.addEventListener(change)",
+          "line": 1866
+        },
+        {
+          "label": "importEmails",
+          "line": 1872
+        },
+        {
+          "label": "useMail",
+          "line": 1943
+        },
+        {
+          "label": "openMailPasteModal",
+          "line": 1977
+        },
+        {
+          "label": "onMount",
+          "line": 2001
+        },
+        {
+          "label": "b.addEventListener(click)",
+          "line": 2003
+        },
+        {
+          "label": "wrap.querySelector([data-save-mail]).addEventListener(click)",
+          "line": 2005
+        },
+        {
+          "label": "testAi",
+          "line": 2028
+        },
+        {
+          "label": "viewImportar",
+          "line": 2074
+        },
+        {
+          "label": "paintIngestSoon",
+          "line": 2141
+        },
+        {
+          "label": "paintIngest",
+          "line": 2150
+        },
+        {
+          "label": "queueFiles",
+          "line": 2194
+        },
+        {
+          "label": "runQueue",
+          "line": 2233
+        },
+        {
+          "label": "runOne",
+          "line": 2248
+        },
+        {
+          "label": "applyAiReading",
+          "line": 2364
+        },
+        {
+          "label": "setIfEmpty",
+          "line": 2383
+        },
+        {
+          "label": "noMoney",
+          "line": 2406
+        },
+        {
+          "label": "rateOptions",
+          "line": 2483
+        },
+        {
+          "label": "lineRowHtml",
+          "line": 2496
+        },
+        {
+          "label": "dtoRowHtml",
+          "line": 2506
+        },
+        {
+          "label": "guessLiquidacion",
+          "line": 2520
+        },
+        {
+          "label": "liquidacionReadHtml",
+          "line": 2540
+        },
+        {
+          "label": "row",
+          "line": 2554
+        },
+        {
+          "label": "invoiceFormHtml",
+          "line": 2591
+        },
+        {
+          "label": "notesHtml",
+          "line": 2711
+        },
+        {
+          "label": "openInvoiceModal",
+          "line": 2721
+        },
+        {
+          "label": "finish",
+          "line": 2826
+        },
+        {
+          "label": "onMount",
+          "line": 2833
+        },
+        {
+          "label": "wrap.querySelector([data-save]).addEventListener(click)",
+          "line": 2836
+        },
+        {
+          "label": "b.addEventListener(click)",
+          "line": 2844
+        },
+        {
+          "label": "onClose",
+          "line": 2850
+        },
+        {
+          "label": "bindForm",
+          "line": 2857
+        },
+        {
+          "label": "q",
+          "line": 2858
+        },
+        {
+          "label": "showWhy",
+          "line": 2874
+        },
+        {
+          "label": "repaintCategories",
+          "line": 2885
+        },
+        {
+          "label": "catSel.addEventListener(change)",
+          "line": 2905
+        },
+        {
+          "label": "num",
+          "line": 2910
+        },
+        {
+          "label": "setIfNotFocused",
+          "line": 2912
+        },
+        {
+          "label": "recalcFromBase",
+          "line": 2917
+        },
+        {
+          "label": "recalcFromIgic",
+          "line": 2926
+        },
+        {
+          "label": "recalcFromTotal",
+          "line": 2938
+        },
+        {
+          "label": "syncRate",
+          "line": 2949
+        },
+        {
+          "label": "el.addEventListener(blur)",
+          "line": 2969
+        },
+        {
+          "label": "b.addEventListener(click)",
+          "line": 2978
+        },
+        {
+          "label": "updateHints",
+          "line": 2991
+        },
+        {
+          "label": "lineTotals",
+          "line": 3034
+        },
+        {
+          "label": "paintLines",
+          "line": 3041
+        },
+        {
+          "label": "recalcFromLines",
+          "line": 3055
+        },
+        {
+          "label": "linesBox.addEventListener(click)",
+          "line": 3070
+        },
+        {
+          "label": "addLineBtn.addEventListener(click)",
+          "line": 3081
+        },
+        {
+          "label": "paintLiq",
+          "line": 3098
+        },
+        {
+          "label": "recalcFromLiq",
+          "line": 3118
+        },
+        {
+          "label": "liqBox.addEventListener(click)",
+          "line": 3131
+        },
+        {
+          "label": "addDtoBtn.addEventListener(click)",
+          "line": 3142
+        },
+        {
+          "label": "syncLiqVisibility",
+          "line": 3152
+        },
+        {
+          "label": "readIgicLines",
+          "line": 3172
+        },
+        {
+          "label": "readLiquidacion",
+          "line": 3188
+        },
+        {
+          "label": "val",
+          "line": 3191
+        },
+        {
+          "label": "readForm",
+          "line": 3218
+        },
+        {
+          "label": "q",
+          "line": 3219
+        },
+        {
+          "label": "submitInvoice",
+          "line": 3256
+        },
+        {
+          "label": "importFromCamera",
+          "line": 3324
+        },
+        {
+          "label": "sqlitePanel",
+          "line": 3354
+        },
+        {
+          "label": "exportSqlite",
+          "line": 3384
+        },
+        {
+          "label": "reviewJob",
+          "line": 3399
+        },
+        {
+          "label": "openPasteModal",
+          "line": 3414
+        },
+        {
+          "label": "onMount",
+          "line": 3434
+        },
+        {
+          "label": "b.addEventListener(click)",
+          "line": 3436
+        },
+        {
+          "label": "wrap.querySelector([data-read]).addEventListener(click)",
+          "line": 3438
+        },
+        {
+          "label": "openSupplierModal",
+          "line": 3472
+        },
+        {
+          "label": "onMount",
+          "line": 3511
+        },
+        {
+          "label": "b.addEventListener(click)",
+          "line": 3513
+        },
+        {
+          "label": "wrap.querySelector([data-save]).addEventListener(click)",
+          "line": 3515
+        },
+        {
+          "label": "openSettings",
+          "line": 3556
+        },
+        {
+          "label": "onMount",
+          "line": 3647
+        },
+        {
+          "label": "b.addEventListener(click)",
+          "line": 3649
+        },
+        {
+          "label": "providerSel.addEventListener(change)",
+          "line": 3659
+        },
+        {
+          "label": "wrap.querySelector([data-save]).addEventListener(click)",
+          "line": 3670
+        },
+        {
+          "label": "csvCell",
+          "line": 3692
+        },
+        {
+          "label": "exportCsv",
+          "line": 3697
+        },
+        {
+          "label": "exportBackup",
+          "line": 3731
+        },
+        {
+          "label": "askImportBackup",
+          "line": 3736
+        },
+        {
+          "label": "input.addEventListener(change)",
+          "line": 3740
+        },
+        {
+          "label": "onAction",
+          "line": 3767
+        },
+        {
+          "label": "onInput",
+          "line": 4052
+        },
+        {
+          "label": "onChange",
+          "line": 4082
+        },
+        {
+          "label": "onFilterButton",
+          "line": 4148
+        },
+        {
+          "label": "onDirectionButton",
+          "line": 4153
+        },
+        {
+          "label": "wireDropzone",
+          "line": 4165
+        },
+        {
+          "label": "document.addEventListener(dragover)",
+          "line": 4166
+        },
+        {
+          "label": "document.addEventListener(dragleave)",
+          "line": 4172
+        },
+        {
+          "label": "document.addEventListener(drop)",
+          "line": 4176
+        },
+        {
+          "label": "hasJobs",
+          "line": 4188
+        },
+        {
+          "label": "contaWindow",
+          "line": 4206
+        },
+        {
+          "label": "accDocs",
+          "line": 4211
+        },
+        {
+          "label": "accApertura",
+          "line": 4220
+        },
+        {
+          "label": "accManuales",
+          "line": 4229
+        },
+        {
+          "label": "saveAccManuales",
+          "line": 4236
+        },
+        {
+          "label": "accPlan",
+          "line": 4246
+        },
+        {
+          "label": "asientosContables",
+          "line": 4292
+        },
+        {
+          "label": "accNum",
+          "line": 4304
+        },
+        {
+          "label": "accRangeBar",
+          "line": 4316
+        },
+        {
+          "label": "accTabBar",
+          "line": 4332
+        },
+        {
+          "label": "accEmpty",
+          "line": 4340
+        },
+        {
+          "label": "accDiarioHtml",
+          "line": 4368
+        },
+        {
+          "label": "accMayorHtml",
+          "line": 4425
+        },
+        {
+          "label": "accSumasHtml",
+          "line": 4470
+        },
+        {
+          "label": "accBalanceHtml",
+          "line": 4513
+        },
+        {
+          "label": "accResultadosHtml",
+          "line": 4556
+        },
+        {
+          "label": "accBody",
+          "line": 4589
+        },
+        {
+          "label": "viewContabilidad",
+          "line": 4618
+        },
+        {
+          "label": "accAperturaModal",
+          "line": 4633
+        },
+        {
+          "label": "onMount",
+          "line": 4666
+        },
+        {
+          "label": "el.addEventListener(click)",
+          "line": 4668
+        },
+        {
+          "label": "saveApertura",
+          "line": 4676
+        },
+        {
+          "label": "exportAccCsv",
+          "line": 4695
+        },
+        {
+          "label": "accEntryRow",
+          "line": 4751
+        },
+        {
+          "label": "accEntrySum",
+          "line": 4761
+        },
+        {
+          "label": "accEntryAddRow",
+          "line": 4782
+        },
+        {
+          "label": "accEntryModal",
+          "line": 4797
+        },
+        {
+          "label": "onMount",
+          "line": 4854
+        },
+        {
+          "label": "el.addEventListener(click)",
+          "line": 4856
+        },
+        {
+          "label": "saveAccEntry",
+          "line": 4866
+        },
+        {
+          "label": "deleteAccEntry",
+          "line": 4917
+        },
+        {
+          "label": "accPdfBalance",
+          "line": 4933
+        },
+        {
+          "label": "accPdfResultados",
+          "line": 4947
+        },
+        {
+          "label": "accCuentasHtml",
+          "line": 4961
+        },
+        {
+          "label": "fila",
+          "line": 4974
+        },
+        {
+          "label": "accOwnModal",
+          "line": 5024
+        },
+        {
+          "label": "onMount",
+          "line": 5056
+        },
+        {
+          "label": "el.addEventListener(click)",
+          "line": 5058
+        },
+        {
+          "label": "saveAccOwn",
+          "line": 5066
+        }
+      ],
+      "list": "nodes",
+      "list_total": 582,
+      "offset": 0,
+      "total": 188
+    }
+  },
+  "summary": "Part of js_app_map evidence (page).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "complete",
+    "examined": 188,
+    "total": 188
+  },
+  "locations": [],
+  "links": [
+    "ev_117b679a5fd5fb43d697321817cdce278654098910877d936b27ff45e3d10cbd"
+  ]
+}

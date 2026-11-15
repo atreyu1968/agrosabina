@@ -1,0 +1,54 @@
+{
+  "id": "ev_c26c553f2a9975403d03022598e1298cd9d43a6c8521b81d7812b98475f7ad5f",
+  "subject": {
+    "kind": "script",
+    "sha256": "186ecf8dc7c12156c9c6a960993d635775bc93fc0c93fc1f02056ccca93908d2",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 58,
+    "offset": 2124,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 177030,
+    "lines": 58,
+    "more": true,
+    "offset": 2124,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  if (kg == null && price == null && net == null) return \"\";\n\n  const rows = [];\n  const row = (k, val, strong) => rows.push([k, val, strong]);\n  if (read && read.product) row(\"Producto\", esc(read.product));\n  if (read && read.category) row(\"Categoría\", esc(read.category));\n  if (kg != null) row(\"Kilos\", `${fmtNum(kg, 2)} kg`, true);\n  if (price != null) row(\"Precio por kilo\", `${fmtNum(price, 3)} €/kg`, true);\n  if (gross != null) row(\"Bruto (kilos × precio)\", fmtEUR(gross));\n  if (dto) row(`Descuentos (${dtos.length})`, fmtEUR(dto));\n  if (net != null) row(\"Líquido a percibir\", fmtEUR(net), true);\n\n  return `<div class=\"summary-box span-2\" style=\"margin-bottom:12px\">\n    ${icon(\"info\")}\n    <div>\n      <div style=\"font-weight:600;margin-bottom:4px\">Datos que voy a importar</div>\n      <div style=\"display:grid;grid-template-columns:auto auto;gap:2px 14px;font-size:13px\">\n        ${rows\n          .map(\n            ([k, val, strong]) =>\n              `<span>${k}</span><span${strong ? ' style=\"font-weight:600\"' : \"\"}>${val}</span>`\n          )\n          .join(\"\")}\n      </div>\n      <div style=\"font-size:12px;color:var(--ink-3);margin-top:6px\">\n        La base y el total se han puesto con el líquido. Si algo no te cuadra, cámbialo antes de guardar.\n      </div>\n    </div>\n  </div>`;\n}\n\nfunction invoiceFormHtml(v) {  const state = getState();\n  const kind = v.kind || \"FACTURA\";\n  const direction = v.direction || directionOf(kind);\n  return `\n  <div class=\"form-grid\">\n    <div class=\"field\">\n      <label for=\"f-kind\">Tipo de documento</label>\n      <select id=\"f-kind\">${kindOptions(kind)}</select>\n    </div>\n    <div class=\"field\">\n      <label for=\"f-cat\">Concepto</label>\n      <select id=\"f-cat\">${categoryOptions(v.category, direction)}</select>\n    </div>\n    ${v.classifyWhy || v.classifyNote ? `<div class=\"classify-why span-2\" id=\"f-why\">${icon(\"sparkle\")}<span>${esc(\n      [v.classifyWhy, v.classifyNote].filter(Boolean).join(\" · \")\n    )}</span></div>` : `<div class=\"classify-why span-2\" id=\"f-why\" hidden></div>`}\n    ${liquidacionReadHtml(v)}\n    <div class=\"field span-2\">\n      <label for=\"f-name\">Proveedor <span class=\"tag\" id=\"supplierHint\" hidden></span></label>\n      <input id=\"f-name\" type=\"text\" list=\"supplierNames\" autocomplete=\"off\" value=\"${esc(v.supplierName || \"\")}\" placeholder=\"Nombre del proveedor\">\n      <datalist id=\"supplierNames\">\n        ${state.suppliers.map((s) => `<option value=\"${esc(s.name)}\">`).join(\"\")}\n      </datalist>\n    </div>\n    <div class=\"field\">\n      <label for=\"f-nif\">NIF / CIF</label>\n      <input id=\"f-nif\" type=\"text\" autocomplete=\"off\" value=\"${esc(v.supplierNif || \"\")}\" placeholder=\"B12345678\">\n",
+    "total_lines": 4618
+  },
+  "summary": "views.js: lines 2125–2182 of 4618 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 58,
+    "total": 4618,
+    "next_offset": 2182
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

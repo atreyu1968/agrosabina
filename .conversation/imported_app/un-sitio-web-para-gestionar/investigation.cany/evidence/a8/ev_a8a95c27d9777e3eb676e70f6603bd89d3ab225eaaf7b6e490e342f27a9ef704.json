@@ -1,0 +1,54 @@
+{
+  "id": "ev_a8a95c27d9777e3eb676e70f6603bd89d3ab225eaaf7b6e490e342f27a9ef704",
+  "subject": {
+    "kind": "script",
+    "sha256": "ff18e5b799a73a7458bf6755f4bc34a407e5ac2c08ba99b982f25cc7e2745eaa",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 2390,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 244963,
+    "lines": 60,
+    "more": true,
+    "offset": 2390,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "    return;\n  }\n  if (status) {\n    status.textContent = cls.note\n      ? cls.note\n      : `Contesta (${hello.slice(0, 20)}) y entiende la prueba: ${kindInfo(cls.kind).label}${cls.category ? ` · ${categoryInfo(cls.category).label}` : \"\"}.`;\n  }\n  toast(cls.note ? cls.note : \"La IA contesta. Todo listo.\", cls.note ? \"warn\" : undefined, 6000);\n}\n\n/* ------------------------------------------------------------------ */\n/* Importar                                                           */\n/* ------------------------------------------------------------------ */\n\nfunction viewImportar() {\n  const defaultRate = getState().settings.defaultRate;\n  return `\n  <div class=\"stack\">\n    <section class=\"card\">\n      <div class=\"card-body\">\n        <div id=\"dropzone\" class=\"dropzone\">\n          <div class=\"dz-icon\">${icon(\"upload\")}</div>\n          <h3>Arrastra aquí las facturas</h3>\n          <p>Fotos (JPG, PNG) o PDF, varias a la vez. Las leo en tu ordenador y las guardo en tu base de datos.</p>\n          <div class=\"dz-actions\">\n            <button class=\"btn primary\" data-action=\"import-files\">${icon(\"file\")} Elegir archivos</button>\n            <button class=\"btn\" data-action=\"import-camera\">${icon(\"camera\")} Hacer una foto</button>\n            <button class=\"btn ghost\" data-action=\"paste-text\">${icon(\"text\")} Pegar el texto</button>\n            <button class=\"btn ghost\" data-action=\"import-email\">${icon(\"mail\")} Correo</button>\n          </div>\n          <p style=\"font-size:12.5px;color:var(--ink-3);margin-top:10px\">\n            Con «Hacer una foto» puedes disparar varias seguidas y luego revisarlas todas juntas.\n          </p>\n        </div>\n        <div id=\"ingestList\" class=\"filelist\"></div>\n      </div>\n    </section>\n\n    <div class=\"hint-bar\">\n      ${icon(\"info\")}\n      <span>El IGIC por defecto es <strong>${rateText(defaultRate)}</strong>. Puedes cambiarlo en Ajustes, y en cada factura si es otro tipo.</span>\n    </div>\n\n    <section class=\"card\">\n      <div class=\"card-head\">\n        <div>\n          <h2>Qué leo de cada factura</h2>\n          <p>Y qué puedes corregir antes de guardar</p>\n        </div>\n      </div>\n      <div class=\"card-body\">\n        <div class=\"howto\">\n          <div class=\"step\">\n            <div class=\"n\">1</div>\n            <h4>Proveedor</h4>\n            <p>Nombre y NIF. Si ya lo tengo, la factura se une a su ficha; si no, lo creo.</p>\n          </div>\n          <div class=\"step\">\n            <div class=\"n\">2</div>\n            <h4>Importes</h4>\n",
+    "total_lines": 6150
+  },
+  "summary": "views.js: lines 2391–2450 of 6150 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 6150,
+    "next_offset": 2450
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

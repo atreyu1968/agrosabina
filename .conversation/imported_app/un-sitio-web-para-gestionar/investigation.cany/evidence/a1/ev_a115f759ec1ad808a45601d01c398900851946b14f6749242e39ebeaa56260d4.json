@@ -1,0 +1,72 @@
+{
+  "id": "ev_a115f759ec1ad808a45601d01c398900851946b14f6749242e39ebeaa56260d4",
+  "subject": {
+    "kind": "script",
+    "sha256": "d6e412398393ee9c7cb1b670cb1c0f0dbda6ee089707508e12ffdb35d5efa015",
+    "name": "accounting.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "pattern": null,
+    "text": "[\"400\", total],"
+  },
+  "result": {
+    "file_size": 28292,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "5b22343030222c20746f74616c5d2c",
+        "file_offset": 13953,
+        "file_offset_hex": "0x3681",
+        "length": 15,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 15
+      }
+    ],
+    "total_matches": 1
+  },
+  "summary": "1 match(es) for utf8 in accounting.js; showing 1 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x3681"
+    }
+  ],
+  "links": []
+}

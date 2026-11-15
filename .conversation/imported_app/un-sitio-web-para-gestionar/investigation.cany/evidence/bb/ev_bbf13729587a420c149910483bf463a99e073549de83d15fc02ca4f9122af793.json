@@ -1,0 +1,54 @@
+{
+  "id": "ev_bbf13729587a420c149910483bf463a99e073549de83d15fc02ca4f9122af793",
+  "subject": {
+    "kind": "script",
+    "sha256": "c1845b7aa246a5a086dcc860d17cb4b49855cce09e7d50df0e583464490704dc",
+    "name": "index.html"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 20,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\index.html"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 5252,
+    "lines": 45,
+    "more": true,
+    "offset": 20,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\index.html",
+    "replaced_sequences": 0,
+    "text": "    <span class=\"brand-text\">\n      <small>Compras, liquidaciones e IGIC</small>\n    </span>\n  </div>\n\n  <nav class=\"nav\" aria-label=\"Secciones\">\n    <a href=\"#/resumen\" data-route=\"resumen\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"3.5\" y=\"3.5\" width=\"7\" height=\"7\" rx=\"1.6\"/><rect x=\"13.5\" y=\"3.5\" width=\"7\" height=\"4.5\" rx=\"1.6\"/><rect x=\"13.5\" y=\"11\" width=\"7\" height=\"9.5\" rx=\"1.6\"/><rect x=\"3.5\" y=\"13.5\" width=\"7\" height=\"7\" rx=\"1.6\"/></svg>\n      <span>Resumen</span>\n    </a>\n    <a href=\"#/compras\" data-route=\"compras\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 6.5h2.1l2.3 9.7h9.2l2-7.2H7.1\"/><circle cx=\"9.4\" cy=\"19.2\" r=\"1.5\"/><circle cx=\"17.4\" cy=\"19.2\" r=\"1.5\"/></svg>\n      <span>Compras</span>\n      <span class=\"nav-count\" id=\"navPending\" hidden>0</span>\n    </a>\n    <a href=\"#/proveedores\" data-route=\"proveedores\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3.6 8.4h8.2v10.2H3.6z\"/><path d=\"M11.8 11.6h4.4l4.2 3v4h-8.6z\"/><circle cx=\"7\" cy=\"19.6\" r=\"1.6\"/><circle cx=\"16.4\" cy=\"19.6\" r=\"1.6\"/><path d=\"M3.6 8.4 6.4 4.4h7l1.4 4\"/></svg>\n      <span>Proveedores</span>\n    </a>\n    <a href=\"#/correo\" data-route=\"correo\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"3\" y=\"5.5\" width=\"18\" height=\"13\" rx=\"2\"/><path d=\"m3.8 6.6 8.2 6 8.2-6\"/></svg>\n      <span>Correo</span>\n    </a>\n    <a href=\"#/importar\" data-route=\"importar\">\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 15.5V3.8\"/><path d=\"M7.4 8.2 12 3.6l4.6 4.6\"/><path d=\"M4 15v3.4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V15\"/></svg>\n      <span>Importar</span>\n    </a>\n  </nav>\n\n  <div class=\"sidebar-foot\">\n    <div class=\"foot-box\">\n      <strong>Agrosabina SL</strong>\n      <p>Programa contable de la empresa. Se guarda en este navegador: ni las facturas ni los importes se envían a ningún sitio.</p>\n    </div>\n  </div>\n</aside>\n\n<div class=\"shell\">\n  <header class=\"topbar\">\n    <div class=\"topbar-titles\">\n      <h1 id=\"viewTitle\">Resumen</h1>\n      <p id=\"viewSub\">Cargando…</p>\n    </div>\n    <div class=\"topbar-actions\" id=\"topActions\"></div>\n  </header>\n",
+    "total_lines": 100
+  },
+  "summary": "index.html: lines 21–65 of 100 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 100,
+    "next_offset": 65
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\index.html"
+    }
+  ],
+  "links": []
+}

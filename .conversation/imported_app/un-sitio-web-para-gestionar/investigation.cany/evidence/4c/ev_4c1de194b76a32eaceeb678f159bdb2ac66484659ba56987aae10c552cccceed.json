@@ -1,0 +1,54 @@
+{
+  "id": "ev_4c1de194b76a32eaceeb678f159bdb2ac66484659ba56987aae10c552cccceed",
+  "subject": {
+    "kind": "script",
+    "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 560,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24919,
+    "lines": 40,
+    "more": true,
+    "offset": 560,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "    pending: 0,\n    pendingCount: 0,\n    paidCount: 0,\n    igicPending: 0,\n    overdue: 0,\n    overdueCount: 0,\n    income: 0,\n    expense: 0,\n    incomeCount: 0,\n    expenseCount: 0,\n    incomePending: 0,\n    expensePending: 0,\n    byCategory: {},\n  };\n  const today = todayISO();\n  for (const inv of invoices) {\n    const base = Number(inv.base) || 0;\n    const igic = Number(inv.igic) || 0;\n    const total = Number(inv.total) || 0;\n    const isIncome = inv.direction === \"INGRESO\";\n    out.base += base;\n    out.igic += igic;\n    out.total += total;\n    if (isIncome) {\n      out.income = round2(out.income + total);\n      out.incomeCount++;\n      if (inv.status !== STATUS.PAID) out.incomePending = round2(out.incomePending + total);\n    } else {\n      out.expense = round2(out.expense + total);\n      out.expenseCount++;\n      if (inv.status !== STATUS.PAID) out.expensePending = round2(out.expensePending + total);\n    }\n    const cat = inv.category || \"SIN\";\n    const row = out.byCategory[cat] || { total: 0, count: 0, pending: 0, direction: isIncome ? \"INGRESO\" : \"GASTO\" };\n    row.total = round2(row.total + total);\n    row.count++;\n    if (inv.status !== STATUS.PAID) row.pending = round2(row.pending + total);\n    out.byCategory[cat] = row;\n    if (inv.status === STATUS.PAID) {\n      out.paid += total;\n",
+    "total_lines": 789
+  },
+  "summary": "store.js: lines 561–600 of 789 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 789,
+    "next_offset": 600
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

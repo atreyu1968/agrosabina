@@ -1,0 +1,54 @@
+{
+  "id": "ev_2f5dd4a6925bac00aa60b4ef2ee77fec708e5838c6455a89c5b97e1df20f5c3a",
+  "subject": {
+    "kind": "script",
+    "sha256": "c48ded4f9cf5041b482b33ee217b0c9019182ba5922a959fb68cfe1f038baa21",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 4669,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 246388,
+    "lines": 60,
+    "more": true,
+    "offset": 4669,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      return;\n    }\n    case \"acc-pdf-balance\": {\n      accPdfBalance();\n      return;\n    }\n    case \"acc-pdf-resultados\": {\n      accPdfResultados();\n      return;\n    }\n    case \"acc-own-new\": {\n      accOwnModal(null);\n      return;\n    }\n    case \"acc-own-edit\": {\n      const plan = accPlan();\n      const todas = plan.subcuentas.concat(plan.propias);\n      const cual = String(id || \"\");\n      accOwnModal(todas.find((c) => String(c.code) === cual) || { code: cual, name: pgcNombre(cual) || \"\" });\n      return;\n    }\n    case \"acc-own-save\": {\n      saveAccOwn();\n      return;\n    }\n    case \"acc-plan-fix\": {\n      const plan = accPlan();\n      updateSettings({ subcuentas: plan.subcuentas });\n      toast(`${plan.subcuentas.length} subcuentas guardadas.`, \"ok\");\n      render();\n      return;\n    }\n    case \"export-acc-csv\": {\n      exportAccCsv();\n      return;\n    }\n    default:\n      return;\n  }\n}\n\n/* ------------------------------------------------------------------ */\n/* Buscadores                                                         */\n/* ------------------------------------------------------------------ */\n\nexport function onInput(event) {\n  const target = event.target;\n  if (!(target instanceof HTMLElement)) return;\n\n  if (target.id === \"invoiceSearch\") {\n    ui.filters.q = target.value;\n    refreshInvoiceTable();\n    return;\n  }\n  if (target.id === \"docSearch\") {\n    ui.docs.q = target.value;\n    refreshDocResults();\n    return;\n  }\n  if (target.id === \"supplierSearch\") {\n",
+    "total_lines": 6175
+  },
+  "summary": "views.js: lines 4670–4729 of 6175 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 6175,
+    "next_offset": 4729
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

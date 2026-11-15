@@ -1,0 +1,54 @@
+{
+  "id": "ev_b05b8f70d9fee8fa36f4d48329bcb058d4e9da4f6e92f4d7c5544558f7419c63",
+  "subject": {
+    "kind": "script",
+    "sha256": "6238b99ab8c1c0f10ce834ae43fb81a8055d05a8f9b20d7043327b18867475d9",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 225,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 134368,
+    "lines": 45,
+    "more": true,
+    "offset": 225,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  const title = document.getElementById(\"viewTitle\");\n  const sub = document.getElementById(\"viewSub\");\n  if (title) title.textContent = meta.title;\n  if (sub) sub.textContent = meta.sub;\n  view.innerHTML = `<section class=\"card\"><div class=\"empty\">\n    <div class=\"spinner big\" style=\"margin:0 auto 14px\"></div>\n    <h3>Abriendo tu base de datos</h3>\n    <p>Un momento: preparo las tablas de proveedores y facturas.</p>\n  </div></section>`;\n}\n\nexport function render() {\n  const route = ROUTES.includes(ui.route) ? ui.route : \"resumen\";\n  ui.route = route;\n\n  document.querySelectorAll(\".nav a\").forEach((a) => {\n    a.classList.toggle(\"active\", a.dataset.route === route);\n  });\n\n  const meta = pageMeta(route);\n  document.getElementById(\"viewTitle\").textContent = meta.title;\n  document.getElementById(\"viewSub\").textContent = meta.sub;\n  document.getElementById(\"topActions\").innerHTML = topActions(route);\n\n  const view = document.getElementById(\"view\");\n  if (route === \"resumen\") view.innerHTML = viewResumen();\n  else if (route === \"ventas\") view.innerHTML = viewVentas();\n  else if (route === \"compras\") view.innerHTML = viewFacturas();\n  else if (route === \"proveedores\") view.innerHTML = viewProveedores();\n  else if (route === \"correo\") view.innerHTML = viewCorreo();\n  else view.innerHTML = viewImportar();\n\n  updateNavBadge();\n}\n\nfunction updateNavBadge() {\n  const t = totals(getState().invoices);\n  const badge = document.getElementById(\"navPending\");\n  if (!badge) return;\n  if (t.pendingCount > 0) {\n    badge.hidden = false;\n    badge.textContent = String(t.pendingCount);\n  } else {\n    badge.hidden = true;\n  }\n",
+    "total_lines": 3575
+  },
+  "summary": "views.js: lines 226–270 of 3575 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 3575,
+    "next_offset": 270
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,53 @@
+{
+  "id": "ev_4dcd7082ed0ae7ef64ba742a77e2f916dba0c18e4c73cef8d948584b54e13b62",
+  "subject": {
+    "kind": "script",
+    "sha256": "42c32af264cb0fbe1b3db59598b7704871b412b9378bd10c698a0a01937a354f",
+    "name": "main.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 115,
+    "offset": 30,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 4108,
+    "lines": 114,
+    "more": false,
+    "offset": 30,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js",
+    "replaced_sequences": 0,
+    "text": "async function boot() {\n  window.__appBooted = true; // el aviso de «no arranca» de index.html ya no hace falta\n\n  views.ui.route = routeFromHash();\n  views.renderLoading(); // mientras se abre la base de datos\n\n  // Antes de nada: abrir la base de datos SQLite y traer los datos.\n  try {\n    await initStore();\n  } catch (err) {\n    console.error(\"No se pudo arrancar el almacén de datos:\", err);\n  }\n\n  views.render();\n  escapeKeyCloses();\n  views.wireDropzone();\n\n  const info = storageInfo();\n  if (info.engine === \"local\") {\n    setTimeout(\n      () =>\n        toast(\n          \"No he podido abrir la base de datos SQLite en este navegador, así que guardo los datos de la forma anterior. Todo funciona igual.\",\n          \"bad\",\n          9000\n        ),\n      1200\n    );\n  }\n\n  window.addEventListener(\"hashchange\", () => {\n    // El enlace «Saltar al contenido» usa #view: no es una sección, no se repinta.\n    if (location.hash && !location.hash.startsWith(\"#/\")) return;\n    views.ui.route = routeFromHash();\n    window.scrollTo(0, 0);\n    views.render();\n  });\n\n  document.addEventListener(\"click\", (ev) => {\n    if (!(ev.target instanceof Element)) return;\n\n    const actionEl = ev.target.closest(\"[data-action]\");\n    if (actionEl) {\n      ev.preventDefault();\n      views.onAction(actionEl.dataset.action, actionEl);\n      return;\n    }\n\n    const filterBtn = ev.target.closest(\"[data-filter-status]\");\n    if (filterBtn) {\n      ev.preventDefault();\n      views.onFilterButton(filterBtn);\n      return;\n    }\n\n    const dirBtn = ev.target.closest(\"[data-filter-direction]\");\n    if (dirBtn) {\n      ev.preventDefault();\n      views.onDirectionButton(dirBtn);\n    }\n  });\n\n  document.addEventListener(\"input\", views.onInput);\n  document.addEventListener(\"change\", views.onChange);\n\n  const filePicker = document.getElementById(\"filePicker\");\n  if (filePicker) {\n    filePicker.addEventListener(\"change\", () => {\n      if (filePicker.files && filePicker.files.length) views.queueFiles(filePicker.files);\n      filePicker.value = \"\";\n    });\n  }\n\n  const cameraPicker = document.getElementById(\"cameraPicker\");\n  if (cameraPicker) {\n    cameraPicker.addEventListener(\"change\", () => {\n      if (cameraPicker.files && cameraPicker.files.length) views.queueFiles(cameraPicker.files);\n      cameraPicker.value = \"\";\n    });\n  }\n\n  // Cualquier cambio en los datos vuelve a pintar la pantalla.\n  subscribe(() => views.render());\n\n  if (!storageWorks() && info.engine !== \"sqlite\") {\n    setTimeout(\n      () =>\n        toast(\n          \"Este navegador no me deja guardar datos (¿ventana privada?). Puedes usarlo, pero al cerrar se perderá todo.\",\n          \"bad\",\n          9000\n        ),\n      900\n    );\n  }\n\n  const state = getState();\n  if (!state.invoices.length && !state.suppliers.length) {\n    // Primer arranque: guardo los ajustes por defecto y ya está.\n    console.info(\"Listo. Sube un documento para empezar.\");\n    save();\n  }\n\n  // Al cerrar la pestaña, termina de escribir la base de datos.\n  window.addEventListener(\"beforeunload\", () => {\n    flush().catch(() => {});\n  });\n}\n\nif (document.readyState === \"loading\") {\n  document.addEventListener(\"DOMContentLoaded\", boot, { once: true });\n} else {\n  boot();\n}\n",
+    "total_lines": 144
+  },
+  "summary": "main.js: lines 31–144 of 144 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 114,
+    "total": 144
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js"
+    }
+  ],
+  "links": []
+}

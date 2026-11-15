@@ -1,0 +1,54 @@
+{
+  "id": "ev_03ddfb97d6dba8cb157284dcf559ccdb311e355564c5867c72bee0e9b4ff0c88",
+  "subject": {
+    "kind": "script",
+    "sha256": "effbee695913dd70eb1d3b51952ecc8ed76c4969a93f6df5b3ddba29ce97f26c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 110,
+    "offset": 2194,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 196170,
+    "lines": 110,
+    "more": true,
+    "offset": 2194,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  const list = [...files].filter(Boolean);\n  if (!list.length) return;\n\n  // Los correos guardados (.eml) van por su propio camino.\n  const emails = list.filter(isEmailFile);\n  if (emails.length) {\n    const rest = list.filter((f) => !isEmailFile(f));\n    importEmails(emails);\n    if (rest.length) queueFiles(rest);\n    return;\n  }\n\n  const ignored = [];\n  for (const file of list) {\n    if (describeFile(file) === \"unknown\") {\n      ignored.push(file.name);\n      continue;\n    }\n    ui.jobs.push({\n      id: `job_${Math.random().toString(36).slice(2, 9)}`,\n      file,\n      state: \"queued\",\n      pct: 0,\n      stage: \"En cola\",\n    });\n  }\n  if (ignored.length) {\n    toast(`No sé leer ${ignored.length === 1 ? \"este archivo\" : \"estos archivos\"} (${ignored.slice(0, 2).join(\", \")}). Solo fotos y PDF.`, \"bad\", 5200);\n  }\n  if (!ui.jobs.some((j) => j.state === \"queued\")) return;\n\n  ui.route = \"importar\";\n  if (location.hash !== \"#/importar\") location.hash = \"#/importar\";\n  else render();\n  paintIngest();\n  runQueue();\n}\n\nasync function runQueue() {\n  if (runningQueue) return;\n  runningQueue = true;\n  try {\n    for (;;) {\n      const job = ui.jobs.find((j) => j.state === \"queued\");\n      if (!job) break;\n      await runOne(job);\n    }\n  } finally {\n    runningQueue = false;\n    paintIngest();\n  }\n}\n\nasync function runOne(job) {\n  job.state = \"reading\";\n  job.stage = \"Abriendo el archivo\";\n  job.pct = 4;\n  paintIngestSoon();\n\n  try {\n    const { text, source } = await readFile(job.file, (stage, pct) => {\n      job.stage = stage;\n      job.pct = pct;\n      paintIngestSoon();\n    });\n\n    job.text = text;\n    job.source = source;\n    job.parsed = parseInvoiceText(text, {\n      defaultRate: getState().settings.defaultRate,\n      fileName: job.file.name,\n    });\n\n    if (!text.trim()) {\n      job.state = \"error\";\n      job.error = \"No he podido sacar texto. Prueba con una foto más nítida o escríbela a mano.\";\n      paintIngest();\n      return;\n    }\n    if (!looksLikeInvoice(text)) {\n      job.parsed.notes.unshift(\"Esto no parece una factura. Comprueba que has subido el documento correcto.\");\n    }\n\n    job.stage = \"Mirando qué documento es\";\n    job.pct = 94;\n    paintIngestSoon();\n    const cls = await classifyDocument(text, getState().settings, { fileName: job.file.name });\n    job.parsed.kind = cls.kind || \"FACTURA\";\n    job.parsed.category = cls.category || \"\";\n    job.parsed.direction = cls.direction || directionOf(job.parsed.kind);\n    job.parsed.classifyWhy = cls.why || \"\";\n    job.parsed.classifyNote = cls.note || \"\";\n\n    /* Liquidación de fruta: kilos, precio por kilo, descuentos y líquido.\n       Se lee del texto entero (no del recorte que se guarda) y se revisa que\n       los números del papel cuadren antes de enseñarlos. */\n    const liq = parseLiquidacion(text);\n    if (liq.kg != null || liq.price != null || liq.discounts.length || liq.net != null) {\n      job.parsed.liquidacion = {\n        product: liq.product,\n        category: liq.category,\n        kg: liq.kg,\n        price: liq.price,\n        discounts: liq.discounts,\n      };\n      job.parsed.liquidacionRead = {\n        kg: liq.kg,\n        price: liq.price,\n        gross: liq.gross,\n        discounts: liq.discounts,\n",
+    "total_lines": 5107
+  },
+  "summary": "views.js: lines 2195–2304 of 5107 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 110,
+    "total": 5107,
+    "next_offset": 2304
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

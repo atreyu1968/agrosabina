@@ -1,0 +1,54 @@
+{
+  "id": "ev_9d1a95e153f4f047ae00da76cf29fc5af7f4021c5a601aa177c3bf8b5ae420be",
+  "subject": {
+    "kind": "script",
+    "sha256": "95cfec9262b76d4a06e9da1f5aa03517b468bd8e6341b387341adabc3c2d11cb",
+    "name": "model.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 8,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 10340,
+    "lines": 30,
+    "more": true,
+    "offset": 8,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js",
+    "replaced_sequences": 0,
+    "text": " * factura y busca palabras conocidas (agua, Endesa, nómina, glifosato…). Es\n * el que funciona siempre, sin internet y sin enviar nada a ningún sitio.\n */\n\nexport const DIRECTIONS = Object.freeze({ IN: \"INGRESO\", OUT: \"GASTO\" });\n\n/** Tipos de documento que entran en el programa. */\nexport const DOC_KINDS = Object.freeze([\n  { id: \"FACTURA\", label: \"Factura recibida\", short: \"Factura\", direction: DIRECTIONS.OUT },\n  { id: \"LIQUIDACION\", label: \"Liquidación de fruta\", short: \"Liquidación\", direction: DIRECTIONS.IN },\n  { id: \"SUBVENCION\", label: \"Subvención o ayuda\", short: \"Subvención\", direction: DIRECTIONS.IN },\n  { id: \"COBRO\", label: \"Cobro o abono recibido\", short: \"Cobro\", direction: DIRECTIONS.IN },\n  { id: \"NOMINA\", label: \"Nómina o coste laboral\", short: \"Laboral\", direction: DIRECTIONS.OUT },\n  { id: \"OTRO\", label: \"Otro documento\", short: \"Otro\", direction: DIRECTIONS.OUT },\n]);\n\n/** Conceptos de gasto e ingreso habituales en una explotación agrícola. */\nexport const CATEGORIES = Object.freeze([\n  { id: \"\", label: \"Sin clasificar\", direction: \"\" },\n  { id: \"AGUA\", label: \"Agua y riego\", direction: DIRECTIONS.OUT },\n  { id: \"ELECTRICIDAD\", label: \"Electricidad\", direction: DIRECTIONS.OUT },\n  { id: \"LABORALES\", label: \"Laborales y Seguridad Social\", direction: DIRECTIONS.OUT },\n  { id: \"SERVICIOS\", label: \"Servicios externos\", direction: DIRECTIONS.OUT },\n  { id: \"FITOSANITARIOS\", label: \"Fitosanitarios\", direction: DIRECTIONS.OUT },\n  { id: \"ABONOS\", label: \"Abonos y fertilizantes\", direction: DIRECTIONS.OUT },\n  { id: \"COMBUSTIBLE\", label: \"Combustible y carburantes\", direction: DIRECTIONS.OUT },\n  { id: \"IMPUESTOS\", label: \"Impuestos y tasas\", direction: DIRECTIONS.OUT },\n  { id: \"FRUTA\", label: \"Fruta (liquidaciones y pagos)\", direction: DIRECTIONS.IN },\n  { id: \"SUBVENCIONES\", label: \"Subvenciones y ayudas\", direction: DIRECTIONS.IN },\n  { id: \"OTROS\", label: \"Otros\", direction: \"\" },\n",
+    "total_lines": 242
+  },
+  "summary": "model.js: lines 9–38 of 242 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 242,
+    "next_offset": 38
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js"
+    }
+  ],
+  "links": []
+}

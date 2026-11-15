@@ -1,0 +1,53 @@
+{
+  "id": "ev_5755f11a4f3dc7ce877bfe1863cd95ee248148f21477fc704c77af33ed14c38a",
+  "subject": {
+    "kind": "text",
+    "sha256": "04b24e63dca7ffc5b1ae17a46f862391e5b72a7ed408f7a712c370c4d34d6abc",
+    "name": "styles.css"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 1400,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 38751,
+    "lines": 28,
+    "more": false,
+    "offset": 1400,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "replaced_sequences": 0,
+    "text": "  border-top: 2px solid var(--line-2, #cfcfcf);\n  border-bottom: 2px solid var(--line-2, #cfcfcf);\n  background: var(--surface-2, #f6f5f2);\n}\n\n.acc-warn {\n  margin-top: 12px;\n  padding: 12px 14px;\n  border-radius: 10px;\n  background: #fdf4e3;\n  border: 1px solid #f0dcb4;\n  color: #6b4d10;\n  font-size: 13px;\n  line-height: 1.45;\n}\n\n.acc-warn strong { display: block; margin-bottom: 3px; }\n.acc-warn .btn { margin-top: 9px; }\n\n@media (max-width: 620px) {\n  .acc-tabs { gap: 5px; }\n  .acc-tab { padding: 5px 10px; font-size: 12px; }\n  .acc-table .acc-label { white-space: normal; }\n  .acc-warn { font-size: 12.5px; }\n  .acc-toolbar-note { flex-wrap: wrap; }\n  .acc-toolbar-note .btn { margin-left: 0; }\n}\n\n",
+    "total_lines": 1428
+  },
+  "summary": "styles.css: lines 1401–1428 of 1428 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 28,
+    "total": 1428
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css"
+    }
+  ],
+  "links": []
+}

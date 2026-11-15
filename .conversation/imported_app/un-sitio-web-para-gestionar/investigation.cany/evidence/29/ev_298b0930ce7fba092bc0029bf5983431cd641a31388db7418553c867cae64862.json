@@ -1,0 +1,54 @@
+{
+  "id": "ev_298b0930ce7fba092bc0029bf5983431cd641a31388db7418553c867cae64862",
+  "subject": {
+    "kind": "script",
+    "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 655,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24919,
+    "lines": 70,
+    "more": true,
+    "offset": 655,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "  const msg = normaliseMessage(raw);\n  if (!msg) return null;\n  const same = state.messages.find(\n    (m) => m.subject === msg.subject && m.from === msg.from && m.text.slice(0, 200) === msg.text.slice(0, 200)\n  );\n  if (same) return same;\n  state.messages.unshift(msg);\n  if (state.messages.length > 200) state.messages.length = 200;\n  save();\n  return msg;\n}\n\nexport function markMessageUsed(id) {\n  const msg = messageById(id);\n  if (!msg) return null;\n  msg.usedAt = new Date().toISOString();\n  save();\n  return msg;\n}\n\nexport function deleteMessage(id) {\n  state.messages = state.messages.filter((m) => m.id !== id);\n  save();\n}\n\nexport function invoicesOf(supplierId) {\n  return state.invoices.filter((i) => i.supplierId === supplierId);\n}\n\nexport function sortedInvoices(list = state.invoices) {\n  return list.slice().sort((a, b) => {\n    const da = a.issueDate || a.createdAt || \"\";\n    const db = b.issueDate || b.createdAt || \"\";\n    if (da === db) return (b.createdAt || \"\").localeCompare(a.createdAt || \"\");\n    return db.localeCompare(da);\n  });\n}\n\n/* ------------------------------------------------------------------ */\n/* Ajustes, ejemplo y copia de seguridad                              */\n/* ------------------------------------------------------------------ */\n\nexport function updateSettings(patch) {\n  state.settings = Object.assign(state.settings, patch);\n  save();\n  return state.settings;\n}\n\nexport function clearAll() {\n  state = emptyState();\n  save();\n}\n\nexport function exportJSON() {\n  return JSON.stringify({ ...state, exportedAt: new Date().toISOString() }, null, 2);\n}\n\nexport function importJSON(text) {\n  const parsed = JSON.parse(text);\n  if (!parsed || (!Array.isArray(parsed.suppliers) && !Array.isArray(parsed.invoices))) {\n    throw new Error(\"El fichero no parece una copia de seguridad de este programa.\");\n  }\n  state = normalise(parsed);\n  save();\n  return state;\n}\n\n/** Datos de ejemplo, para que se vea cómo funciona sin tener que subir nada. */\nexport function seedDemo() {\n  const t = todayISO();\n",
+    "total_lines": 789
+  },
+  "summary": "store.js: lines 656–725 of 789 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 789,
+    "next_offset": 725
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

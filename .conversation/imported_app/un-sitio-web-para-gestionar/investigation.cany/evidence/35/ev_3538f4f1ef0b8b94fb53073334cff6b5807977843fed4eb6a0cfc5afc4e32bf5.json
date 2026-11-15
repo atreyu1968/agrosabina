@@ -1,0 +1,54 @@
+{
+  "id": "ev_3538f4f1ef0b8b94fb53073334cff6b5807977843fed4eb6a0cfc5afc4e32bf5",
+  "subject": {
+    "kind": "script",
+    "sha256": "1e585cc49b078fbe974665ab51132669cb2bc7c416a346bae7db13c338c2a41c",
+    "name": "ai.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 14,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 13720,
+    "lines": 14,
+    "more": true,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js",
+    "replaced_sequences": 0,
+    "text": "/*\n * Clasificación automática de la documentación.\n *\n * Dos caminos:\n *  1. Reglas (model.js): siempre, sin internet, sin enviar nada.\n *  2. Una IA externa, si la persona la enciende en Ajustes y pone su clave.\n *     En ese caso se envía SOLO el texto ya leído del documento (no la foto\n *     ni el PDF, ni ningún otro dato de la empresa), y únicamente para que\n *     diga de qué tipo es y en qué concepto encaja.\n *\n * Si la IA falla, se sigue con las reglas: el programa nunca se queda colgado.\n */\n\nimport { CATEGORIES, DOC_KINDS, categoryInfo, classifyLocal, kindInfo } from \"./model.js\";\n",
+    "total_lines": 384
+  },
+  "summary": "ai.js: lines 1–14 of 384 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 14,
+    "total": 384,
+    "next_offset": 14
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\ai.js"
+    }
+  ],
+  "links": []
+}

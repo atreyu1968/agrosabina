@@ -1,0 +1,54 @@
+{
+  "id": "ev_3e70be4fa98eae3c04996c4ee6f02341634ed7ed72a3c399498b3caaeb239224",
+  "subject": {
+    "kind": "script",
+    "sha256": "a6efaf1951f6d94f6a827d45ca436123cf3900809e858bae693540ef9445eb7d",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 40,
+    "offset": 3490,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 280991,
+    "lines": 40,
+    "more": true,
+    "offset": 3490,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  });\n  return lineas.join(\"\\n\");\n}\n\n/* ------------------------------------------------------------------ */\n/* (Sin usar) La IA como segundo par de ojos                          */\n/* ------------------------------------------------------------------ */\n\n/**\n * OJO: esto ya no se llama desde ningún sitio. La aplicación lee los\n * documentos solo con sus propias reglas; queda aquí aparcado, sin usar, por\n * si algún día se quiere volver a enchufar. No lo enganches a la lectura.\n *\n * Antes pedía a la IA que interpretara el texto del documento y rellenaba SOLO\n * lo que las reglas no habían sabido leer (o una liquidación que no cuadraba).\n */\nasync function applyAiReading(job, text) {\n  const settings = getState().settings;\n  if (!aiConfigured(settings) || !String(text || \"\").trim()) return [];\n\n  const model = String(settings.aiModel || AI_DEFAULTS.aiModel);\n  let ai;\n  try {\n    job.stage = `Preguntando a la IA (${model})…`;\n    paintIngest();\n    ai = await aiExtract(text, settings);\n  } catch (err) {\n    const why = err && err.message ? err.message : \"no ha contestado\";\n    job.parsed.notes.push(`La IA no ha podido ayudar (${why}). Se queda lo que he leído yo.`);\n    return [];\n  }\n\n  const p = job.parsed;\n  const filled = [];\n\n  const setIfEmpty = (key, value, label) => {\n    const current = p[key];\n    const empty =\n      current == null || current === \"\" || (typeof current === \"number\" && !Number.isFinite(current));\n    if (empty && value != null && value !== \"\") {\n",
+    "total_lines": 7068
+  },
+  "summary": "views.js: lines 3491–3530 of 7068 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 40,
+    "total": 7068,
+    "next_offset": 3530
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

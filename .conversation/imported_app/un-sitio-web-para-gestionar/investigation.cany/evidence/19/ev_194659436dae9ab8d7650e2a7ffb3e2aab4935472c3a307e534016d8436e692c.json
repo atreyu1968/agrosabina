@@ -1,0 +1,54 @@
+{
+  "id": "ev_194659436dae9ab8d7650e2a7ffb3e2aab4935472c3a307e534016d8436e692c",
+  "subject": {
+    "kind": "script",
+    "sha256": "04cfc4300fa266dff4c92a5d409712941f2dbcb2e6ffb7ef2a0aa0a537cbedf2",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 5320,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 267805,
+    "lines": 60,
+    "more": true,
+    "offset": 5320,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  }\n  if (target.id === \"docSort\") {\n    ui.docs.sort = target.value;\n    refreshDocResults();\n    return;\n  }\n  if (target.id === \"docRange\") {\n    ui.docs.range = target.value;\n    if (ui.docs.range === \"custom\") {\n      if (!ui.docs.from) ui.docs.from = `${new Date().getFullYear()}-01-01`;\n      if (!ui.docs.to) ui.docs.to = todayISO();\n    }\n    render();\n    return;\n  }\n  if (target.id === \"docFrom\" || target.id === \"docTo\") {\n    ui.docs[target.id === \"docFrom\" ? \"from\" : \"to\"] = target.value;\n    render();\n    return;\n  }\n  if (target.id === \"salesRange\") {\n    ui.sales.range = target.value;\n    if (ui.sales.range === \"custom\") {\n      if (!ui.sales.from) ui.sales.from = `${new Date().getFullYear()}-01-01`;\n      if (!ui.sales.to) ui.sales.to = todayISO();\n    }\n    refreshSales();\n    return;\n  }\n  if (target.id === \"salesFrom\" || target.id === \"salesTo\") {\n    ui.sales[target.id === \"salesFrom\" ? \"from\" : \"to\"] = target.value;\n    refreshSales();\n    return;\n  }\n  if (target.matches(\"[data-filter-supplier]\")) {\n    ui.filters.supplier = target.value;\n    refreshInvoiceTable();\n  }\n}\n\nexport function onFilterButton(button) {\n  ui.filters.status = button.dataset.filterStatus;\n  refreshInvoiceTable();\n}\n\nexport function onDirectionButton(button) {\n  ui.filters.direction = button.dataset.filterDirection || \"all\";\n  document.querySelectorAll(\"[data-filter-direction]\").forEach((b) => {\n    b.classList.toggle(\"active\", b.dataset.filterDirection === ui.filters.direction);\n  });\n  refreshInvoiceTable();\n}\n\n/* ------------------------------------------------------------------ */\n/* Arrastrar y soltar                                                 */\n/* ------------------------------------------------------------------ */\n\nexport function wireDropzone() {\n  document.addEventListener(\"dragover\", (ev) => {\n    const dz = ev.target instanceof Element ? ev.target.closest(\"#dropzone, #mailDrop\") : null;\n",
+    "total_lines": 6720
+  },
+  "summary": "views.js: lines 5321–5380 of 6720 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 6720,
+    "next_offset": 5380
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

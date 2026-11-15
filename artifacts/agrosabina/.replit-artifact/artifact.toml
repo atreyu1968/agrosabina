@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Agrosabina · Gestión e IGIC"
+description = "Aplicación original importada para gestionar compras, ventas, proveedores, nóminas, contabilidad e IGIC, con almacenamiento local en el navegador."
+version = "1.0.0"
+id = "artifacts/agrosabina"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21259
+
+[services.development]
+run = "pnpm --filter @workspace/agrosabina run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/agrosabina", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/agrosabina/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21259"
+BASE_PATH = "/"

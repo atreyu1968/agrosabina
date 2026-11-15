@@ -1,0 +1,54 @@
+{
+  "id": "ev_07fb578ed4c2f66778eeba8b500ed6dadab776de7d875ea7edd854df1cee86a8",
+  "subject": {
+    "kind": "script",
+    "sha256": "0b2848cb9fcd5f0caee29b8b744348a80cc4f07f58e344c4832de811e9bcc6f4",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 80,
+    "offset": 2815,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 258608,
+    "lines": 80,
+    "more": true,
+    "offset": 2815,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "\n  if (r.pendiente) {\n    return `<section class=\"card prueba\">${cabecera}\n      <div class=\"card-body\"><p class=\"hint\">Leyendo… en cuanto termine salen aquí el texto y lo que entiendo.</p></div>\n    </section>`;\n  }\n\n  if (r.error || !doc) {\n    return `<section class=\"card prueba\">${cabecera}\n      <div class=\"card-body\"><p class=\"prueba-error\">${esc(r.error || \"No he podido leerlo.\")}</p></div>\n    </section>`;\n  }\n\n  const filas = datosDeLectura(doc);\n  const avisos = Array.isArray(doc.notes) ? doc.notes : [];\n  const json = jsonDocumento(doc);\n\n  return `<section class=\"card prueba\">\n    ${cabecera}\n    <div class=\"card-body\">\n      ${\n        L.reconoce\n          ? \"\"\n          : `<p class=\"prueba-aviso\">Este papel no lo reconoce ningún lector con nombre, así que se ha mirado como documento genérico. Puede que falte algún dato: mira la lista antes de fiarte.</p>`\n      }\n      <dl class=\"prueba-datos\">\n        ${filas.map((f) => `<div class=\"prueba-fila\"><dt>${esc(f.etiqueta)}</dt><dd>${esc(f.valor)}</dd></div>`).join(\"\")}\n      </dl>\n      ${\n        avisos.length\n          ? `<div class=\"prueba-avisos\"><strong>Lo que no me cuadra:</strong><ul>${avisos\n              .map((a) => `<li>${esc(a)}</li>`)\n              .join(\"\")}</ul></div>`\n          : \"\"\n      }\n      <details class=\"prueba-detalle\">\n        <summary>Ver el texto que he leído (${fmtNum(r.texto.length, 0)} caracteres)</summary>\n        <pre class=\"prueba-texto\">${esc(r.texto)}</pre>\n      </details>\n      <details class=\"prueba-detalle\">\n        <summary>Todos los datos tal cual</summary>\n        <pre class=\"prueba-texto\">${esc(json)}</pre>\n      </details>\n    </div>\n  </section>`;\n}\n\n/** Los datos del documento en pares «etiqueta: valor», para la pantalla y el informe. */\nfunction datosDeLectura(doc) {\n  const filas = [];\n  const pon = (etiqueta, valor) => {\n    if (valor === null || valor === undefined || valor === \"\") return;\n    filas.push({ etiqueta, valor: String(valor) });\n  };\n  pon(\"Tipo de documento\", kindInfo(doc.kind).label);\n  pon(\"Concepto\", categoryInfo(doc.category).label);\n  pon(\"¿Entra o sale dinero?\", doc.direction === \"INGRESO\" ? \"Entra (ingreso)\" : \"Sale (gasto)\");\n  pon(\"Número\", doc.number);\n  pon(\"Fecha\", doc.issueDate ? fmtDate(doc.issueDate) : \"\");\n  pon(\"Proveedor o trabajador\", doc.supplierName);\n  pon(\"NIF\", doc.supplierNif);\n  pon(\"Base imponible\", doc.base ? fmtEUR(doc.base) : \"\");\n  pon(\"Tipo de IGIC\", Number.isFinite(doc.rate) ? `${fmtNum(doc.rate, 2)} %` : \"\");\n  pon(\"Cuota de IGIC\", doc.igic ? fmtEUR(doc.igic) : \"\");\n  pon(\"Total\", doc.total ? fmtEUR(doc.total) : \"\");\n  pon(\"Estado\", doc.status === STATUS.PAID ? \"Cobrado o pagado\" : \"Pendiente\");\n  pon(\"Confianza\", Number.isFinite(doc.confidence) ? `${Math.round(doc.confidence * 100)} %` : \"\");\n  return filas;\n}\n\n/** El documento en JSON, sin el texto entero: eso ya se enseña aparte. */\nfunction jsonDocumento(doc) {\n  try {\n    const copia = { ...doc };\n    delete copia.rawText;\n    return JSON.stringify(copia, null, 2);\n  } catch (_) {\n    return \"\";\n  }\n}\n",
+    "total_lines": 6495
+  },
+  "summary": "views.js: lines 2816–2895 of 6495 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 80,
+    "total": 6495,
+    "next_offset": 2895
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

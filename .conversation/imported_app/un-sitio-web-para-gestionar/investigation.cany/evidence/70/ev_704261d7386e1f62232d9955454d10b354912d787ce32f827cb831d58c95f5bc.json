@@ -1,0 +1,54 @@
+{
+  "id": "ev_704261d7386e1f62232d9955454d10b354912d787ce32f827cb831d58c95f5bc",
+  "subject": {
+    "kind": "script",
+    "sha256": "effbee695913dd70eb1d3b51952ecc8ed76c4969a93f6df5b3ddba29ce97f26c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 100,
+    "offset": 4820,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 196170,
+    "lines": 100,
+    "more": true,
+    "offset": 4820,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "     </div>\n     <div class=\"modal-body acc-entry-form\">\n       <div class=\"form-grid\">\n         <label class=\"field\">\n           <span>Fecha</span>\n           <input id=\"accEntryDate\" type=\"date\" value=\"${esc(String((e && e.date) || todayISO()).slice(0, 10))}\">\n         </label>\n         <label class=\"field\">\n           <span>Número o referencia (si quieres)</span>\n           <input id=\"accEntryRef\" type=\"text\" value=\"${esc(String((e && e.ref) || \"\"))}\" placeholder=\"Factura 25/014\">\n         </label>\n         <label class=\"field acc-wide\">\n           <span>Concepto</span>\n           <input id=\"accEntryConcept\" type=\"text\" value=\"${esc(String((e && e.concept) || \"\"))}\" placeholder=\"Amortización del invernadero\">\n         </label>\n       </div>\n       <div class=\"acc-lines\" id=\"accLines\">\n         <div class=\"acc-line acc-line-head\"><span>Cuenta</span><span>Debe</span><span>Haber</span></div>\n         ${filas.join(\"\")}\n       </div>\n       <div class=\"acc-lines-foot\">\n         <button class=\"btn sm ghost\" data-action=\"acc-entry-row\">${icon(\"plus\")}<span>Añadir una línea</span></button>\n         <div class=\"spacer\"></div>\n         <span class=\"acc-sum\" id=\"accEntrySum\"></span>\n       </div>\n       <datalist id=\"accCuentas\">${opciones.join(\"\")}</datalist>\n       <p class=\"muted\">Puedes escribir la cuenta con 3 cifras (430) o con 6 (430001), que es la subcuenta de un cliente. Las líneas que dejes en blanco no se guardan.</p>\n     </div>\n     <div class=\"modal-foot\">\n       <button class=\"btn primary\" data-action=\"acc-entry-save\">${icon(\"check\")}<span>Guardar el asiento</span></button>\n       <button class=\"btn ghost\" data-modal-cancel>Cancelar</button>\n     </div>`,\n    {\n      onMount: (wrap) => {\n        wrap.querySelectorAll(\"[data-modal-cancel]\").forEach((el) => {\n          el.addEventListener(\"click\", () => closeModal());\n        });\n        wrap.querySelectorAll(\"#accLines input\").forEach((el) => el.addEventListener(\"input\", accEntrySum));\n        accEntrySum();\n      },\n    }\n  );\n}\n\n/** Guarda el asiento que está abierto en la ventana. */\nfunction saveAccEntry() {\n  const day = document.getElementById(\"accEntryDate\");\n  const ref = document.getElementById(\"accEntryRef\");\n  const concept = document.getElementById(\"accEntryConcept\");\n  const box = document.getElementById(\"accLines\");\n  const dia = String((day && day.value) || \"\").slice(0, 10) || todayISO();\n\n  const lineas = [];\n  if (box) {\n    box.querySelectorAll(\"[data-acc-row]\").forEach((row) => {\n      const c = row.querySelector(\"[data-acc-code]\");\n      const d = row.querySelector(\"[data-acc-debe]\");\n      const h = row.querySelector(\"[data-acc-haber]\");\n      const code = String((c && c.value) || \"\").trim();\n      const debe = accNum(d ? d.value : \"\");\n      const haber = accNum(h ? h.value : \"\");\n      if (!/^\\d{3,6}$/.test(code)) return;\n      if (!debe && !haber) return;\n      lineas.push({ cuenta: code, debe, haber });\n    });\n  }\n\n  if (lineas.length < 2) {\n    toast(\"Un asiento necesita al menos dos líneas: una al debe y otra al haber.\", \"warn\");\n    return;\n  }\n  const debe = round2(lineas.reduce((s, l) => s + l.debe, 0));\n  const haber = round2(lineas.reduce((s, l) => s + l.haber, 0));\n  if (Math.abs(round2(debe - haber)) > 0.005) {\n    toast(`El debe (${fmtEUR(debe)}) y el haber (${fmtEUR(haber)}) tienen que sumar lo mismo.`, \"warn\");\n    return;\n  }\n\n  const asiento = {\n    id: accEditing || `man-${Date.now().toString(36)}`,\n    date: dia,\n    concept: String((concept && concept.value) || \"\").trim() || \"Asiento manual\",\n    ref: String((ref && ref.value) || \"\").trim(),\n    lineas,\n  };\n  const lista = accManuales().filter((a) => String(a.id) !== String(asiento.id));\n  lista.push(asiento);\n  lista.sort((a, b) => (String(a.date) === String(b.date) ? 0 : String(a.date) < String(b.date) ? -1 : 1));\n  saveAccManuales(lista);\n  accEditing = \"\";\n  closeModal();\n  toast(`Asiento guardado: ${asiento.concept}.`, \"ok\");\n  render();\n}\n\n/** Borra un asiento escrito a mano. */\nasync function deleteAccEntry(id) {\n  const a = accManuales().find((x) => String(x.id) === String(id));\n  if (!a) return;\n  const ok = await confirmDialog({\n",
+    "total_lines": 5107
+  },
+  "summary": "views.js: lines 4821–4920 of 5107 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 100,
+    "total": 5107,
+    "next_offset": 4920
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

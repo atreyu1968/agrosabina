@@ -1,0 +1,54 @@
+{
+  "id": "ev_325ac40eefedc4749e6cbd75e363ee3a075ad8fe0cbc261afabbdabbb0359b30",
+  "subject": {
+    "kind": "script",
+    "sha256": "9be5a3bfd0a63d5de152c9c8c23375c99a17da56e72e1add6d642e6178ed2ce3",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 415,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24552,
+    "lines": 60,
+    "more": true,
+    "offset": 415,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "  return s;\n}\n\nexport function deleteSupplier(id) {\n  state.suppliers = state.suppliers.filter((s) => s.id !== id);\n  state.invoices = state.invoices.filter((inv) => inv.supplierId !== id);\n  save();\n}\n\nexport function supplierById(id) {\n  return state.suppliers.find((s) => s.id === id) || null;\n}\n\n/* ------------------------------------------------------------------ */\n/* Facturas                                                           */\n/* ------------------------------------------------------------------ */\n\nfunction invoiceNumbersMatch(a, b) {\n  const x = fold(a).replace(/\\s/g, \"\");\n  const y = fold(b).replace(/\\s/g, \"\");\n  return x.length > 1 && x === y;\n}\n\n/** ¿Ya tenemos esta factura? Mismo proveedor y mismo número. */\nexport function findDuplicate(supplierId, number) {\n  if (!number) return null;\n  return (\n    state.invoices.find(\n      (inv) => inv.supplierId === supplierId && invoiceNumbersMatch(inv.number, number)\n    ) || null\n  );\n}\n\n/**\n * Guarda una factura. Crea el proveedor si hace falta.\n * @returns {{invoice: object, supplier: object, supplierCreated: boolean, duplicate: object|null}}\n */\nexport function addInvoice(data) {\n  const { supplier, created } = ensureSupplier(data.supplierName, data.supplierNif);\n  const duplicate = findDuplicate(supplier.id, data.number);\n\n  const complete = completeAmounts({\n    base: numOrNull(data.base),\n    igic: numOrNull(data.igic),\n    total: numOrNull(data.total),\n    rate: numOrNull(data.rate),\n  });\n\n  const invoice = normaliseInvoice({\n    supplierId: supplier.id,\n    number: data.number,\n    issueDate: data.issueDate,\n    dueDate: data.dueDate,\n    base: complete.base,\n    rate: complete.rate,\n    igic: complete.igic,\n    total: complete.total,\n    status: data.status,\n    kind: data.kind || \"FACTURA\",\n    category: data.category || \"\",\n",
+    "total_lines": 780
+  },
+  "summary": "store.js: lines 416–475 of 780 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 780,
+    "next_offset": 475
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

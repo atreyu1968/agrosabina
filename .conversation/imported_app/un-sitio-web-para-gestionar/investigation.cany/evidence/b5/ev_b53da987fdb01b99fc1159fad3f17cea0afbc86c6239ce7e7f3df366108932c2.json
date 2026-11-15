@@ -1,0 +1,54 @@
+{
+  "id": "ev_b53da987fdb01b99fc1159fad3f17cea0afbc86c6239ce7e7f3df366108932c2",
+  "subject": {
+    "kind": "script",
+    "sha256": "effbee695913dd70eb1d3b51952ecc8ed76c4969a93f6df5b3ddba29ce97f26c",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 100,
+    "offset": 3556,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 196170,
+    "lines": 100,
+    "more": true,
+    "offset": 3556,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  const s = getState().settings;\n  const provider = aiProviderOf(s);\n  openModal(\n    `<div class=\"modal-head\">\n      <div>\n        <h2>Ajustes</h2>\n        <p>Lo que se aplica a las facturas nuevas</p>\n      </div>\n      <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"form-grid\">\n        <div class=\"field\">\n          <label for=\"set-rate\">IGIC por defecto</label>\n          <select id=\"set-rate\">\n            ${IGIC_RATES.map((r) => `<option value=\"${r.value}\" ${Number(s.defaultRate) === r.value ? \"selected\" : \"\"}>${rateText(r.value)} — ${r.label.split(\"—\")[1].trim()}</option>`).join(\"\")}\n          </select>\n        </div>\n        <div class=\"field\">\n          <label for=\"set-name\">Nombre de la empresa</label>\n          <input id=\"set-name\" type=\"text\" value=\"${esc(s.businessName || \"\")}\" placeholder=\"Agrosabina SL\">\n        </div>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Copia de seguridad</h3>\n      <p style=\"font-size:13px;color:var(--ink-3);margin-bottom:12px\">\n        Los datos viven en este navegador. Si limpias el historial o cambias de ordenador, se pierden:\n        descarga una copia de vez en cuando.\n      </p>\n      <div class=\"row wrap\">\n        <button class=\"btn sm\" data-action=\"export-json\">${icon(\"download\")} Descargar copia</button>\n        <button class=\"btn sm\" data-action=\"import-json\">${icon(\"upload\")} Restaurar copia</button>\n        <div class=\"spacer\"></div>\n        <button class=\"btn sm danger\" data-action=\"clear-all\">${icon(\"trash\")} Borrar todo</button>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Interpretación con IA <span class=\"tag\">opcional</span></h3>\n      <p style=\"font-size:13px;color:var(--ink-3);margin-bottom:12px\">\n        Con esto encendido, la IA ayuda a leer los documentos: de qué tipo son, en qué concepto entran y, si es\n        una liquidación, los kilos, el precio por kilo y los descuentos. A la IA solo le llega\n        <strong>el texto ya leído</strong>, nunca la foto ni el PDF, y solo si tú escribes tu clave. Las reglas del\n        programa siempre van primero: si la IA no contesta, se sigue con ellas.\n      </p>\n      <label style=\"display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;margin-bottom:12px\">\n        <input type=\"checkbox\" id=\"set-ai-on\" ${s.aiEnabled ? \"checked\" : \"\"}> Usar una IA para leer los documentos\n      </label>\n      <div class=\"form-grid\">\n        <div class=\"field span-2\">\n          <label for=\"set-ai-provider\">Servicio</label>\n          <select id=\"set-ai-provider\">\n            ${AI_PROVIDERS.map(\n              (p) => `<option value=\"${p.id}\" ${provider.id === p.id ? \"selected\" : \"\"}>${p.label}</option>`\n            ).join(\"\")}\n          </select>\n          <span class=\"hint\" id=\"set-ai-provider-hint\">${esc(provider.hint)}</span>\n        </div>\n        <div class=\"field span-2\">\n          <label for=\"set-ai-endpoint\">Dirección del servicio</label>\n          <input id=\"set-ai-endpoint\" type=\"text\" autocomplete=\"off\" value=\"${esc(s.aiEndpoint || AI_DEFAULTS.aiEndpoint)}\" placeholder=\"https://api.deepseek.com/v1\">\n          <span class=\"hint\">Se rellena sola al elegir el servicio. Vale cualquier otro que hable el idioma de OpenAI.</span>\n        </div>\n        <div class=\"field\">\n          <label for=\"set-ai-model\">Modelo</label>\n          <input id=\"set-ai-model\" type=\"text\" autocomplete=\"off\" value=\"${esc(s.aiModel || AI_DEFAULTS.aiModel)}\" placeholder=\"deepseek-chat\">\n        </div>\n        <div class=\"field\">\n          <label for=\"set-ai-key\">Clave</label>\n          <input id=\"set-ai-key\" type=\"password\" autocomplete=\"off\" value=\"${esc(s.aiKey || \"\")}\" placeholder=\"sk-…\">\n          <span class=\"hint\">Se queda guardada en este navegador, junto a tus facturas.</span>\n        </div>\n      </div>\n      <div class=\"row wrap\" style=\"margin-top:12px\">\n        <button class=\"btn sm\" data-action=\"test-ai\">${icon(\"sparkle\")} Probar la conexión</button>\n        <span id=\"aiStatus\" style=\"font-size:12.5px;color:var(--ink-3)\"></span>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Base de datos SQLite</h3>\n      ${sqlitePanel()}\n    </div>\n    <div class=\"modal-foot\">\n      <button class=\"btn primary\" data-save>Guardar ajustes</button>\n      <button class=\"btn ghost\" data-modal-cancel>Cerrar</button>\n    </div>`,\n    {\n      onMount(wrap) {\n        wrap.querySelectorAll(\"[data-modal-cancel]\").forEach((b) =>\n          b.addEventListener(\"click\", () => closeModal())\n        );\n\n        // Elegir el servicio rellena la dirección y el modelo; después se\n        // pueden cambiar a mano si el servicio usa otros nombres.\n        const providerSel = wrap.querySelector(\"#set-ai-provider\");\n        const endpointInput = wrap.querySelector(\"#set-ai-endpoint\");\n        const modelInput = wrap.querySelector(\"#set-ai-model\");\n",
+    "total_lines": 5107
+  },
+  "summary": "views.js: lines 3557–3656 of 5107 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 100,
+    "total": 5107,
+    "next_offset": 3656
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

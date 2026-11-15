@@ -1,0 +1,54 @@
+{
+  "id": "ev_3b1d7758e15531ff4e0238eabdb1ea8d3c53e5d5f85651a24cf68cec4ceb3d1f",
+  "subject": {
+    "kind": "script",
+    "sha256": "2d1d6e6e5f28b7aa700b22692de33bf3905b8ab13daf4b4e0f6dd98408815b40",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 55,
+    "offset": 3085,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 154119,
+    "lines": 55,
+    "more": true,
+    "offset": 3085,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "            toast(\"Proveedor actualizado.\");\n          } else {\n            const res = ensureSupplier(data.name, data.nif);\n            if (res.created) {\n              updateSupplier(res.supplier.id, {\n                phone: data.phone,\n                email: data.email,\n                note: data.note,\n              });\n              toast(`Proveedor «${res.supplier.name}» creado.`);\n            } else {\n              toast(\"Ese proveedor ya estaba en tu lista.\", \"bad\");\n            }\n          }\n          closeModal();\n          render();\n        });\n      },\n    }\n  );\n}\n\n/* ------------------------------------------------------------------ */\n/* Ajustes                                                            */\n/* ------------------------------------------------------------------ */\n\nexport function openSettings() {\n  const s = getState().settings;\n  const provider = aiProviderOf(s);\n  openModal(\n    `<div class=\"modal-head\">\n      <div>\n        <h2>Ajustes</h2>\n        <p>Lo que se aplica a las facturas nuevas</p>\n      </div>\n      <button class=\"icon-btn\" data-modal-cancel aria-label=\"Cerrar\">${icon(\"x\")}</button>\n    </div>\n    <div class=\"modal-body\">\n      <div class=\"form-grid\">\n        <div class=\"field\">\n          <label for=\"set-rate\">IGIC por defecto</label>\n          <select id=\"set-rate\">\n            ${IGIC_RATES.map((r) => `<option value=\"${r.value}\" ${Number(s.defaultRate) === r.value ? \"selected\" : \"\"}>${rateText(r.value)} — ${r.label.split(\"—\")[1].trim()}</option>`).join(\"\")}\n          </select>\n        </div>\n        <div class=\"field\">\n          <label for=\"set-name\">Nombre de la empresa</label>\n          <input id=\"set-name\" type=\"text\" value=\"${esc(s.businessName || \"\")}\" placeholder=\"Agrosabina SL\">\n        </div>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Copia de seguridad</h3>\n      <p style=\"font-size:13px;color:var(--ink-3);margin-bottom:12px\">\n",
+    "total_lines": 4068
+  },
+  "summary": "views.js: lines 3086–3140 of 4068 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 55,
+    "total": 4068,
+    "next_offset": 3140
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

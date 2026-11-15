@@ -1,0 +1,54 @@
+{
+  "id": "ev_87b73c353c645b84013497c0a558f5f89eb1c314354b984b6f823764cf9771e4",
+  "subject": {
+    "kind": "script",
+    "sha256": "b5d5daff17f05f79760d4343189e352e4d0d41d5c57372b12e0f293935c571a2",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 3145,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 134152,
+    "lines": 60,
+    "more": true,
+    "offset": 3145,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "          <label for=\"set-ai-key\">Clave</label>\n          <input id=\"set-ai-key\" type=\"password\" autocomplete=\"off\" value=\"${esc(s.aiKey || \"\")}\" placeholder=\"sk-…\">\n          <span class=\"hint\">Se queda guardada en este navegador, junto a tus facturas.</span>\n        </div>\n      </div>\n      <div class=\"row wrap\" style=\"margin-top:12px\">\n        <button class=\"btn sm\" data-action=\"test-ai\">${icon(\"sparkle\")} Probar la conexión</button>\n        <span id=\"aiStatus\" style=\"font-size:12.5px;color:var(--ink-3)\"></span>\n      </div>\n\n      <hr style=\"border:none;border-top:1px solid var(--line);margin:20px 0\">\n\n      <h3 style=\"font-size:14px;font-weight:650;margin-bottom:4px\">Base de datos SQLite</h3>\n      ${sqlitePanel()}\n    </div>\n    <div class=\"modal-foot\">\n      <button class=\"btn primary\" data-save>Guardar ajustes</button>\n      <button class=\"btn ghost\" data-modal-cancel>Cerrar</button>\n    </div>`,\n    {\n      onMount(wrap) {\n        wrap.querySelectorAll(\"[data-modal-cancel]\").forEach((b) =>\n          b.addEventListener(\"click\", () => closeModal())\n        );\n\n        // Elegir el servicio rellena la dirección y el modelo; después se\n        // pueden cambiar a mano si el servicio usa otros nombres.\n        const providerSel = wrap.querySelector(\"#set-ai-provider\");\n        const endpointInput = wrap.querySelector(\"#set-ai-endpoint\");\n        const modelInput = wrap.querySelector(\"#set-ai-model\");\n        const providerHint = wrap.querySelector(\"#set-ai-provider-hint\");\n        if (providerSel) {\n          providerSel.addEventListener(\"change\", () => {\n            const chosen = AI_PROVIDERS.find((p) => p.id === providerSel.value);\n            if (!chosen) return;\n            if (providerHint) providerHint.textContent = chosen.hint;\n            if (chosen.endpoint) {\n              endpointInput.value = chosen.endpoint;\n              modelInput.value = chosen.model;\n            }\n          });\n        }\n\n        wrap.querySelector(\"[data-save]\").addEventListener(\"click\", () => {\n          updateSettings({\n            defaultRate: Number(wrap.querySelector(\"#set-rate\").value),\n            businessName: wrap.querySelector(\"#set-name\").value.trim(),\n            aiEnabled: wrap.querySelector(\"#set-ai-on\").checked,\n            aiEndpoint: wrap.querySelector(\"#set-ai-endpoint\").value.trim(),\n            aiModel: wrap.querySelector(\"#set-ai-model\").value.trim(),\n            aiKey: wrap.querySelector(\"#set-ai-key\").value.trim(),\n          });\n          toast(\"Ajustes guardados.\");\n          closeModal();\n          render();\n        });\n      },\n    }\n  );\n}\n",
+    "total_lines": 3566
+  },
+  "summary": "views.js: lines 3146–3205 of 3566 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 3566,
+    "next_offset": 3205
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

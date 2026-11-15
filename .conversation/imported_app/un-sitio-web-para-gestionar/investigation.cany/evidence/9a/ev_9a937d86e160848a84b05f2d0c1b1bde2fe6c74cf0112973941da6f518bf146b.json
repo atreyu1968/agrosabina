@@ -1,0 +1,554 @@
+{
+  "id": "ev_9a937d86e160848a84b05f2d0c1b1bde2fe6c74cf0112973941da6f518bf146b",
+  "subject": {
+    "kind": "script",
+    "sha256": "c6cbd7a9fb896dd0daa5470e838aef9e7c2d572df1acb081ed692c2b9d605563",
+    "name": "nomina.js"
+  },
+  "operation": "js_app_map",
+  "params": {
+    "include_node_modules": false,
+    "input_path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\nomina.js",
+    "limit": 1,
+    "max_nodes": 25000,
+    "offset": 0,
+    "source_paths": []
+  },
+  "result": {
+    "api_operations": [],
+    "app_kind": "unknown",
+    "bundlers": [],
+    "edges": [
+      {
+        "from": "fn:nomina.js#calcularNomina@97",
+        "kind": "calls",
+        "to": "fn:nomina.js#importe@54"
+      },
+      {
+        "from": "fn:nomina.js#calcularNomina@97",
+        "kind": "calls",
+        "to": "fn:nomina.js#texto@47"
+      },
+      {
+        "from": "fn:nomina.js#importeDeLinea@76",
+        "kind": "calls",
+        "to": "fn:nomina.js#importe@54"
+      },
+      {
+        "from": "fn:nomina.js#leerNomina@172",
+        "kind": "calls",
+        "to": "fn:nomina.js#calcularNomina@97"
+      },
+      {
+        "from": "fn:nomina.js#leerNomina@172",
+        "kind": "calls",
+        "to": "fn:nomina.js#euros@62"
+      },
+      {
+        "from": "fn:nomina.js#leerNomina@172",
+        "kind": "calls",
+        "to": "fn:nomina.js#importeDeLinea@76"
+      },
+      {
+        "from": "fn:nomina.js#leerNomina@172",
+        "kind": "calls",
+        "to": "fn:nomina.js#lineasDe@68"
+      },
+      {
+        "from": "fn:nomina.js#leerNomina@172",
+        "kind": "calls",
+        "to": "fn:nomina.js#porcentajeDeLinea@83"
+      },
+      {
+        "from": "fn:nomina.js#leerNomina@172",
+        "kind": "calls",
+        "to": "fn:nomina.js#texto@47"
+      },
+      {
+        "from": "fn:nomina.js#lineasNomina@150",
+        "kind": "calls",
+        "to": "fn:nomina.js#calcularNomina@97"
+      },
+      {
+        "from": "fn:nomina.js#porcentajeDeLinea@83",
+        "kind": "calls",
+        "to": "fn:nomina.js#importe@54"
+      },
+      {
+        "from": "module:nomina.js",
+        "kind": "defines",
+        "to": "fn:nomina.js#calcularNomina@97"
+      },
+      {
+        "from": "module:nomina.js",
+        "kind": "defines",
+        "to": "fn:nomina.js#esNomina@39"
+      },
+      {
+        "from": "module:nomina.js",
+        "kind": "defines",
+        "to": "fn:nomina.js#euros@62"
+      },
+      {
+        "from": "module:nomina.js",
+        "kind": "defines",
+        "to": "fn:nomina.js#importe@54"
+      },
+      {
+        "from": "module:nomina.js",
+        "kind": "defines",
+        "to": "fn:nomina.js#importeDeLinea@76"
+      },
+      {
+        "from": "module:nomina.js",
+        "kind": "defines",
+        "to": "fn:nomina.js#leerNomina@172"
+      },
+      {
+        "from": "module:nomina.js",
+        "kind": "defines",
+        "to": "fn:nomina.js#lineasDe@68"
+      },
+      {
+        "from": "module:nomina.js",
+        "kind": "defines",
+        "to": "fn:nomina.js#lineasNomina@150"
+      },
+      {
+        "from": "module:nomina.js",
+        "kind": "defines",
+        "to": "fn:nomina.js#porcentajeDeLinea@83"
+      },
+      {
+        "from": "module:nomina.js",
+        "kind": "defines",
+        "to": "fn:nomina.js#texto@47"
+      }
+    ],
+    "effects": [],
+    "endpoints": [],
+    "entry_points": {
+      "pages": [],
+      "preloads": [],
+      "renderers": [],
+      "workers": []
+    },
+    "exposed": [],
+    "graph_id": "ag_db8fd2fbb218204f6bb6ad6e9c3da043d8690455227837a0c0e1cf735e8e0b86",
+    "input_format": "file",
+    "ipc": [],
+    "label": "nomina.js",
+    "limitations": [],
+    "modules": [
+      {
+        "bundle_modules": [],
+        "bundlers": [],
+        "bytes": 10890,
+        "chunk_ids": [],
+        "exports": {
+          "cjs": [],
+          "esm": [
+            "CUENTAS_NOMINA",
+            "SS_TRABAJADOR_PCT",
+            "SS_EMPRESA_PCT",
+            "esNomina",
+            "calcularNomina",
+            "lineasNomina",
+            "leerNomina"
+          ]
+        },
+        "fingerprint": "f33d4aea1075dedf2140fedad8a2fe7f0d8ad56f3fccb1e133aafd3c99103e6d",
+        "functions": [
+          "esNomina",
+          "texto",
+          "importe",
+          "euros",
+          "lineasDe",
+          "importeDeLinea",
+          "porcentajeDeLinea",
+          "calcularNomina",
+          "lineasNomina",
+          "leerNomina"
+        ],
+        "imports": [
+          {
+            "kind": "import",
+            "line": 22,
+            "specifier": "./util.js"
+          },
+          {
+            "kind": "import",
+            "line": 23,
+            "specifier": "./parse.js"
+          }
+        ],
+        "kind": "script",
+        "parse_mode": "parsed",
+        "path": "nomina.js",
+        "role": "unknown",
+        "sha256": "c6cbd7a9fb896dd0daa5470e838aef9e7c2d572df1acb081ed692c2b9d605563",
+        "strings": [
+          "640",
+          "642",
+          "476",
+          "4751",
+          "465",
+          "NOMINA",
+          " ",
+          "number",
+          "—",
+          ".",
+          ",",
+          "object",
+          "No veía el total devengado y he tomado el salario base como bruto.",
+          "El líquido a percibir no venía en el papel; lo he calculado con el bruto menos las deducciones.",
+          "No he encontrado el total devengado: escribe el bruto a mano antes de guardar.",
+          "Sin Seguridad Social ni IRPF no puedo calcular el líquido: escríbelo a mano.",
+          "No he visto la Seguridad Social a cargo de la empresa: el asiento llevará el sueldo, la parte del trabajador y el IRPF, y la 642 quedará a cero."
+        ]
+      }
+    ],
+    "modules_total": 1,
+    "native_modules": [],
+    "nodes": [
+      {
+        "id": "module:nomina.js",
+        "kind": "module",
+        "label": "nomina.js",
+        "module": "nomina.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().toUpperCase",
+            "String"
+          ],
+          "end": 1607,
+          "end_line": 41,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "doc"
+          ],
+          "parent": null,
+          "start": 1512,
+          "strings": [
+            "NOMINA"
+          ]
+        },
+        "id": "fn:nomina.js#esNomina@39",
+        "kind": "function",
+        "label": "esNomina",
+        "line": 39,
+        "module": "nomina.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().replace().trim",
+            "String().replace",
+            "String"
+          ],
+          "end": 1926,
+          "end_line": 51,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "v"
+          ],
+          "parent": null,
+          "start": 1830,
+          "strings": [
+            " "
+          ]
+        },
+        "id": "fn:nomina.js#texto@47",
+        "kind": "function",
+        "label": "texto",
+        "line": 47,
+        "module": "nomina.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Number.isFinite",
+            "./util.js.round2",
+            "./util.js.parseAmount",
+            "String"
+          ],
+          "end": 2218,
+          "end_line": 59,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "v"
+          ],
+          "parent": null,
+          "start": 1994,
+          "strings": [
+            "number"
+          ]
+        },
+        "id": "fn:nomina.js#importe@54",
+        "kind": "function",
+        "label": "importe",
+        "line": 54,
+        "module": "nomina.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "Number.isFinite",
+            "Number",
+            "Number().toFixed().replace",
+            "Number().toFixed"
+          ],
+          "end": 2401,
+          "end_line": 66,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "v"
+          ],
+          "parent": null,
+          "start": 2263,
+          "strings": [
+            "—",
+            ".",
+            ","
+          ]
+        },
+        "id": "fn:nomina.js#euros@62",
+        "kind": "function",
+        "label": "euros",
+        "line": 62,
+        "module": "nomina.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().split().map().filter",
+            "String().split().map",
+            "String().split",
+            "String"
+          ],
+          "end": 2559,
+          "end_line": 73,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "textoCrudo"
+          ],
+          "parent": null,
+          "start": 2403,
+          "strings": []
+        },
+        "id": "fn:nomina.js#lineasDe@68",
+        "kind": "function",
+        "label": "lineasDe",
+        "line": 68,
+        "module": "nomina.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().match",
+            "String",
+            "importe"
+          ],
+          "end": 2810,
+          "end_line": 80,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "linea"
+          ],
+          "parent": null,
+          "start": 2640,
+          "strings": []
+        },
+        "id": "fn:nomina.js#importeDeLinea@76",
+        "kind": "function",
+        "label": "importeDeLinea",
+        "line": 76,
+        "module": "nomina.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().match",
+            "String",
+            "importe"
+          ],
+          "end": 3011,
+          "end_line": 86,
+          "exported": false,
+          "kind": "declaration",
+          "params": [
+            "linea"
+          ],
+          "parent": null,
+          "start": 2873,
+          "strings": []
+        },
+        "id": "fn:nomina.js#porcentajeDeLinea@83",
+        "kind": "function",
+        "label": "porcentajeDeLinea",
+        "line": 83,
+        "module": "nomina.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "importe",
+            "./util.js.round2",
+            "texto",
+            "Array.isArray"
+          ],
+          "end": 4815,
+          "end_line": 142,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "n"
+          ],
+          "parent": null,
+          "start": 3463,
+          "strings": [
+            "object"
+          ]
+        },
+        "id": "fn:nomina.js#calcularNomina@97",
+        "kind": "function",
+        "label": "calcularNomina",
+        "line": 97,
+        "module": "nomina.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "calcularNomina",
+            "String",
+            "raw.push"
+          ],
+          "end": 5625,
+          "end_line": 161,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "n",
+            "cuentaLiquido"
+          ],
+          "parent": null,
+          "start": 5119,
+          "strings": []
+        },
+        "id": "fn:nomina.js#lineasNomina@150",
+        "kind": "function",
+        "label": "lineasNomina",
+        "line": 150,
+        "module": "nomina.js",
+        "role": "unknown"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "lineasDe",
+            "String",
+            "./parse.js.lineaEsEncabezado",
+            "l.match",
+            "plano.match",
+            "texto",
+            "Number",
+            "l.toLowerCase",
+            "importeDeLinea",
+            "porcentajeDeLinea",
+            "notas.push",
+            "./util.js.round2",
+            "euros",
+            "calcularNomina",
+            "Math.abs"
+          ],
+          "end": 10889,
+          "end_line": 291,
+          "exported": true,
+          "kind": "declaration",
+          "params": [
+            "textoCrudo"
+          ],
+          "parent": null,
+          "start": 6081,
+          "strings": [
+            "No veía el total devengado y he tomado el salario base como bruto.",
+            "El líquido a percibir no venía en el papel; lo he calculado con el bruto menos las deducciones.",
+            "No he encontrado el total devengado: escribe el bruto a mano antes de guardar.",
+            "Sin Seguridad Social ni IRPF no puedo calcular el líquido: escríbelo a mano.",
+            "No he visto la Seguridad Social a cargo de la empresa: el asiento llevará el sueldo, la parte del trabajador y el IRPF, y la 642 quedará a cero."
+          ]
+        },
+        "id": "fn:nomina.js#leerNomina@172",
+        "kind": "function",
+        "label": "leerNomina",
+        "line": 172,
+        "module": "nomina.js",
+        "role": "unknown"
+      }
+    ],
+    "package": null,
+    "routes": [],
+    "source_maps": [],
+    "stats": {
+      "api_operations": 0,
+      "bundle_modules": 0,
+      "edges": 21,
+      "endpoints": 0,
+      "files": 1,
+      "functions": 10,
+      "ipc_channels": 0,
+      "listed": 1,
+      "modules": 1,
+      "nodes": 11,
+      "paired_channels": 0
+    },
+    "storage": [],
+    "summary": "JavaScript code nomina.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+    "vendors": [],
+    "windows": []
+  },
+  "summary": "JavaScript code nomina.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "static_only",
+      "message": "Static reading only: code built at run time (eval, computed requires, remote content) is invisible; IPC pairs need literal channel names."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\nomina.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_bc7ef57602a076c95956ac2044814ac84e42d557d9c620de0c93f2bcb1edc52c",
+  "subject": {
+    "kind": "script",
+    "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 70,
+    "offset": 196,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24919,
+    "lines": 70,
+    "more": true,
+    "offset": 196,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": " * Arranca el almacén. Se llama una vez, antes de pintar nada.\n * - Abre la base de datos SQLite (o la crea con sus tablas).\n * - Si hay datos, los trae; si la base está vacía y había datos de la versión\n *   anterior en localStorage, los pasa a SQLite (migración de una sola vez).\n * Devuelve \"sqlite\" o \"local\".\n */\nexport async function initStore() {\n  const ok = await sqlite.init();\n\n  if (ok) {\n    engine = \"sqlite\";\n    const snapshot = sqlite.readState();\n    if (snapshot) {\n      state = normalise(snapshot);\n    } else {\n      state = load(); // datos de antes, si los había\n      sqlite.writeState(state);\n      await sqlite.persist();\n    }\n  } else {\n    engine = \"local\";\n    state = load();\n  }\n\n  lastSaveOk = true;\n  emit();\n  return engine;\n}\n\n/** Guarda: primero en SQLite y además una copia en texto, por si acaso. */\nexport function save() {\n  let stored = false;\n\n  if (engine === \"sqlite\" && sqlite.isAvailable()) {\n    try {\n      if (sqlite.writeState(state)) {\n        stored = true;\n        schedulePersist();\n      }\n    } catch (err) {\n      console.warn(\"No se pudo escribir en SQLite:\", err);\n    }\n  }\n\n  // Copia de seguridad en texto: sirve si SQLite no arranca la próxima vez.\n  try {\n    localStorage.setItem(KEY, JSON.stringify(state));\n    stored = true;\n  } catch (err) {\n    console.warn(\"No se pudo guardar la copia en texto:\", err);\n  }\n\n  lastSaveOk = stored;\n  emit();\n  return lastSaveOk;\n}\n\n/** Vuelca la base de datos a IndexedDB sin esperar (con un pequeño retardo). */\nfunction schedulePersist() {\n  if (persistTimer) clearTimeout(persistTimer);\n  persistTimer = setTimeout(() => {\n    persistTimer = null;\n    sqlite.persist().catch(() => {});\n  }, 220);\n}\n\n/** Fuerza el guardado pendiente (al cerrar o cambiar de pestaña). */\nexport async function flush() {\n  if (persistTimer) {\n    clearTimeout(persistTimer);\n",
+    "total_lines": 789
+  },
+  "summary": "store.js: lines 197–266 of 789 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 70,
+    "total": 789,
+    "next_offset": 266
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

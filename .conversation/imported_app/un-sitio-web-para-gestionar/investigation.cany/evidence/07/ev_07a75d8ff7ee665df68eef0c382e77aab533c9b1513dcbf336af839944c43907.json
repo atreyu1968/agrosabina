@@ -1,0 +1,54 @@
+{
+  "id": "ev_07a75d8ff7ee665df68eef0c382e77aab533c9b1513dcbf336af839944c43907",
+  "subject": {
+    "kind": "script",
+    "sha256": "e77d2b067087936538d3d840a88e5abb36fb4b329936b321d8810b38a1692838",
+    "name": "util.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 120,
+    "offset": 100,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 7872,
+    "lines": 120,
+    "more": true,
+    "offset": 100,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js",
+    "replaced_sequences": 0,
+    "text": "    .trim();\n}\n\nexport function nifKey(nif) {\n  return String(nif == null ? \"\" : nif)\n    .toUpperCase()\n    .replace(/[^0-9A-Z]/g, \"\");\n}\n\n/**\n * Convierte lo que aparece en una factura a número.\n * Entiende «1.234,56», «1234.56», «1234,56», «1 234,56» y «-12,30».\n */\nexport function parseAmount(raw) {\n  if (raw == null) return null;\n  if (typeof raw === \"number\") return Number.isFinite(raw) ? raw : null;\n  let s = String(raw).replace(/\\s|\\u00a0|'/g, \"\").replace(/[^\\d.,-]/g, \"\");\n  if (!s) return null;\n\n  const lastComma = s.lastIndexOf(\",\");\n  const lastDot = s.lastIndexOf(\".\");\n\n  if (lastComma > -1 && lastDot > -1) {\n    // El último separador es el decimal.\n    if (lastComma > lastDot) s = s.replace(/\\./g, \"\").replace(/,/g, \".\");\n    else s = s.replace(/,/g, \"\");\n  } else if (lastComma > -1) {\n    // «0,853 €/kg» es un precio de verdad, no 853: solo son miles si delante\n    // hay una cifra que no sea un cero suelto («1,234» → 1.234).\n    const decimals = s.length - lastComma - 1;\n    const entero = s.slice(0, lastComma);\n    const miles = decimals === 3 && entero !== \"\" && entero !== \"0\";\n    s = miles ? s.replace(/,/g, \"\") : s.replace(/,/g, \".\");\n  } else if (lastDot > -1) {\n    const decimals = s.length - lastDot - 1;\n    const entero = s.slice(0, lastDot);\n    const miles = decimals === 3 && entero !== \"\" && entero !== \"0\";\n    if (miles) s = s.replace(/\\./g, \"\");\n  }\n\n  const n = Number(s);\n  return Number.isFinite(n) ? n : null;\n}\n\n/**\n * Cuadra los cuatro importes de una factura a partir de los que se conozcan.\n * Devuelve también qué campos se han calculado ('derived').\n */\nexport function completeAmounts(input) {\n  const derived = [];\n  let base = Number.isFinite(input.base) ? input.base : null;\n  let rate = Number.isFinite(input.rate) ? input.rate : null;\n  let igic = Number.isFinite(input.igic) ? input.igic : null;\n  let total = Number.isFinite(input.total) ? input.total : null;\n\n  const has = (v) => v != null && Number.isFinite(v);\n\n  if (!has(rate) && has(base) && has(total) && base > 0) {\n    rate = round2((total / base - 1) * 100);\n    derived.push(\"rate\");\n  }\n  if (!has(igic) && has(base) && has(rate)) {\n    igic = round2((base * rate) / 100);\n    derived.push(\"igic\");\n  }\n  if (!has(total) && has(base) && has(igic)) {\n    total = round2(base + igic);\n    derived.push(\"total\");\n  }\n  if (!has(base) && has(total) && has(igic)) {\n    base = round2(total - igic);\n    derived.push(\"base\");\n  }\n  if (!has(base) && has(total) && has(rate) && rate !== -100) {\n    base = round2(total / (1 + rate / 100));\n    derived.push(\"base\");\n    if (!has(igic)) {\n      igic = round2(total - base);\n      derived.push(\"igic\");\n    }\n  }\n  if (!has(igic) && has(total) && has(base)) {\n    igic = round2(total - base);\n    derived.push(\"igic\");\n  }\n  if (!has(rate) && has(igic) && has(base) && base > 0) {\n    rate = round2((igic / base) * 100);\n    derived.push(\"rate\");\n  }\n  if (!has(total) && has(base)) {\n    total = round2(base + (has(igic) ? igic : 0));\n    derived.push(\"total\");\n  }\n\n  return { base, rate, igic, total, derived };\n}\n\n/** Comprueba si base + igic = total (con un céntimo de margen). */\nexport function amountsBalance(base, igic, total) {\n  if (![base, igic, total].every((v) => Number.isFinite(v))) return true;\n  return Math.abs(round2(base + igic) - round2(total)) <= 0.02;\n}\n\nexport function monthKey(iso) {\n  return String(iso || \"\").slice(0, 7);\n}\n\nexport function monthLabel(key) {\n  const names = [\"ene\", \"feb\", \"mar\", \"abr\", \"may\", \"jun\", \"jul\", \"ago\", \"sep\", \"oct\", \"nov\", \"dic\"];\n  const [y, m] = String(key).split(\"-\");\n  const idx = Number(m) - 1;\n  if (!names[idx] || !y) return key;\n  return `${names[idx]} ${y.slice(2)}`;\n}\n\n/** Últimos n meses (incluido el actual), del más antiguo al más nuevo. */\nexport function lastMonths(n) {\n  const out = [];\n  const d = new Date();\n  d.setDate(1);\n",
+    "total_lines": 249
+  },
+  "summary": "util.js: lines 101–220 of 249 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 120,
+    "total": 249,
+    "next_offset": 220
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js"
+    }
+  ],
+  "links": []
+}

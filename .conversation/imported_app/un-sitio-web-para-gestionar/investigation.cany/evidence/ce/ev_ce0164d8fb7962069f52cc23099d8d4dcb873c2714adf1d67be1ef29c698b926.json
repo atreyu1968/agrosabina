@@ -1,0 +1,83 @@
+{
+  "id": "ev_ce0164d8fb7962069f52cc23099d8d4dcb873c2714adf1d67be1ef29c698b926",
+  "subject": {
+    "kind": "script",
+    "sha256": "15f869acc82506c212bfc0d7a741237e49de0341d7e1599eec36832422b8ca94",
+    "name": "views.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 10,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "pattern": null,
+    "text": "businessName"
+  },
+  "result": {
+    "file_size": 65415,
+    "limit": 10,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "627573696e6573734e616d65",
+        "file_offset": 55063,
+        "file_offset_hex": "0xd717",
+        "length": 12,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "627573696e6573734e616d65",
+        "file_offset": 56655,
+        "file_offset_hex": "0xdd4f",
+        "length": 12,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 12
+      }
+    ],
+    "total_matches": 2
+  },
+  "summary": "2 match(es) for utf8 in views.js; showing 2 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0xd717"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xdd4f"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,53 @@
+{
+  "id": "ev_00ad71b2a4af1c3cb698ae482b9df4b3ff1536b5f36816fe85f20d4b54ed0c96",
+  "subject": {
+    "kind": "script",
+    "sha256": "1646bca31b06d335d7c422a1c498fc0224b6f304ed17f100b522747630692d8f",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 1,
+    "offset": 99999,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 154128,
+    "lines": 0,
+    "more": false,
+    "offset": 4068,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "",
+    "total_lines": 4068
+  },
+  "summary": "views.js has 4068 line(s); none from line 100000.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 0,
+    "total": 4068
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,676 @@
+{
+  "id": "ev_b1f7ee3ef1c681f4d0936a130fed4cf8dcdc369952c0f02d3685f8822b8c5c73",
+  "subject": {
+    "kind": "script",
+    "sha256": "fd36d28853b5da4f6f695da821777d044dd2ddd9ac6dd10b4456fa5942885ac3",
+    "name": "main.js"
+  },
+  "operation": "js_app_map",
+  "params": {
+    "include_node_modules": false,
+    "input_path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\main.js",
+    "limit": 500,
+    "max_nodes": 25000,
+    "offset": 0,
+    "source_paths": []
+  },
+  "result": {
+    "api_operations": [],
+    "app_kind": "unknown",
+    "bundlers": [],
+    "edges": [
+      {
+        "from": "event:main.js#cameraPicker:change",
+        "kind": "handled-by",
+        "to": "fn:main.js#cameraPicker.addEventListener(change)@150"
+      },
+      {
+        "from": "event:main.js#document:DOMContentLoaded",
+        "kind": "handled-by",
+        "to": "fn:main.js#boot@41"
+      },
+      {
+        "from": "event:main.js#document:click",
+        "kind": "handled-by",
+        "to": "fn:main.js#document.addEventListener(click)@107"
+      },
+      {
+        "from": "event:main.js#filePicker:change",
+        "kind": "handled-by",
+        "to": "fn:main.js#filePicker.addEventListener(change)@142"
+      },
+      {
+        "from": "event:main.js#window:beforeunload",
+        "kind": "handled-by",
+        "to": "fn:main.js#window.addEventListener(beforeunload)@180"
+      },
+      {
+        "from": "event:main.js#window:hashchange",
+        "kind": "handled-by",
+        "to": "fn:main.js#window.addEventListener(hashchange)@95"
+      },
+      {
+        "from": "fn:main.js#boot@41",
+        "kind": "listens",
+        "to": "event:main.js#cameraPicker:change"
+      },
+      {
+        "from": "fn:main.js#boot@41",
+        "kind": "listens",
+        "to": "event:main.js#filePicker:change"
+      },
+      {
+        "from": "fn:main.js#boot@41",
+        "kind": "listens",
+        "to": "event:main.js#window:beforeunload"
+      },
+      {
+        "from": "fn:main.js#boot@41",
+        "kind": "calls",
+        "to": "fn:main.js#routeFromHash@24"
+      },
+      {
+        "from": "fn:main.js#boot@41",
+        "kind": "calls",
+        "to": "fn:main.js#storageWorks@30"
+      },
+      {
+        "from": "fn:main.js#boot@41",
+        "kind": "calls",
+        "to": "fn:main.js#wireGlobalEvents@94"
+      },
+      {
+        "from": "fn:main.js#storageWorks@30",
+        "kind": "uses",
+        "to": "storage:localStorage.removeItem __probe__"
+      },
+      {
+        "from": "fn:main.js#storageWorks@30",
+        "kind": "uses",
+        "to": "storage:localStorage.setItem __probe__"
+      },
+      {
+        "from": "fn:main.js#window.addEventListener(hashchange)@95",
+        "kind": "calls",
+        "to": "fn:main.js#routeFromHash@24"
+      },
+      {
+        "from": "fn:main.js#wireGlobalEvents@94",
+        "kind": "listens",
+        "to": "event:main.js#document:change"
+      },
+      {
+        "from": "fn:main.js#wireGlobalEvents@94",
+        "kind": "listens",
+        "to": "event:main.js#document:click"
+      },
+      {
+        "from": "fn:main.js#wireGlobalEvents@94",
+        "kind": "listens",
+        "to": "event:main.js#document:input"
+      },
+      {
+        "from": "fn:main.js#wireGlobalEvents@94",
+        "kind": "listens",
+        "to": "event:main.js#window:hashchange"
+      },
+      {
+        "from": "module:main.js",
+        "kind": "listens",
+        "to": "event:main.js#document:DOMContentLoaded"
+      },
+      {
+        "from": "module:main.js",
+        "kind": "defines",
+        "to": "fn:main.js#boot@41"
+      },
+      {
+        "from": "module:main.js",
+        "kind": "defines",
+        "to": "fn:main.js#cameraPicker.addEventListener(change)@150"
+      },
+      {
+        "from": "module:main.js",
+        "kind": "defines",
+        "to": "fn:main.js#document.addEventListener(click)@107"
+      },
+      {
+        "from": "module:main.js",
+        "kind": "defines",
+        "to": "fn:main.js#filePicker.addEventListener(change)@142"
+      },
+      {
+        "from": "module:main.js",
+        "kind": "defines",
+        "to": "fn:main.js#routeFromHash@24"
+      },
+      {
+        "from": "module:main.js",
+        "kind": "defines",
+        "to": "fn:main.js#storageWorks@30"
+      },
+      {
+        "from": "module:main.js",
+        "kind": "defines",
+        "to": "fn:main.js#window.addEventListener(beforeunload)@180"
+      },
+      {
+        "from": "module:main.js",
+        "kind": "defines",
+        "to": "fn:main.js#window.addEventListener(hashchange)@95"
+      },
+      {
+        "from": "module:main.js",
+        "kind": "defines",
+        "to": "fn:main.js#wireGlobalEvents@94"
+      }
+    ],
+    "effects": [],
+    "endpoints": [],
+    "entry_points": {
+      "main": "main.js",
+      "pages": [],
+      "preloads": [],
+      "renderers": [],
+      "workers": []
+    },
+    "exposed": [],
+    "graph_id": "ag_572a69b4eb75b724cf454ceaa87d61aadf3b203948d177e846141f2f335553c1",
+    "input_format": "file",
+    "ipc": [],
+    "label": "main.js",
+    "limitations": [],
+    "modules": [
+      {
+        "bundle_modules": [],
+        "bundlers": [],
+        "bytes": 5439,
+        "chunk_ids": [],
+        "exports": {
+          "cjs": [],
+          "esm": []
+        },
+        "fingerprint": "65824a9cfe7338079514edc74fdbc3c014081606704b01b2e5e68697ba638e1f",
+        "functions": [
+          "routeFromHash",
+          "storageWorks",
+          "boot",
+          "wireGlobalEvents",
+          "window.addEventListener(hashchange)",
+          "document.addEventListener(click)",
+          "filePicker.addEventListener(change)",
+          "cameraPicker.addEventListener(change)",
+          "window.addEventListener(beforeunload)"
+        ],
+        "imports": [
+          {
+            "kind": "import",
+            "line": 5,
+            "specifier": "./store.js"
+          },
+          {
+            "kind": "import",
+            "line": 6,
+            "specifier": "./dom.js"
+          },
+          {
+            "kind": "import",
+            "line": 7,
+            "specifier": "./views.js"
+          }
+        ],
+        "kind": "script",
+        "parse_mode": "parsed",
+        "path": "main.js",
+        "role": "package",
+        "sha256": "fd36d28853b5da4f6f695da821777d044dd2ddd9ac6dd10b4456fa5942885ac3",
+        "strings": [
+          "resumen",
+          "ventas",
+          "nominas",
+          "contabilidad",
+          "compras",
+          "proveedores",
+          "documentos",
+          "correo",
+          "importar",
+          "?",
+          "__probe__",
+          "1",
+          "No se pudo arrancar el almacén de datos:",
+          "La base de datos está tardando en abrir. Sigo con la copia que hay guardada en este navegador.",
+          "bad",
+          "local",
+          "No he podido abrir la base de datos SQLite en este navegador, así que guardo los datos de la forma anterior. Todo funciona igual.",
+          "hashchange",
+          "#/",
+          "click",
+          "[data-action]",
+          "Un momento: estoy abriendo tus datos.",
+          "info",
+          "[data-filter-status]",
+          "[data-filter-direction]",
+          "input",
+          "change",
+          "filePicker",
+          "cameraPicker",
+          "sqlite",
+          "Este navegador no me deja guardar datos (¿ventana privada?). Puedes usarlo, pero al cerrar se perderá todo.",
+          "Listo. Sube un documento para empezar.",
+          "beforeunload",
+          "loading",
+          "DOMContentLoaded"
+        ]
+      }
+    ],
+    "modules_total": 1,
+    "native_modules": [],
+    "nodes": [
+      {
+        "id": "module:main.js",
+        "kind": "module",
+        "label": "main.js",
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "String().replace().split",
+            "String().replace",
+            "String",
+            "ROUTES.includes"
+          ],
+          "end": 790,
+          "end_line": 28,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 591,
+          "strings": [
+            "?",
+            "resumen"
+          ]
+        },
+        "id": "fn:main.js#routeFromHash@24",
+        "kind": "function",
+        "label": "routeFromHash",
+        "line": 24,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "localStorage.setItem",
+            "localStorage.removeItem"
+          ],
+          "end": 981,
+          "end_line": 39,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 792,
+          "strings": [
+            "__probe__",
+            "1"
+          ]
+        },
+        "id": "fn:main.js#storageWorks@30",
+        "kind": "function",
+        "label": "storageWorks",
+        "line": 30,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "routeFromHash",
+            "./views.js.renderLoading",
+            "wireGlobalEvents",
+            "Promise.race",
+            "./store.js.initStore().then",
+            "./store.js.initStore",
+            "new Promise",
+            "console.error",
+            "./views.js.render",
+            "setTimeout",
+            "./dom.js.escapeKeyCloses",
+            "./views.js.wireDropzone",
+            "./store.js.storageInfo",
+            "document.getElementById",
+            "filePicker.addEventListener",
+            "cameraPicker.addEventListener",
+            "./store.js.subscribe",
+            "storageWorks",
+            "./store.js.getState",
+            "console.info",
+            "./store.js.save",
+            "addEventListener"
+          ],
+          "end": 5304,
+          "end_line": 183,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": null,
+          "start": 983,
+          "strings": [
+            "No se pudo arrancar el almacén de datos:",
+            "local",
+            "filePicker",
+            "change",
+            "cameraPicker",
+            "sqlite",
+            "Listo. Sube un documento para empezar.",
+            "beforeunload"
+          ]
+        },
+        "id": "fn:main.js#boot@41",
+        "kind": "function",
+        "label": "boot",
+        "line": 41,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "addEventListener",
+            "document.addEventListener"
+          ],
+          "end": 3869,
+          "end_line": 138,
+          "exported": false,
+          "kind": "declaration",
+          "params": [],
+          "parent": "boot",
+          "start": 2520,
+          "strings": [
+            "hashchange",
+            "click",
+            "input",
+            "change"
+          ]
+        },
+        "id": "fn:main.js#wireGlobalEvents@94",
+        "kind": "function",
+        "label": "wireGlobalEvents",
+        "line": 94,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "location.hash.startsWith",
+            "routeFromHash",
+            "scrollTo",
+            "./views.js.renderLoading",
+            "./views.js.render"
+          ],
+          "end": 2930,
+          "end_line": 105,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "wireGlobalEvents",
+          "start": 2592,
+          "strings": [
+            "#/"
+          ]
+        },
+        "id": "fn:main.js#window.addEventListener(hashchange)@95",
+        "kind": "function",
+        "label": "window.addEventListener(hashchange)",
+        "line": 95,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "ev.target.closest",
+            "ev.preventDefault",
+            "./dom.js.toast",
+            "./views.js.onAction",
+            "./views.js.onFilterButton",
+            "./views.js.onDirectionButton"
+          ],
+          "end": 3750,
+          "end_line": 134,
+          "exported": false,
+          "kind": "arrow",
+          "params": [
+            "ev"
+          ],
+          "parent": "wireGlobalEvents",
+          "start": 2971,
+          "strings": [
+            "[data-action]",
+            "Un momento: estoy abriendo tus datos.",
+            "info",
+            "[data-filter-status]",
+            "[data-filter-direction]"
+          ]
+        },
+        "id": "fn:main.js#document.addEventListener(click)@107",
+        "kind": "function",
+        "label": "document.addEventListener(click)",
+        "line": 107,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./views.js.queueFiles"
+          ],
+          "end": 4126,
+          "end_line": 145,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "boot",
+          "start": 3993,
+          "strings": []
+        },
+        "id": "fn:main.js#filePicker.addEventListener(change)@142",
+        "kind": "function",
+        "label": "filePicker.addEventListener(change)",
+        "line": 142,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./views.js.queueFiles"
+          ],
+          "end": 4405,
+          "end_line": 153,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "boot",
+          "start": 4264,
+          "strings": []
+        },
+        "id": "fn:main.js#cameraPicker.addEventListener(change)@150",
+        "kind": "function",
+        "label": "cameraPicker.addEventListener(change)",
+        "line": 150,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "attrs": {
+          "calls": [
+            "./store.js.flush().catch",
+            "./store.js.flush"
+          ],
+          "end": 5300,
+          "end_line": 182,
+          "exported": false,
+          "kind": "arrow",
+          "params": [],
+          "parent": "boot",
+          "start": 5260,
+          "strings": []
+        },
+        "id": "fn:main.js#window.addEventListener(beforeunload)@180",
+        "kind": "function",
+        "label": "window.addEventListener(beforeunload)",
+        "line": 180,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "id": "storage:localStorage.setItem __probe__",
+        "kind": "storage",
+        "label": "localStorage.setItem __probe__"
+      },
+      {
+        "id": "storage:localStorage.removeItem __probe__",
+        "kind": "storage",
+        "label": "localStorage.removeItem __probe__"
+      },
+      {
+        "id": "event:main.js#window:hashchange",
+        "kind": "event",
+        "label": "window:hashchange",
+        "line": 95,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "id": "event:main.js#document:click",
+        "kind": "event",
+        "label": "document:click",
+        "line": 107,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "id": "event:main.js#document:input",
+        "kind": "event",
+        "label": "document:input",
+        "line": 136,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "id": "event:main.js#document:change",
+        "kind": "event",
+        "label": "document:change",
+        "line": 137,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "id": "event:main.js#filePicker:change",
+        "kind": "event",
+        "label": "filePicker:change",
+        "line": 142,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "id": "event:main.js#cameraPicker:change",
+        "kind": "event",
+        "label": "cameraPicker:change",
+        "line": 150,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "id": "event:main.js#window:beforeunload",
+        "kind": "event",
+        "label": "window:beforeunload",
+        "line": 180,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "id": "event:main.js#document:DOMContentLoaded",
+        "kind": "event",
+        "label": "document:DOMContentLoaded",
+        "line": 186,
+        "module": "main.js",
+        "role": "package"
+      }
+    ],
+    "package": null,
+    "routes": [],
+    "source_maps": [],
+    "stats": {
+      "api_operations": 0,
+      "bundle_modules": 0,
+      "edges": 29,
+      "endpoints": 0,
+      "files": 1,
+      "functions": 9,
+      "ipc_channels": 0,
+      "listed": 1,
+      "modules": 1,
+      "nodes": 20,
+      "paired_channels": 0
+    },
+    "storage": [
+      {
+        "api": "localStorage.setItem",
+        "arg": "__probe__",
+        "function": "storageWorks",
+        "line": 33,
+        "module": "main.js",
+        "role": "package"
+      },
+      {
+        "api": "localStorage.removeItem",
+        "arg": "__probe__",
+        "function": "storageWorks",
+        "line": 34,
+        "module": "main.js",
+        "role": "package"
+      }
+    ],
+    "summary": "JavaScript code main.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+    "vendors": [],
+    "windows": []
+  },
+  "summary": "JavaScript code main.js: 1 source files, 0 IPC channel(s) (0 paired), 0 window(s), 0 endpoint(s), 0 route(s).",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "static_only",
+      "message": "Static reading only: code built at run time (eval, computed requires, remote content) is invisible; IPC pairs need literal channel names."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 1,
+    "total": 1
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\dist\\assets\\js\\main.js"
+    },
+    {
+      "kind": "module",
+      "value": "main.js",
+      "label": "main"
+    }
+  ],
+  "links": []
+}

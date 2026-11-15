@@ -1,0 +1,54 @@
+{
+  "id": "ev_be82dadadffbf96d583230fa99b7f416e283984c736ddd4c4d7aff3af94a4325",
+  "subject": {
+    "kind": "script",
+    "sha256": "04cfc4300fa266dff4c92a5d409712941f2dbcb2e6ffb7ef2a0aa0a537cbedf2",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 5180,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 267805,
+    "lines": 60,
+    "more": true,
+    "offset": 5180,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      accOwnModal(null);\n      return;\n    }\n    case \"acc-own-edit\": {\n      const plan = accPlan();\n      const todas = plan.subcuentas.concat(plan.propias);\n      const cual = String(id || \"\");\n      accOwnModal(todas.find((c) => String(c.code) === cual) || { code: cual, name: pgcNombre(cual) || \"\" });\n      return;\n    }\n    case \"acc-own-save\": {\n      saveAccOwn();\n      return;\n    }\n    case \"acc-plan-fix\": {\n      const plan = accPlan();\n      updateSettings({ subcuentas: plan.subcuentas });\n      toast(`${plan.subcuentas.length} subcuentas guardadas.`, \"ok\");\n      render();\n      return;\n    }\n    case \"export-acc-csv\": {\n      exportAccCsv();\n      return;\n    }\n    case \"prueba-open\": {\n      const input = document.getElementById(\"pruebaPicker\");\n      if (input) input.click();\n      else toast(\"Vuelve a abrir la pantalla y prueba otra vez.\", \"warn\");\n      return;\n    }\n    case \"prueba-copy\": {\n      const texto = informePruebas();\n      if (!texto) {\n        toast(\"Todavía no hay nada que copiar.\", \"warn\");\n        return;\n      }\n      try {\n        await navigator.clipboard.writeText(texto);\n        toast(\"Informe copiado. Ya puedes pegarlo donde quieras.\", \"ok\", 4000);\n      } catch (_) {\n        downloadText(\"prueba-lectura.txt\", texto, \"text/plain;charset=utf-8\");\n        toast(\"No he podido copiarlo: te lo dejo como archivo de texto.\", \"warn\", 5000);\n      }\n      return;\n    }\n    case \"prueba-export\": {\n      const texto = informePruebas();\n      if (!texto) {\n        toast(\"Todavía no hay nada que guardar.\", \"warn\");\n        return;\n      }\n      downloadText(\"prueba-lectura.txt\", texto, \"text/plain;charset=utf-8\");\n      toast(\"Guardado como prueba-lectura.txt.\", \"ok\", 4000);\n      return;\n    }\n    case \"prueba-clear\": {\n      ui.pruebas.list = [];\n      ui.pruebas.status = \"\";\n      toast(\"Banco de pruebas vacío.\", \"ok\");\n",
+    "total_lines": 6720
+  },
+  "summary": "views.js: lines 5181–5240 of 6720 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 6720,
+    "next_offset": 5240
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,83 @@
+{
+  "id": "ev_257ee611f2a1eaeb25210d239091cecb925012c150eb2f5c8479dadb7e12126b",
+  "subject": {
+    "kind": "text",
+    "sha256": "db4e299ab770a6f90e2adf339b2987d79beab61b799d58c13dc8f535907bfdd3",
+    "name": "styles.css"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 3,
+    "offset": 4,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "pattern": null,
+    "text": ".howto"
+  },
+  "result": {
+    "file_size": 32327,
+    "limit": 3,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "2e686f77746f",
+        "file_offset": 23077,
+        "file_offset_hex": "0x5a25",
+        "length": 6,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e686f77746f",
+        "file_offset": 26210,
+        "file_offset_hex": "0x6662",
+        "length": 6,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 4,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 6
+      }
+    ],
+    "total_matches": 6
+  },
+  "summary": "6 match(es) for utf8 in styles.css; showing 2 from #4.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 6
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x5a25"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x6662"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,497 @@
+{
+  "id": "ev_c7369459518cd7d7568a3e1a6513980dc1683d866aeb53e4bc6330a31c1b998c",
+  "subject": {
+    "kind": "artifact-pair",
+    "name": "site vs app"
+  },
+  "operation": "core_archives_compare",
+  "params": {
+    "left": "inv_e0ba5e37b89d828518acbada688351cbdc3f05a66e0d4942c54fe92784c245c7",
+    "right": "inv_3cb5334e2506b2630c344aa97435cda89531f2b2e021821dfee51998818edbcb"
+  },
+  "result": {
+    "added": [
+      {
+        "kind": "text",
+        "path": "README.md",
+        "size": 17398
+      },
+      {
+        "kind": "json",
+        "path": "_check2/manifest.json",
+        "size": 538
+      },
+      {
+        "kind": "javascript",
+        "path": "_check2/pretty/views.js",
+        "size": 148623
+      },
+      {
+        "kind": "json",
+        "path": "_check3/manifest.json",
+        "size": 5075
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/accounting.js",
+        "size": 23521
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/ai.js",
+        "size": 13094
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/camera.js",
+        "size": 8410
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/dom.js",
+        "size": 9229
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/mail.js",
+        "size": 7866
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/main.js",
+        "size": 4826
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/model.js",
+        "size": 10395
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/parse.js",
+        "size": 28096
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/read.js",
+        "size": 16160
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/sqlite.js",
+        "size": 16726
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/store.js",
+        "size": 23891
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/util.js",
+        "size": 7671
+      },
+      {
+        "kind": "javascript",
+        "path": "_check3/pretty/js/views.js",
+        "size": 149630
+      },
+      {
+        "kind": "json",
+        "path": "_check4/manifest.json",
+        "size": 6205
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/accounting.js",
+        "size": 28622
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/ai.js",
+        "size": 13094
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/camera.js",
+        "size": 8410
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/dom.js",
+        "size": 9229
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/mail.js",
+        "size": 7866
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/main.js",
+        "size": 4826
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/model.js",
+        "size": 10395
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/parse.js",
+        "size": 28096
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/pdf.js",
+        "size": 10748
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/pgc.js",
+        "size": 12876
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/read.js",
+        "size": 16160
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/reports.js",
+        "size": 5373
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/sqlite.js",
+        "size": 16726
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/store.js",
+        "size": 23891
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/util.js",
+        "size": 7671
+      },
+      {
+        "kind": "javascript",
+        "path": "_check4/pretty/js/views.js",
+        "size": 170009
+      },
+      {
+        "kind": "text",
+        "path": "build.bat",
+        "size": 919
+      },
+      {
+        "kind": "svg",
+        "path": "dist/assets/favicon.svg",
+        "size": 601
+      },
+      {
+        "kind": "png",
+        "path": "dist/assets/img/agrosabina.png",
+        "size": 13870
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/accounting.js",
+        "size": 32312
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/ai.js",
+        "size": 13720
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/camera.js",
+        "size": 9227
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/dom.js",
+        "size": 9373
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/erp.js",
+        "size": 11035
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/files.js",
+        "size": 5612
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/importers.js",
+        "size": 13151
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/mail.js",
+        "size": 8279
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/main.js",
+        "size": 5452
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/model.js",
+        "size": 10340
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/nomina.js",
+        "size": 10720
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/parse.js",
+        "size": 40608
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/pdf.js",
+        "size": 11337
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/pgc.js",
+        "size": 13147
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/read.js",
+        "size": 17330
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/reports.js",
+        "size": 5508
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/sqlite.js",
+        "size": 19960
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/store.js",
+        "size": 33915
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/util.js",
+        "size": 7872
+      },
+      {
+        "kind": "javascript",
+        "path": "dist/assets/js/views.js",
+        "size": 267805
+      },
+      {
+        "kind": "css",
+        "path": "dist/assets/styles.css",
+        "size": 44144
+      },
+      {
+        "kind": "html",
+        "path": "dist/index.html",
+        "size": 7136
+      },
+      {
+        "kind": "text",
+        "path": "npm.cmd",
+        "size": 2556
+      },
+      {
+        "kind": "json",
+        "path": "package.reference.json",
+        "size": 339
+      },
+      {
+        "kind": "svg",
+        "path": "site/assets/favicon.svg",
+        "size": 601
+      },
+      {
+        "kind": "png",
+        "path": "site/assets/img/agrosabina.png",
+        "size": 13870
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/accounting.js",
+        "size": 32312
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/ai.js",
+        "size": 13720
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/camera.js",
+        "size": 9227
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/dom.js",
+        "size": 9373
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/erp.js",
+        "size": 11035
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/files.js",
+        "size": 5612
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/importers.js",
+        "size": 13151
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/mail.js",
+        "size": 8279
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/main.js",
+        "size": 5452
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/model.js",
+        "size": 10340
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/nomina.js",
+        "size": 10720
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/parse.js",
+        "size": 40608
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/pdf.js",
+        "size": 11337
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/pgc.js",
+        "size": 13147
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/read.js",
+        "size": 17330
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/reports.js",
+        "size": 5508
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/sqlite.js",
+        "size": 19960
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/store.js",
+        "size": 33915
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/util.js",
+        "size": 7872
+      },
+      {
+        "kind": "javascript",
+        "path": "site/assets/js/views.js",
+        "size": 267805
+      },
+      {
+        "kind": "css",
+        "path": "site/assets/styles.css",
+        "size": 44144
+      },
+      {
+        "kind": "html",
+        "path": "site/index.html",
+        "size": 7136
+      },
+      {
+        "kind": "text",
+        "path": "t1.bat",
+        "size": 99
+      },
+      {
+        "kind": "text",
+        "path": "t2.bat",
+        "size": 99
+      },
+      {
+        "kind": "javascript",
+        "path": "tools/build.mjs",
+        "size": 1312
+      },
+      {
+        "kind": "text",
+        "path": "tools/copy-logo.bat",
+        "size": 414
+      }
+    ],
+    "changed": [],
+    "counts": {
+      "added": 89,
+      "changed": 0,
+      "moved": 0,
+      "removed": 0,
+      "unchanged": 24
+    },
+    "identical": false,
+    "left": {
+      "content_id": "inv_e0ba5e37b89d828518acbada688351cbdc3f05a66e0d4942c54fe92784c245c7",
+      "files": 24,
+      "root": "site"
+    },
+    "moved": [],
+    "removed": [],
+    "right": {
+      "content_id": "inv_3cb5334e2506b2630c344aa97435cda89531f2b2e021821dfee51998818edbcb",
+      "files": 113,
+      "root": "app"
+    }
+  },
+  "summary": "site → app: 89 added, 0 removed, 0 changed, 0 moved, 24 unchanged.",
+  "confidence": "derived",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [],
+  "coverage": {
+    "status": "unknown"
+  },
+  "locations": [],
+  "links": []
+}

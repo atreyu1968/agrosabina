@@ -1,0 +1,54 @@
+{
+  "id": "ev_cbc8a64df23d1c2746957e30934bab7560659bc4540d1d8c25dc739e1466ea1b",
+  "subject": {
+    "kind": "script",
+    "sha256": "e694a79c0fd22ea8c00684da290c4556aced463bb78e5466f3be90ead3c96f7f",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 4400,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 195333,
+    "lines": 45,
+    "more": true,
+    "offset": 4400,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      <div class=\"card-head\">\n        <div>\n          <h2><span class=\"mono\">${esc(r.code)}</span> ${esc(r.name)}</h2>\n          <p>${r.moves.length} ${r.moves.length === 1 ? \"movimiento\" : \"movimientos\"} · saldo ${r.saldo >= 0 ? \"deudor\" : \"acreedor\"} ${fmtEUR(Math.abs(r.saldo))}</p>\n        </div>\n      </div>\n      <div class=\"table-wrap\">\n        <table class=\"data acc-table\">\n          <thead><tr>\n            <th>Fecha</th><th class=\"num\">Asiento</th><th>Concepto</th>\n            <th class=\"num\">Debe</th><th class=\"num\">Haber</th><th class=\"num\">Saldo</th>\n          </tr></thead>\n          <tbody>\n            ${r.moves.map((m) => `<tr class=\"acc-row\">\n              <td class=\"num\">${fmtDate(m.date)}</td>\n              <td class=\"num\">${m.number}</td>\n              <td><span class=\"acc-name\">${esc(m.concept)}</span></td>\n              <td class=\"num\">${m.debit ? fmtEUR(m.debit) : \"\"}</td>\n              <td class=\"num\">${m.credit ? fmtEUR(m.credit) : \"\"}</td>\n              <td class=\"num strong\">${fmtEUR(m.running)}</td>\n            </tr>`).join(\"\")}\n          </tbody>\n          <tfoot><tr>\n            <td colspan=\"3\">Sumas y saldo</td>\n            <td class=\"num\">${fmtEUR(r.debit)}</td>\n            <td class=\"num\">${fmtEUR(r.credit)}</td>\n            <td class=\"num\">${fmtEUR(r.saldo)}</td>\n          </tr></tfoot>\n        </table>\n      </div>\n    </section>`).join(\"\")}\n  </div>`;\n}\n\n/** Balance de sumas y saldos: lo que se ha movido en cada cuenta y lo que queda. */\nfunction accSumasHtml(sumas) {\n  if (!sumas.rows.length) return accEmpty();\n  return `\n  <section class=\"card\">\n    <div class=\"card-head\">\n      <div>\n        <h2>Balance de sumas y saldos</h2>\n        <p>${sumas.rows.length} ${sumas.rows.length === 1 ? \"cuenta\" : \"cuentas\"} · ${sumas.cuadra ? \"los saldos cuadran\" : \"los saldos no cuadran\"}</p>\n      </div>\n      <div class=\"spacer\"></div>\n",
+    "total_lines": 5073
+  },
+  "summary": "views.js: lines 4401–4445 of 5073 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 5073,
+    "next_offset": 4445
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,54 @@
+{
+  "id": "ev_d5f5b3a52520f4c3fa49291b952a3991df255a8ac016aba9ca6d7cb7a6f2d8ca",
+  "subject": {
+    "kind": "script",
+    "sha256": "83704397ea89e45fa1af80334964cb8e67554af7773347bdc2b1474dc48b4b50",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 3040,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 245244,
+    "lines": 60,
+    "more": true,
+    "offset": 3040,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "\n  function leer() {\n    return {\n      trabajador: (q(\"#n-trabajador\") || {}).value || \"\",\n      periodo: (q(\"#n-periodo\") || {}).value || \"\",\n      bruto: valor(nBruto),\n      ssTrabajador: valor(nSs),\n      irpf: valor(nIrpf),\n      ssEmpresa: valor(nSsEmp),\n      neto: valor(nNeto),\n    };\n  }\n\n  function pintarResumen() {\n    const n = calcularNomina(leer());\n    if (sum) {\n      sum.textContent =\n        n.bruto == null ? \"\" : `Coste para la empresa ${fmtEUR(n.coste)} (bruto más la Seguridad Social de la empresa)`;\n    }\n    return n;\n  }\n\n  function pasarAlDocumento(n) {\n    if (ctx.base && document.activeElement !== ctx.base) ctx.base.value = n.bruto == null ? \"\" : fmtNum(n.bruto);\n    if (ctx.igic && document.activeElement !== ctx.igic) ctx.igic.value = \"0\";\n    if (ctx.rate) ctx.rate.value = \"0\";\n    if (ctx.total && document.activeElement !== ctx.total) ctx.total.value = n.neto == null ? \"\" : fmtNum(n.neto);\n  }\n\n  function recalcular() {\n    const n = pintarResumen();\n    pasarAlDocumento(n);\n  }\n\n  function ver() {\n    box.hidden = !ctx.kindSel || ctx.kindSel.value !== \"NOMINA\";\n  }\n\n  for (const el of [nBruto, nSs, nIrpf, nSsEmp, nNeto]) {\n    el.addEventListener(\"input\", () => {\n      // El líquido se recalcula con lo escrito, salvo que se esté escribiendo a mano.\n      const n = calcularNomina({ ...leer(), neto: null });\n      if (document.activeElement !== nNeto) nNeto.value = n.neto == null ? \"\" : fmtNum(n.neto);\n      recalcular();\n    });\n  }\n  if (ctx.kindSel) ctx.kindSel.addEventListener(\"change\", ver);\n  ver();\n  if (ctx.kindSel && ctx.kindSel.value === \"NOMINA\") recalcular();\n  else pintarResumen();\n}\n\n/**\n * Lo que se escribe en el bloque de la nómina, listo para guardar.\n */\nfunction readNomina(wrap) {\n  const box = wrap.querySelector(\"#f-nom\");\n  if (!box) return null;\n  const val = (sel) => {\n    const el = wrap.querySelector(sel);\n",
+    "total_lines": 6154
+  },
+  "summary": "views.js: lines 3041–3100 of 6154 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 6154,
+    "next_offset": 3100
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

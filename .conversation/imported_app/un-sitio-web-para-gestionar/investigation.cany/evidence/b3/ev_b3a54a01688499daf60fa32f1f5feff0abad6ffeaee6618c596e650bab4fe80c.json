@@ -1,0 +1,54 @@
+{
+  "id": "ev_b3a54a01688499daf60fa32f1f5feff0abad6ffeaee6618c596e650bab4fe80c",
+  "subject": {
+    "kind": "script",
+    "sha256": "6238b99ab8c1c0f10ce834ae43fb81a8055d05a8f9b20d7043327b18867475d9",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 18,
+    "offset": 590,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 134368,
+    "lines": 18,
+    "more": true,
+    "offset": 590,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "            <p>Con un clic cambias el estado. El resumen te dice cuánto debes y cuánto IGIC llevas.</p>\n          </div>\n        </div>\n      </div>\n    </section>\n  </div>`;\n}\n\n/* ------------------------------------------------------------------ */\n/* Ventas e ingresos                                                  */\n/* ------------------------------------------------------------------ */\n\nconst SALES_RANGES = [\n  { id: \"year\", label: \"Este año\" },\n  { id: \"quarter\", label: \"Este trimestre\" },\n  { id: \"month\", label: \"Este mes\" },\n  { id: \"campaign\", label: \"Últimos 12 meses\" },\n  { id: \"all\", label: \"Todo lo registrado\" },\n",
+    "total_lines": 3575
+  },
+  "summary": "views.js: lines 591–608 of 3575 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 18,
+    "total": 3575,
+    "next_offset": 608
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

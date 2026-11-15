@@ -1,0 +1,54 @@
+{
+  "id": "ev_bdd1fc035d049baa4849ea4c7f49e2140c3d8b8a042ca15eee114684838f7d3f",
+  "subject": {
+    "kind": "script",
+    "sha256": "5424c53cadc6967fd41cb2d41f506ef1289ebd4290305ebd0dd21bd6dfeca4f8",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 325,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 23887,
+    "lines": 60,
+    "more": true,
+    "offset": 325,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "        credit: l.credit || 0,\n        running: 0,\n      });\n    }\n  }\n  const rows = [...map.values()];\n  for (const r of rows) {\n    let acc = 0;\n    for (const m of r.moves) {\n      acc = round2(acc + m.debit - m.credit);\n      m.running = acc;\n    }\n    r.saldo = round2(r.debit - r.credit);\n  }\n  rows.sort((a, b) => (a.code < b.code ? -1 : a.code > b.code ? 1 : 0));\n  return rows;\n}\n\n/* ------------------------------------------------------------------ */\n/* Balance de sumas y saldos                                          */\n/* ------------------------------------------------------------------ */\n\n/**\n * Sumas y saldos: por cuenta, cuánto se ha movido al debe y al haber y el\n * saldo que queda, deudor o acreedor. Las dos últimas columnas tienen que\n * sumar lo mismo: si no, algo se ha quedado fuera.\n */\nexport function balanceSumasYSaldos(mayor) {\n  const rows = (mayor || []).map((r) => ({\n    code: r.code,\n    name: r.name,\n    debit: r.debit,\n    credit: r.credit,\n    deudor: r.saldo > 0.004 ? r.saldo : 0,\n    acreedor: r.saldo < -0.004 ? round2(-r.saldo) : 0,\n  }));\n  const totals = rows.reduce(\n    (t, r) => ({\n      debit: round2(t.debit + r.debit),\n      credit: round2(t.credit + r.credit),\n      deudor: round2(t.deudor + r.deudor),\n      acreedor: round2(t.acreedor + r.acreedor),\n    }),\n    { debit: 0, credit: 0, deudor: 0, acreedor: 0 }\n  );\n  return { rows, totals, cuadra: Math.abs(totals.deudor - totals.acreedor) < 0.01 };\n}\n\n/* ------------------------------------------------------------------ */\n/* Cuenta de pérdidas y ganancias (modelo oficial)                    */\n/* ------------------------------------------------------------------ */\n\nexport const LINEAS_RESULTADOS = Object.freeze([\n  { key: \"1\", label: \"1. Importe neto de la cifra de negocios\" },\n  { key: \"2\", label: \"2. Variación de existencias de productos terminados y en curso de fabricación\" },\n  { key: \"3\", label: \"3. Trabajos realizados por la empresa para su activo\" },\n  { key: \"4\", label: \"4. Aprovisionamientos\" },\n  { key: \"5\", label: \"5. Otros ingresos de explotación\" },\n  { key: \"6\", label: \"6. Gastos de personal\" },\n  { key: \"7\", label: \"7. Otros gastos de explotación\" },\n",
+    "total_lines": 588
+  },
+  "summary": "accounting.js: lines 326–385 of 588 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 588,
+    "next_offset": 385
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

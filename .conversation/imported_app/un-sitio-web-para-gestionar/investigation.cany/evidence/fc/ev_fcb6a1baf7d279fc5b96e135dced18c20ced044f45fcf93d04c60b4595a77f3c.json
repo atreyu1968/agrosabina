@@ -1,0 +1,54 @@
+{
+  "id": "ev_fcb6a1baf7d279fc5b96e135dced18c20ced044f45fcf93d04c60b4595a77f3c",
+  "subject": {
+    "kind": "script",
+    "sha256": "95cfec9262b76d4a06e9da1f5aa03517b468bd8e6341b387341adabc3c2d11cb",
+    "name": "model.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 60,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 10340,
+    "lines": 30,
+    "more": true,
+    "offset": 60,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js",
+    "replaced_sequences": 0,
+    "text": "      })</option>`\n  ).join(\"\");\n}\n\n/** Categorías para un <select>, filtradas por sentido. */\nexport function categoryOptions(current, direction) {\n  const list = CATEGORIES.filter((c) => !c.direction || !direction || c.direction === direction);\n  return list\n    .map((c) => `<option value=\"${c.id}\" ${c.id === (current || \"\") ? \"selected\" : \"\"}>${c.label}</option>`)\n    .join(\"\");\n}\n\n/* ------------------------------------------------------------------ */\n/* Clasificador de reglas                                             */\n/* ------------------------------------------------------------------ */\n\nfunction fold(text) {\n  return String(text || \"\")\n    .toLowerCase()\n    .normalize(\"NFD\")\n    .replace(/[\\u0300-\\u036f]/g, \"\")\n    .replace(/\\s+/g, \" \");\n}\n\n/** Palabras que delatan un tipo de documento. [palabra, peso] */\nconst KIND_WORDS = {\n  SUBVENCION: [\n    [\"subvencion\", 3], [\"subvenciones\", 3], [\"ayuda\", 2], [\"ayudas\", 2],\n    [\"feader\", 3], [\"feaga\", 3], [\"foga\", 3], [\"fega\", 2],\n    [\"pago unico\", 3], [\"pac \", 1], [\"consejeria de agricultura\", 3],\n",
+    "total_lines": 242
+  },
+  "summary": "model.js: lines 61–90 of 242 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 242,
+    "next_offset": 90
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js"
+    }
+  ],
+  "links": []
+}

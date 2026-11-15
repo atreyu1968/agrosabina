@@ -1,0 +1,54 @@
+{
+  "id": "ev_07155549f05d642feeaaa009bddea34faf75e51ab598be50fb68d9bc01c9fff4",
+  "subject": {
+    "kind": "script",
+    "sha256": "972b1b7be9bc1577cb6086bdfd834369effd809ab3790f15ed31e98a92be3786",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 60,
+    "offset": 2700,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 200323,
+    "lines": 60,
+    "more": true,
+    "offset": 2700,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "      <label for=\"f-rate\">Tipo de IGIC</label>\n      <select id=\"f-rate\">${rateOptions(v.rate)}</select>\n    </div>\n    <div class=\"field\">\n      <label for=\"f-igic\">Cuota de IGIC</label>\n      <div class=\"with-suffix\"><input id=\"f-igic\" type=\"text\" inputmode=\"decimal\" value=\"${v.igic != null ? fmtNum(v.igic) : \"\"}\" placeholder=\"0,00\"><span>€</span></div>\n    </div>\n    <div class=\"field\">\n      <label for=\"f-total\">Total de la factura</label>\n      <div class=\"with-suffix\"><input id=\"f-total\" type=\"text\" inputmode=\"decimal\" value=\"${v.total != null ? fmtNum(v.total) : \"\"}\" placeholder=\"0,00\"><span>€</span></div>\n    </div>\n    <div class=\"field span-2\">\n      <div class=\"lines-head\">\n        <div>\n          <label for=\"iv-lines\">Varios tipos de IGIC en el mismo documento</label>\n          <p class=\"lines-hint\">Cada producto o servicio lleva su tipo (0 · 3 · 7 · 9,5 · 15 · 20 %). Añade una línea por tipo y la base, la cuota y el total se suman solos.</p>\n        </div>\n        <button type=\"button\" class=\"btn sm ghost\" data-add-line>${icon(\"plus\")}<span>Añadir tipo</span></button>\n      </div>\n      <div class=\"igic-lines\" id=\"iv-lines\">\n        ${(v.lines || []).map((l) => lineRowHtml(l.base, l.rate)).join(\"\")}\n      </div>\n      <p class=\"lines-sum\" id=\"iv-lines-sum\" hidden></p>\n    </div>\n    <div class=\"field span-2\" id=\"f-liq\" ${kind === \"LIQUIDACION\" ? \"\" : \"hidden\"}>\n      <div class=\"lines-head\">\n        <div>\n          <label for=\"l-kg\">Liquidación de fruta</label>\n          <p class=\"lines-hint\">Kilos entregados × precio por kilo. Los descuentos (manipulación, envases, comisión, transporte…) se restan y queda el líquido a percibir, que pasa a la base.</p>\n        </div>\n        <button type=\"button\" class=\"btn sm ghost\" data-add-dto>${icon(\"plus\")}<span>Añadir descuento</span></button>\n      </div>\n      <div class=\"liq-grid\">\n        <div class=\"field\">\n          <label for=\"l-product\">Producto o variedad <span class=\"hint\">(opcional)</span></label>\n          <input id=\"l-product\" type=\"text\" value=\"${esc((v.liquidacion && v.liquidacion.product) || \"\")}\" placeholder=\"Plátano, aguacate, tomate…\">\n        </div>\n        <div class=\"field\">\n          <label for=\"l-category\">Categoría <span class=\"hint\">(opcional)</span></label>\n          <input id=\"l-category\" type=\"text\" list=\"liq-categories\" value=\"${esc((v.liquidacion && v.liquidacion.category) || \"\")}\" placeholder=\"Extra, primera, segunda…\">\n          <datalist id=\"liq-categories\">\n            <option value=\"Extra\"></option>\n            <option value=\"Primera\"></option>\n            <option value=\"Segunda\"></option>\n            <option value=\"Tercera\"></option>\n            <option value=\"Destrío\"></option>\n          </datalist>\n        </div>\n        <div class=\"field\">\n          <label for=\"l-kg\">Kilos</label>\n          <div class=\"with-suffix\"><input id=\"l-kg\" type=\"text\" inputmode=\"decimal\" value=\"${v.liquidacion && v.liquidacion.kg != null ? fmtNum(v.liquidacion.kg) : \"\"}\" placeholder=\"0\"><span>kg</span></div>\n        </div>\n        <div class=\"field\">\n          <label for=\"l-price\">Precio por kilo</label>\n          <div class=\"with-suffix\"><input id=\"l-price\" type=\"text\" inputmode=\"decimal\" value=\"${v.liquidacion && v.liquidacion.price != null ? fmtNum(v.liquidacion.price, 3) : \"\"}\" placeholder=\"0,000\"><span>€/kg</span></div>\n        </div>\n      </div>\n      <div class=\"igic-lines\" id=\"iv-dtos\">${(((v.liquidacion && v.liquidacion.discounts) || []).map((d) => dtoRowHtml(d.label, d.amount)).join(\"\"))}</div>\n      <p class=\"lines-sum\" id=\"iv-liq-sum\" hidden></p>\n    </div>\n",
+    "total_lines": 5201
+  },
+  "summary": "views.js: lines 2701–2760 of 5201 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 60,
+    "total": 5201,
+    "next_offset": 2760
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

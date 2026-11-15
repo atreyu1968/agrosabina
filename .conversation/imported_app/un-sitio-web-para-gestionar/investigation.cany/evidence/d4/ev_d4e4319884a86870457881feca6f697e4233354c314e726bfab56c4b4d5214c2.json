@@ -1,0 +1,54 @@
+{
+  "id": "ev_d4e4319884a86870457881feca6f697e4233354c314e726bfab56c4b4d5214c2",
+  "subject": {
+    "kind": "script",
+    "sha256": "8281c07a6c6e0e591b3d171028ac0385d2e4d6c7e6e685816c745534065f2b7d",
+    "name": "accounting.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 418,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 23722,
+    "lines": 30,
+    "more": true,
+    "offset": 418,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js",
+    "replaced_sequences": 0,
+    "text": "  const porClave = {};\n  let sinClasificar = 0;\n  for (const r of mayor || []) {\n    const first = String(r.code).charAt(0);\n    if (first !== \"6\" && first !== \"7\") continue;\n    const value = round2(-r.saldo);\n    const key = cuenta(r.code).pl;\n    if (!key) {\n      sinClasificar = round2(sinClasificar + value);\n      continue;\n    }\n    porClave[key] = round2((porClave[key] || 0) + value);\n  }\n  const valor = (k) => round2(porClave[k] || 0);\n  const explotacion = round2(EXPLOTACION.reduce((n, k) => n + valor(k), 0));\n  const financiero = round2(FINANCIERO.reduce((n, k) => n + valor(k), 0));\n  const antes = round2(explotacion + financiero);\n  const impuesto = valor(\"17\");\n  const resultado = round2(antes + impuesto);\n  const lines = LINEAS_RESULTADOS.map((l) => {\n    let value = valor(l.key);\n    if (l.key === \"A\") value = explotacion;\n    else if (l.key === \"B\") value = financiero;\n    else if (l.key === \"C\") value = antes;\n    else if (l.key === \"D\") value = resultado;\n    return { key: l.key, label: l.label, value, total: !!l.total };\n  });\n  return { lines, explotacion, financiero, antes, impuesto, resultado, sinClasificar };\n}\n\n",
+    "total_lines": 586
+  },
+  "summary": "accounting.js: lines 419–448 of 586 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 586,
+    "next_offset": 448
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\accounting.js"
+    }
+  ],
+  "links": []
+}

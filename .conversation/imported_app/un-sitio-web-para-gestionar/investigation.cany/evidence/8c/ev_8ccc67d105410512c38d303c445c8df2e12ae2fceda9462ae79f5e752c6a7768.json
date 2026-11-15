@@ -1,0 +1,54 @@
+{
+  "id": "ev_8ccc67d105410512c38d303c445c8df2e12ae2fceda9462ae79f5e752c6a7768",
+  "subject": {
+    "kind": "script",
+    "sha256": "83704397ea89e45fa1af80334964cb8e67554af7773347bdc2b1474dc48b4b50",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 32,
+    "offset": 2728,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 245244,
+    "lines": 32,
+    "more": true,
+    "offset": 2728,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "  const rulesFailed = !p.liquidacion || (p.liquidacionRead && p.liquidacionRead.ok === false);\n  if (ai.liquidacion && rulesFailed) {\n    const liqAI = ai.liquidacion;\n    const kg = liqAI.kg;\n    const price = liqAI.price;\n    const discounts = liqAI.discounts || [];\n    const gross = kg != null && price != null ? round2(kg * price) : null;\n    const dtoSum = round2(discounts.reduce((sum, d) => sum + d.amount, 0));\n    const net = liqAI.net != null ? liqAI.net : gross != null ? round2(gross - dtoSum) : null;\n\n    p.liquidacion = {\n      product: liqAI.product || (p.liquidacion && p.liquidacion.product) || \"\",\n      category: liqAI.category || (p.liquidacion && p.liquidacion.category) || \"\",\n      kg,\n      price,\n      discounts,\n    };\n    p.liquidacionRead = {\n      kg,\n      price,\n      gross,\n      discounts,\n      net,\n      product: p.liquidacion.product,\n      category: p.liquidacion.category,\n      ok: true,\n    };\n    if (p.kind !== \"LIQUIDACION\") {\n      p.kind = \"LIQUIDACION\";\n      p.direction = \"INGRESO\";\n      filled.push(\"que es una liquidación\");\n    }\n",
+    "total_lines": 6154
+  },
+  "summary": "views.js: lines 2729–2760 of 6154 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 32,
+    "total": 6154,
+    "next_offset": 2760
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,53 @@
+{
+  "id": "ev_f76b139f2a29e08ae3f5dff3c1e77b070972d65f82ade42ea85e11e1ed20dca6",
+  "subject": {
+    "kind": "script",
+    "sha256": "cb4be4f191b16cd0c1314e4c0f2ca0fcc3eedd081a0430d450dcf4f846bae80e",
+    "name": "pgc.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 32,
+    "offset": 254,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\pgc.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 13147,
+    "lines": 31,
+    "more": false,
+    "offset": 254,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\pgc.js",
+    "replaced_sequences": 0,
+    "text": "\n/**\n * El nombre de una cuenta según el plan. Si le pasan una subcuenta de seis\n * dígitos, devuelve el nombre de su cuenta madre (430001 → «Clientes»).\n */\nexport function pgcNombre(code) {\n  const c = String(code == null ? \"\" : code).trim();\n  if (!c) return \"\";\n  return POR_CODIGO.get(c) || POR_CODIGO.get(c.slice(0, 3)) || \"\";\n}\n\n/** ¿Está esa cuenta en el plan? */\nexport function pgcTiene(code) {\n  return POR_CODIGO.has(String(code == null ? \"\" : code).trim());\n}\n\n/**\n * El primer número libre para abrir una subcuenta de un prefijo:\n * siguienteSubcuenta(\"430\", [\"430001\", \"430002\"]) → \"430003\".\n */\nexport function siguienteSubcuenta(prefijo, usados = []) {\n  const pre = String(prefijo || \"\").slice(0, 3);\n  let max = 0;\n  for (const code of usados || []) {\n    const c = String(code || \"\");\n    if (c.slice(0, 3) !== pre || c.length <= 3) continue;\n    const n = parseInt(c.slice(3), 10);\n    if (Number.isFinite(n) && n > max) max = n;\n  }\n  return `${pre}${String(max + 1).padStart(3, \"0\")}`;\n}\n",
+    "total_lines": 285
+  },
+  "summary": "pgc.js: lines 255–285 of 285 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 31,
+    "total": 285
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\pgc.js"
+    }
+  ],
+  "links": []
+}

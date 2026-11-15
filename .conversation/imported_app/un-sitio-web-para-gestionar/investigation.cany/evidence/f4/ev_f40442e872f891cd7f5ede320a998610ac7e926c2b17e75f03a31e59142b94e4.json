@@ -1,0 +1,54 @@
+{
+  "id": "ev_f40442e872f891cd7f5ede320a998610ac7e926c2b17e75f03a31e59142b94e4",
+  "subject": {
+    "kind": "script",
+    "sha256": "c083869caa24d87b794addab6e810fadbfbdd9f92e51cf3a20d8e1aed96cc0e2",
+    "name": "main.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 45,
+    "offset": 60,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 4118,
+    "lines": 45,
+    "more": true,
+    "offset": 60,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js",
+    "replaced_sequences": 0,
+    "text": "  window.addEventListener(\"hashchange\", () => {\n    // El enlace «Saltar al contenido» usa #view: no es una sección, no se repinta.\n    if (location.hash && !location.hash.startsWith(\"#/\")) return;\n    views.ui.route = routeFromHash();\n    window.scrollTo(0, 0);\n    views.render();\n  });\n\n  document.addEventListener(\"click\", (ev) => {\n    if (!(ev.target instanceof Element)) return;\n\n    const actionEl = ev.target.closest(\"[data-action]\");\n    if (actionEl) {\n      ev.preventDefault();\n      views.onAction(actionEl.dataset.action, actionEl);\n      return;\n    }\n\n    const filterBtn = ev.target.closest(\"[data-filter-status]\");\n    if (filterBtn) {\n      ev.preventDefault();\n      views.onFilterButton(filterBtn);\n      return;\n    }\n\n    const dirBtn = ev.target.closest(\"[data-filter-direction]\");\n    if (dirBtn) {\n      ev.preventDefault();\n      views.onDirectionButton(dirBtn);\n    }\n  });\n\n  document.addEventListener(\"input\", views.onInput);\n  document.addEventListener(\"change\", views.onChange);\n\n  const filePicker = document.getElementById(\"filePicker\");\n  if (filePicker) {\n    filePicker.addEventListener(\"change\", () => {\n      if (filePicker.files && filePicker.files.length) views.queueFiles(filePicker.files);\n      filePicker.value = \"\";\n    });\n  }\n\n  const cameraPicker = document.getElementById(\"cameraPicker\");\n  if (cameraPicker) {\n",
+    "total_lines": 144
+  },
+  "summary": "main.js: lines 61–105 of 144 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 45,
+    "total": 144,
+    "next_offset": 105
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\main.js"
+    }
+  ],
+  "links": []
+}

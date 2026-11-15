@@ -1,0 +1,54 @@
+{
+  "id": "ev_aceb31dc1890b3422562cf494379faedc11398ddf68d33d0a44572bc7d258a82",
+  "subject": {
+    "kind": "script",
+    "sha256": "cd48c5cf20b87e39095de591bed9b4aadd07c9211f3a562a2f958858a55644b0",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 120,
+    "offset": 2960,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 123883,
+    "lines": 120,
+    "more": true,
+    "offset": 2960,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "          closeModal();\n          render();\n        });\n      },\n    }\n  );\n}\n\n/* ------------------------------------------------------------------ */\n/* Exportar                                                           */\n/* ------------------------------------------------------------------ */\n\nfunction csvCell(value) {\n  const s = value == null ? \"\" : String(value);\n  return `\"${s.replace(/\"/g, '\"\"')}\"`;\n}\n\nexport function exportCsv() {\n  const list = sortedInvoices(filteredInvoices());\n  if (!list.length) {\n    toast(\"No hay facturas que exportar.\", \"bad\");\n    return;\n  }\n  const headers = [\n    \"Proveedor\", \"NIF\", \"Nº factura\", \"Fecha\", \"Vencimiento\",\n    \"Base imponible\", \"Tipo IGIC (%)\", \"Cuota IGIC\", \"Total\",\n    \"Estado\", \"Fecha de pago\", \"Origen\",\n  ];\n  const rows = list.map((inv) => {\n    const sup = supplierById(inv.supplierId) || {};\n    return [\n      sup.name || \"\",\n      sup.nif || \"\",\n      inv.number || \"\",\n      fmtDate(inv.issueDate),\n      inv.dueDate ? fmtDate(inv.dueDate) : \"\",\n      fmtNum(inv.base),\n      inv.rate != null ? fmtNum(inv.rate, inv.rate % 1 === 0 ? 0 : 1) : \"\",\n      fmtNum(inv.igic),\n      fmtNum(inv.total),\n      inv.status === STATUS.PAID ? \"Pagado\" : \"Pendiente\",\n      inv.paidDate ? fmtDate(inv.paidDate) : \"\",\n      sourceLabel(inv.source),\n    ].map(csvCell).join(\";\");\n  });\n\n  const csv = \"\\ufeff\" + [headers.map(csvCell).join(\";\"), ...rows].join(\"\\r\\n\");\n  downloadText(`facturas-${todayISO()}.csv`, csv);\n  toast(`Exportadas ${list.length} facturas.`);\n}\n\nexport function exportBackup() {\n  downloadText(`copia-facturas-${todayISO()}.json`, exportJSON(), \"application/json\");\n  toast(\"Copia descargada.\");\n}\n\nexport function askImportBackup() {\n  const input = document.createElement(\"input\");\n  input.type = \"file\";\n  input.accept = \"application/json,.json\";\n  input.addEventListener(\"change\", async () => {\n    const file = input.files && input.files[0];\n    if (!file) return;\n    try {\n      const text = await file.text();\n      const ok = await confirmDialog({\n        title: \"Restaurar una copia\",\n        message: \"Se sustituirán las facturas y proveedores que tienes ahora por los de la copia. ¿Seguir?\",\n        confirm: \"Sí, restaurar\",\n        danger: true,\n      });\n      if (!ok) return;\n      importJSON(text);\n      toast(\"Copia restaurada.\");\n      closeModal();\n      render();\n    } catch (err) {\n      toast(err.message || \"No he podido leer esa copia.\", \"bad\");\n    }\n  });\n  input.click();\n}\n\n/* ------------------------------------------------------------------ */\n/* Acciones                                                           */\n/* ------------------------------------------------------------------ */\n\nexport async function onAction(action, el) {\n  const id = el.dataset.id;\n  switch (action) {\n    case \"new-sale\": {\n      openInvoiceModal({\n        mode: \"new\",\n        preset: { kind: \"LIQUIDACION\", direction: \"INGRESO\" },\n      });\n      return;\n    }\n    case \"export-sales-csv\": {\n      exportSalesCsv();\n      return;\n    }\n    case \"toggle-status\": {\n      const inv = toggleInvoiceStatus(id);\n      if (inv) {\n        toast(inv.status === STATUS.PAID ? \"Marcada como pagada.\" : \"Marcada como pendiente.\");\n        render();\n      }\n      return;\n    }\n    case \"edit-invoice\": {\n      const inv = getState().invoices.find((i) => i.id === id);\n      if (inv) openInvoiceModal({ mode: \"edit\", invoice: inv });\n      return;\n    }\n    case \"delete-invoice\": {\n      const inv = getState().invoices.find((i) => i.id === id);\n      if (!inv) return;\n      const ok = await confirmDialog({\n        title: \"Borrar la factura\",\n        message: `Se borrará la factura ${inv.number || \"sin número\"} de ${supplierName(inv.supplierId)} (${fmtEUR(inv.total)}). El proveedor se queda en la lista.`,\n",
+    "total_lines": 3310
+  },
+  "summary": "views.js: lines 2961–3080 of 3310 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 120,
+    "total": 3310,
+    "next_offset": 3080
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

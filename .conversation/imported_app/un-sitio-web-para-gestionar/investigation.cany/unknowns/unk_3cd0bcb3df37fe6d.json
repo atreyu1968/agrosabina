@@ -1,0 +1,14 @@
+{
+  "id": "unk_3cd0bcb3df37fe6d",
+  "revision": 1,
+  "question": "¿El líquido a percibir que imprime el papel incluye ya el IGIC, o se suma después? Si ya lo incluye, la base y el total que ahora se ponen (líquido + cuota) contarían el IGIC dos veces.",
+  "severity": "medium",
+  "domain": "liquidaciones",
+  "status": "open",
+  "probes": [
+    "Pedir a la persona el texto de una liquidación real (o una foto) y pasarlo por parseLiquidacion",
+    "Comprobar si el líquido a percibir del papel ya lleva el IGIC dentro o va aparte"
+  ],
+  "evidence_for": [],
+  "evidence_against": []
+}

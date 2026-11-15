@@ -1,0 +1,247 @@
+{
+  "id": "ev_05d8891dd66df5a6f4b42c5c210f7537a4811d4178b66f7f7a7cb8e2a534edea",
+  "subject": {
+    "kind": "script",
+    "sha256": "28c69e5cfe3a6682b9f586624246c04d71ce42d6f4020fdc67a6a67650b50b22",
+    "name": "util.js"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 40,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js",
+    "pattern": null,
+    "text": "export "
+  },
+  "result": {
+    "file_size": 7518,
+    "limit": 40,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 62,
+        "file_offset_hex": "0x3e",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 193,
+        "file_offset_hex": "0xc1",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 851,
+        "file_offset_hex": "0x353",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 966,
+        "file_offset_hex": "0x3c6",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 1072,
+        "file_offset_hex": "0x430",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 1352,
+        "file_offset_hex": "0x548",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 1531,
+        "file_offset_hex": "0x5fb",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 1793,
+        "file_offset_hex": "0x701",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 1965,
+        "file_offset_hex": "0x7ad",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 2270,
+        "file_offset_hex": "0x8de",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 2540,
+        "file_offset_hex": "0x9ec",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 2849,
+        "file_offset_hex": "0xb21",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 3047,
+        "file_offset_hex": "0xbe7",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 3312,
+        "file_offset_hex": "0xcf0",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 4313,
+        "file_offset_hex": "0x10d9",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 5858,
+        "file_offset_hex": "0x16e2",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 6051,
+        "file_offset_hex": "0x17a3",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 6126,
+        "file_offset_hex": "0x17ee",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 6490,
+        "file_offset_hex": "0x195a",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 6781,
+        "file_offset_hex": "0x1a7d",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 7026,
+        "file_offset_hex": "0x1b72",
+        "length": 7,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "6578706f727420",
+        "file_offset": 7397,
+        "file_offset_hex": "0x1ce5",
+        "length": 7,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\util.js",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 7
+      }
+    ],
+    "total_matches": 22
+  },
+  "summary": "22 match(es) for utf8 in util.js; showing 22 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 22,
+    "total": 22
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x3e"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0xc1"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x353"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x3c6"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x430"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x548"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x5fb"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x701"
+    }
+  ],
+  "links": []
+}

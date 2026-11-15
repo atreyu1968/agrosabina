@@ -1,0 +1,54 @@
+{
+  "id": "ev_408a07d0a2e2bec411d7aebfecabe1f65a1610067b64f37db980c55d1dbdfdd2",
+  "subject": {
+    "kind": "script",
+    "sha256": "972b1b7be9bc1577cb6086bdfd834369effd809ab3790f15ed31e98a92be3786",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 75,
+    "offset": 3858,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 200323,
+    "lines": 75,
+    "more": true,
+    "offset": 3858,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "/* ------------------------------------------------------------------ */\n\nexport async function onAction(action, el) {\n  const id = el.dataset.id;\n  switch (action) {\n    case \"new-sale\": {\n      openInvoiceModal({\n        mode: \"new\",\n        preset: { kind: \"LIQUIDACION\", direction: \"INGRESO\" },\n      });\n      return;\n    }\n    case \"export-sales-csv\": {\n      exportSalesCsv();\n      return;\n    }\n    case \"toggle-status\": {\n      const inv = getState().invoices.find((i) => i.id === id);\n      if (!inv) return;\n      const isIncome = directionOf(inv.kind) === \"INGRESO\";\n      // Si ya está cobrado o pagado, volver a pendiente borra la fecha y se dice.\n      if (inv.status === STATUS.PAID) {\n        setInvoiceStatus(id, STATUS.PENDING);\n        toast(\n          isIncome\n            ? \"Vuelve a estar por cobrar: se ha borrado la fecha de cobro.\"\n            : \"Vuelve a estar pendiente: se ha borrado la fecha de pago.\"\n        );\n        render();\n        return;\n      }\n      askPaidDate(inv, isIncome, (day) => {\n        setInvoiceStatus(id, STATUS.PAID, day);\n        toast(\n          isIncome\n            ? `Cobrado el ${fmtDate(day)}.`\n            : `Pagado el ${fmtDate(day)}.`\n        );\n        render();\n      });\n      return;\n    }\n    case \"doc-open\": {\n      const insp = getState().invoices.find((i) => i.id === id);\n      if (insp) docPreviewModal(insp);\n      return;\n    }\n    case \"doc-dir\":\n      ui.docs.dir = el.dataset.value || \"all\";\n      render();\n      return;\n    case \"doc-status\":\n      ui.docs.status = el.dataset.value || \"all\";\n      render();\n      return;\n    case \"docs-reset\":\n      ui.docs = { q: \"\", kind: \"all\", dir: \"all\", status: \"all\", supplier: \"\", range: \"all\", from: \"\", to: \"\", sort: \"recent\" };\n      render();\n      return;\n    case \"docs-export\":\n      exportDocsCsv();\n      return;\n    case \"edit-invoice\": {\n      const inv = getState().invoices.find((i) => i.id === id);\n      if (inv) openInvoiceModal({ mode: \"edit\", invoice: inv });\n      return;\n    }\n    case \"delete-invoice\": {\n      const inv = getState().invoices.find((i) => i.id === id);\n      if (!inv) return;\n      const ok = await confirmDialog({\n        title: \"Borrar la factura\",\n        message: `Se borrará la factura ${inv.number || \"sin número\"} de ${supplierName(inv.supplierId)} (${fmtEUR(inv.total)}). El proveedor se queda en la lista.`,\n        confirm: \"Sí, borrarla\",\n        danger: true,\n",
+    "total_lines": 5201
+  },
+  "summary": "views.js: lines 3859–3933 of 5201 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 75,
+    "total": 5201,
+    "next_offset": 3933
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

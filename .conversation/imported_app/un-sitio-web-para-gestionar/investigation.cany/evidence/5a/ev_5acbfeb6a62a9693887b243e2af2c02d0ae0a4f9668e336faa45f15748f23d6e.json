@@ -1,0 +1,54 @@
+{
+  "id": "ev_5acbfeb6a62a9693887b243e2af2c02d0ae0a4f9668e336faa45f15748f23d6e",
+  "subject": {
+    "kind": "script",
+    "sha256": "95cfec9262b76d4a06e9da1f5aa03517b468bd8e6341b387341adabc3c2d11cb",
+    "name": "model.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 80,
+    "offset": 150,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 10340,
+    "lines": 80,
+    "more": true,
+    "offset": 150,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js",
+    "replaced_sequences": 0,
+    "text": "    [\"tratamiento fitosanitario\", 4], [\"azufre\", 2], [\"cobre\", 2],\n    [\"bacillus\", 3], [\"aceite parafinico\", 3], [\"fitosanit\", 4],\n  ],\n  ABONOS: [\n    [\"abono\", 3], [\"abonos\", 3], [\"fertilizante\", 4], [\"fertilizantes\", 4],\n    [\"nitrato\", 3], [\"nitrogeno\", 3], [\"fosfato\", 3], [\"potasio\", 3],\n    [\"urea\", 3], [\"sulfato amonico\", 4], [\"estiércol\", 3], [\"estiércol\", 3],\n    [\"compost\", 3], [\"bioestimulante\", 3], [\"enmienda organica\", 3],\n    [\"correctores de carencias\", 3],\n  ],\n  COMBUSTIBLE: [\n    [\"gasoil\", 4], [\"gasoleo\", 4], [\"diesel\", 4], [\"carburante\", 4],\n    [\"combustible\", 4], [\"repsol\", 4], [\"cepsa\", 4], [\"disa\", 3],\n    [\"gasolinera\", 4], [\"estacion de servicio\", 4], [\"adblue\", 3],\n    [\"gasolina\", 4],\n  ],\n  IMPUESTOS: [\n    [\"hacienda\", 3], [\"tributaria\", 3], [\"impuesto\", 3], [\"tasa\", 3],\n    [\"cabildo\", 3], [\"ayuntamiento\", 3], [\"ibi\", 3], [\"exaccion\", 3],\n    [\"modelo 303\", 3], [\"modelo 390\", 3], [\"igic\", 1], [\"recargo\", 1],\n  ],\n  FRUTA: [\n    [\"liquidacion\", 3], [\"entrega de fruta\", 4], [\"alhondiga\", 3],\n    [\"cooperativa\", 3], [\"kilos\", 2], [\"precio kg\", 3], [\"calibre\", 2],\n    [\"platano\", 3], [\"tomate\", 3], [\"aguacate\", 3], [\"mango\", 3],\n    [\"papaya\", 3], [\"cosecha\", 3], [\"productor\", 2],\n  ],\n  SUBVENCIONES: [\n    [\"subvencion\", 4], [\"ayuda\", 3], [\"feader\", 4], [\"feaga\", 4],\n    [\"foga\", 4], [\"pago unico\", 4], [\"consejeria de agricultura\", 4],\n    [\"beneficiario\", 3], [\"expediente de ayuda\", 3],\n  ],\n};\n\nfunction scoreWords(text, table) {\n  let best = { score: 0, word: \"\", id: \"\" };\n  for (const [id, words] of Object.entries(table)) {\n    let score = 0;\n    let hit = \"\";\n    for (const [w, weight] of words) {\n      if (text.includes(w)) {\n        score += weight;\n        if (!hit || weight > 1) hit = w;\n      }\n    }\n    if (score > best.score) best = { score, word: hit, id };\n  }\n  return best;\n}\n\n/**\n * Clasifica un documento mirando solo su texto. Nunca lanza.\n * @returns {{kind: string, category: string, direction: string, source: string, score: number, why: string}}\n */\nexport function classifyLocal(text, hints = {}) {\n  const blob = fold(`${hints.fileName || \"\"} ${text || \"\"}`);\n\n  const kindHit = scoreWords(blob, KIND_WORDS);\n  const kind = kindHit.score >= 3 ? kindHit.id : \"FACTURA\";\n  const direction = directionOf(kind);\n\n  let categoryHit = scoreWords(blob, CATEGORY_WORDS);\n  // La pista del nombre del fichero («factura agua mayo.pdf») ayuda mucho.\n  if (categoryHit.score < 3 && hints.fileName) {\n    categoryHit = scoreWords(fold(hints.fileName), CATEGORY_WORDS);\n  }\n  let category = categoryHit.score >= 3 ? categoryHit.id : \"\";\n\n  // Coherencia: un ingreso no puede ser un gasto de agua.\n  const cat = CATEGORIES.find((c) => c.id === category);\n  if (cat && cat.direction && cat.direction !== direction) category = \"\";\n  if (!category) {\n    if (kind === \"LIQUIDACION\" || kind === \"COBRO\") category = \"FRUTA\";\n    else if (kind === \"SUBVENCION\") category = \"SUBVENCIONES\";\n  }\n\n  const why =\n    kindHit.score >= 3\n      ? `Parece ${kindInfo(kind).label.toLowerCase()} por «${kindHit.word}»${\n          category ? ` y va a ${categoryInfo(category).label.toLowerCase()} por «${categoryHit.word}»` : \"\"\n",
+    "total_lines": 242
+  },
+  "summary": "model.js: lines 151–230 of 242 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 80,
+    "total": 242,
+    "next_offset": 230
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\model.js"
+    }
+  ],
+  "links": []
+}

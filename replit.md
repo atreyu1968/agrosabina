@@ -1,6 +1,18 @@
-# [Project name]
+# Agrosabina · Gestión e IGIC
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Aplicación importada del archivo RAR del usuario para gestionar compras, ventas,
+proveedores, nóminas, documentos, contabilidad e IGIC.
+
+## Aplicación importada
+
+- `artifacts/agrosabina/index.html` y `artifacts/agrosabina/assets/` contienen la aplicación original.
+- `artifacts/agrosabina/README.original.md` documenta sus funciones y limitaciones.
+- Se sirve con Vite mediante `pnpm --filter @workspace/agrosabina run dev`.
+- Se conserva HTML, CSS y JavaScript original: la petición fue interpretar y cargar la aplicación, no rediseñarla ni reescribirla en React.
+- Los registros se guardan en SQLite/IndexedDB en el navegador, con respaldo en localStorage. No migrar a PostgreSQL sin petición expresa.
+- Los datos de otros navegadores u orígenes no se transfieren automáticamente; usar las funciones originales de importación/exportación.
+- PDF.js, Tesseract y sql.js se descargan desde servicios externos. La IA es opcional y permanece desactivada inicialmente.
+- No añadir datos de ejemplo automáticamente.
 
 ## Run & Operate
 

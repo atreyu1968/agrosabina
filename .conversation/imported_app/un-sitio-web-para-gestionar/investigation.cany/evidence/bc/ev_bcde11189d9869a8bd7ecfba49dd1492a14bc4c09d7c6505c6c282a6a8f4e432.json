@@ -1,0 +1,77 @@
+{
+  "id": "ev_bcde11189d9869a8bd7ecfba49dd1492a14bc4c09d7c6505c6c282a6a8f4e432",
+  "subject": {
+    "kind": "directory",
+    "sha256": "dc11c54eac89f5a39ba025d7792c1067d50bec1cf1850bb694e6558b8e17416d",
+    "name": "inbox"
+  },
+  "operation": "core_archive_show",
+  "params": {
+    "if_tampered": true,
+    "limit": 100,
+    "max_depth": 2,
+    "max_entries": 200000,
+    "max_total_bytes": 4294967296,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\inbox"
+  },
+  "result": {
+    "by_kind": {
+      "directory": 1,
+      "json": 1
+    },
+    "containers": [],
+    "content_id": "inv_dc11c54eac89f5a39ba025d7792c1067d50bec1cf1850bb694e6558b8e17416d",
+    "contradictions": [],
+    "entries": [
+      {
+        "depth": 0,
+        "kind": "directory",
+        "path": "notes",
+        "size": 0
+      },
+      {
+        "depth": 0,
+        "kind": "json",
+        "path": "build-progress.json",
+        "sha256": "5008bd0eb6942d8913055a793276f0129fad114451899e796fc38422344eda10",
+        "size": 242
+      }
+    ],
+    "entries_total": 2,
+    "files": 1,
+    "hashed_bytes": 242,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\inbox",
+    "root": "inbox",
+    "root_kind": "directory",
+    "truncated": false,
+    "unopened_nested": 0
+  },
+  "summary": "inbox (directory) holds 1 files in 2 entries; 0 nested container(s).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "no_disk_images",
+      "message": "Disk images (DMG), installers (PKG/MSI) and compressed tarballs are listed as single files, not opened."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 2,
+    "total": 2
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\inbox"
+    }
+  ],
+  "links": []
+}

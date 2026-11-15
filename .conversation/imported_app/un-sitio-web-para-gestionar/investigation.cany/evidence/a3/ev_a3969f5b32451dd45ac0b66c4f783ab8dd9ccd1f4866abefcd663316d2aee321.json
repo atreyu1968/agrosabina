@@ -1,0 +1,54 @@
+{
+  "id": "ev_a3969f5b32451dd45ac0b66c4f783ab8dd9ccd1f4866abefcd663316d2aee321",
+  "subject": {
+    "kind": "script",
+    "sha256": "2207e23a046fb212b303982d0f4cfadce37a32bc13382d86885ec53efa52da3b",
+    "name": "store.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 35,
+    "offset": 60,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 24919,
+    "lines": 35,
+    "more": true,
+    "offset": 60,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js",
+    "replaced_sequences": 0,
+    "text": "      ? m.attachments.slice(0, 30).map((a) => {\n          if (typeof a === \"string\") return { name: a, type: \"\", readable: false, size: 0 };\n          const bytes = a && a.bytes;\n          return {\n            name: String((a && a.name) || \"adjunto\"),\n            type: String((a && a.type) || \"\"),\n            readable: !!(a && a.readable),\n            size: Number((a && a.size) || 0) || (bytes && bytes.length ? bytes.length : 0),\n          };\n        })\n      : [],\n    importedAt: m.importedAt || new Date().toISOString(),\n    usedAt: m.usedAt || \"\",\n  };\n}\n\n/**\n * Una liquidación de fruta: kilos, precio por kilo, descuentos y líquido a\n * percibir. El bruto y el líquido se calculan, no se guardan.\n */\nfunction normaliseLiquidacion(liq) {\n  if (!liq || typeof liq !== \"object\") return null;\n  const n = (v) => (v !== null && v !== \"\" && Number.isFinite(+v) ? +v : null);\n  const kg = n(liq.kg);\n  const price = n(liq.price);\n  const product = String(liq.product || \"\").trim().slice(0, 120);\n  const category = String(liq.category || \"\").trim().slice(0, 40);\n  const discounts = Array.isArray(liq.discounts)\n    ? liq.discounts\n        .map((d) => {\n          if (!d || typeof d !== \"object\") return null;\n          const label = String(d.label || \"\").trim().slice(0, 120);\n          const amount = n(d.amount);\n          if (!label && amount == null) return null;\n          return { label, amount: amount == null ? 0 : amount };\n",
+    "total_lines": 789
+  },
+  "summary": "store.js: lines 61–95 of 789 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 35,
+    "total": 789,
+    "next_offset": 95
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\store.js"
+    }
+  ],
+  "links": []
+}

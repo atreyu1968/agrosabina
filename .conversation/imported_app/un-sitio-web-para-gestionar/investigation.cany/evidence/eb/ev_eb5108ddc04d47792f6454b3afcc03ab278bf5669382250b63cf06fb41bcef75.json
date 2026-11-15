@@ -1,0 +1,345 @@
+{
+  "id": "ev_eb5108ddc04d47792f6454b3afcc03ab278bf5669382250b63cf06fb41bcef75",
+  "subject": {
+    "kind": "text",
+    "sha256": "0dd399853bc43821f711e1b15b76276cf39b9a94f1548a4e0b0bfb89bc3ea632",
+    "name": "styles.css"
+  },
+  "operation": "native_bytes_find",
+  "params": {
+    "encoding": "utf8",
+    "limit": 100,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "pattern": null,
+    "text": ".acc-"
+  },
+  "result": {
+    "file_size": 39031,
+    "limit": 100,
+    "match_cap_reached": false,
+    "matches": [
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 36240,
+        "file_offset_hex": "0x8d90",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 36305,
+        "file_offset_hex": "0x8dd1",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 36426,
+        "file_offset_hex": "0x8e4a",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 36661,
+        "file_offset_hex": "0x8f35",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 36719,
+        "file_offset_hex": "0x8f6f",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 36846,
+        "file_offset_hex": "0x8fee",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 36945,
+        "file_offset_hex": "0x9051",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37068,
+        "file_offset_hex": "0x90cc",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37087,
+        "file_offset_hex": "0x90df",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37106,
+        "file_offset_hex": "0x90f2",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37127,
+        "file_offset_hex": "0x9107",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37234,
+        "file_offset_hex": "0x9172",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37347,
+        "file_offset_hex": "0x91e3",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37404,
+        "file_offset_hex": "0x921c",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37457,
+        "file_offset_hex": "0x9251",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37489,
+        "file_offset_hex": "0x9271",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37524,
+        "file_offset_hex": "0x9294",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37682,
+        "file_offset_hex": "0x9332",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37692,
+        "file_offset_hex": "0x933c",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37727,
+        "file_offset_hex": "0x935f",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37736,
+        "file_offset_hex": "0x9368",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37788,
+        "file_offset_hex": "0x939c",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37798,
+        "file_offset_hex": "0x93a6",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37883,
+        "file_offset_hex": "0x93fb",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 37939,
+        "file_offset_hex": "0x9433",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 38010,
+        "file_offset_hex": "0x947a",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 38189,
+        "file_offset_hex": "0x952d",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 38379,
+        "file_offset_hex": "0x95eb",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 38436,
+        "file_offset_hex": "0x9624",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 38503,
+        "file_offset_hex": "0x9667",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 38529,
+        "file_offset_hex": "0x9681",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 38580,
+        "file_offset_hex": "0x96b4",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 38591,
+        "file_offset_hex": "0x96bf",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 38629,
+        "file_offset_hex": "0x96e5",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 38664,
+        "file_offset_hex": "0x9708",
+        "length": 5,
+        "matched": "utf8"
+      },
+      {
+        "bytes": "2e6163632d",
+        "file_offset": 38705,
+        "file_offset_hex": "0x9731",
+        "length": 5,
+        "matched": "utf8"
+      }
+    ],
+    "native_container": null,
+    "offset": 0,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\styles.css",
+    "searched_for": [
+      {
+        "kind": "utf8",
+        "length": 5
+      }
+    ],
+    "total_matches": 36
+  },
+  "summary": "36 match(es) for utf8 in styles.css; showing 36 from #0.",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "file_bytes_only",
+      "message": "The file's bytes are searched as stored: compressed, encrypted or packed regions and data built at run time are not seen, so no match is not proof of absence."
+    },
+    {
+      "code": "no_addresses",
+      "message": "This file is not a readable ELF, PE or Mach-O program, so matches carry file offsets only."
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "examined": 36,
+    "total": 36
+  },
+  "locations": [
+    {
+      "kind": "file_offset",
+      "value": "0x8d90"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x8dd1"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x8e4a"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x8f35"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x8f6f"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x8fee"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x9051"
+    },
+    {
+      "kind": "file_offset",
+      "value": "0x90cc"
+    }
+  ],
+  "links": []
+}

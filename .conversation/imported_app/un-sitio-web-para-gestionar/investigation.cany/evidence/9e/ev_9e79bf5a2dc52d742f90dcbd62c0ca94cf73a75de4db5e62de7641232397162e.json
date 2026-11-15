@@ -1,0 +1,54 @@
+{
+  "id": "ev_9e79bf5a2dc52d742f90dcbd62c0ca94cf73a75de4db5e62de7641232397162e",
+  "subject": {
+    "kind": "script",
+    "sha256": "6238b99ab8c1c0f10ce834ae43fb81a8055d05a8f9b20d7043327b18867475d9",
+    "name": "views.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 30,
+    "offset": 3290,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 134368,
+    "lines": 30,
+    "more": true,
+    "offset": 3290,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js",
+    "replaced_sequences": 0,
+    "text": "/* ------------------------------------------------------------------ */\n/* Acciones                                                           */\n/* ------------------------------------------------------------------ */\n\nexport async function onAction(action, el) {\n  const id = el.dataset.id;\n  switch (action) {\n    case \"new-sale\": {\n      openInvoiceModal({\n        mode: \"new\",\n        preset: { kind: \"LIQUIDACION\", direction: \"INGRESO\" },\n      });\n      return;\n    }\n    case \"export-sales-csv\": {\n      exportSalesCsv();\n      return;\n    }\n    case \"toggle-status\": {\n      const inv = getState().invoices.find((i) => i.id === id);\n      if (!inv) return;\n      const isIncome = directionOf(inv.kind) === \"INGRESO\";\n      // Si ya está cobrado o pagado, volver a pendiente borra la fecha y se dice.\n      if (inv.status === STATUS.PAID) {\n        setInvoiceStatus(id, STATUS.PENDING);\n        toast(\n          isIncome\n            ? \"Vuelve a estar por cobrar: se ha borrado la fecha de cobro.\"\n            : \"Vuelve a estar pendiente: se ha borrado la fecha de pago.\"\n        );\n",
+    "total_lines": 3575
+  },
+  "summary": "views.js: lines 3291–3320 of 3575 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 30,
+    "total": 3575,
+    "next_offset": 3320
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\views.js"
+    }
+  ],
+  "links": []
+}

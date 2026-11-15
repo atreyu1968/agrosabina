@@ -1,0 +1,54 @@
+{
+  "id": "ev_85dbcda622d196b403a64e864387a89e69882dd3de5e0ac554b0f4a4569ae9e1",
+  "subject": {
+    "kind": "script",
+    "sha256": "74d04d86a9e267ad2036e387eae84d9dac1474b696d523baafcaae4fd6496266",
+    "name": "sqlite.js"
+  },
+  "operation": "core_text_read",
+  "params": {
+    "limit": 14,
+    "offset": 424,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+  },
+  "result": {
+    "cut_lines": [],
+    "encoding": "utf8",
+    "file_size": 17820,
+    "lines": 14,
+    "more": true,
+    "offset": 424,
+    "path": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js",
+    "replaced_sequences": 0,
+    "text": "          inv.supplierId || null,\n          inv.number || \"\",\n          inv.issueDate || \"\",\n          inv.dueDate || \"\",\n          num(inv.base),\n          num(inv.rate),\n          num(inv.igic),\n          num(inv.total),\n          inv.status === \"PAGADO\" ? \"PAGADO\" : \"PENDIENTE\",\n          inv.paidDate || \"\",\n          inv.kind || \"FACTURA\",\n          inv.category || \"\",\n          inv.direction === \"INGRESO\" ? \"INGRESO\" : \"GASTO\",\n          JSON.stringify(Array.isArray(inv.lines) ? inv.lines : []),\n",
+    "total_lines": 554
+  },
+  "summary": "sqlite.js: lines 425–438 of 554 (UTF-8).",
+  "confidence": "observed",
+  "authority": "original-files",
+  "environment": {
+    "clean_room": false,
+    "engine": "builtin",
+    "engine_version": "0.6.1",
+    "host": "windows-x86_64"
+  },
+  "limitations": [
+    {
+      "code": "text_as_stored",
+      "message": "The file is read as text as it is stored: nothing is run, rendered or formatted, and text a program builds or downloads while it runs isn't here."
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "examined": 14,
+    "total": 554,
+    "next_offset": 438
+  },
+  "locations": [
+    {
+      "kind": "path",
+      "value": "C:\\Users\\Javier\\Documents\\Craft Anything\\un-sitio-web-para-gestionar\\app\\site\\assets\\js\\sqlite.js"
+    }
+  ],
+  "links": []
+}
