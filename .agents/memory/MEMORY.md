@@ -2,6 +2,6 @@
 - [Conciliación bancaria segura](bank-reconciliation.md) — solo conciliar importes y sentidos exactos; no duplicar el asiento del documento y no adivinar el medio de pago.
 - [Ejercicios contables naturales](accounting-exercises.md) — cada ejercicio va de enero a diciembre; la factura se asigna por emisión, el pago por su fecha real.
 - [Nóminas sin IGIC](payroll-no-igic.md) — una nómina es gasto laboral, no factura sujeta a IGIC; descartar y avisar de importes fiscales mal leídos.
-- [Arranque y protección de datos](startup-safety.md) — esperar a la carga completa antes de editar; un plazo de aviso no autoriza usar una copia alternativa.
+- [Arranque y protección de datos](startup-safety.md) — esperar la carga completa y mantener los datos contables fuera de la caché PWA.
 - [Restauración no destructiva](backup-restoration.md) — las copias completas se añaden; no deben sustituir registros o credenciales del destino.
 - [Categorías de terceros](third-party-categories.md) — separar empleados y acreedores de proveedores.

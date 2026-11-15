@@ -40,6 +40,25 @@ function storageWorks() {
   }
 }
 
+function registerOfflineApp() {
+  // No activar cachés en la vista previa de desarrollo: la app publicada
+  // registra el modo offline, sin arriesgar recursos viejos durante cambios.
+  if (
+    document.documentElement?.dataset?.appMode !== "production" ||
+    typeof navigator === "undefined" ||
+    !("serviceWorker" in navigator)
+  ) return;
+  const manifestLink = document.querySelector('link[rel="manifest"]');
+  if (!manifestLink) return;
+
+  const manifestUrl = new URL(manifestLink.href, document.baseURI);
+  const appScope = new URL("./", manifestUrl);
+  const workerUrl = new URL("service-worker.js", appScope);
+  navigator.serviceWorker.register(workerUrl, { scope: appScope.pathname }).catch((error) => {
+    console.warn("No se pudo activar el modo instalable:", error);
+  });
+}
+
 async function boot() {
   window.__appBooted = true; // el aviso de «no arranca» de index.html ya no hace falta
 
@@ -73,6 +92,7 @@ async function boot() {
   views.render();
   escapeKeyCloses();
   views.wireDropzone();
+  registerOfflineApp();
 
   const info = storageInfo();
   if (info.engine === "local") {
