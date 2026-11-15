@@ -16,6 +16,7 @@ import {
 } from "./util.js";
 import * as sqlite from "./sqlite.js";
 import * as files from "./files.js";
+import { validateBackup } from "./backup.js";
 
 const KEY = "facturas.igic.v1";
 const listeners = new Set();
@@ -621,6 +622,7 @@ export function addInvoice(data) {
     direction: direccionDeDocumento(data),
     lines: data.lines || [],
     liquidacion: data.liquidacion || null,
+    nomina: data.nomina || null,
     paidDate: data.status === STATUS.PAID ? data.paidDate || todayISO() : "",
     payMethod: data.status === STATUS.PAID ? normaliseMedio(data.payMethod) : "",
     payAccount: data.status === STATUS.PAID ? String(data.payAccount || "").slice(0, 120) : "",
@@ -947,15 +949,18 @@ export function clearAll() {
 }
 
 export function exportJSON() {
-  return JSON.stringify({ ...state, exportedAt: new Date().toISOString() }, null, 2);
+  const { aiKey, ...settings } = state.settings;
+  return JSON.stringify({ ...state, settings, exportedAt: new Date().toISOString() }, null, 2);
 }
 
 export function importJSON(text) {
   const parsed = JSON.parse(text);
-  if (!parsed || (!Array.isArray(parsed.suppliers) && !Array.isArray(parsed.invoices))) {
-    throw new Error("El fichero no parece una copia de seguridad de este programa.");
-  }
-  state = normalise(parsed);
+  validateBackup(parsed);
+  // Las copias antiguas podían contener claves. No importarlas ni sustituir
+  // la credencial configurada en este navegador por la de otra instalación.
+  const settings = { ...parsed.settings, aiKey: state.settings.aiKey };
+  const restored = normalise({ ...parsed, settings });
+  state = restored;
   save();
   return state;
 }

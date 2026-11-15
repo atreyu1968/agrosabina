@@ -1,0 +1,100 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { parseAmount } from "../assets/js/util.js";
+import { validateBackup } from "../assets/js/backup.js";
+import * as store from "../assets/js/store.js";
+
+// Sólo memoria de este proceso: nunca se abre el navegador del usuario.
+const memory = new Map();
+globalThis.localStorage = {
+  getItem: (key) => memory.get(key) ?? null,
+  setItem: (key, value) => memory.set(key, String(value)),
+};
+
+for (const [input, expected] of [
+  ["-0,853", -0.853], ["-0.853", -0.853], ["0,853", 0.853],
+  ["−0,853", -0.853], ["(123,45)", -123.45], ["(123,45 €)", -123.45],
+  ["(1.234,56) EUR", -1234.56], ["1.234,56", 1234.56],
+  ["1,234.56", 1234.56], ["-1.234", -1234], ["1.234.567", 1234567],
+  ["1 234,56", 1234.56], ["", null], ["texto", null],
+]) {
+  test(`lectura de importe ${JSON.stringify(input)}`, () => {
+    assert.equal(parseAmount(input), expected);
+  });
+}
+
+test("la nómina conserva sus datos al crear, exportar y restaurar", () => {
+  const nomina = {
+    trabajador: "Auditoría", bruto: 2000, ssTrabajador: 130,
+    irpf: 370, neto: 1500, ssEmpresa: 600,
+  };
+  const { invoice } = store.addInvoice({
+    supplierName: "Proveedor de prueba", kind: "NOMINA", number: "TEST-001",
+    base: 1500, total: 1500, rate: 0, nomina,
+  });
+  assert.equal(invoice.nomina.bruto, 2000);
+  assert.equal(invoice.nomina.irpf, 370);
+  const exported = store.exportJSON();
+  store.importJSON(exported);
+  assert.equal(store.invoiceById(invoice.id).nomina.ssEmpresa, 600);
+});
+
+test("fecha, medio y cuenta de pago sobreviven a la recarga del estado", () => {
+  const invoice = store.getState().invoices[0];
+  store.updateInvoice(invoice.id, {
+    status: "PAGADO", paidDate: "2026-10-12", payMethod: "BANCO", payAccount: "Cuenta prueba",
+  });
+  store.importJSON(store.exportJSON());
+  const restored = store.invoiceById(invoice.id);
+  assert.equal(restored.paidDate, "2026-10-12");
+  assert.equal(restored.payMethod, "BANCO");
+  assert.equal(restored.payAccount, "Cuenta prueba");
+  store.updateInvoice(invoice.id, { status: "PENDIENTE" });
+  assert.equal(restored.paidDate, "");
+  assert.equal(restored.payMethod, "");
+  assert.equal(restored.payAccount, "");
+});
+
+test("exportar no incluye la clave ficticia ni modifica los ajustes", () => {
+  store.updateSettings({ aiKey: "CREDENCIAL-FICTICIA-LOCAL" });
+  const exported = store.exportJSON();
+  assert.equal(exported.includes("CREDENCIAL-FICTICIA-LOCAL"), false);
+  assert.equal(Object.hasOwn(JSON.parse(exported).settings, "aiKey"), false);
+  assert.equal(store.getState().settings.aiKey, "CREDENCIAL-FICTICIA-LOCAL");
+});
+
+test("una copia antigua no sobreescribe la clave configurada", () => {
+  const oldBackup = JSON.parse(store.exportJSON());
+  oldBackup.settings.aiKey = "CREDENCIAL-FICTICIA-AJENA";
+  store.importJSON(JSON.stringify(oldBackup));
+  assert.equal(store.getState().settings.aiKey, "CREDENCIAL-FICTICIA-LOCAL");
+});
+
+test("las copias dañadas se rechazan sin cambiar los datos ni el guardado", () => {
+  const valid = JSON.parse(store.exportJSON());
+  const invalid = [
+    null, [], {}, { suppliers: [] }, { invoices: [] },
+    { ...valid, version: 999 }, { ...valid, settings: [] },
+    { ...valid, invoices: [null] },
+    { ...valid, suppliers: [] },
+    { ...valid, invoices: [...valid.invoices, valid.invoices[0]] },
+    { ...valid, invoices: [{ ...valid.invoices[0], lines: [null] }] },
+    { ...valid, invoices: [{ ...valid.invoices[0], total: "no es un número" }] },
+    { ...valid, messages: [null] },
+  ];
+  for (const backup of invalid) {
+    const before = JSON.stringify(store.getState());
+    const persisted = memory.get("facturas.igic.v1");
+    assert.throws(() => store.importJSON(JSON.stringify(backup)), /Copia no válida/);
+    assert.equal(JSON.stringify(store.getState()), before);
+    assert.equal(memory.get("facturas.igic.v1"), persisted);
+  }
+});
+
+test("las copias antiguas completas y las copias vacías completas son válidas", () => {
+  assert.doesNotThrow(() => validateBackup({ suppliers: [], invoices: [] }));
+  const legacy = JSON.parse(store.exportJSON());
+  delete legacy.version;
+  delete legacy.messages;
+  assert.doesNotThrow(() => validateBackup(legacy));
+});

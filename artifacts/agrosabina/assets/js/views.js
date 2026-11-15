@@ -4328,6 +4328,7 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
   const editing = mode === "edit" && invoice;
   const values = editing
     ? {
+        id: invoice.id,
         supplierName: supplierName(invoice.supplierId),
         supplierNif: (supplierById(invoice.supplierId) || {}).nif || "",
         number: invoice.number,
@@ -4346,6 +4347,7 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
         direction: invoice.direction || directionOf(invoice.kind || "FACTURA"),
         lines: invoice.lines || [],
         liquidacion: invoice.liquidacion || null,
+        nomina: invoice.nomina || null,
       }
     : job
       ? { ...job.parsed }
@@ -4619,7 +4621,7 @@ function bindForm(wrap, initial) {
 
       const supplierId = existing ? existing.id : null;
       const found = supplierId && number.value.trim() ? findDuplicate(supplierId, number.value) : null;
-      if (found) {
+      if (found && found.id !== initial?.id) {
         dup.hidden = false;
         dup.querySelector("div").innerHTML =
           `<div>Ya tienes una factura con el número <strong>${esc(number.value.trim())}</strong> de este proveedor (${fmtDate(found.issueDate)}, ${fmtEUR(found.total)}).</div>
@@ -4923,6 +4925,9 @@ async function submitInvoice(wrap, { mode, invoice, job }) {
       liquidacion: v.liquidacion,
       nomina: v.nomina,
       status: v.status,
+      paidDate: v.paidDate,
+      payMethod: v.payMethod,
+      payAccount: v.payAccount,
       kind: v.kind,
       category: v.category,
       direction: v.direction,
@@ -5229,6 +5234,7 @@ export function openSettings() {
       <p style="font-size:13px;color:var(--ink-3);margin-bottom:12px">
         Los datos viven en este navegador. Si limpias el historial o cambias de ordenador, se pierden:
         descarga una copia de vez en cuando.
+        La copia JSON no incluye la clave de IA; configúrala de nuevo si cambias de navegador.
       </p>
       <div class="row wrap">
         <button class="btn sm" data-action="export-json">${icon("download")} Descargar copia</button>

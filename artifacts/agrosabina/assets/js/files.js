@@ -23,14 +23,12 @@ export function filesSupported() {
   return typeof window !== "undefined" && !!window.indexedDB;
 }
 
-let dbPromise = null;
-
 function openDb() {
   if (!filesSupported()) {
     return Promise.reject(new Error("Este navegador no sabe guardar ficheros."));
   }
-  if (dbPromise) return dbPromise;
-  dbPromise = new Promise((resolve, reject) => {
+  // Cada operación cierra su conexión en finally: no reutilizar una ya cerrada.
+  return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, 1);
     req.onupgradeneeded = () => {
       const d = req.result;
@@ -40,10 +38,6 @@ function openDb() {
     req.onerror = () => reject(req.error || new Error("No se pudo abrir el almacén de ficheros."));
     req.onblocked = () => reject(new Error("El almacén de ficheros está abierto en otra pestaña."));
   });
-  dbPromise.catch(() => {
-    dbPromise = null;
-  });
-  return dbPromise;
 }
 
 function sizeOf(value) {

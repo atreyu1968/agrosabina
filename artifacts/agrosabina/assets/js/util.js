@@ -114,7 +114,9 @@ export function nifKey(nif) {
 export function parseAmount(raw) {
   if (raw == null) return null;
   if (typeof raw === "number") return Number.isFinite(raw) ? raw : null;
-  let s = String(raw).replace(/\s|\u00a0|'/g, "").replace(/[^\d.,-]/g, "");
+  const text = String(raw).replace(/\u2212/g, "-");
+  const negative = /^\s*\([^()]+\)\s*(?:€|EUR)?\s*$/i.test(text);
+  let s = text.replace(/\s|\u00a0|'/g, "").replace(/[^\d.,-]/g, "");
   if (!s) return null;
 
   const lastComma = s.lastIndexOf(",");
@@ -128,18 +130,18 @@ export function parseAmount(raw) {
     // «0,853 €/kg» es un precio de verdad, no 853: solo son miles si delante
     // hay una cifra que no sea un cero suelto («1,234» → 1.234).
     const decimals = s.length - lastComma - 1;
-    const entero = s.slice(0, lastComma);
+    const entero = s.slice(0, lastComma).replace(/^-/, "");
     const miles = decimals === 3 && entero !== "" && entero !== "0";
     s = miles ? s.replace(/,/g, "") : s.replace(/,/g, ".");
   } else if (lastDot > -1) {
     const decimals = s.length - lastDot - 1;
-    const entero = s.slice(0, lastDot);
+    const entero = s.slice(0, lastDot).replace(/^-/, "");
     const miles = decimals === 3 && entero !== "" && entero !== "0";
     if (miles) s = s.replace(/\./g, "");
   }
 
   const n = Number(s);
-  return Number.isFinite(n) ? n : null;
+  return Number.isFinite(n) ? (negative ? -Math.abs(n) : n) : null;
 }
 
 /**
