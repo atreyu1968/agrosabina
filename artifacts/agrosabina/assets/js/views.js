@@ -141,6 +141,8 @@ export const ui = {
   pruebas: { list: [], busy: false, status: "" },
 };
 
+let aperturaPendienteDeConfirmar = null;
+
 const ROUTES = [
   "resumen",
   "ventas",
@@ -6074,6 +6076,10 @@ export async function onAction(action, el) {
       trasladarCierreApertura();
       return;
     }
+    case "acc-opening-carryforward-confirm": {
+      confirmarTrasladoApertura();
+      return;
+    }
     case "acc-entry-new": {
       const lockError = exerciseWriteError(activeExerciseYear());
       if (lockError) {
@@ -7934,11 +7940,74 @@ function trasladarCierreApertura() {
     return;
   }
 
+  const totalDebe = round2(lines.reduce((sum, line) => sum + (Number(line.debit) || 0), 0));
+  const totalHaber = round2(lines.reduce((sum, line) => sum + (Number(line.credit) || 0), 0));
+  aperturaPendienteDeConfirmar = { year, sourceYear, lines, totalDebe, totalHaber };
+  revisarTrasladoApertura(aperturaPendienteDeConfirmar);
+}
+
+/** Muestra los saldos exactos que se guardarán y permite cancelar el reemplazo. */
+function revisarTrasladoApertura(propuesta) {
+  const filas = propuesta.lines.map((line) => `
+    <tr>
+      <td class="mono">${esc(line.account)}</td>
+      <td>${esc(line.name)}</td>
+      <td class="num">${line.debit ? fmtEUR(line.debit) : "—"}</td>
+      <td class="num">${line.credit ? fmtEUR(line.credit) : "—"}</td>
+    </tr>`).join("");
+
+  openModal(
+    `<div class="modal-head">
+       <div>
+         <h2>Revisar apertura de ${propuesta.year}</h2>
+         <p>Saldos del cierre de ${propuesta.sourceYear}</p>
+       </div>
+       <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
+     </div>
+     <div class="modal-body">
+       <div class="notice info">
+         Al confirmar, se sustituirá la apertura guardada del ejercicio ${propuesta.year}. Si cancelas, no se cambiará.
+       </div>
+       <div class="table-wrap">
+         <table class="data acc-table">
+           <thead><tr><th>Cuenta</th><th>Nombre</th><th class="num">Debe</th><th class="num">Haber</th></tr></thead>
+           <tbody>${filas}</tbody>
+           <tfoot>
+             <tr><td colspan="2">Total de la apertura</td>
+               <td class="num">${fmtEUR(propuesta.totalDebe)}</td>
+               <td class="num">${fmtEUR(propuesta.totalHaber)}</td>
+             </tr>
+           </tfoot>
+         </table>
+       </div>
+     </div>
+     <div class="modal-foot">
+       <button class="btn primary" data-action="acc-opening-carryforward-confirm">${icon("check")}<span>Confirmar y sustituir</span></button>
+       <button class="btn ghost" data-modal-cancel>Cancelar</button>
+     </div>`,
+    {
+      onMount: (wrap) => {
+        wrap.querySelectorAll("[data-modal-cancel]").forEach((el) =>
+          el.addEventListener("click", () => closeModal())
+        );
+      },
+      onClose: () => {
+        aperturaPendienteDeConfirmar = null;
+      },
+    }
+  );
+}
+
+/** Guarda la misma propuesta que se mostró, sin volver a calcular sus importes. */
+function confirmarTrasladoApertura() {
+  const propuesta = aperturaPendienteDeConfirmar;
+  if (!propuesta) return;
+
   const settings = getState().settings || {};
   const aperturasPorEjercicio = { ...(settings.aperturasPorEjercicio || {}) };
-  aperturasPorEjercicio[String(year)] = {
-    sourceYear,
-    lines,
+  aperturasPorEjercicio[String(propuesta.year)] = {
+    sourceYear: propuesta.sourceYear,
+    lines: propuesta.lines,
   };
   const patch = { aperturasPorEjercicio };
   if (!updateSettings(patch)) {
@@ -7946,7 +8015,7 @@ function trasladarCierreApertura() {
     return;
   }
   closeModal();
-  toast(`Apertura de ${year} creada con los saldos de cierre de ${sourceYear}.`, "ok");
+  toast(`Apertura de ${propuesta.year} creada con los saldos de cierre de ${propuesta.sourceYear}.`, "ok");
   render();
 }
 
