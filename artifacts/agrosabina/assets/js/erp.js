@@ -137,9 +137,9 @@ function cajonDe(doc, caja) {
   const medio = String((doc && doc.payMethod) || "").toUpperCase();
   const cuenta = String((doc && doc.payAccount) || "").trim();
   if (medio === "CAJA") return { key: "CAJA|" + caja, method: "CAJA", name: caja };
-  if (medio === "BANCO") {
+  if (medio === "BANCO" || medio === "TARJETA") {
     const nombre = cuenta || "Sin nombre todavía";
-    return { key: "BANCO|" + nombre.toLowerCase(), method: "BANCO", name: nombre };
+    return { key: medio + "|" + nombre.toLowerCase(), method: medio, name: nombre };
   }
   return { key: "SIN|", method: "", name: "Sin medio de pago" };
 }

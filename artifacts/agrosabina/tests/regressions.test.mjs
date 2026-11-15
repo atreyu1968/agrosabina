@@ -55,6 +55,71 @@ test("fecha, medio y cuenta de pago sobreviven a la recarga del estado", () => {
   assert.equal(restored.payAccount, "");
 });
 
+test("el pago con tarjeta se distingue del banco y conserva su cuenta", () => {
+  assert.equal(store.normaliseMedio("TARJETA"), "TARJETA");
+  const { invoice } = store.addInvoice({
+    supplierName: "Pago con tarjeta",
+    kind: "FACTURA",
+    number: "CARD-001",
+    base: 25,
+    rate: 0,
+    total: 25,
+  });
+  store.updateInvoice(invoice.id, {
+    status: "PAGADO",
+    paidDate: "2026-10-14",
+    payMethod: "TARJETA",
+    payAccount: "Cuenta TPV",
+  });
+  store.importJSON(store.exportJSON());
+  const restored = store.invoiceById(invoice.id);
+  assert.equal(restored.payMethod, "TARJETA");
+  assert.equal(restored.payAccount, "Cuenta TPV");
+});
+
+test("conciliar un movimiento valida importe y sentido, y al deshacer el pago vuelve a quedar pendiente", () => {
+  const { invoice } = store.addInvoice({
+    supplierName: "Suministros de prueba",
+    kind: "FACTURA",
+    number: "BANK-001",
+    issueDate: "2026-10-01",
+    base: 100,
+    rate: 0,
+    total: 100,
+    status: "PENDIENTE",
+  });
+  const statements = [{
+    id: "statement-test",
+    account: "Cuenta de prueba",
+    movements: [{ id: "movement-test", date: "2026-10-12", amount: -100, status: "PENDIENTE" }],
+  }];
+  const rejected = store.applyBankReconciliation(statements, [{
+    movementId: "movement-test",
+    invoiceId: invoice.id,
+    amount: -99,
+    date: "2026-10-12",
+    method: "BANCO",
+    account: "Cuenta de prueba",
+  }]);
+  assert.deepEqual(rejected, []);
+  assert.equal(store.invoiceById(invoice.id).status, "PENDIENTE");
+  const applied = store.applyBankReconciliation(statements, [{
+    movementId: "movement-test",
+    invoiceId: invoice.id,
+    amount: -100,
+    date: "2026-10-12",
+    method: "BANCO",
+    account: "Cuenta de prueba",
+  }]);
+  assert.deepEqual(applied, [invoice.id]);
+  assert.equal(store.invoiceById(invoice.id).status, "PAGADO");
+  assert.equal(store.getState().settings.bankStatements[0].movements[0].status, "CONCILIADO");
+
+  store.updateInvoice(invoice.id, { status: "PENDIENTE" });
+  assert.equal(store.getState().settings.bankStatements[0].movements[0].status, "PENDIENTE");
+  assert.equal(store.getState().settings.bankStatements[0].movements[0].matchedInvoiceId, undefined);
+});
+
 test("exportar no incluye la clave ficticia ni modifica los ajustes", () => {
   store.updateSettings({ aiKey: "CREDENCIAL-FICTICIA-LOCAL" });
   const exported = store.exportJSON();

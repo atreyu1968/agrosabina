@@ -20,10 +20,12 @@ import {
   parseAmount,
   round2,
   todayISO,
+  uid,
 } from "./util.js";
 import {
   addInvoice,
   addMessage,
+  applyBankReconciliation,
   clearAll,
   deleteInvoice,
   deleteMessage,
@@ -38,6 +40,7 @@ import {
   markMessageUsed,
   messages,
   seedDemo,
+  saveWorked,
   setInvoiceStatus,
   sortedInvoices,
   statsBySupplier,
@@ -81,6 +84,8 @@ import {
 } from "./accounting.js";
 import { pgcNombre, siguienteSubcuenta } from "./pgc.js";
 import { igicPorTrimestre, tesoreriaPorCuenta, vencimientos } from "./erp.js";
+import { parseBankStatement, statementFingerprint, suggestBankMatches } from "./bank-reconciliation.js";
+import { dropOriginal, keepOriginal, originalOf } from "./files.js";
 import { CUENTAS_NOMINA, calcularNomina, esNomina } from "./nomina.js";
 import { informeBalancePdf, informeResultadosPdf } from "./reports.js";
 import {
@@ -143,7 +148,7 @@ function askPaidDate(inv, isIncome, onSave) {
   const ajustes = getState().settings || {};
   const guardadas = Array.isArray(ajustes.bankAccounts) ? ajustes.bankAccounts : [];
   const cajaNombre = String(ajustes.cashAccount || "").trim() || "Caja general";
-  const medioInicial = String(inv.payMethod || "").toUpperCase() === "CAJA" ? "CAJA" : "BANCO";
+  const medioInicial = ["CAJA", "TARJETA"].includes(String(inv.payMethod || "").toUpperCase()) ? String(inv.payMethod).toUpperCase() : "BANCO";
   const cuentaInicial =
     String(inv.payAccount || "").trim() || (medioInicial === "CAJA" ? cajaNombre : guardadas[0] || "");
   const cuentasGuardadas = guardadas
@@ -168,8 +173,9 @@ function askPaidDate(inv, isIncome, onSave) {
         <div class="segmented" id="paid-method" data-value="${medioInicial}">
           <button type="button" data-method="CAJA" class="${medioInicial === "CAJA" ? "active" : ""}">En efectivo (caja)</button>
           <button type="button" data-method="BANCO" class="${medioInicial === "BANCO" ? "active" : ""}">Por el banco</button>
+          <button type="button" data-method="TARJETA" class="${medioInicial === "TARJETA" ? "active" : ""}">Con tarjeta</button>
         </div>
-        <span class="hint">La caja entra en la cuenta 570 del PGC y el banco en la 572; así el asiento sale donde toca.</span>
+        <span class="hint">La caja entra en la cuenta 570; banco y tarjeta, en la 572.</span>
       </div>
       <div class="field">
         <label for="paid-account">Cuenta corriente <span class="hint">(o el nombre de la caja)</span></label>
@@ -192,14 +198,14 @@ function askPaidDate(inv, isIncome, onSave) {
         const acc = wrap.querySelector("#paid-account");
         const hint = wrap.querySelector("#paid-account-hint");
         const sync = () => {
-          const banco = ((seg && seg.dataset.value) || "BANCO") === "BANCO";
+          const banco = ((seg && seg.dataset.value) || "BANCO") !== "CAJA";
           if (hint) {
             hint.textContent = banco
-              ? "Escribe el nombre de la cuenta o su número (ES91…). Se guarda con el documento y se recuerda para la próxima vez."
+              ? "Escribe el nombre de la cuenta. Se guarda con el documento y se recuerda para la próxima vez."
               : "Un nombre para la caja, por ejemplo «Caja general». El dinero entra en la cuenta 570 del PGC.";
           }
           if (acc) {
-            acc.placeholder = banco ? "Cuenta de La Caixa · ES91 2100 0418 4502 0005 1332" : "Caja general";
+            acc.placeholder = banco ? "Cuenta corriente" : "Caja general";
           }
         };
         if (seg) {
@@ -238,6 +244,7 @@ function payMethodText(inv) {
   const medio = String((inv && inv.payMethod) || "").toUpperCase();
   const cuenta = String((inv && inv.payAccount) || "").trim();
   if (medio === "CAJA") return `Caja${cuenta ? ` · ${esc(cuenta)}` : ""}`;
+  if (medio === "TARJETA") return `Tarjeta${cuenta ? ` · ${esc(cuenta)}` : ""}`;
   if (medio === "BANCO") return `Banco${cuenta ? ` · ${esc(cuenta)}` : ""}`;
   return cuenta ? esc(cuenta) : "—";
 }
@@ -245,7 +252,7 @@ function payMethodText(inv) {
 /** Recuerda la cuenta usada, para ofrecerla la próxima vez en la lista. */
 function rememberPayAccount(method, account) {
   const nombre = String(account || "").trim();
-  if (!nombre || String(method || "").toUpperCase() !== "BANCO") return;
+  if (!nombre || !["BANCO", "TARJETA"].includes(String(method || "").toUpperCase())) return;
   const ajustes = getState().settings || {};
   const lista = Array.isArray(ajustes.bankAccounts) ? ajustes.bankAccounts.slice() : [];
   if (lista.includes(nombre)) return;
@@ -279,7 +286,7 @@ function statusPill(inv, interactive = true) {
 
 function supplierName(id) {
   const s = supplierById(id);
-  return s ? s.name : "Sin proveedor";
+  return s ? s.name : "Sin tercero";
 }
 
 function rateText(rate) {
@@ -290,7 +297,7 @@ function rateText(rate) {
 function tagOf(inv) {
   const kind = kindInfo(inv.kind);
   const cat = categoryInfo(inv.category);
-  const isIn = inv.direction === "INGRESO";
+  const isIn = invoiceDirection(inv) === "INGRESO";
   const cls = isIn ? "tag is-in" : "tag";
   const label = inv.category && cat.id ? `${kind.short} · ${cat.label}` : kind.short;
   return `<span class="${cls}">${isIn ? "+" : "−"} ${esc(label)}</span>`;
@@ -309,7 +316,7 @@ function categoryCard(t) {
     <section class="card">
       <div class="card-head">
         <div>
-          <h2>En qué se va el dinero</h2>
+          <h2>Gastos e ingresos por categoría</h2>
           <p>Gastos e ingresos agrupados por concepto</p>
         </div>
         <div class="spacer"></div>
@@ -359,6 +366,9 @@ export function render() {
 
   document.querySelectorAll(".nav a").forEach((a) => {
     a.classList.toggle("active", a.dataset.route === route);
+  });
+  document.querySelectorAll(".nav-tools").forEach((group) => {
+    group.open = !!group.querySelector(`[data-route="${route}"]`);
   });
 
   const meta = pageMeta(route);
@@ -895,8 +905,8 @@ function pageMeta(route) {
     }
     case "proveedores":
       return {
-        title: "Proveedores",
-        sub: `${supCount} ${supCount === 1 ? "proveedor" : "proveedores"} en tu lista`,
+        title: "Proveedores y clientes",
+        sub: `${supCount} ${supCount === 1 ? "contacto" : "contactos"} guardados`,
       };
     case "documentos": {
       const docs = getState().invoices.length;
@@ -946,10 +956,10 @@ function pageMeta(route) {
     }
     default: {
       const who = (getState().settings.businessName || "Agrosabina SL").trim();
-      const pending =
-        t.pendingCount > 0
-          ? `Tienes ${fmtEUR(t.pending)} pendientes de pago`
-          : "Todo al día. Nada pendiente de pago.";
+      const pendingParts = [];
+      if (t.expensePending > 0) pendingParts.push(`${fmtEUR(t.expensePending)} por pagar`);
+      if (t.incomePending > 0) pendingParts.push(`${fmtEUR(t.incomePending)} por cobrar`);
+      const pending = pendingParts.length ? pendingParts.join(" · ") : "Todo al día";
       return {
         title: "Resumen",
         sub: `${who} · ${pending}`,
@@ -959,6 +969,9 @@ function pageMeta(route) {
 }
 
 function topActions(route) {
+  if (route === "control-fruta") {
+    return `<button class="btn primary" data-action="import-files">${icon("upload")}<span>Subir liquidación</span></button>`;
+  }
   if (route === "ventas") {
     return `
       <button class="btn" data-action="export-sales-csv">${icon("download")}<span>Exportar</span></button>
@@ -967,6 +980,7 @@ function topActions(route) {
   }
   if (route === "contabilidad") {
     return `
+      <button class="btn primary" data-action="bank-upload">${icon("upload")}<span>Subir extracto</span></button>
       <button class="btn" data-action="acc-apertura">${icon("gear")}<span>Datos de partida</span></button>
       <button class="btn" data-action="export-acc-csv">${icon("download")}<span>Exportar</span></button>`;
   }
@@ -1016,9 +1030,16 @@ function viewResumen() {
   if (!invs.length) return emptyResumen();
 
   const t = totals(invs);
+  const expenses = invs.filter((inv) => invoiceDirection(inv) === "GASTO");
+  const expensePending = expenses.filter((inv) => inv.status !== STATUS.PAID);
+  const expensePaid = expenses.filter((inv) => inv.status === STATUS.PAID);
+  const expenseOverdue = expensePending.filter((inv) => inv.dueDate && inv.dueDate < todayISO());
+  const paidExpenseTotal = expensePaid.reduce((sum, inv) => sum + (Number(inv.total) || 0), 0);
+  const expenseIgic = expenses.reduce((sum, inv) => sum + (Number(inv.igic) || 0), 0);
+  const pendingExpenseIgic = expensePending.reduce((sum, inv) => sum + (Number(inv.igic) || 0), 0);
   const months = lastMonths(6);
   const byMonth = new Map(months.map((m) => [m, { paid: 0, pending: 0 }]));
-  for (const inv of invs) {
+  for (const inv of expenses) {
     const k = monthKey(inv.issueDate);
     const row = byMonth.get(k);
     if (!row) continue;
@@ -1029,55 +1050,53 @@ function viewResumen() {
   const monthMax = Math.max(1, ...months.map((m) => byMonth.get(m).paid + byMonth.get(m).pending));
 
   const latest = sortedInvoices(invs).slice(0, 5);
-  const upcoming = invs
+  const upcoming = expenses
     .filter((i) => i.status === STATUS.PENDING)
     .sort((a, b) => (a.dueDate || a.issueDate || "9999").localeCompare(b.dueDate || b.issueDate || "9999"))
     .slice(0, 5);
 
-  const bySupplier = statsBySupplier();
-  const topSuppliers = [...bySupplier.entries()]
-    .filter(([, s]) => s.pending > 0)
+  const pendingBySupplier = new Map();
+  for (const inv of expensePending) {
+    if (!inv.supplierId) continue;
+    const row = pendingBySupplier.get(inv.supplierId) || { pending: 0, countPending: 0, count: 0 };
+    row.pending = round2(row.pending + (Number(inv.total) || 0));
+    row.countPending += 1;
+    row.count += 1;
+    pendingBySupplier.set(inv.supplierId, row);
+  }
+  const topSuppliers = [...pendingBySupplier.entries()]
     .sort((a, b) => b[1].pending - a[1].pending)
     .slice(0, 4);
 
   return `
   <div class="stack">
     <section class="kpis">
-      <article class="kpi">
-        <div class="kpi-label"><span class="dot"></span>Total facturado</div>
-        <div class="kpi-value">${fmtEUR(t.total)}</div>
-        <div class="kpi-foot">${t.count} ${t.count === 1 ? "factura" : "facturas"} de ${state.suppliers.length} proveedores</div>
-      </article>
-      <article class="kpi is-brand">
-        <div class="kpi-label"><span class="dot"></span>Pendiente de pago</div>
-        <div class="kpi-value">${fmtEUR(t.pending)}</div>
-        <div class="kpi-foot">${t.pendingCount === 0 ? "Nada pendiente" : `${t.pendingCount} ${t.pendingCount === 1 ? "documento" : "documentos"}${t.overdueCount ? ` · ${t.overdueCount} vencida${t.overdueCount === 1 ? "" : "s"}` : ""}`}</div>
-      </article>
-      <article class="kpi is-paid">
-        <div class="kpi-label"><span class="dot"></span>Pagado</div>
-        <div class="kpi-value">${fmtEUR(t.paid)}</div>
-        <div class="kpi-foot">${t.paidCount} ${t.paidCount === 1 ? "documento" : "documentos"}</div>
-      </article>
-      <article class="kpi">
-        <div class="kpi-label"><span class="dot"></span>IGIC soportado</div>
-        <div class="kpi-value">${fmtEUR(t.igic)}</div>
-        <div class="kpi-foot">${fmtEUR(t.igicPending)} en documentos pendientes</div>
-      </article>
       <article class="kpi is-income">
-        <div class="kpi-label"><span class="dot"></span>Ingresos · fruta y subvenciones</div>
+        <div class="kpi-label"><span class="dot"></span>Ingresos registrados</div>
         <div class="kpi-value">${fmtEUR(t.income)}</div>
         <div class="kpi-foot">${t.incomeCount} ${t.incomeCount === 1 ? "documento" : "documentos"} · ${fmtEUR(t.incomePending)} por cobrar</div>
       </article>
       <article class="kpi is-expense">
-        <div class="kpi-label"><span class="dot"></span>Gastos</div>
+        <div class="kpi-label"><span class="dot"></span>Compras y gastos</div>
         <div class="kpi-value">${fmtEUR(t.expense)}</div>
         <div class="kpi-foot">${t.expenseCount} ${t.expenseCount === 1 ? "documento" : "documentos"} · ${fmtEUR(t.expensePending)} por pagar</div>
       </article>
       <article class="kpi">
-        <div class="kpi-label"><span class="dot"></span>Resultado</div>
-        <div class="kpi-value">${fmtEUR(round2(t.income - t.expense))}</div>
-        <div class="kpi-foot">Ingresos menos gastos de lo registrado</div>
+        <div class="kpi-label"><span class="dot"></span>Pendiente de cobro</div>
+        <div class="kpi-value">${fmtEUR(t.incomePending)}</div>
+        <div class="kpi-foot">${t.incomeCount} ${t.incomeCount === 1 ? "ingreso registrado" : "ingresos registrados"}</div>
       </article>
+      <article class="kpi is-brand">
+        <div class="kpi-label"><span class="dot"></span>Pendiente de pago</div>
+        <div class="kpi-value">${fmtEUR(t.expensePending)}</div>
+        <div class="kpi-foot">${expensePending.length === 0 ? "Nada pendiente" : `${expensePending.length} ${expensePending.length === 1 ? "compra" : "compras"}${expenseOverdue.length ? ` · ${expenseOverdue.length} vencida${expenseOverdue.length === 1 ? "" : "s"}` : ""}`}</div>
+      </article>
+    </section>
+
+    <section class="summary-strip" aria-label="Otros datos del resumen">
+      <article><span>Compras pagadas</span><strong>${fmtEUR(paidExpenseTotal)}</strong><small>${expensePaid.length} documentos</small></article>
+      <article><span>IGIC soportado</span><strong>${fmtEUR(expenseIgic)}</strong><small>${fmtEUR(pendingExpenseIgic)} en compras pendientes</small></article>
+      <article><span>Resultado provisional</span><strong>${fmtEUR(round2(t.income - t.expense))}</strong><small>Ingresos menos gastos registrados</small></article>
     </section>
 
     ${categoryCard(t)}
@@ -1086,24 +1105,24 @@ function viewResumen() {
       <section class="card">
         <div class="card-head">
           <div>
-            <h2>Últimos documentos</h2>
-            <p>Lo último que ha entrado</p>
+            <h2>Actividad reciente</h2>
+            <p>Últimas compras, ventas y liquidaciones</p>
           </div>
           <div class="spacer"></div>
-          <a class="btn sm ghost" href="#/compras">Ver todas ${icon("arrow")}</a>
+          <a class="btn sm ghost" href="#/documentos">Ver documentos ${icon("arrow")}</a>
         </div>
         <div class="table-wrap">
           <table class="data">
             <thead>
               <tr>
-                <th>Proveedor</th><th>Factura</th><th>Fecha</th>
+                <th>Cliente o proveedor</th><th>Documento</th><th>Fecha</th>
                 <th class="num">Total</th><th>Estado</th>
               </tr>
             </thead>
             <tbody>
               ${latest.map((inv) => `
                 <tr data-id="${inv.id}">
-                  <td><div class="cell-main"><span class="name">${esc(supplierName(inv.supplierId))}</span></div></td>
+                  <td><div class="cell-main"><span class="name">${esc(supplierName(inv.supplierId))}</span><span class="sub">${esc(kindInfo(inv.kind).short)} · ${invoiceDirection(inv) === "INGRESO" ? "ingreso" : "gasto"}</span></div></td>
                   <td class="mono">${esc(inv.number || "—")}</td>
                   <td class="num">${fmtDate(inv.issueDate)}</td>
                   <td class="num strong">${fmtEUR(inv.total)}</td>
@@ -1118,8 +1137,8 @@ function viewResumen() {
         <section class="card">
           <div class="card-head">
             <div>
-              <h2>Próximos vencimientos</h2>
-              <p>Lo que toca pagar antes</p>
+              <h2>Próximos pagos</h2>
+              <p>Compras pendientes con fecha de vencimiento</p>
             </div>
           </div>
           ${upcoming.length ? `<div class="mini-list">
@@ -1141,16 +1160,16 @@ function viewResumen() {
               </div>`;
             }).join("")}
           </div>` : `<div class="empty" style="padding:30px 18px">
-            <h3>Nada pendiente</h3>
-            <p>Todas las facturas están pagadas.</p>
+            <h3>No hay pagos pendientes</h3>
+            <p>Las compras aparecerán aquí cuando tengan una fecha de vencimiento.</p>
           </div>`}
         </section>
 
         <section class="card">
           <div class="card-head">
             <div>
-              <h2>Últimos 6 meses</h2>
-              <p>Pagado y pendiente por mes</p>
+              <h2>Pagos de compras</h2>
+              <p>Pagado y pendiente en los últimos 6 meses</p>
             </div>
             <div class="spacer"></div>
             <div class="legend">
@@ -1210,11 +1229,12 @@ function emptyResumen() {
     <section class="card">
       <div class="empty" style="padding:54px 24px">
         <div class="e-icon">${icon("sparkle")}</div>
-        <h3>Empieza con tu primera factura</h3>
-        <p>Sube una foto o un PDF de una factura y la leo yo: proveedor, número, fecha, base, IGIC y total. Después solo tienes que comprobar que está bien.</p>
+        <h3>Empieza por una compra o una venta de fruta</h3>
+        <p>Sube una factura o liquidación. Revisamos los datos juntos antes de guardarlos y luego aparecen en compras, ventas y control de fruta.</p>
         <div class="e-actions">
-          <button class="btn primary" data-action="import-files">${icon("upload")} Subir una factura</button>
-          <button class="btn" data-action="new-invoice">${icon("edit")} Escribirla a mano</button>
+          <button class="btn primary" data-action="import-files">${icon("upload")} Subir factura o liquidación</button>
+          <button class="btn" data-action="new-sale">${icon("edit")} Registrar liquidación</button>
+          <button class="btn" data-action="new-invoice">${icon("edit")} Añadir compra a mano</button>
           <button class="btn ghost" data-action="seed-demo">Ver con datos de ejemplo</button>
         </div>
       </div>
@@ -1224,25 +1244,25 @@ function emptyResumen() {
       <div class="card-head">
         <div>
           <h2>Cómo funciona</h2>
-          <p>Tres pasos y la factura queda guardada</p>
+          <p>Tú decides qué se guarda: nada se confirma sin revisar</p>
         </div>
       </div>
       <div class="card-body">
         <div class="howto">
           <div class="step">
             <div class="n">1</div>
-            <h4>Sube la factura</h4>
-            <p>Una foto del móvil, un escaneo o el PDF que te ha mandado el proveedor.</p>
+            <h4>Sube una foto o PDF</h4>
+            <p>Puede ser una factura, una liquidación de fruta o una nómina.</p>
           </div>
           <div class="step">
             <div class="n">2</div>
-            <h4>Revisa lo que he leído</h4>
-            <p>Relleno proveedor, número, fechas, base, IGIC y total. Puedes corregir cualquier cosa.</p>
+            <h4>Revisa los datos</h4>
+            <p>Comprueba quién lo emite, la fecha, los importes y los avisos.</p>
           </div>
           <div class="step">
             <div class="n">3</div>
-            <h4>Marca pagado o pendiente</h4>
-            <p>Con un clic cambias el estado. El resumen te dice cuánto debes y cuánto IGIC llevas.</p>
+            <h4>Guarda y organiza</h4>
+            <p>El documento aparece en Ventas, Compras o Nóminas, según su tipo.</p>
           </div>
         </div>
       </div>
@@ -4364,6 +4384,7 @@ function invoiceFormHtml(v) {  const state = getState();
           <option value="">Sin decir</option>
           <option value="CAJA" ${v.payMethod === "CAJA" ? "selected" : ""}>En efectivo (caja) · cuenta 570</option>
           <option value="BANCO" ${v.payMethod === "BANCO" ? "selected" : ""}>Por el banco · cuenta 572</option>
+          <option value="TARJETA" ${v.payMethod === "TARJETA" ? "selected" : ""}>Con tarjeta · cuenta 572</option>
         </select>
         <label for="f-paid-account" style="margin-top:10px">Cuenta corriente <span class="hint">(o el nombre de la caja)</span></label>
         <input id="f-paid-account" type="text" value="${esc(v.payAccount || "")}" placeholder="Caja general · ES91 2100 0418 4502 0005 1332">
@@ -5575,6 +5596,8 @@ export async function onAction(action, el) {
             ? " en efectivo (caja)"
             : pay && pay.method === "BANCO"
               ? " por el banco"
+              : pay && pay.method === "TARJETA"
+                ? " con tarjeta"
               : "";
         toast(
           isIncome
@@ -5758,6 +5781,50 @@ export async function onAction(action, el) {
     case "acc-tab": {
       ui.conta.tab = id || "diario";
       render();
+      return;
+    }
+    case "bank-upload": {
+      document.getElementById("bankStatementPicker")?.click();
+      return;
+    }
+    case "bank-statement-confirm": {
+      await confirmBankStatementImport();
+      return;
+    }
+    case "bank-reconcile-all": {
+      await reconcileHighConfidenceBankMatches();
+      return;
+    }
+    case "bank-match-review": {
+      openBankMatchReview(id);
+      return;
+    }
+    case "bank-rail-review": {
+      openBankRailReview(id);
+      return;
+    }
+    case "bank-rail-save": {
+      saveBankRail(id);
+      return;
+    }
+    case "bank-match-save": {
+      await saveBankMatch(id);
+      return;
+    }
+    case "bank-manual-post": {
+      openBankManualPost(id);
+      return;
+    }
+    case "bank-manual-post-save": {
+      saveBankManualPost(id);
+      return;
+    }
+    case "bank-download": {
+      await downloadBankOriginal(id);
+      return;
+    }
+    case "bank-delete-batch": {
+      await deleteBankBatch(id);
       return;
     }
     case "acc-all": {
@@ -6058,9 +6125,56 @@ const ACC_TABS = [
   ["resultados", "Pérdidas y ganancias"],
   ["igic", "IGIC"],
   ["tesoreria", "Caja y bancos"],
+  ["conciliacion", "Conciliación"],
   ["vencimientos", "Vencimientos"],
   ["cuentas", "Cuentas"],
 ];
+
+let pendingBankStatementFile = null;
+
+export function startBankStatementImport(file) {
+  if (!file) return;
+  const extension = String(file.name || "").split(".").pop().toLowerCase();
+  if (!["csv", "ofx", "qif", "txt"].includes(extension)) {
+    toast("Ese formato no se puede leer. Sube un CSV, OFX o QIF.", "warn");
+    return;
+  }
+  if (file.size > 15 * 1024 * 1024) {
+    toast("El extracto supera 15 MB. Exporta un periodo más corto desde tu banco.", "warn");
+    return;
+  }
+  pendingBankStatementFile = file;
+  const accounts = getState().settings?.bankAccounts || [];
+  const defaultAccount = accounts.length === 1 ? accounts[0] : "";
+  openModal(
+    `<div class="modal-head">
+      <div><h2>Importar extracto bancario</h2><p>Los movimientos se guardan para revisar; aún no se marca ningún pago como realizado.</p></div>
+      <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
+    </div>
+    <div class="modal-body">
+      <div class="notice info"><strong>${esc(file.name)}</strong><br>Se leerán las fechas, los conceptos y los importes del archivo. El original se conservará en este navegador.</div>
+      <label class="field" style="margin-top:14px">
+        <span>Nombre de la cuenta bancaria</span>
+        <input id="bankStatementAccount" type="text" list="bankStatementAccounts" value="${esc(defaultAccount)}" placeholder="Por ejemplo, cuenta agrícola" maxlength="120" required>
+        <datalist id="bankStatementAccounts">${accounts.map((name) => `<option value="${esc(name)}"></option>`).join("")}</datalist>
+      </label>
+      <p class="muted" style="margin-top:10px">Formatos admitidos: CSV/TXT delimitado, OFX y QIF. Si tu banco exporta a Excel, guárdalo como CSV. Los extractos PDF no se leen en esta versión; los justificantes PDF o foto siguen en Documentos.</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn primary" data-action="bank-statement-confirm">${icon("upload")}<span>Leer extracto</span></button>
+      <button class="btn ghost" data-modal-cancel>Cancelar</button>
+    </div>`,
+    {
+      narrow: true,
+      onMount: (wrap) => {
+        wrap.querySelectorAll("[data-modal-cancel]").forEach((el) => el.addEventListener("click", () => {
+          pendingBankStatementFile = null;
+          closeModal();
+        }));
+      },
+    }
+  );
+}
 
 /** El periodo contable que se está mirando. */
 function contaWindow() {
@@ -6095,6 +6209,32 @@ function accManuales() {
 /** Guarda la lista de asientos escritos a mano. */
 function saveAccManuales(list) {
   updateSettings({ asientosManuales: Array.isArray(list) ? list : [] });
+}
+
+function bankStatementBatches() {
+  const list = getState().settings?.bankStatements;
+  return Array.isArray(list)
+    ? list
+        .filter((batch) => batch && typeof batch.id === "string" && Array.isArray(batch.movements))
+        .map((batch) => ({
+          ...batch,
+          movements: batch.movements.filter((movement) => movement && typeof movement.id === "string" && Number.isFinite(Number(movement.amount))),
+        }))
+    : [];
+}
+
+function bankRailLabel(rail) {
+  if (rail === "TARJETA") return "Tarjeta";
+  if (rail === "TRANSFERENCIA") return "Transferencia";
+  return "No identificado";
+}
+
+function bankMovementLocation(movementId, batches = bankStatementBatches()) {
+  for (const batch of batches) {
+    const movement = batch.movements.find((item) => item && item.id === movementId);
+    if (movement) return { batch, movement };
+  }
+  return null;
 }
 
 /**
@@ -6668,7 +6808,7 @@ function accTesoreriaHtml() {
             .map(
               (c) => `<tr class="acc-row">
             <td><strong>${esc(c.name)}</strong> <span class="muted">${
-                c.method === "CAJA" ? "caja · 570" : c.method === "BANCO" ? "banco · 572" : "sin medio de pago"
+                c.method === "CAJA" ? "caja · 570" : c.method === "TARJETA" ? "tarjeta · 572" : c.method === "BANCO" ? "banco · 572" : "sin medio de pago"
               }</span></td>
             <td class="num">${fmtEUR(c.entradas)}</td>
             <td class="num">${fmtEUR(c.salidas)}</td>
@@ -6725,6 +6865,482 @@ function accTesoreriaHtml() {
       ? `<p class="acc-note">${inf.sinFecha.count} ${inf.sinFecha.count === 1 ? "documento está" : "documentos están"} cobrado o pagado sin fecha (${fmtEUR(inf.sinFecha.amount)}), así que no se pueden colocar en un día.</p>`
       : ""
   }`;
+}
+
+function accConciliacionHtml() {
+  const batches = bankStatementBatches();
+  const w = contaWindow();
+  const movements = batches.flatMap((batch) =>
+    batch.movements.map((movement) => ({ ...movement, batchId: batch.id, batchName: batch.name, account: batch.account }))
+  ).filter((movement) => (!w.from || movement.date >= w.from) && (!w.to || movement.date <= w.to));
+  const suggestions = suggestBankMatches(movements, getState().invoices, getState().suppliers);
+  const suggestionsById = new Map(suggestions.map((row) => [row.movement.id, row.suggestion]));
+  const pending = movements.filter((movement) => movement.status === "PENDIENTE");
+  const reconciled = movements.filter((movement) => movement.status === "CONCILIADO");
+  const posted = movements.filter((movement) => movement.status === "CONTABILIZADO");
+  const highCandidates = [];
+  const usedInvoices = new Set();
+  for (const row of suggestions) {
+    if (!row.suggestion?.highConfidence || usedInvoices.has(row.suggestion.invoiceId)) continue;
+    usedInvoices.add(row.suggestion.invoiceId);
+    highCandidates.push(row);
+  }
+  const batchesHtml = batches.length
+    ? `<div class="bank-batches">${batches.map((batch) => `
+        <div class="bank-batch">
+          <div class="bank-batch-copy">
+            <strong>${esc(batch.name)}</strong>
+            <span>${esc(batch.account)} · ${batch.movements.length} movimientos · importado ${fmtDate(batch.importedAt?.slice(0, 10))}${batch.duplicatesIgnored ? ` · ${batch.duplicatesIgnored} duplicados ignorados` : ""}${batch.skippedRows ? ` · ${batch.skippedRows} filas no leídas` : ""}</span>
+          </div>
+          <div class="bank-batch-actions">
+            <button class="btn sm ghost" data-action="bank-download" data-id="${esc(batch.id)}" aria-label="Descargar ${esc(batch.name)}">${icon("download")}<span>Original</span></button>
+            ${batch.movements.every((movement) => movement.status === "PENDIENTE") ? `<button class="btn sm ghost" data-action="bank-delete-batch" data-id="${esc(batch.id)}">${icon("trash")}<span>Eliminar</span></button>` : ""}
+          </div>
+        </div>`).join("")}</div>`
+    : `<div class="empty">
+        <div class="e-icon">${icon("upload")}</div>
+        <h3>Aún no has importado ningún extracto</h3>
+        <p>Sube un CSV/TXT delimitado, OFX o QIF. Los extractos PDF no se leen en esta versión. La conciliación propone pagos y cobros por importe, fecha y referencia.</p>
+        <button class="btn primary" data-action="bank-upload">${icon("upload")}<span>Subir extracto</span></button>
+      </div>`;
+
+  return `
+  <div class="stack">
+    <div class="acc-toolbar-note bank-toolbar">
+      <span class="tag kind">${batches.length} ${batches.length === 1 ? "extracto" : "extractos"}</span>
+      <span class="muted">${w.label} · los pagos se confirman antes de contabilizarse</span>
+      <div class="spacer"></div>
+      <button class="btn sm" data-action="bank-upload">${icon("upload")}<span>Subir extracto</span></button>
+      <button class="btn sm primary" data-action="bank-reconcile-all" ${highCandidates.length ? "" : "disabled"}>${icon("check")}<span>Conciliar ${highCandidates.length} coincidencias seguras</span></button>
+    </div>
+    <section class="acc-kpis">
+      ${accKpi("Movimientos", String(movements.length), "en el periodo")}
+      ${accKpi("Sin conciliar", String(pending.length), "requieren revisión")}
+      ${accKpi("Conciliados", String(reconciled.length), "pagos enlazados a documentos")}
+      ${accKpi("Contabilizados", String(posted.length), "movimientos sin documento")}
+    </section>
+    <section class="card">
+      <div class="card-head">
+        <div><h2>Extractos importados</h2><p>Los movimientos coincidentes usan el asiento del documento para evitar duplicar el banco.</p></div>
+      </div>
+      ${batchesHtml}
+    </section>
+    ${movements.length ? `<section class="card">
+      <div class="card-head">
+        <div><h2>Movimientos del banco</h2><p>Transferencias, pagos con tarjeta y otros cargos o abonos del extracto.</p></div>
+      </div>
+      <div class="table-wrap">
+        <table class="data acc-table bank-table">
+          <thead><tr><th>Fecha</th><th>Concepto</th><th>Medio</th><th class="num">Importe</th><th>Coincidencia</th><th></th></tr></thead>
+          <tbody>
+            ${movements.map((movement) => {
+              const suggestion = suggestionsById.get(movement.id);
+              const matchedInvoice = movement.status === "CONCILIADO"
+                ? getState().invoices.find((invoice) => invoice.id === movement.matchedInvoiceId)
+                : null;
+              const statusLabel = movement.status === "CONCILIADO"
+                ? `Conciliado · ${esc(matchedInvoice?.number || "documento")}`
+                : movement.status === "CONTABILIZADO"
+                  ? `Contabilizado en ${esc(movement.accountCode || "la cuenta elegida")}`
+                  : suggestion
+                    ? suggestion.confidence === "AMBIGUA" ? "Varias facturas posibles" : suggestion.label
+                    : "Sin documento relacionado";
+              const action = movement.status === "CONCILIADO"
+                ? `<button class="btn sm ghost" data-action="edit-invoice" data-id="${esc(movement.matchedInvoiceId)}">Ver documento</button>`
+                : movement.status === "CONTABILIZADO"
+                  ? `<span class="tag kind">Incluido en el diario</span>`
+                  : suggestion
+                    ? `<button class="btn sm" data-action="bank-match-review" data-id="${esc(movement.id)}">${suggestion.confidence === "AMBIGUA" ? "Elegir factura" : "Revisar y conciliar"}</button>`
+                    : `<button class="btn sm" data-action="bank-manual-post" data-id="${esc(movement.id)}">Clasificar y contabilizar</button>`;
+              return `<tr>
+                <td class="num">${fmtDate(movement.date)}</td>
+                <td><div class="cell-main"><span class="name">${esc(movement.description)}</span><span class="sub">${esc(movement.batchName)} · ${esc(movement.reference || "sin referencia")}</span></div></td>
+                <td>${bankRailLabel(movement.rail)}</td>
+                <td class="num strong ${movement.amount < 0 ? "is-expense" : "is-income"}">${fmtEUR(movement.amount)}</td>
+                <td><span class="bank-match-state ${movement.status === "PENDIENTE" ? "is-pending" : ""}">${statusLabel}</span></td>
+                <td class="num"><div class="bank-row-actions">${movement.status === "PENDIENTE" && movement.rail === "OTRO" ? `<button class="btn sm ghost" data-action="bank-rail-review" data-id="${esc(movement.id)}">Indicar medio</button>` : ""}${action}</div></td>
+              </tr>`;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+    </section>` : ""}
+    <p class="acc-note">Solo se concilian automáticamente importes exactos y documentos pendientes. Las coincidencias se revisan antes de marcar una factura como pagada o una liquidación como cobrada. Los cargos sin documento necesitan una cuenta contable elegida por ti.</p>
+  </div>`;
+}
+
+function copyBankStatements() {
+  return JSON.parse(JSON.stringify(bankStatementBatches()));
+}
+
+async function confirmBankStatementImport() {
+  const file = pendingBankStatementFile;
+  const accountInput = document.getElementById("bankStatementAccount");
+  const account = String(accountInput?.value || "").trim().slice(0, 120);
+  if (!file || !account) {
+    toast("Indica la cuenta bancaria antes de importar.", "warn");
+    return;
+  }
+  let parsed;
+  try {
+    parsed = parseBankStatement(await file.text(), file.name);
+  } catch (err) {
+    toast(err?.message || "No he podido leer el extracto.", "warn", 6000);
+    return;
+  }
+
+  const batches = bankStatementBatches();
+  const known = new Set(
+    batches.flatMap((batch) => batch.movements.map((movement) => movement.fingerprint || statementFingerprint({ ...movement, account: batch.account })))
+  );
+  let duplicatesIgnored = 0;
+  const movements = [];
+  for (const item of parsed) {
+    const fingerprint = statementFingerprint({ ...item, account });
+    if (known.has(fingerprint)) {
+      duplicatesIgnored += 1;
+      continue;
+    }
+    known.add(fingerprint);
+    movements.push({
+      id: uid("bankmove"),
+      date: item.date,
+      amount: item.amount,
+      description: item.description,
+      reference: item.reference,
+      rail: item.rail,
+      fingerprint,
+      status: "PENDIENTE",
+    });
+  }
+  if (!movements.length) {
+    toast(`No hay movimientos nuevos: se ignoraron ${duplicatesIgnored} duplicados.`, "info", 5000);
+    pendingBankStatementFile = null;
+    closeModal();
+    return;
+  }
+
+  const batch = {
+    id: uid("bankstatement"),
+    name: String(file.name || "extracto").slice(0, 180),
+    account,
+    importedAt: new Date().toISOString(),
+    duplicatesIgnored,
+    skippedRows: Number(parsed.skippedRows) || 0,
+    movements,
+  };
+  let originalError = "";
+  try {
+    await keepOriginal(batch.id, file);
+  } catch (err) {
+    originalError = err?.message || "No se pudo guardar el original.";
+  }
+
+  const previousAccounts = [...(getState().settings?.bankAccounts || [])];
+  const accounts = [...new Set([...previousAccounts, account])].slice(0, 12);
+  updateSettings({ bankStatements: [...batches, batch], bankAccounts: accounts });
+  if (!saveWorked()) {
+    await dropOriginal(batch.id).catch(() => {});
+    updateSettings({ bankStatements: batches, bankAccounts: previousAccounts });
+    toast("No he podido guardar los movimientos en la base de datos. Comprueba el espacio disponible y vuelve a intentarlo.", "bad", 7000);
+    return;
+  }
+  pendingBankStatementFile = null;
+  closeModal();
+  const duplicateText = duplicatesIgnored ? ` · ${duplicatesIgnored} duplicados ignorados` : "";
+  const skippedText = batch.skippedRows ? ` · ${batch.skippedRows} filas sin datos válidos` : "";
+  const originalText = originalError ? " El original no se pudo conservar en este navegador." : "";
+  toast(`${movements.length} movimientos importados${duplicateText}${skippedText}.${originalText}`, originalError || batch.skippedRows ? "warn" : "ok", 6500);
+  ui.conta.tab = "conciliacion";
+  render();
+}
+
+function openBankMatchReview(movementId) {
+  const location = bankMovementLocation(movementId);
+  if (!location || location.movement.status !== "PENDIENTE") {
+    toast("Ese movimiento ya no está pendiente de conciliar.", "warn");
+    return;
+  }
+  const { batch, movement } = location;
+  const result = suggestBankMatches([movement], getState().invoices, getState().suppliers)[0];
+  const choices = result?.suggestion?.alternatives || [];
+  if (!choices.length) {
+    toast("No hay una factura pendiente del mismo importe y sentido. Puedes crear un asiento manual.", "info");
+    return;
+  }
+  openModal(
+    `<div class="modal-head">
+      <div><h2>Revisar coincidencia</h2><p>${esc(movement.description)}</p></div>
+      <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
+    </div>
+    <div class="modal-body">
+      <div class="bank-review-summary">
+        <span>${fmtDate(movement.date)} · ${bankRailLabel(movement.rail)}</span>
+        <strong>${fmtEUR(movement.amount)}</strong>
+        <small>Cuenta: ${esc(batch.account)} · Extracto: ${esc(batch.name)}</small>
+      </div>
+      <label class="field" style="margin-top:14px">
+        <span>Documento relacionado</span>
+        <select id="bankMatchInvoice">
+          ${choices.map((choice) => `<option value="${esc(choice.invoiceId)}">${esc(choice.label)}</option>`).join("")}
+        </select>
+      </label>
+      <p class="muted" style="margin-top:10px">Al confirmar, el documento quedará pagado o cobrado en la fecha del extracto y el asiento usará la cuenta bancaria 572.</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn primary" data-action="bank-match-save" data-id="${esc(movement.id)}">${icon("check")}<span>Conciliar y actualizar el documento</span></button>
+      <button class="btn ghost" data-modal-cancel>Cancelar</button>
+    </div>`,
+    { narrow: true, onMount: (wrap) => wrap.querySelectorAll("[data-modal-cancel]").forEach((el) => el.addEventListener("click", () => closeModal())) }
+  );
+}
+
+function openBankRailReview(movementId) {
+  const location = bankMovementLocation(movementId);
+  if (!location || location.movement.status !== "PENDIENTE") {
+    toast("Solo puedes cambiar el medio de un movimiento pendiente.", "warn");
+    return;
+  }
+  const { movement } = location;
+  openModal(
+    `<div class="modal-head">
+      <div><h2>Indicar el medio de pago</h2><p>${esc(movement.description)}</p></div>
+      <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
+    </div>
+    <div class="modal-body">
+      <div class="bank-review-summary"><span>${fmtDate(movement.date)} · ${fmtEUR(movement.amount)}</span><small>El extracto no identifica si fue tarjeta o transferencia.</small></div>
+      <label class="field" style="margin-top:14px">
+        <span>Medio</span>
+        <select id="bankRailChoice" required>
+          <option value="TRANSFERENCIA">Transferencia</option>
+          <option value="TARJETA">Tarjeta</option>
+        </select>
+      </label>
+    </div>
+    <div class="modal-foot">
+      <button class="btn primary" data-action="bank-rail-save" data-id="${esc(movement.id)}">${icon("check")}<span>Guardar medio</span></button>
+      <button class="btn ghost" data-modal-cancel>Cancelar</button>
+    </div>`,
+    { narrow: true, onMount: (wrap) => wrap.querySelectorAll("[data-modal-cancel]").forEach((el) => el.addEventListener("click", () => closeModal())) }
+  );
+}
+
+function saveBankRail(movementId) {
+  const rail = String(document.getElementById("bankRailChoice")?.value || "");
+  if (!["TARJETA", "TRANSFERENCIA"].includes(rail)) return;
+  const statements = copyBankStatements();
+  const movement = bankMovementLocation(movementId, statements)?.movement;
+  if (!movement || movement.status !== "PENDIENTE") {
+    toast("El movimiento ya no está pendiente.", "warn");
+    return;
+  }
+  movement.rail = rail;
+  updateSettings({ bankStatements: statements });
+  closeModal();
+  toast(`Medio actualizado: ${bankRailLabel(rail).toLowerCase()}.`, "ok");
+  render();
+}
+
+async function saveBankMatch(movementId) {
+  const location = bankMovementLocation(movementId);
+  const select = document.getElementById("bankMatchInvoice");
+  const invoiceId = String(select?.value || "");
+  if (!location || !invoiceId) return;
+  const { batch, movement } = location;
+  const choices = suggestBankMatches([movement], getState().invoices, getState().suppliers)[0]?.suggestion?.alternatives || [];
+  if (!choices.some((choice) => choice.invoiceId === invoiceId)) {
+    toast("El documento ya no coincide con este movimiento.", "warn");
+    return;
+  }
+  const invoice = getState().invoices.find((item) => item.id === invoiceId);
+  if (!invoice || invoice.status === STATUS.PAID) {
+    toast("Ese documento ya está pagado o cobrado.", "warn");
+    return;
+  }
+  const isIncome = invoiceDirection(invoice) === "INGRESO";
+  const ok = await confirmDialog({
+    title: isIncome ? "Confirmar el cobro" : "Confirmar el pago",
+    message: `El documento ${invoice.number || "sin número"} (${fmtEUR(invoice.total)}) pasará a ${isIncome ? "cobrado" : "pagado"} el ${fmtDate(movement.date)}. El asiento se generará desde el documento.`,
+    confirm: isIncome ? "Sí, conciliar cobro" : "Sí, conciliar pago",
+  });
+  if (!ok) return;
+  const statements = copyBankStatements();
+  const applied = applyBankReconciliation(statements, [{
+    movementId: movement.id,
+    invoiceId,
+    amount: movement.amount,
+    date: movement.date,
+    method: movement.rail === "TARJETA" ? "TARJETA" : "BANCO",
+    account: batch.account,
+  }]);
+  if (!applied.length) {
+    toast("No se ha conciliado: el movimiento o documento cambió mientras lo revisabas.", "warn");
+    return;
+  }
+  closeModal();
+  toast(isIncome ? "Cobro conciliado y contabilizado." : "Pago conciliado y contabilizado.", "ok");
+  render();
+}
+
+async function reconcileHighConfidenceBankMatches() {
+  const window = contaWindow();
+  const batches = bankStatementBatches();
+  const rows = batches.flatMap((batch) => batch.movements
+    .filter((movement) => movement.status === "PENDIENTE" && (!window.from || movement.date >= window.from) && (!window.to || movement.date <= window.to))
+    .map((movement) => ({ ...movement, batchId: batch.id, account: batch.account })));
+  const candidates = suggestBankMatches(rows, getState().invoices, getState().suppliers);
+  const selected = [];
+  const usedInvoices = new Set();
+  for (const row of candidates) {
+    if (!row.suggestion?.highConfidence || usedInvoices.has(row.suggestion.invoiceId)) continue;
+    usedInvoices.add(row.suggestion.invoiceId);
+    selected.push(row);
+  }
+  if (!selected.length) {
+    toast("No hay coincidencias seguras pendientes. Revisa las sugerencias una a una.", "info");
+    return;
+  }
+  const amount = round2(selected.reduce((sum, row) => sum + Math.abs(Number(row.movement.amount) || 0), 0));
+  const ok = await confirmDialog({
+    title: `Conciliar ${selected.length} movimientos`,
+    message: `Se enlazarán movimientos por ${fmtEUR(amount)} con facturas o liquidaciones de importe exacto. Los documentos pasarán a pagados o cobrados usando la fecha del extracto.`,
+    confirm: "Sí, conciliar",
+  });
+  if (!ok) return;
+  const statements = copyBankStatements();
+  const matches = selected.map(({ movement }) => {
+    const location = bankMovementLocation(movement.id, batches);
+    return {
+      movementId: movement.id,
+      invoiceId: suggestBankMatches([movement], getState().invoices, getState().suppliers)[0]?.suggestion?.invoiceId,
+      amount: movement.amount,
+      date: movement.date,
+      method: movement.rail === "TARJETA" ? "TARJETA" : "BANCO",
+      account: location?.batch.account || movement.account,
+    };
+  }).filter((match) => match.invoiceId);
+  const applied = applyBankReconciliation(statements, matches);
+  toast(`${applied.length} movimientos conciliados y contabilizados.`, applied.length ? "ok" : "warn");
+  render();
+}
+
+function openBankManualPost(movementId) {
+  const location = bankMovementLocation(movementId);
+  if (!location || location.movement.status !== "PENDIENTE") {
+    toast("Ese movimiento ya está clasificado.", "warn");
+    return;
+  }
+  const { batch, movement } = location;
+  const isInflow = Number(movement.amount) > 0;
+  const codes = ["400", "410", "430", "440", "465", "472", "475", "476", "600", "602", "621", "622", "623", "624", "625", "626", "627", "628", "629", "640", "642", "662", "700", "705", "740", "778"];
+  const defaultCode = isInflow ? "700" : "629";
+  openModal(
+    `<div class="modal-head">
+      <div><h2>Contabilizar movimiento sin documento</h2><p>Elige la cuenta que explica este cobro o pago.</p></div>
+      <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
+    </div>
+    <div class="modal-body">
+      <div class="bank-review-summary">
+        <span>${fmtDate(movement.date)} · ${esc(bankRailLabel(movement.rail))} · ${esc(batch.account)}</span>
+        <strong>${fmtEUR(movement.amount)}</strong>
+        <small>${esc(movement.description)}</small>
+      </div>
+      <label class="field" style="margin-top:14px">
+        <span>Cuenta de contrapartida</span>
+        <select id="bankPostAccount">
+          ${codes.map((code) => `<option value="${code}" ${code === defaultCode ? "selected" : ""}>${code} · ${esc(pgcNombre(code) || `Cuenta ${code}`)}</option>`).join("")}
+        </select>
+      </label>
+      <p class="muted" style="margin-top:10px">Se creará un asiento equilibrado contra bancos (572). Revisa que la cuenta elegida corresponda al movimiento.</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn primary" data-action="bank-manual-post-save" data-id="${esc(movement.id)}">${icon("check")}<span>Guardar asiento</span></button>
+      <button class="btn ghost" data-modal-cancel>Cancelar</button>
+    </div>`,
+    { narrow: true, onMount: (wrap) => wrap.querySelectorAll("[data-modal-cancel]").forEach((el) => el.addEventListener("click", () => closeModal())) }
+  );
+}
+
+function saveBankManualPost(movementId) {
+  const location = bankMovementLocation(movementId);
+  const accountInput = document.getElementById("bankPostAccount");
+  const counterAccount = String(accountInput?.value || "");
+  if (!location || location.movement.status !== "PENDIENTE" || !/^\d{3,6}$/.test(counterAccount) || counterAccount === "572") {
+    toast("No se puede contabilizar este movimiento. Vuelve a revisarlo.", "warn");
+    return;
+  }
+  const { movement } = location;
+  const amount = round2(Math.abs(Number(movement.amount) || 0));
+  if (!amount) {
+    toast("El importe del movimiento no es válido.", "warn");
+    return;
+  }
+  const id = `bank-${movement.id}`;
+  const isInflow = Number(movement.amount) > 0;
+  const entry = {
+    id,
+    date: movement.date,
+    concept: `Extracto bancario · ${String(movement.description || "").slice(0, 160)}`,
+    ref: String(movement.reference || "").slice(0, 120),
+    lineas: isInflow
+      ? [{ cuenta: "572", debe: amount, haber: 0 }, { cuenta: counterAccount, debe: 0, haber: amount }]
+      : [{ cuenta: counterAccount, debe: amount, haber: 0 }, { cuenta: "572", debe: 0, haber: amount }],
+  };
+  const statements = copyBankStatements();
+  const savedMovement = bankMovementLocation(movementId, statements)?.movement;
+  if (!savedMovement || savedMovement.status !== "PENDIENTE") return;
+  savedMovement.status = "CONTABILIZADO";
+  savedMovement.accountCode = counterAccount;
+  savedMovement.postedEntryId = id;
+  savedMovement.postedAt = new Date().toISOString();
+  const entries = accManuales().filter((item) => item.id !== id);
+  entries.push(entry);
+  updateSettings({ asientosManuales: entries, bankStatements: statements });
+  closeModal();
+  toast("Movimiento contabilizado en el diario.", "ok");
+  render();
+}
+
+async function downloadBankOriginal(batchId) {
+  try {
+    const original = await originalOf(batchId);
+    if (!original?.blob) {
+      toast("No se guardó una copia del extracto en este navegador.", "warn");
+      return;
+    }
+    const url = URL.createObjectURL(original.blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = original.name || "extracto";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (err) {
+    toast(err?.message || "No he podido recuperar el archivo original.", "warn");
+  }
+}
+
+async function deleteBankBatch(batchId) {
+  const batch = bankStatementBatches().find((item) => item.id === batchId);
+  if (!batch) return;
+  if (batch.movements.some((movement) => movement.status !== "PENDIENTE")) {
+    toast("Primero deshaz la conciliación o el asiento de sus movimientos.", "warn");
+    return;
+  }
+  const ok = await confirmDialog({
+    title: "Eliminar este extracto",
+    message: `Se eliminarán ${batch.movements.length} movimientos pendientes y el archivo original guardado en este navegador.`,
+    confirm: "Eliminar extracto",
+  });
+  if (!ok) return;
+  const statements = copyBankStatements().filter((item) => item.id !== batchId);
+  updateSettings({ bankStatements: statements });
+  if (!saveWorked()) {
+    toast("No se pudo guardar el cambio. El extracto sigue en la aplicación.", "bad");
+    return;
+  }
+  await dropOriginal(batchId).catch(() => {});
+  toast("Extracto eliminado.", "ok");
+  render();
 }
 
 /** Vencimientos: lo que te deben y lo que debes, con los días de retraso. */
@@ -6793,6 +7409,7 @@ function accBody() {
     const mayor = libroMayor(entries);
     if (ui.conta.tab === "igic") return accIgicHtml();
     if (ui.conta.tab === "tesoreria") return accTesoreriaHtml();
+    if (ui.conta.tab === "conciliacion") return accConciliacionHtml();
     if (ui.conta.tab === "vencimientos") return accVencimientosHtml();
     if (ui.conta.tab === "cuentas") return accCuentasHtml(accPlan(), mayor);
     if (ui.conta.tab === "mayor") return accMayorHtml(mayor);
@@ -6900,6 +7517,32 @@ function saveApertura() {
 function exportAccCsv() {
   const w = contaWindow();
   const tab = ui.conta.tab;
+  if (tab === "conciliacion") {
+    const movements = bankStatementBatches().flatMap((batch) =>
+      batch.movements
+        .filter((movement) => (!w.from || movement.date >= w.from) && (!w.to || movement.date <= w.to))
+        .map((movement) => [
+          movement.date,
+          batch.account,
+          batch.name,
+          movement.description,
+          movement.reference,
+          bankRailLabel(movement.rail),
+          fmtNum(movement.amount),
+          movement.status,
+          movement.matchedInvoiceId || "",
+          movement.accountCode || "",
+        ])
+    );
+    if (!movements.length) {
+      toast("No hay movimientos del extracto que exportar en este periodo.", "warn");
+      return;
+    }
+    const headers = ["Fecha", "Cuenta", "Extracto", "Concepto", "Referencia", "Medio", "Importe", "Estado", "Documento relacionado", "Cuenta contable"];
+    downloadText(`conciliacion-bancaria-${todayISO()}.csv`, "\ufeff" + [headers, ...movements].map((row) => row.map(csvCell).join(";")).join("\r\n"));
+    toast("Conciliación bancaria exportada.", "ok");
+    return;
+  }
   // IGIC, caja y vencimientos salen de los documentos, no de los asientos.
   const gestion = tab === "igic" || tab === "tesoreria" || tab === "vencimientos";
   const entries = gestion ? [] : asientosContables(w);
@@ -6953,7 +7596,7 @@ function exportAccCsv() {
     });
     headers = ["Cuenta", "Medio", "Fecha", "Documento", "Tercero", "Importe", "Saldo"];
     for (const c of inf.cuentas) {
-      const medio = c.method === "CAJA" ? "Caja (570)" : c.method === "BANCO" ? "Banco (572)" : "Sin medio de pago";
+      const medio = c.method === "CAJA" ? "Caja (570)" : c.method === "TARJETA" ? "Tarjeta (572)" : c.method === "BANCO" ? "Banco (572)" : "Sin medio de pago";
       for (const m of c.movimientos) {
         rows.push([c.name, medio, m.date, m.number, m.party, fmtNum(m.amount), fmtNum(m.running)]);
       }
@@ -7181,7 +7824,20 @@ async function deleteAccEntry(id) {
     danger: true,
   });
   if (!ok) return;
-  saveAccManuales(accManuales().filter((x) => String(x.id) !== String(id)));
+  const statements = copyBankStatements();
+  for (const batch of statements) {
+    for (const movement of batch.movements) {
+      if (String(movement.postedEntryId || "") !== String(id)) continue;
+      movement.status = "PENDIENTE";
+      delete movement.accountCode;
+      delete movement.postedEntryId;
+      delete movement.postedAt;
+    }
+  }
+  updateSettings({
+    asientosManuales: accManuales().filter((x) => String(x.id) !== String(id)),
+    bankStatements: statements,
+  });
   toast("Asiento borrado.");
   render();
 }

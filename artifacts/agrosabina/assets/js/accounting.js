@@ -283,6 +283,7 @@ export function medioDePagoTexto(inv) {
   const medio = String(d.payMethod || "").toUpperCase();
   const cuenta = String(d.payAccount || "").trim();
   if (medio === "CAJA") return cuenta ? `Caja · ${cuenta}` : "Caja";
+  if (medio === "TARJETA") return cuenta ? `Tarjeta · ${cuenta}` : "Tarjeta";
   if (medio === "BANCO") return cuenta ? `Banco · ${cuenta}` : "Banco";
   return cuenta;
 }

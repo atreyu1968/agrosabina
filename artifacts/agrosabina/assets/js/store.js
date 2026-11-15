@@ -39,6 +39,7 @@ function emptyState() {
       businessName: "Agrosabina SL",
       // Cuentas que se ofrecen al marcar un cobro o un pago.
       bankAccounts: [],
+      bankStatements: [],
       cashAccount: "Caja general",
       aiEnabled: false,
       // Con la IA encendida, por defecto lee el documento tal cual (la foto o
@@ -258,7 +259,8 @@ function direccionDeDocumento(doc) {
 export function normaliseMedio(valor) {
   const arriba = String(valor || "").trim().toUpperCase();
   if (["CAJA", "EFECTIVO", "METALICO", "METÁLICO"].includes(arriba)) return "CAJA";
-  if (["BANCO", "TRANSFERENCIA", "CUENTA", "TARJETA"].includes(arriba)) return "BANCO";
+  if (["TARJETA", "CARD", "TPV"].includes(arriba)) return "TARJETA";
+  if (["BANCO", "TRANSFERENCIA", "CUENTA"].includes(arriba)) return "BANCO";
   return "";
 }
 
@@ -553,6 +555,7 @@ export function updateSupplier(id, patch) {
 }
 
 export function deleteSupplier(id) {
+  releaseBankReconciliations(state.invoices.filter((inv) => inv.supplierId === id).map((inv) => inv.id));
   state.suppliers = state.suppliers.filter((s) => s.id !== id);
   state.invoices = state.invoices.filter((inv) => inv.supplierId !== id);
   save();
@@ -658,6 +661,7 @@ export function updateInvoice(id, patch) {
     inv.paidDate = "";
     inv.payMethod = "";
     inv.payAccount = "";
+    releaseBankReconciliations([id]);
   }
   inv.updatedAt = new Date().toISOString();
   save();
@@ -665,10 +669,28 @@ export function updateInvoice(id, patch) {
 }
 
 export function deleteInvoice(id) {
+  releaseBankReconciliations([id]);
   state.invoices = state.invoices.filter((i) => i.id !== id);
   // El fichero original se va con el documento.
   files.dropOriginal(id).catch(() => {});
   save();
+}
+
+function releaseBankReconciliations(invoiceIds) {
+  const ids = new Set((invoiceIds || []).map(String));
+  const batches = state.settings?.bankStatements;
+  if (!ids.size || !Array.isArray(batches)) return false;
+  let changed = false;
+  for (const batch of batches) {
+    for (const movement of Array.isArray(batch?.movements) ? batch.movements : []) {
+      if (!ids.has(String(movement?.matchedInvoiceId || ""))) continue;
+      movement.status = "PENDIENTE";
+      delete movement.matchedInvoiceId;
+      delete movement.reconciledAt;
+      changed = true;
+    }
+  }
+  return changed;
 }
 
 export function setInvoiceStatus(id, status, paidDate, pay) {
@@ -688,6 +710,48 @@ export function setInvoiceStatus(id, status, paidDate, pay) {
     patch.payAccount = "";
   }
   return updateInvoice(id, patch);
+}
+
+/** Marca en una sola escritura los documentos validados contra movimientos bancarios. */
+export function applyBankReconciliation(statements, matches) {
+  const applied = [];
+  const usedInvoices = new Set();
+  const nextStatements = Array.isArray(statements) ? statements : state.settings.bankStatements;
+  for (const match of Array.isArray(matches) ? matches : []) {
+    const invoice = state.invoices.find((item) => item.id === match.invoiceId);
+    const location = (nextStatements || []).reduce((found, batch) => {
+      const movement = Array.isArray(batch.movements) ? batch.movements.find((item) => item.id === match.movementId) : null;
+      return found || (movement ? { batch, movement } : null);
+    }, null);
+    const movement = location?.movement;
+    const amount = Number(match.amount);
+    const movementAmount = Number(movement?.amount);
+    const date = String(match.date || "").slice(0, 10);
+    const account = String(match.account || "").trim().slice(0, 120);
+    if (!invoice || invoice.status === STATUS.PAID || usedInvoices.has(invoice.id) || !movement || movement.status !== "PENDIENTE") continue;
+    if (!Number.isFinite(amount) || amount === 0 || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !account) continue;
+    if (!Number.isFinite(movementAmount) || Math.abs(Math.round(amount * 100) - Math.round(movementAmount * 100)) > 0) continue;
+    if (String(movement.date || "").slice(0, 10) !== date || String(location.batch.account || "").trim() !== account) continue;
+    const total = Math.abs(Number(invoice.total) || 0);
+    const direction = invoiceDirection(invoice);
+    const signMatches = (amount > 0) === (direction === "INGRESO");
+    if (!signMatches || !total || Math.round(total * 100) !== Math.round(Math.abs(amount) * 100)) continue;
+
+    invoice.status = STATUS.PAID;
+    invoice.paidDate = date;
+    invoice.payMethod = normaliseMedio(match.method) || "BANCO";
+    invoice.payAccount = account;
+    invoice.updatedAt = new Date().toISOString();
+    movement.status = "CONCILIADO";
+    movement.matchedInvoiceId = invoice.id;
+    movement.reconciledAt = new Date().toISOString();
+    usedInvoices.add(invoice.id);
+    applied.push(invoice.id);
+  }
+
+  if (Array.isArray(statements)) state.settings.bankStatements = statements;
+  if (applied.length || Array.isArray(statements)) save();
+  return applied;
 }
 
 export function toggleInvoiceStatus(id, paidDate, pay) {

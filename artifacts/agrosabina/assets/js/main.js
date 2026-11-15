@@ -94,9 +94,28 @@ async function boot() {
   }
 
   function wireGlobalEvents() {
+    const sidebar = document.querySelector(".sidebar");
+    const navToggle = document.getElementById("mobileNavToggle");
+    const closeMobileNav = () => {
+      sidebar?.classList.remove("nav-open");
+      navToggle?.setAttribute("aria-expanded", "false");
+    };
+
+    navToggle?.addEventListener("click", () => {
+      const isOpen = sidebar?.classList.toggle("nav-open") ?? false;
+      navToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    document.getElementById("mainNavigation")?.addEventListener("click", (ev) => {
+      if (ev.target instanceof Element && ev.target.closest("a[data-route]")) {
+        closeMobileNav();
+      }
+    });
+
     window.addEventListener("hashchange", () => {
       // El enlace «Saltar al contenido» usa #view: no es una sección, no se repinta.
       if (location.hash && !location.hash.startsWith("#/")) return;
+      closeMobileNav();
       views.ui.route = routeFromHash();
       window.scrollTo(0, 0);
       if (!dbReady) {
@@ -144,6 +163,15 @@ async function boot() {
     filePicker.addEventListener("change", () => {
       if (filePicker.files && filePicker.files.length) views.queueFiles(filePicker.files);
       filePicker.value = "";
+    });
+  }
+
+  const bankStatementPicker = document.getElementById("bankStatementPicker");
+  if (bankStatementPicker) {
+    bankStatementPicker.addEventListener("change", () => {
+      const file = bankStatementPicker.files && bankStatementPicker.files[0];
+      if (file) views.startBankStatementImport(file);
+      bankStatementPicker.value = "";
     });
   }
 

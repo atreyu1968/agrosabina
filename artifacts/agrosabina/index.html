@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agrosabina SL · Compras, proveedores e IGIC</title>
-<meta name="description" content="Programa contable de Agrosabina SL: las compras y las liquidaciones se leen desde una foto o un PDF, la base de proveedores se crea sola y quedan controlados lo pagado, lo pendiente y el IGIC de cada tipo.">
+<title>Agrosabina SL · Gestión agrícola e IGIC</title>
+<meta name="description" content="Gestiona compras, ventas, liquidaciones de fruta, kilos, categorías, precios, nóminas, pagos e IGIC en Agrosabina SL.">
 <meta name="theme-color" content="#11665c">
 <link rel="icon" href="assets/img/agrosabina.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/img/agrosabina.png">
@@ -22,53 +22,64 @@
       <small>Compras, liquidaciones e IGIC</small>
     </span>
   </div>
+  <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-expanded="false" aria-controls="mainNavigation">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    <span>Secciones</span>
+    <svg class="nav-toggle-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+  </button>
 
-  <nav class="nav" aria-label="Secciones">
-    <a href="#/resumen" data-route="resumen">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="4.5" rx="1.6"/><rect x="13.5" y="11" width="7" height="9.5" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/></svg>
-      <span>Resumen</span>
-    </a>
-    <a href="#/ventas" data-route="ventas">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V12"/><path d="M10 19.5V6.5"/><path d="M16 19.5v-5"/><path d="M21 19.5H3"/><path d="M13.6 4.2 18 2.6l1.6 4.2"/></svg>
-      <span>Ventas</span>
-    </a>
-    <a href="#/control-fruta" data-route="control-fruta">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V10h4v10M10 20V4h4v16M15 20v-7h4v7M3 20h18"/></svg>
-      <span>Control de fruta</span>
-    </a>
-    <a href="#/compras" data-route="compras">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5h2.1l2.3 9.7h9.2l2-7.2H7.1"/><circle cx="9.4" cy="19.2" r="1.5"/><circle cx="17.4" cy="19.2" r="1.5"/></svg>
-      <span>Compras</span>
-      <span class="nav-count" id="navPending" hidden>0</span>
-    </a>
-    <a href="#/proveedores" data-route="proveedores">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 8.4h8.2v10.2H3.6z"/><path d="M11.8 11.6h4.4l4.2 3v4h-8.6z"/><circle cx="7" cy="19.6" r="1.6"/><circle cx="16.4" cy="19.6" r="1.6"/><path d="M3.6 8.4 6.4 4.4h7l1.4 4"/></svg>
-      <span>Proveedores</span>
-    </a>
-    <a href="#/nominas" data-route="nominas">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="3" width="15" height="18" rx="2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg>
-      <span>Nóminas</span>
-    </a>
-    <a href="#/contabilidad" data-route="contabilidad">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5h13a2 2 0 0 1 2 2v13H6a2 2 0 0 1-2-2z"/><path d="M4 17.5h15"/><path d="M8 8.5h7M8 12h7"/></svg>
-      <span>Contabilidad</span>
-    </a>
-    <a href="#/documentos" data-route="documentos">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 7.2A1.7 1.7 0 0 1 5.2 5.5h3.9l1.9 2.4h7.8a1.7 1.7 0 0 1 1.7 1.7v8.7a1.7 1.7 0 0 1-1.7 1.7H5.2a1.7 1.7 0 0 1-1.7-1.7z"/><path d="M9.4 12.6h5.2M9.4 15.6h3.4"/></svg>
-      <span>Documentos</span>
-    </a>
-    <a href="#/correo" data-route="correo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="m3.8 6.6 8.2 6 8.2-6"/></svg>
-      <span>Correo</span>
-    </a>
-    <a href="#/importar" data-route="importar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15.5V3.8"/><path d="M7.4 8.2 12 3.6l4.6 4.6"/><path d="M4 15v3.4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V15"/></svg>
-      <span>Importar</span>
-    </a>
-    <a href="#/pruebas" data-route="pruebas">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.6" cy="10.6" r="6.1"/><path d="m15.2 15.2 4.4 4.4"/><path d="M8.3 10.6h4.6"/></svg>
-      <span>Probar lectura</span>
-    </a>
+  <nav class="nav" id="mainNavigation" aria-label="Secciones">
+    <div class="nav-group">
+      <span class="nav-group-label">Inicio</span>
+      <a href="#/resumen" data-route="resumen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="4.5" rx="1.6"/><rect x="13.5" y="11" width="7" height="9.5" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Resumen</span>
+      </a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">Ingresos</span>
+      <a href="#/ventas" data-route="ventas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V12"/><path d="M10 19.5V6.5"/><path d="M16 19.5v-5"/><path d="M21 19.5H3"/><path d="M13.6 4.2 18 2.6l1.6 4.2"/></svg><span>Ventas</span>
+      </a>
+      <a href="#/control-fruta" data-route="control-fruta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V10h4v10M10 20V4h4v16M15 20v-7h4v7M3 20h18"/></svg><span>Control de fruta</span>
+      </a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">Gastos</span>
+      <a href="#/compras" data-route="compras">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5h2.1l2.3 9.7h9.2l2-7.2H7.1"/><circle cx="9.4" cy="19.2" r="1.5"/><circle cx="17.4" cy="19.2" r="1.5"/></svg><span>Compras</span><span class="nav-count" id="navPending" hidden>0</span>
+      </a>
+      <a href="#/nominas" data-route="nominas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="3" width="15" height="18" rx="2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg><span>Nóminas</span>
+      </a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">Organización</span>
+      <a href="#/proveedores" data-route="proveedores">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 8.4h8.2v10.2H3.6z"/><path d="M11.8 11.6h4.4l4.2 3v4h-8.6z"/><circle cx="7" cy="19.6" r="1.6"/><circle cx="16.4" cy="19.6" r="1.6"/><path d="M3.6 8.4 6.4 4.4h7l1.4 4"/></svg><span>Proveedores y clientes</span>
+      </a>
+      <a href="#/documentos" data-route="documentos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 7.2A1.7 1.7 0 0 1 5.2 5.5h3.9l1.9 2.4h7.8a1.7 1.7 0 0 1 1.7 1.7v8.7a1.7 1.7 0 0 1-1.7 1.7H5.2a1.7 1.7 0 0 1-1.7-1.7z"/><path d="M9.4 12.6h5.2M9.4 15.6h3.4"/></svg><span>Documentos</span>
+      </a>
+      <a href="#/correo" data-route="correo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="m3.8 6.6 8.2 6 8.2-6"/></svg><span>Correo</span>
+      </a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">Contabilidad</span>
+      <a href="#/contabilidad" data-route="contabilidad">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5h13a2 2 0 0 1 2 2v13H6a2 2 0 0 1-2-2z"/><path d="M4 17.5h15"/><path d="M8 8.5h7M8 12h7"/></svg><span>Libros e IGIC</span>
+      </a>
+    </div>
+    <details class="nav-tools">
+      <summary>Más herramientas</summary>
+      <a href="#/importar" data-route="importar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15.5V3.8"/><path d="M7.4 8.2 12 3.6l4.6 4.6"/><path d="M4 15v3.4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V15"/></svg><span>Importar varios documentos</span>
+      </a>
+      <a href="#/pruebas" data-route="pruebas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.6" cy="10.6" r="6.1"/><path d="m15.2 15.2 4.4 4.4"/><path d="M8.3 10.6h4.6"/></svg><span>Probar lectura</span>
+      </a>
+    </details>
   </nav>
 
   <div class="sidebar-foot">
@@ -94,6 +105,7 @@
 <div id="toasts" class="toasts" aria-live="polite" aria-atomic="false"></div>
 <div id="modalRoot"></div>
 <input id="filePicker" type="file" accept="image/*,application/pdf" multiple hidden>
+<input id="bankStatementPicker" type="file" accept=".csv,.ofx,.qif,.txt,text/csv" hidden>
 <input id="cameraPicker" type="file" accept="image/*" capture="environment" hidden>
 
 <script type="module" src="assets/js/main.js"></script>

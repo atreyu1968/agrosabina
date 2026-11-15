@@ -1,1 +1,2 @@
 - [Confianza en la extracción](document-extraction-trust.md) — la IA sobre el mismo OCR no es una validación independiente; conservar discrepancias para revisión.
+- [Conciliación bancaria segura](bank-reconciliation.md) — solo conciliar importes y sentidos exactos; no duplicar el asiento del documento y no adivinar el medio de pago.
