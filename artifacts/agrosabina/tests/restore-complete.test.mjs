@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as store from "../assets/js/store.js";
 import * as files from "../assets/js/files.js";
+import { todayISO } from "../assets/js/util.js";
 
 // Modelo transaccional aislado. Los navegadores reales se verifican aparte.
 const disk = new Map();
@@ -67,7 +68,13 @@ globalThis.indexedDB = {
 
 test("restauración aditiva conserva registros, claves y originales existentes y revierte errores", async () => {
   store.updateSettings({ aiKey: "CLAVE-SOLO-LOCAL" });
-  const { invoice } = store.addInvoice({ supplierName: "Prueba", number: "ORIGINAL-1", total: 12, rate: 0 });
+  const { invoice } = store.addInvoice({
+    supplierName: "Prueba",
+    number: "ORIGINAL-1",
+    issueDate: todayISO(),
+    total: 12,
+    rate: 0,
+  });
   const file = new Blob(["%PDF-contenido"], { type: "application/pdf" });
   await store.keepInvoiceOriginal(invoice.id, file);
   const archive = await store.exportCompleteBackup();

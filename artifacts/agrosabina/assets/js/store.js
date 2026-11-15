@@ -42,6 +42,7 @@ function emptyState() {
       defaultRate: 7,
       businessName: "Agrosabina SL",
       activeExerciseYear: new Date().getFullYear(),
+      closedExercises: [],
       // Cuentas que se ofrecen al marcar un cobro o un pago.
       bankAccounts: [],
       bankStatements: [],
@@ -240,6 +241,11 @@ function normalise(raw) {
     invoices: Array.isArray(raw.invoices) ? raw.invoices.map(normaliseInvoice) : [],
     messages: Array.isArray(raw.messages) ? raw.messages.map(normaliseMessage).filter(Boolean) : [],
   };
+  out.settings.closedExercises = [...new Set(
+    (Array.isArray(out.settings.closedExercises) ? out.settings.closedExercises : [])
+      .map(Number)
+      .filter((year) => Number.isInteger(year) && year >= 1900 && year <= 2200)
+  )].sort((a, b) => a - b);
   // Una factura sin proveedor válido se queda sin asignar en lugar de romper.
   const ids = new Set(out.suppliers.map((s) => s.id));
   out.invoices = out.invoices.filter((inv) => !inv.supplierId || ids.has(inv.supplierId));
@@ -534,6 +540,7 @@ export function ensureSupplier(name, nif, role) {
   const existing = findSupplierByNameOrNif(cleanName, cleanNif);
 
   if (existing) {
+    if (supplierWriteError(existing.id)) return { supplier: existing, created: false };
     let touched = false;
     if (!existing.nif && cleanNif) {
       existing.nif = cleanNif;
@@ -579,16 +586,20 @@ export function updateSupplier(id, patch) {
     }
     patch = { ...patch, nif: cleanNif };
   }
+  if (supplierWriteError(id)) return null;
   Object.assign(s, patch);
   save();
   return s;
 }
 
 export function deleteSupplier(id) {
+  const lockError = supplierWriteError(id);
+  if (lockError) return lockError;
   releaseBankReconciliations(state.invoices.filter((inv) => inv.supplierId === id).map((inv) => inv.id));
   state.suppliers = state.suppliers.filter((s) => s.id !== id);
   state.invoices = state.invoices.filter((inv) => inv.supplierId !== id);
   save();
+  return "";
 }
 
 export function supplierById(id) {
@@ -620,8 +631,13 @@ export function findDuplicate(supplierId, number) {
  * @returns {{invoice: object|null, supplier: object|null, supplierCreated: boolean, duplicate: object|null, error?: string}}
  */
 export function addInvoice(data) {
+  const year = invoiceYear(data);
+  const lockError = exerciseWriteError(year);
+  if (lockError) return { invoice: null, supplier: null, supplierCreated: false, duplicate: null, error: lockError };
   const dateError = exerciseDateError(data?.issueDate);
   if (dateError) return { invoice: null, supplier: null, supplierCreated: false, duplicate: null, error: dateError };
+  const paymentLockError = exerciseWriteError(dateYear(data?.paidDate));
+  if (paymentLockError) return { invoice: null, supplier: null, supplierCreated: false, duplicate: null, error: paymentLockError };
   const { supplier, created } = ensureSupplier(
     data.supplierName,
     data.supplierNif,
@@ -677,6 +693,7 @@ export function addInvoice(data) {
 export function updateInvoice(id, patch) {
   const inv = state.invoices.find((i) => i.id === id);
   if (!inv) return null;
+  if (invoiceWriteError(inv, patch)) return null;
   if (Object.prototype.hasOwnProperty.call(patch || {}, "issueDate") && String(patch.issueDate || "") !== String(inv.issueDate || "")) {
     if (exerciseDateError(patch.issueDate)) return null;
   }
@@ -714,11 +731,15 @@ export function updateInvoice(id, patch) {
 }
 
 export function deleteInvoice(id) {
+  const inv = state.invoices.find((i) => i.id === id);
+  const lockError = invoiceWriteError(inv);
+  if (lockError) return lockError;
   releaseBankReconciliations([id]);
   state.invoices = state.invoices.filter((i) => i.id !== id);
   // El fichero original se va con el documento.
   files.dropOriginal(id).catch(() => {});
   save();
+  return "";
 }
 
 function releaseBankReconciliations(invoiceIds) {
@@ -759,6 +780,7 @@ export function setInvoiceStatus(id, status, paidDate, pay) {
 
 /** Marca en una sola escritura los documentos validados contra movimientos bancarios. */
 export function applyBankReconciliation(statements, matches) {
+  if (Array.isArray(statements) && settingsPatchLockedYear({ bankStatements: statements }) != null) return [];
   const applied = [];
   const usedInvoices = new Set();
   const nextStatements = Array.isArray(statements) ? statements : state.settings.bankStatements;
@@ -773,7 +795,7 @@ export function applyBankReconciliation(statements, matches) {
     const movementAmount = Number(movement?.amount);
     const date = String(match.date || "").slice(0, 10);
     const account = String(match.account || "").trim().slice(0, 120);
-    if (!invoice || invoice.status === STATUS.PAID || usedInvoices.has(invoice.id) || !movement || movement.status !== "PENDIENTE") continue;
+    if (!invoice || exerciseWriteError(invoiceYear(invoice)) || exerciseWriteError(dateYear(movement?.date)) || invoice.status === STATUS.PAID || usedInvoices.has(invoice.id) || !movement || movement.status !== "PENDIENTE") continue;
     if (!Number.isFinite(amount) || amount === 0 || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !account) continue;
     if (!Number.isFinite(movementAmount) || Math.abs(Math.round(amount * 100) - Math.round(movementAmount * 100)) > 0) continue;
     if (String(movement.date || "").slice(0, 10) !== date || String(location.batch.account || "").trim() !== account) continue;
@@ -1039,6 +1061,8 @@ export function sortedInvoices(list = state.invoices) {
 /* ------------------------------------------------------------------ */
 
 export function updateSettings(patch) {
+  if (Object.prototype.hasOwnProperty.call(patch || {}, "closedExercises")) return null;
+  if (settingsWriteError(patch || {})) return null;
   state.settings = Object.assign(state.settings, patch);
   save();
   return state.settings;
@@ -1048,6 +1072,181 @@ export function updateSettings(patch) {
 export function activeExerciseYear() {
   const year = Number(state.settings?.activeExerciseYear);
   return Number.isInteger(year) && year >= 1900 && year <= 2200 ? year : new Date().getFullYear();
+}
+
+function dateYear(value) {
+  const match = /^(\d{4})-\d{2}-\d{2}/.exec(String(value || ""));
+  return match ? Number(match[1]) : null;
+}
+
+function invoiceYear(invoice) {
+  return dateYear(invoice?.issueDate);
+}
+
+export function isExerciseClosed(year) {
+  const value = Number(year);
+  return Number.isInteger(value) && (state.settings?.closedExercises || []).includes(value);
+}
+
+/** Explica por qué no se puede cambiar un ejercicio y cómo volver a abrirlo. */
+export function exerciseWriteError(year) {
+  const value = Number(year);
+  return isExerciseClosed(value)
+    ? `El ejercicio ${value} está cerrado. Para hacer cambios, selecciónalo en Contabilidad y pulsa «Reabrir ejercicio».`
+    : "";
+}
+
+export function settingsWriteError(patch) {
+  const blockedYear = settingsPatchLockedYear(patch || {});
+  if (blockedYear != null) return exerciseWriteError(blockedYear);
+  if (["openingDate", "openingCapital", "openingCash"].some((key) => Object.prototype.hasOwnProperty.call(patch || {}, key))) {
+    const openingYears = [
+      dateYear(state.settings?.openingDate),
+      Object.prototype.hasOwnProperty.call(patch, "openingDate")
+        ? dateYear(patch.openingDate)
+        : dateYear(state.settings?.openingDate),
+    ];
+    for (const year of openingYears) {
+      const error = exerciseWriteError(year);
+      if (error) return error;
+    }
+  }
+  return "";
+}
+
+export function invoiceWriteError(invoiceOrId, patch = {}) {
+  const invoice = typeof invoiceOrId === "object" && invoiceOrId
+    ? invoiceOrId
+    : state.invoices.find((item) => String(item.id) === String(invoiceOrId));
+  if (!invoice) return "";
+  const oldIssueYear = invoiceYear(invoice);
+  const newIssueYear = Object.prototype.hasOwnProperty.call(patch, "issueDate")
+    ? invoiceYear({ issueDate: patch.issueDate })
+    : oldIssueYear;
+  for (const year of [oldIssueYear, newIssueYear]) {
+    const error = exerciseWriteError(year);
+    if (error) return error;
+  }
+  const oldPaidYear = dateYear(invoice.paidDate);
+  const newPaidYear = Object.prototype.hasOwnProperty.call(patch, "paidDate")
+    ? dateYear(patch.paidDate)
+    : oldPaidYear;
+  for (const year of [oldPaidYear, newPaidYear, reconciledInvoiceYear(invoice.id)]) {
+    const error = exerciseWriteError(year);
+    if (error) return error;
+  }
+  return "";
+}
+
+export function supplierWriteError(supplierId) {
+  for (const invoice of state.invoices.filter((item) => item.supplierId === supplierId)) {
+    const error = invoiceWriteError(invoice);
+    if (error) return error;
+  }
+  return "";
+}
+
+function reconciledInvoiceYear(invoiceId) {
+  let relatedYear = null;
+  for (const batch of state.settings?.bankStatements || []) {
+    for (const movement of batch?.movements || []) {
+      if (String(movement?.matchedInvoiceId || "") !== String(invoiceId)) continue;
+      const year = dateYear(movement.date);
+      if (isExerciseClosed(year)) return year;
+      if (relatedYear == null) relatedYear = year;
+    }
+  }
+  return relatedYear;
+}
+
+/** Cierra o reabre un ejercicio. La confirmación explícita se solicita en la interfaz. */
+export function setExerciseClosed(year, closed) {
+  const value = Number(year);
+  if (!Number.isInteger(value) || value < 1900 || value > 2200) {
+    return { closed: false, error: "El ejercicio seleccionado no es válido." };
+  }
+  const years = new Set(state.settings?.closedExercises || []);
+  if (closed) years.add(value);
+  else years.delete(value);
+  state.settings.closedExercises = [...years].sort((a, b) => a - b);
+  save();
+  return { closed: isExerciseClosed(value), error: "" };
+}
+
+function settingsPatchLockedYear(patch) {
+  for (const key of ["asientosManuales", "bankStatements"]) {
+    if (!Object.prototype.hasOwnProperty.call(patch, key)) continue;
+    const previous = state.settings?.[key] || [];
+    const next = patch[key] || [];
+    for (const year of state.settings?.closedExercises || []) {
+      if (JSON.stringify(settingsRowsForYear(key, previous, year)) !== JSON.stringify(settingsRowsForYear(key, next, year))) {
+        return year;
+      }
+    }
+  }
+  if (Object.prototype.hasOwnProperty.call(patch, "aperturasPorEjercicio")) {
+    const previous = state.settings?.aperturasPorEjercicio || {};
+    const next = patch.aperturasPorEjercicio || {};
+    for (const year of state.settings?.closedExercises || []) {
+      if (JSON.stringify(previous[String(year)] ?? null) !== JSON.stringify(next[String(year)] ?? null)) return year;
+    }
+  }
+  return null;
+}
+
+function settingsRowsForYear(key, rows, year) {
+  if (key === "asientosManuales") {
+    return (Array.isArray(rows) ? rows : [])
+      .filter((entry) => dateYear(entry?.date) === year)
+      .map((entry) => ({ ...entry }))
+      .sort((a, b) => String(a.id).localeCompare(String(b.id)));
+  }
+  return (Array.isArray(rows) ? rows : []).flatMap((batch) => {
+    const movements = Array.isArray(batch?.movements) ? batch.movements : [];
+    return movements
+      .filter((movement) => dateYear(movement?.date) === year)
+      .map((movement) => ({ batch: { id: batch.id, name: batch.name, account: batch.account }, movement: { ...movement } }));
+  }).sort((a, b) => String(a.movement.id).localeCompare(String(b.movement.id)));
+}
+
+function lockedStateDifference(current, candidate) {
+  for (const year of current.settings?.closedExercises || []) {
+    const matchedInvoices = (snapshot) => {
+      const relatedPayments = new Set();
+      for (const batch of snapshot.settings?.bankStatements || []) {
+        for (const movement of batch?.movements || []) {
+          if (dateYear(movement?.date) === year && movement?.matchedInvoiceId) {
+            relatedPayments.add(String(movement.matchedInvoiceId));
+          }
+        }
+      }
+      return (snapshot.invoices || [])
+        .filter((invoice) => invoiceYear(invoice) === year || dateYear(invoice.paidDate) === year || relatedPayments.has(String(invoice.id)))
+        .map((invoice) => ({ ...invoice }))
+        .sort((a, b) => String(a.id).localeCompare(String(b.id)));
+    };
+    if (JSON.stringify(matchedInvoices(current)) !== JSON.stringify(matchedInvoices(candidate))) return year;
+    if (JSON.stringify(settingsRowsForYear("asientosManuales", current.settings?.asientosManuales, year)) !==
+        JSON.stringify(settingsRowsForYear("asientosManuales", candidate.settings?.asientosManuales, year))) return year;
+    if (JSON.stringify(settingsRowsForYear("bankStatements", current.settings?.bankStatements, year)) !==
+        JSON.stringify(settingsRowsForYear("bankStatements", candidate.settings?.bankStatements, year))) return year;
+    if (JSON.stringify(current.settings?.aperturasPorEjercicio?.[String(year)] ?? null) !==
+        JSON.stringify(candidate.settings?.aperturasPorEjercicio?.[String(year)] ?? null)) return year;
+
+    const protectedSupplierIds = new Set(matchedInvoices(current).map((invoice) => invoice.supplierId).filter(Boolean));
+    const supplierRows = (snapshot) => (snapshot.suppliers || [])
+      .filter((supplier) => protectedSupplierIds.has(supplier.id))
+      .map((supplier) => ({ ...supplier }))
+      .sort((a, b) => String(a.id).localeCompare(String(b.id)));
+    if (JSON.stringify(supplierRows(current)) !== JSON.stringify(supplierRows(candidate))) return year;
+
+    const oldOpeningYear = dateYear(current.settings?.openingDate);
+    const newOpeningYear = dateYear(candidate.settings?.openingDate);
+    if ((oldOpeningYear === year || newOpeningYear === year) &&
+        ["openingDate", "openingCapital", "openingCash"].some((key) =>
+          current.settings?.[key] !== candidate.settings?.[key])) return year;
+  }
+  return null;
 }
 
 /** Devuelve un aviso si la fecha de emisión no pertenece al ejercicio activo. */
@@ -1067,6 +1266,8 @@ export function exerciseDateError(value, year = activeExerciseYear()) {
 }
 
 export function clearAll() {
+  const lockedYear = (state.settings?.closedExercises || [])[0];
+  if (lockedYear != null) return exerciseWriteError(lockedYear);
   state = emptyState();
   // Los originales también se van: si no, se quedarían ocupando sitio sin dueño.
   files.forgetAllOriginals().catch(() => {});
@@ -1090,6 +1291,10 @@ export async function exportCompleteBackup() {
 export async function importCompleteBackup(text) {
   // Volver a validar incluso si la interfaz ya mostró el resumen.
   const { data, originals } = await unpackCompleteBackup(text);
+  for (const invoice of data.invoices || []) {
+    const lockError = exerciseWriteError(invoiceYear(invoice)) || exerciseWriteError(dateYear(invoice.paidDate));
+    if (lockError) throw new Error(lockError);
+  }
   const before = state;
   const fingerprint = JSON.stringify(before);
   const restored = normalise({ ...data, settings: {} });
@@ -1146,6 +1351,10 @@ export function importJSON(text) {
   // la credencial configurada en este navegador por la de otra instalación.
   const settings = { ...parsed.settings, aiKey: state.settings.aiKey };
   const restored = normalise({ ...parsed, settings });
+  const closed = new Set([...(state.settings?.closedExercises || []), ...(restored.settings?.closedExercises || [])]);
+  restored.settings.closedExercises = [...closed].sort((a, b) => a - b);
+  const lockedYear = lockedStateDifference(state, restored);
+  if (lockedYear != null) throw new Error(exerciseWriteError(lockedYear));
   state = restored;
   save();
   return state;
@@ -1153,6 +1362,8 @@ export function importJSON(text) {
 
 /** Datos de ejemplo, para que se vea cómo funciona sin tener que subir nada. */
 export function seedDemo() {
+  const lockError = exerciseWriteError(activeExerciseYear());
+  if (lockError) return lockError;
   const t = todayISO();
   const y = activeExerciseYear();
   const m = Number(t.slice(5, 7));

@@ -61,6 +61,12 @@ import {
   keepInvoiceOriginal,
   invoiceOriginalBody,
   originalsUsage,
+  exerciseWriteError,
+  invoiceWriteError,
+  isExerciseClosed,
+  setExerciseClosed,
+  settingsWriteError,
+  supplierWriteError,
 } from "./store.js";
 import { MAX_BACKUP_BYTES, unpackCompleteBackup } from "./complete-backup.js";
 import { parseKg, parseLiquidacion, parsePrice, looksLikeInvoice } from "./parse.js";
@@ -5023,6 +5029,11 @@ function readForm(wrap) {
 async function submitInvoice(wrap, { mode, invoice, job }) {
   const v = readForm(wrap);
 
+  const lockError = invoice ? invoiceWriteError(invoice, v) : exerciseWriteError(v.issueDate.slice(0, 4));
+  if (lockError) {
+    toast(lockError, "bad", 7000);
+    return null;
+  }
   const dateChanged = mode !== "edit" || !invoice || v.issueDate !== String(invoice.issueDate || "");
   if (dateChanged) {
     const dateError = exerciseDateError(v.issueDate);
@@ -5343,7 +5354,15 @@ export function openSupplierModal(supplier = null) {
             note: wrap.querySelector("#s-note").value.trim(),
           };
           if (editing) {
-            updateSupplier(supplier.id, data);
+            const lockError = supplierWriteError(supplier.id);
+            if (lockError) {
+              toast(lockError, "bad", 7000);
+              return;
+            }
+            if (!updateSupplier(supplier.id, data)) {
+              toast("No se pudo actualizar el proveedor.", "bad", 6500);
+              return;
+            }
             toast("Ficha actualizada.");
           } else {
             const res = ensureSupplier(data.name, data.nif, data.role);
@@ -5715,10 +5734,18 @@ export async function onAction(action, el) {
     case "toggle-status": {
       const inv = getState().invoices.find((i) => i.id === id);
       if (!inv) return;
+      const lockError = invoiceWriteError(inv);
+      if (lockError) {
+        toast(lockError, "bad", 7000);
+        return;
+      }
       const isIncome = directionOf(inv.kind) === "INGRESO";
       // Si ya está cobrado o pagado, volver a pendiente borra la fecha y se dice.
       if (inv.status === STATUS.PAID) {
-        setInvoiceStatus(id, STATUS.PENDING);
+        if (!setInvoiceStatus(id, STATUS.PENDING)) {
+          toast(invoiceWriteError(inv) || "No se pudo cambiar el estado del documento.", "bad", 7000);
+          return;
+        }
         toast(
           isIncome
             ? "Vuelve a estar por cobrar: se ha borrado la fecha de cobro."
@@ -5728,7 +5755,15 @@ export async function onAction(action, el) {
         return;
       }
       askPaidDate(inv, isIncome, (day, pay) => {
-        setInvoiceStatus(id, STATUS.PAID, day, pay);
+        const paymentLock = exerciseWriteError(day?.slice(0, 4));
+        if (paymentLock) {
+          toast(paymentLock, "bad", 7000);
+          return;
+        }
+        if (!setInvoiceStatus(id, STATUS.PAID, day, pay)) {
+          toast(invoiceWriteError(inv) || "No se pudo guardar el cobro o pago.", "bad", 7000);
+          return;
+        }
         rememberPayAccount(pay && pay.method, pay && pay.account);
         const como =
           pay && pay.method === "CAJA"
@@ -5769,12 +5804,20 @@ export async function onAction(action, el) {
       return;
     case "edit-invoice": {
       const inv = getState().invoices.find((i) => i.id === id);
-      if (inv) openInvoiceModal({ mode: "edit", invoice: inv });
+      if (!inv) return;
+      const lockError = invoiceWriteError(inv);
+      if (lockError) toast(lockError, "bad", 7000);
+      else openInvoiceModal({ mode: "edit", invoice: inv });
       return;
     }
     case "delete-invoice": {
       const inv = getState().invoices.find((i) => i.id === id);
       if (!inv) return;
+      const lockError = invoiceWriteError(inv);
+      if (lockError) {
+        toast(lockError, "bad", 7000);
+        return;
+      }
       const ok = await confirmDialog({
         title: "Borrar la factura",
         message: `Se borrará la factura ${inv.number || "sin número"} de ${supplierName(inv.supplierId)} (${fmtEUR(inv.total)}). El proveedor se queda en la lista.`,
@@ -5782,7 +5825,11 @@ export async function onAction(action, el) {
         danger: true,
       });
       if (!ok) return;
-      deleteInvoice(id);
+      const error = deleteInvoice(id);
+      if (error) {
+        toast(error, "bad", 7000);
+        return;
+      }
       toast("Factura borrada.");
       render();
       return;
@@ -5811,7 +5858,11 @@ export async function onAction(action, el) {
         danger: true,
       });
       if (!ok) return;
-      deleteSupplier(id);
+      const error = deleteSupplier(id);
+      if (error) {
+        toast(error, "bad", 7000);
+        return;
+      }
       toast("Proveedor borrado.");
       render();
       return;
@@ -5894,7 +5945,11 @@ export async function onAction(action, el) {
         danger: true,
       });
       if (!ok) return;
-      clearAll();
+      const error = clearAll();
+      if (error) {
+        toast(error, "bad", 7000);
+        return;
+      }
       closeModal();
       toast("Todo borrado. Empiezas de cero.");
       render();
@@ -5907,7 +5962,11 @@ export async function onAction(action, el) {
         confirm: "Sí, cargar el ejemplo",
       });
       if (!ok) return;
-      seedDemo();
+      const error = seedDemo();
+      if (error) {
+        toast(error, "bad", 7000);
+        return;
+      }
       toast("Datos de ejemplo cargados.");
       render();
       return;
@@ -5925,6 +5984,24 @@ export async function onAction(action, el) {
     }
     case "acc-tab": {
       ui.conta.tab = id || "diario";
+      render();
+      return;
+    }
+    case "exercise-toggle-lock": {
+      const year = activeExerciseYear();
+      const closing = !isExerciseClosed(year);
+      const ok = await confirmDialog({
+        title: closing ? `Cerrar el ejercicio ${year}` : `Reabrir el ejercicio ${year}`,
+        message: closing
+          ? `Los documentos y asientos de ${year} quedarán protegidos contra altas, cambios y borrados. Para corregirlos tendrás que reabrir este ejercicio.`
+          : `Se permitirán de nuevo las altas, cambios y borrados de documentos y asientos de ${year}.`,
+        confirm: closing ? "Sí, cerrar ejercicio" : "Sí, reabrir ejercicio",
+        danger: closing,
+      });
+      if (!ok) return;
+      const result = setExerciseClosed(year, closing);
+      if (result.error) toast(result.error, "bad", 7000);
+      else toast(closing ? `Ejercicio ${year} cerrado.` : `Ejercicio ${year} reabierto.`, "ok");
       render();
       return;
     }
@@ -5993,15 +6070,23 @@ export async function onAction(action, el) {
       return;
     }
     case "acc-entry-new": {
+      const lockError = exerciseWriteError(activeExerciseYear());
+      if (lockError) {
+        toast(lockError, "bad", 7000);
+        return;
+      }
       accEntryModal(null);
       return;
     }
     case "acc-entry-edit": {
-      accEntryModal(accManuales().find((a) => String(a.id) === String(id)) || null);
+      const entry = accManuales().find((a) => String(a.id) === String(id)) || null;
+      const lockError = exerciseWriteError(String(entry?.date || "").slice(0, 4));
+      if (lockError) toast(lockError, "bad", 7000);
+      else accEntryModal(entry);
       return;
     }
     case "acc-entry-del": {
-      deleteAccEntry(String(id || ""));
+      await deleteAccEntry(String(id || ""));
       return;
     }
     case "acc-entry-save": {
@@ -6342,6 +6427,7 @@ function exerciseYears() {
   const years = new Set([activeExerciseYear()]);
   for (let year = current - 10; year <= current + 2; year += 1) years.add(year);
   const state = getState();
+  for (const year of state.settings?.closedExercises || []) years.add(Number(year));
   for (const inv of state.invoices || []) {
     const year = Number(String(inv.issueDate || "").slice(0, 4));
     if (Number.isInteger(year) && year >= 1900 && year <= 2200) years.add(year);
@@ -6435,7 +6521,7 @@ function accManuales() {
 
 /** Guarda la lista de asientos escritos a mano. */
 function saveAccManuales(list) {
-  updateSettings({ asientosManuales: Array.isArray(list) ? list : [] });
+  return updateSettings({ asientosManuales: Array.isArray(list) ? list : [] });
 }
 
 function bankStatementBatches() {
@@ -6564,6 +6650,7 @@ function accNum(value) {
 
 function accRangeBar(w) {
   const year = activeExerciseYear();
+  const closed = isExerciseClosed(year);
   const start = `${year}-01-01`;
   const end = `${year}-12-31`;
   return `
@@ -6572,7 +6659,9 @@ function accRangeBar(w) {
       <label class="date-filter"><span>Desde</span><input id="accFrom" type="date" min="${start}" max="${end}" value="${esc(ui.conta.from || start)}" aria-label="Desde"></label>
       <label class="date-filter"><span>Hasta</span><input id="accTo" type="date" min="${start}" max="${end}" value="${esc(ui.conta.to || end)}" aria-label="Hasta"></label>
       <div class="spacer"></div>
-      <button class="btn sm" data-action="acc-entry-new">${icon("plus")}<span>Nuevo asiento</span></button>
+      <button class="btn sm" data-action="acc-entry-new"${closed ? " disabled" : ""}>${icon("plus")}<span>Nuevo asiento</span></button>
+      <span class="tag kind">${closed ? "Ejercicio cerrado" : "Ejercicio abierto"}</span>
+      <button class="btn sm ${closed ? "primary" : "ghost"}" data-action="exercise-toggle-lock">${closed ? "Reabrir ejercicio" : "Cerrar ejercicio"}</button>
       <span class="tag kind">Contabilidad · versión 3</span>
       <span class="tag kind">${esc(w.label)} · año natural</span>
     </div>`;
@@ -6634,8 +6723,8 @@ function accDiarioHtml(entries) {
           ${i === 0 && e.concept ? `<div class="sub">${esc(e.concept)}</div>` : ""}
           ${i === 0 && e.manual ? `<div class="acc-row-tools">
             <span class="tag kind">A mano</span>
-            <button class="btn xs ghost" data-action="acc-entry-edit" data-id="${esc(String(e.id))}">${icon("edit")}<span>Editar</span></button>
-            <button class="btn xs ghost" data-action="acc-entry-del" data-id="${esc(String(e.id))}">${icon("trash")}<span>Borrar</span></button>
+            <button class="btn xs ghost" data-action="acc-entry-edit" data-id="${esc(String(e.id))}"${isExerciseClosed(String(e.date || "").slice(0, 4)) ? " disabled" : ""}>${icon("edit")}<span>Editar</span></button>
+            <button class="btn xs ghost" data-action="acc-entry-del" data-id="${esc(String(e.id))}"${isExerciseClosed(String(e.date || "").slice(0, 4)) ? " disabled" : ""}>${icon("trash")}<span>Borrar</span></button>
           </div>` : ""}
         </td>
         <td class="num">${l.debit ? fmtEUR(l.debit) : ""}</td>
@@ -7216,6 +7305,11 @@ async function confirmBankStatementImport() {
     return;
   }
   const year = activeExerciseYear();
+  const lockError = exerciseWriteError(year);
+  if (lockError) {
+    toast(lockError, "bad", 7000);
+    return;
+  }
   const outsideExercise = parsed.filter((movement) => !String(movement.date || "").startsWith(`${year}-`));
   if (outsideExercise.length) {
     const years = [...new Set(outsideExercise.map((movement) => String(movement.date || "").slice(0, 4)))].join(", ");
@@ -7273,7 +7367,12 @@ async function confirmBankStatementImport() {
 
   const previousAccounts = [...(getState().settings?.bankAccounts || [])];
   const accounts = [...new Set([...previousAccounts, account])].slice(0, 12);
-  updateSettings({ bankStatements: [...batches, batch], bankAccounts: accounts });
+  const patch = { bankStatements: [...batches, batch], bankAccounts: accounts };
+  if (!updateSettings(patch)) {
+    await dropOriginal(batch.id).catch(() => {});
+    toast(settingsWriteError(patch) || "No he podido guardar el extracto.", "bad", 7000);
+    return;
+  }
   if (!saveWorked()) {
     await dropOriginal(batch.id).catch(() => {});
     updateSettings({ bankStatements: batches, bankAccounts: previousAccounts });
@@ -7337,6 +7436,11 @@ function openBankRailReview(movementId) {
     return;
   }
   const { movement } = location;
+  const lockError = exerciseWriteError(movement.date?.slice(0, 4));
+  if (lockError) {
+    toast(lockError, "bad", 7000);
+    return;
+  }
   openModal(
     `<div class="modal-head">
       <div><h2>Indicar el medio de pago</h2><p>${esc(movement.description)}</p></div>
@@ -7370,7 +7474,11 @@ function saveBankRail(movementId) {
     return;
   }
   movement.rail = rail;
-  updateSettings({ bankStatements: statements });
+  const patch = { bankStatements: statements };
+  if (!updateSettings(patch)) {
+    toast(settingsWriteError(patch) || "No se pudo guardar el cambio.", "bad", 7000);
+    return;
+  }
   closeModal();
   toast(`Medio actualizado: ${bankRailLabel(rail).toLowerCase()}.`, "ok");
   render();
@@ -7390,6 +7498,11 @@ async function saveBankMatch(movementId) {
   const invoice = getState().invoices.find((item) => item.id === invoiceId);
   if (!invoice || invoice.status === STATUS.PAID) {
     toast("Ese documento ya está pagado o cobrado.", "warn");
+    return;
+  }
+  const lockError = invoiceWriteError(invoice) || exerciseWriteError(movement.date?.slice(0, 4));
+  if (lockError) {
+    toast(lockError, "bad", 7000);
     return;
   }
   const isIncome = invoiceDirection(invoice) === "INGRESO";
@@ -7466,6 +7579,11 @@ function openBankManualPost(movementId) {
     return;
   }
   const { batch, movement } = location;
+  const lockError = exerciseWriteError(movement.date?.slice(0, 4));
+  if (lockError) {
+    toast(lockError, "bad", 7000);
+    return;
+  }
   const isInflow = Number(movement.amount) > 0;
   const codes = ["400", "410", "430", "440", "465", "472", "475", "476", "600", "602", "621", "622", "623", "624", "625", "626", "627", "628", "629", "640", "642", "662", "700", "705", "740", "778"];
   const defaultCode = isInflow ? "700" : "629";
@@ -7505,6 +7623,11 @@ function saveBankManualPost(movementId) {
     return;
   }
   const { movement } = location;
+  const lockError = exerciseWriteError(movement.date?.slice(0, 4));
+  if (lockError) {
+    toast(lockError, "bad", 7000);
+    return;
+  }
   const amount = round2(Math.abs(Number(movement.amount) || 0));
   if (!amount) {
     toast("El importe del movimiento no es válido.", "warn");
@@ -7530,7 +7653,11 @@ function saveBankManualPost(movementId) {
   savedMovement.postedAt = new Date().toISOString();
   const entries = accManuales().filter((item) => item.id !== id);
   entries.push(entry);
-  updateSettings({ asientosManuales: entries, bankStatements: statements });
+  const patch = { asientosManuales: entries, bankStatements: statements };
+  if (!updateSettings(patch)) {
+    toast(settingsWriteError(patch) || "No se pudo guardar el asiento.", "bad", 7000);
+    return;
+  }
   closeModal();
   toast("Movimiento contabilizado en el diario.", "ok");
   render();
@@ -7557,6 +7684,11 @@ async function downloadBankOriginal(batchId) {
 async function deleteBankBatch(batchId) {
   const batch = bankStatementBatches().find((item) => item.id === batchId);
   if (!batch) return;
+  const closedMovement = batch.movements.find((movement) => exerciseWriteError(movement.date?.slice(0, 4)));
+  if (closedMovement) {
+    toast(exerciseWriteError(closedMovement.date?.slice(0, 4)), "bad", 7000);
+    return;
+  }
   if (batch.movements.some((movement) => movement.status !== "PENDIENTE")) {
     toast("Primero deshaz la conciliación o el asiento de sus movimientos.", "warn");
     return;
@@ -7568,7 +7700,11 @@ async function deleteBankBatch(batchId) {
   });
   if (!ok) return;
   const statements = copyBankStatements().filter((item) => item.id !== batchId);
-  updateSettings({ bankStatements: statements });
+  const patch = { bankStatements: statements };
+  if (!updateSettings(patch)) {
+    toast(settingsWriteError(patch) || "No se pudo guardar el cambio.", "bad", 7000);
+    return;
+  }
   if (!saveWorked()) {
     toast("No se pudo guardar el cambio. El extracto sigue en la aplicación.", "bad");
     return;
@@ -7751,12 +7887,16 @@ function saveApertura() {
   const settings = getState().settings || {};
   const aperturasPorEjercicio = { ...(settings.aperturasPorEjercicio || {}) };
   delete aperturasPorEjercicio[String(year)];
-  updateSettings({
+  const patch = {
     openingCapital: capital,
     openingCash: tesoreria,
     openingDate: fecha,
     aperturasPorEjercicio,
-  });
+  };
+  if (!updateSettings(patch)) {
+    toast(settingsWriteError(patch) || "No se pudieron guardar los datos de partida.", "bad", 7000);
+    return;
+  }
   closeModal();
   toast(
     capital || tesoreria
@@ -7770,6 +7910,11 @@ function saveApertura() {
 /** Genera la apertura actual con los saldos de cierre del año anterior. */
 function trasladarCierreApertura() {
   const year = activeExerciseYear();
+  const lockError = exerciseWriteError(year);
+  if (lockError) {
+    toast(lockError, "bad", 7000);
+    return;
+  }
   const sourceYear = year - 1;
   setPlanDeCuentas(accPlan());
   const entries = asientosDe(accDocs(), {
@@ -7790,7 +7935,11 @@ function trasladarCierreApertura() {
     sourceYear,
     lines,
   };
-  updateSettings({ aperturasPorEjercicio });
+  const patch = { aperturasPorEjercicio };
+  if (!updateSettings(patch)) {
+    toast(settingsWriteError(patch) || "No se pudo guardar el traslado de saldos.", "bad", 7000);
+    return;
+  }
   closeModal();
   toast(`Apertura de ${year} creada con los saldos de cierre de ${sourceYear}.`, "ok");
   render();
@@ -8059,6 +8208,11 @@ function saveAccEntry() {
   const box = document.getElementById("accLines");
   const dia = String((day && day.value) || "").slice(0, 10) || todayISO();
   const existing = accManuales().find((entry) => String(entry.id) === String(accEditing));
+  const lockError = exerciseWriteError(existing?.date?.slice(0, 4) || dia.slice(0, 4));
+  if (lockError) {
+    toast(lockError, "bad", 7000);
+    return;
+  }
   if (!existing || dia !== String(existing.date || "").slice(0, 10)) {
     const dateError = exerciseDateError(dia);
     if (dateError) {
@@ -8104,7 +8258,10 @@ function saveAccEntry() {
   const lista = accManuales().filter((a) => String(a.id) !== String(asiento.id));
   lista.push(asiento);
   lista.sort((a, b) => (String(a.date) === String(b.date) ? 0 : String(a.date) < String(b.date) ? -1 : 1));
-  saveAccManuales(lista);
+  if (!saveAccManuales(lista)) {
+    toast(settingsWriteError({ asientosManuales: lista }) || "No se pudo guardar el asiento.", "bad", 7000);
+    return;
+  }
   accEditing = "";
   closeModal();
   toast(`Asiento guardado: ${asiento.concept}.`, "ok");
@@ -8115,6 +8272,11 @@ function saveAccEntry() {
 async function deleteAccEntry(id) {
   const a = accManuales().find((x) => String(x.id) === String(id));
   if (!a) return;
+  const lockError = exerciseWriteError(a.date?.slice(0, 4));
+  if (lockError) {
+    toast(lockError, "bad", 7000);
+    return;
+  }
   const ok = await confirmDialog({
     title: "Borrar el asiento",
     message: `Se borrará el asiento «${a.concept}» del ${fmtDate(a.date)}. Los documentos no se tocan.`,
@@ -8132,10 +8294,14 @@ async function deleteAccEntry(id) {
       delete movement.postedAt;
     }
   }
-  updateSettings({
+  const patch = {
     asientosManuales: accManuales().filter((x) => String(x.id) !== String(id)),
     bankStatements: statements,
-  });
+  };
+  if (!updateSettings(patch)) {
+    toast(settingsWriteError(patch) || "No se pudo borrar el asiento.", "bad", 7000);
+    return;
+  }
   toast("Asiento borrado.");
   render();
 }
