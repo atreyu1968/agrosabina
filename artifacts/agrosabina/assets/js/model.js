@@ -52,6 +52,19 @@ export function directionOf(kindId, fallback = DIRECTIONS.OUT) {
   return k ? k.direction : fallback;
 }
 
+/**
+ * En una liquidación manda su tipo: representa una venta/ingreso aunque un
+ * documento antiguo tenga guardado un sentido contradictorio.
+ */
+export function invoiceDirection(invoice) {
+  const kind = String(invoice?.kind || "FACTURA").toUpperCase();
+  if (kind === "LIQUIDACION") return DIRECTIONS.IN;
+  if (invoice?.direction === DIRECTIONS.IN || invoice?.direction === DIRECTIONS.OUT) {
+    return invoice.direction;
+  }
+  return directionOf(kind);
+}
+
 /** Tipos para un <select>, con el sentido bien claro. */
 export function kindOptions(current) {
   return DOC_KINDS.map(

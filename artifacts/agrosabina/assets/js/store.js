@@ -17,6 +17,7 @@ import {
 import * as sqlite from "./sqlite.js";
 import * as files from "./files.js";
 import { validateBackup } from "./backup.js";
+import { invoiceDirection } from "./model.js";
 
 const KEY = "facturas.igic.v1";
 const listeners = new Set();
@@ -189,14 +190,7 @@ function normaliseInvoice(inv) {
     payAccount: String(inv.payAccount || "").trim().slice(0, 120),
     kind: String(inv.kind || "FACTURA"),
     category: String(inv.category || ""),
-    direction:
-      inv.direction === "INGRESO"
-        ? "INGRESO"
-        : inv.direction === "GASTO"
-          ? "GASTO"
-          : ["LIQUIDACION", "SUBVENCION", "COBRO"].includes(String(inv.kind || ""))
-            ? "INGRESO"
-            : "GASTO",
+    direction: invoiceDirection(inv),
     // Un documento puede llevar varios tipos de IGIC: cada línea guarda su base y su tipo.
     lines: Array.isArray(inv.lines)
       ? inv.lines
@@ -817,7 +811,7 @@ export function totals(invoices) {
     const base = Number(inv.base) || 0;
     const igic = Number(inv.igic) || 0;
     const total = Number(inv.total) || 0;
-    const isIncome = inv.direction === "INGRESO";
+    const isIncome = invoiceDirection(inv) === "INGRESO";
     out.base += base;
     out.igic += igic;
     out.total += total;

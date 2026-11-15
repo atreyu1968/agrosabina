@@ -4,6 +4,7 @@ import { parseInvoiceText } from "../assets/js/parse.js";
 import { recoverInvoiceSummary } from "../assets/js/invoice-summary.js";
 import { leerDocumento } from "../assets/js/importers.js";
 import { fruitEntries } from "../assets/js/fruit-control.js";
+import { invoiceDirection } from "../assets/js/model.js";
 
 // Anonimizado: desorden real de las columnas del escaneo, sin datos personales/bancarios.
 const fixture = `Comercial de prueba S.L.
@@ -74,4 +75,9 @@ test("esta factura no suma unidades de producto al control de kilos de fruta", (
   assert.equal(doc.total, 80.34);
   assert.equal(doc.direction, "GASTO");
   assert.equal(fruitEntries([{ ...doc, id: "scan" }]).length, 0);
+});
+
+test("la liquidación siempre se clasifica como venta incluso con un sentido antiguo erróneo", () => {
+  assert.equal(invoiceDirection({ kind: "LIQUIDACION", direction: "GASTO" }), "INGRESO");
+  assert.equal(invoiceDirection({ kind: "FACTURA", direction: "GASTO" }), "GASTO");
 });

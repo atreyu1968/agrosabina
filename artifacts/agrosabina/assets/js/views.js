@@ -63,6 +63,7 @@ import {
   categoryOptions,
   classifyLocal,
   directionOf,
+  invoiceDirection,
   kindInfo,
   kindOptions,
 } from "./model.js";
@@ -886,7 +887,7 @@ function pageMeta(route) {
       }
     }
     case "compras": {
-      const expenses = getState().invoices.filter((inv) => (inv.direction || directionOf(inv.kind || "FACTURA")) === "GASTO");
+      const expenses = getState().invoices.filter((inv) => invoiceDirection(inv) === "GASTO");
       return {
         title: "Compras",
         sub: `${expenses.length} ${expenses.length === 1 ? "compra" : "compras"} · ${expenses.filter((inv) => inv.status !== STATUS.PAID).length} pendientes de pago`,
@@ -1449,7 +1450,7 @@ function viewNominas() {
 
 /** Todo lo que entra: liquidaciones de fruta, subvenciones, cobros… */
 function isIncomeDoc(inv) {
-  return (inv.direction || directionOf(inv.kind || "FACTURA")) === "INGRESO";
+  return invoiceDirection(inv) === "INGRESO";
 }
 
 function salesDocs() {
@@ -1878,7 +1879,7 @@ function filteredInvoices() {
   // «Compras» contiene exclusivamente gastos. Las liquidaciones de fruta y
   // demás ingresos se consultan en Ventas o en el archivo de Documentos.
   let list = getState().invoices.filter((i) =>
-    (i.direction || directionOf(i.kind || "FACTURA")) === "GASTO"
+    invoiceDirection(i) === "GASTO"
   );
 
   if (status === "pending") list = list.filter((i) => i.status !== STATUS.PAID);
@@ -1941,8 +1942,12 @@ function invoiceTable() {
   if (!list.length) {
     return `<div class="empty">
       <div class="e-icon">${icon("search")}</div>
-      <h3>Ningún documento con esos filtros</h3>
-      <p>Prueba a quitar la búsqueda o a mirar en todas.</p>
+      <h3>Ninguna compra con esos filtros</h3>
+      <p>Las ventas y las liquidaciones de fruta se consultan en Ventas.</p>
+      <div class="e-actions">
+        <a class="btn primary" href="#/ventas">${icon("wallet")} Ir a ventas</a>
+        <button class="btn" data-filter-status="all">Quitar filtro de estado</button>
+      </div>
     </div>`;
   }
 
