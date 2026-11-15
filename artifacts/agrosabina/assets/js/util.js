@@ -107,6 +107,76 @@ export function nifKey(nif) {
     .replace(/[^0-9A-Z]/g, "");
 }
 
+const NIF_CONTROL = "TRWAGMYFPDXBNJZSQVHLCKE";
+const CIF_LETTERS = "JABCDEFGHI";
+const OCR_DIGIT_CONFUSIONS = Object.freeze({
+  O: "0", Q: "0", D: "0",
+  I: "1", L: "1",
+  Z: "2",
+  A: "4",
+  S: "5",
+  G: "6",
+  T: "7",
+  B: "8",
+});
+const OCR_CONTROL_CONFUSIONS = Object.freeze({
+  ...OCR_DIGIT_CONFUSIONS,
+  0: "O", 1: "I", 2: "Z", 4: "A", 5: "S", 6: "G", 7: "T", 8: "B",
+});
+
+function validSpanishNif(value) {
+  if (/^\d{8}[A-Z]$/.test(value)) {
+    return value[8] === NIF_CONTROL[Number(value.slice(0, 8)) % 23];
+  }
+  if (/^[XYZ]\d{7}[A-Z]$/.test(value)) {
+    const number = Number(`${{ X: "0", Y: "1", Z: "2" }[value[0]]}${value.slice(1, 8)}`);
+    return value[8] === NIF_CONTROL[number % 23];
+  }
+  if (/^[ABCDEFGHJNPQRSUVW]\d{7}[0-9A-J]$/.test(value)) {
+    let sum = 0;
+    for (let i = 0; i < 7; i += 1) {
+      const digit = Number(value[i + 1]);
+      if (i % 2 === 0) {
+        const doubled = digit * 2;
+        sum += Math.floor(doubled / 10) + (doubled % 10);
+      } else {
+        sum += digit;
+      }
+    }
+    const control = (10 - (sum % 10)) % 10;
+    const prefix = value[0];
+    const numericOnly = "ABEH".includes(prefix);
+    const letterOnly = "PQS".includes(prefix);
+    return (!letterOnly && value[8] === String(control)) ||
+      (!numericOnly && value[8] === CIF_LETTERS[control]);
+  }
+  return false;
+}
+
+/**
+ * Comprueba NIF, NIE o CIF español. En OCR solo repara una confusión visual
+ * habitual si el dígito de control deja una única lectura posible.
+ */
+export function normaliseSpanishNif(value, { repairOcr = false } = {}) {
+  const candidate = nifKey(value);
+  if (validSpanishNif(candidate)) return candidate;
+  if (!repairOcr || candidate.length !== 9) return "";
+
+  const candidates = new Set();
+  const isCif = /^[ABCDEFGHJNPQRSUVW]/.test(candidate);
+  const prefixLength = isCif || /^[XYZ]/.test(candidate) ? 1 : 0;
+  for (let i = prefixLength; i < candidate.length; i += 1) {
+    const replacements = i === candidate.length - 1
+      ? OCR_CONTROL_CONFUSIONS
+      : OCR_DIGIT_CONFUSIONS;
+    const replacement = replacements[candidate[i]];
+    if (!replacement) continue;
+    const repaired = `${candidate.slice(0, i)}${replacement}${candidate.slice(i + 1)}`;
+    if (validSpanishNif(repaired)) candidates.add(repaired);
+  }
+  return candidates.size === 1 ? [...candidates][0] : "";
+}
+
 /**
  * Convierte lo que aparece en una factura a número.
  * Entiende «1.234,56», «1234.56», «1234,56», «1 234,56» y «-12,30».

@@ -11,6 +11,7 @@ import {
   fmtEUR,
   fmtNum,
   nifKey,
+  normaliseSpanishNif,
   parseAmount,
   round2,
   todayISO,
@@ -183,12 +184,29 @@ function findNifs(lines) {
   const hits = [];
   lines.forEach((line, i) => {
     NIF_RE.lastIndex = 0;
+    const found = new Map();
     let m;
     while ((m = NIF_RE.exec(line))) {
       const raw = (m[1] || m[2] || "").trim();
-      const key = nifKey(raw);
-      if (key.length < 9) continue;
-      hits.push({ nif: raw.replace(/\s/g, ""), key, line: i });
+      found.set(nifKey(raw), raw);
+    }
+    // El OCR puede confundir un carácter en el cuerpo o en el control del CIF.
+    // Se recogen candidatos cercanos al formato, pero solo se aceptan tras
+    // validar el control y resolver una única corrección visual posible.
+    const ocrCandidates = /\b([A-Z0-9][A-Z0-9\-–]{7,8})\b/gi;
+    while ((m = ocrCandidates.exec(line))) {
+      const raw = m[1].trim();
+      found.set(nifKey(raw), raw);
+    }
+    for (const raw of found.values()) {
+      const nif = normaliseSpanishNif(raw, { repairOcr: true });
+      hits.push({
+        nif,
+        valid: !!nif,
+        raw,
+        key: nifKey(raw),
+        line: i,
+      });
     }
   });
   return hits;
@@ -443,13 +461,40 @@ export function parseInvoiceText(rawText, options = {}) {
     }
   });
 
+  const firstCustomerLine = customerLines.size ? Math.min(...customerLines) : lines.length;
+  const supplierNifCandidates = nifs.filter((h) => h.valid && !customerLines.has(h.line));
+  const supplierRank = (hit) => {
+    const low = fold(lines[hit.line]);
+    let rank = 0;
+    if (SUPPLIER_WORDS.some((word) => low.includes(fold(word)))) rank += 8;
+    if (/\b(?:nif|cif)\b/i.test(lines[hit.line])) rank += 4;
+    if (hit.line < firstCustomerLine) rank += 2;
+    if (hit.line < 12) rank += 1;
+    return rank;
+  };
+  const rankedSupplierNifs = supplierNifCandidates
+    .map((hit) => ({ hit, rank: supplierRank(hit) }))
+    .sort((a, b) => b.rank - a.rank);
+  const topSupplierNifs = new Map();
+  if (rankedSupplierNifs.length) {
+    for (const entry of rankedSupplierNifs) {
+      if (entry.rank !== rankedSupplierNifs[0].rank) break;
+      topSupplierNifs.set(entry.hit.nif, entry.hit);
+    }
+  }
   const supplierNifHit =
-    nifs.find((h) => !customerLines.has(h.line) && SUPPLIER_WORDS.some((w) => fold(lines[h.line]).includes(fold(w)))) ||
-    nifs.find((h) => !customerLines.has(h.line)) ||
-    null;
-
-  const customerNif = nifs.find((h) => customerLines.has(h.line)) || null;
-  const supplierNif = supplierNifHit && supplierNifHit !== customerNif ? supplierNifHit.nif : null;
+    topSupplierNifs.size === 1 ? topSupplierNifs.values().next().value : null;
+  const supplierNif = supplierNifHit ? supplierNifHit.nif : null;
+  const unreliableSupplierNif = nifs.some(
+    (hit) =>
+      !hit.valid &&
+      (/^\d{8}[A-Z]$/.test(hit.key) ||
+        /^[ABCDEFGHJNPQRSUVWXYZ][A-Z0-9]{8}$/.test(hit.key)) &&
+      !customerLines.has(hit.line) &&
+      (SUPPLIER_WORDS.some((word) => fold(lines[hit.line]).includes(fold(word))) ||
+        /\b(?:nif|cif)\b/i.test(lines[hit.line]) ||
+        hit.line < Math.min(firstCustomerLine, 12))
+  );
 
   let supplierName = pickSupplierName(lines.map((line, i) => customerLines.has(i) ? "" : line),
     supplierNifHit ? supplierNifHit.line : null);
@@ -472,7 +517,13 @@ export function parseInvoiceText(rawText, options = {}) {
     if (cliente) supplierName = cliente;
   }
 
-  if (!supplierNif) notes.push("No he visto el NIF del proveedor. Búscalo en la factura y escríbelo.");
+  if (!supplierNif) {
+    notes.push(
+      unreliableSupplierNif
+        ? "He leído un posible NIF del proveedor, pero no he podido validarlo; lo he dejado vacío. Revísalo en la factura."
+        : "No he visto el NIF del proveedor. Búscalo en la factura y escríbelo."
+    );
+  }
   if (!supplierName) notes.push("No he reconocido el nombre del proveedor. Escribelo tú.");
 
   /* --- número --- */

@@ -273,6 +273,7 @@ async function prepareImage(source) {
 
 const PSM_BLOCK = "6"; // un bloque uniforme de texto: lo normal en una factura
 const PSM_COLUMNS = "4"; // columnas de tamaño variable: importes a la derecha
+const PSM_SPARSE = "11"; // rótulos y datos sueltos, útil para NIF pequeños en el encabezado
 const GOOD_ENOUGH = 78; // puntuación a partir de la cual no merece la pena seguir
 const MAX_ATTEMPTS = 4;
 
@@ -296,6 +297,14 @@ function scoreText(text, confidence) {
     /* si el analizador falla, queda solo la confianza */
   }
   return score;
+}
+
+function hasReliableSupplierNif(text) {
+  try {
+    return !!parseInvoiceText(String(text || "")).supplierNif;
+  } catch (_) {
+    return false;
+  }
 }
 
 /** Gira un lienzo sobre fondo blanco (0, 90, 180, 270). */
@@ -414,20 +423,25 @@ async function ocrCanvas(canvas, onProgress = () => {}) {
 
   // 1) Lectura normal.
   await run(canvas, PSM_BLOCK, "leyendo la factura");
-  if (best.score >= GOOD_ENOUGH) {
+  if (best.score >= GOOD_ENOUGH && hasReliableSupplierNif(best.text)) {
     onProgress("leída", 100);
     return best.text;
   }
 
   // 2) Con distribución por columnas: muchas facturas llevan los importes aparte.
   await run(canvas, PSM_COLUMNS, "buscando columnas de importes");
-  if (best.score >= GOOD_ENOUGH) {
+  if (best.score >= GOOD_ENOUGH && hasReliableSupplierNif(best.text)) {
     onProgress("leída", 100);
     return best.text;
   }
 
   // 3) Blanco y negro puro: separa mejor la tinta del papel.
   plan.push(() => run(binarize(canvas), PSM_BLOCK, "acentuando el contraste"));
+  // Si no se ha leído un NIF fiable, una pasada de texto disperso suele rescatar
+  // los rótulos pequeños del encabezado sin dar por válida una cifra dudosa.
+  if (!hasReliableSupplierNif(best.text)) {
+    plan.push(() => run(binarize(canvas), PSM_SPARSE, "revisando el NIF del emisor"));
+  }
 
   // 4) Si la confianza es baja, es probable que la foto esté girada.
   if (best.confidence < 62) {
@@ -437,9 +451,9 @@ async function ocrCanvas(canvas, onProgress = () => {}) {
   }
 
   for (const step of plan) {
-    if (attempt >= MAX_ATTEMPTS + 1) break;
+    if (attempt >= MAX_ATTEMPTS + 2) break;
     await step();
-    if (best.score >= GOOD_ENOUGH) break;
+    if (best.score >= GOOD_ENOUGH && hasReliableSupplierNif(best.text)) break;
   }
 
   onProgress("leída", 100);

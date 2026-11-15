@@ -17,6 +17,7 @@ import {
   lastMonths,
   monthKey,
   monthLabel,
+  normaliseSpanishNif,
   parseAmount,
   round2,
   todayISO,
@@ -3628,13 +3629,17 @@ async function applyAiDocument(job, text) {
 
   const cambiado = [];
   p.notes.push(...(ai.warnings || []).map((v) => `Revisión de IA: ${v}`));
+  const aiSupplierNif = normaliseSpanishNif(ai.supplierNif);
+  if (ai.supplierNif && !aiSupplierNif) {
+    p.notes.push("La lectura de IA del NIF no supera la comprobación; no la he usado.");
+  }
   p.requiresReview = !!ai.requiresReview;
   if (ai.confidence < 0.7) {
     p.notes.push("La IA no sustituye datos porque su lectura tiene confianza baja.");
     p.confidence = Math.min(p.confidence ?? 1, ai.confidence);
     return [];
   }
-  if (p.supplierNif && ai.supplierNif && p.supplierNif !== ai.supplierNif) {
+  if (p.supplierNif && aiSupplierNif && p.supplierNif !== aiSupplierNif) {
     p.notes.push("La IA y el lector identifican personas distintas. No se han mezclado sus datos; revisa el emisor o trabajador.");
     p.requiresReview = true;
     return [];
@@ -3681,7 +3686,7 @@ async function applyAiDocument(job, text) {
 
   pon("category", ai.category, "el concepto");
   pon("supplierName", ai.supplierName, "el nombre");
-  pon("supplierNif", ai.supplierNif, "el NIF");
+  pon("supplierNif", aiSupplierNif, "el NIF");
   pon("number", ai.number, "el número");
   pon("issueDate", ai.issueDate, "la fecha");
   pon("dueDate", ai.dueDate, "el vencimiento");
@@ -3816,6 +3821,10 @@ async function applyAiReading(job, text) {
 
   const p = job.parsed;
   const filled = [];
+  const aiSupplierNif = normaliseSpanishNif(ai.supplierNif);
+  if (ai.supplierNif && !aiSupplierNif) {
+    p.notes.push("La lectura de IA del NIF no supera la comprobación; no la he usado.");
+  }
 
   const setIfEmpty = (key, value, label) => {
     const current = p[key];
@@ -3842,7 +3851,7 @@ async function applyAiReading(job, text) {
   }
   setIfEmpty("category", ai.category, "el concepto");
   setIfEmpty("supplierName", ai.supplierName, "el proveedor");
-  setIfEmpty("supplierNif", ai.supplierNif, "el NIF");
+  setIfEmpty("supplierNif", aiSupplierNif, "el NIF");
   setIfEmpty("number", ai.number, "el número");
   setIfEmpty("issueDate", ai.issueDate, "la fecha");
   setIfEmpty("dueDate", ai.dueDate, "el vencimiento");
