@@ -879,12 +879,17 @@ function exportDocsCsv() {
 }
 
 function updateNavBadge() {
-  const t = totals(getState().invoices);
+  const pendingPurchases = getState().invoices.filter(
+    (invoice) =>
+      invoiceDirection(invoice) === "GASTO" &&
+      String(invoice.kind || "").toUpperCase() !== "NOMINA" &&
+      invoice.status !== STATUS.PAID,
+  ).length;
   const badge = document.getElementById("navPending");
   if (!badge) return;
-  if (t.pendingCount > 0) {
+  if (pendingPurchases > 0) {
     badge.hidden = false;
-    badge.textContent = String(t.pendingCount);
+    badge.textContent = String(pendingPurchases);
   } else {
     badge.hidden = true;
   }
