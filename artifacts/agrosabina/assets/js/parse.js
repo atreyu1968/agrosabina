@@ -15,6 +15,8 @@ import {
   round2,
   todayISO,
 } from "./util.js";
+import { leerResumenLiquidacion } from "./liquidacion-resumen.js";
+import { recoverInvoiceSummary } from "./invoice-summary.js";
 
 /* ------------------------------------------------------------------ */
 /* Números                                                             */
@@ -156,7 +158,13 @@ function looksLikeName(line) {
   if (t.length < 3 || t.length > 70) return false;
   const low = fold(t);
   if (!/[a-z]/.test(low)) return false;
-  if (NOISE_WORDS.some((w) => low.includes(fold(w)))) return false;
+  // No buscar subcadenas vacías ni «c/» como la letra «c» de «Comercial».
+  // Las palabras de etiquetas se buscan completas; los símbolos, literalmente.
+  if (NOISE_WORDS.some((w) => {
+    if (w === "c/") return /\bc\//i.test(t);
+    const word = fold(w);
+    return word ? new RegExp(`(?:^|\\s)${word}(?:\\s|$)`).test(low) : t.includes(w);
+  })) return false;
   if (/\d{4,}/.test(t)) return false;
   if (/^[\d\s.,\-\/]+$/.test(t)) return false;
   return true;
@@ -423,7 +431,14 @@ export function parseInvoiceText(rawText, options = {}) {
   const customerLines = new Set();
   lines.forEach((line, i) => {
     const low = fold(line);
-    if (CUSTOMER_WORDS.some((w) => low.includes(fold(w)))) {
+    if (/facturar\s*a\b|facturad[oa]\s*a\b|datos del cliente|destinatario/.test(low)) {
+      let count = 0;
+      for (let k = i; k < lines.length && count < 16; k++) {
+        if (k > i && /direcci[oó]n de env[ií]o|forma de pago|descripci[oó]n|detalle de factura/i.test(lines[k])) break;
+        customerLines.add(k);
+        if (lines[k].trim()) count++;
+      }
+    } else if (CUSTOMER_WORDS.some((w) => low.includes(fold(w)))) {
       for (let k = i; k <= i + 2 && k < lines.length; k++) customerLines.add(k);
     }
   });
@@ -436,7 +451,8 @@ export function parseInvoiceText(rawText, options = {}) {
   const customerNif = nifs.find((h) => customerLines.has(h.line)) || null;
   const supplierNif = supplierNifHit && supplierNifHit !== customerNif ? supplierNifHit.nif : null;
 
-  let supplierName = pickSupplierName(lines, supplierNifHit ? supplierNifHit.line : null);
+  let supplierName = pickSupplierName(lines.map((line, i) => customerLines.has(i) ? "" : line),
+    supplierNifHit ? supplierNifHit.line : null);
 
   if (!supplierName && options.fileName) {
     const guess = String(options.fileName)
@@ -486,6 +502,21 @@ export function parseInvoiceText(rawText, options = {}) {
 
   /* --- importes --- */
   const raw = readAmounts(nonEmpty);
+  const recovered = raw.base == null || raw.igic == null || raw.total == null
+    ? recoverInvoiceSummary(nonEmpty) : null;
+  let usedRecovery = false;
+  if (recovered) {
+    // No mezclar un resumen recuperado con un importe contradictorio leído antes.
+    const conflict = ["base", "igic", "total"].some((key) =>
+      raw[key] != null && Math.abs(raw[key] - recovered[key]) > 0.021);
+    if (!conflict) {
+      Object.assign(raw, recovered);
+      usedRecovery = true;
+      notes.push("Los importes del resumen estaban separados de sus rótulos. He recuperado una única combinación base + IGIC = total; contrástala con el escaneo.");
+    } else {
+      notes.push("El resumen del escaneo contradice otros importes leídos. Revisa base, IGIC y total.");
+    }
+  }
   const complete = completeAmounts({
     base: raw.base,
     rate: raw.rate ?? (raw.igic != null || raw.base != null || raw.total != null ? options.defaultRate ?? null : null),
@@ -528,7 +559,7 @@ export function parseInvoiceText(rawText, options = {}) {
   const CAPTURA = 30000;
   const cortada = flat.length > CAPTURA;
 
-  const confidence = Math.max(0, Math.min(1, score));
+  const confidence = Math.max(0, Math.min(usedRecovery ? 0.65 : 1, score));
 
   return {
     supplierName: supplierName || "",
@@ -1044,6 +1075,10 @@ export function parseLiquidacion(rawText) {
 
   out.product = liquidacionProduct(original);
   out.category = liquidacionCategory(original);
+  const resumen = leerResumenLiquidacion(original);
+  if (resumen) {
+    return { ...out, ...resumen, product: out.product, discounts: liquidacionDiscounts(original) };
+  }
 
   // 1) Las filas de la tabla: los kilos y el precio cuyo importe cuadra.
   const partidas = liquidacionFromTable(original);

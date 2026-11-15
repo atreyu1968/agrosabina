@@ -13,6 +13,7 @@ proveedores, nóminas, documentos, contabilidad e IGIC.
 - Los datos de otros navegadores u orígenes no se transfieren automáticamente; usar las funciones originales de importación/exportación.
 - PDF.js, Tesseract y sql.js se descargan desde servicios externos. La IA es opcional y permanece desactivada inicialmente.
 - No añadir datos de ejemplo automáticamente.
+- El usuario necesita un apartado específico de control de fruta: recuento de kilos, categorías y precios a partir de las liquidaciones guardadas.
 
 ## Run & Operate
 

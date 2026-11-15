@@ -21,6 +21,7 @@
 
 import { parseAmount, round2 } from "./util.js";
 import { lineaEsEncabezado } from "./parse.js";
+import { leerTablaNomina } from "./nomina-tabla.js";
 
 /** Las cuentas del PGC que toca una nómina. */
 export const CUENTAS_NOMINA = Object.freeze({
@@ -174,11 +175,13 @@ export function leerNomina(textoCrudo) {
   const plano = String(textoCrudo || "");
   const notas = [];
   const base = { devengos: [] };
+  const tabla = leerTablaNomina(textoCrudo);
 
   /* Trabajador: va en una línea con su etiqueta. */
   for (const l of lls) {
     // Un rótulo de tabla («Trabajador  NIF  Días») no es el nombre de nadie.
     if (lineaEsEncabezado(l)) continue;
+    if (/^trabajador\/a\s/i.test(l)) continue;
     const m = l.match(/^(?:trabajador|nombre y apellidos|apellidos y nombre|empleado)\s*[:\-]?\s*(.+)$/i);
     if (!m) continue;
     const valor = m[1]
@@ -202,6 +205,10 @@ export function leerNomina(textoCrudo) {
 
   const dias = plano.match(/(\d{1,2})\s*d[ií]as/i);
   if (dias) base.dias = Number(dias[1]);
+  for (const key of ["trabajador", "periodo", "dias"]) {
+    if (tabla[key] != null && tabla[key] !== "") base[key] = tabla[key];
+  }
+  if (tabla.issueDate) base.issueDate = tabla.issueDate;
 
   /* Importes: se recorren las líneas y gana la línea que más claro lo diga. */
   let bruto = null;
@@ -241,6 +248,13 @@ export function leerNomina(textoCrudo) {
     }
     if (/salario\s+base/.test(bajo) && salarioBase == null) salarioBase = valor;
   }
+
+  bruto = tabla.bruto ?? bruto;
+  neto = tabla.neto ?? neto;
+  ssTrabajador = tabla.ssTrabajador ?? ssTrabajador;
+  irpf = tabla.irpf ?? irpf;
+  ssEmpresa = tabla.ssEmpresa ?? ssEmpresa;
+  notas.push(...tabla.notas);
 
   if (bruto == null && salarioBase != null) {
     bruto = salarioBase;
@@ -287,5 +301,5 @@ export function leerNomina(textoCrudo) {
     );
   }
 
-  return { ...n, notas, ok: n.bruto != null };
+  return { ...n, issueDate: base.issueDate || "", notas, ok: n.bruto != null };
 }

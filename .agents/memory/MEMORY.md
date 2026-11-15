@@ -1,0 +1,1 @@
+- [Confianza en la extracción](document-extraction-trust.md) — la IA sobre el mismo OCR no es una validación independiente; conservar discrepancias para revisión.

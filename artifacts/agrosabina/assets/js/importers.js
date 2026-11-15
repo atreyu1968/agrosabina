@@ -132,13 +132,14 @@ const NOMINA = {
       neto: n.neto,
     };
     doc.nominaRead = n;
+    if (n.issueDate) doc.issueDate = n.issueDate;
     // El recibo de salarios no lleva IGIC: el total del documento es el líquido
     // que se le paga al trabajador y la base es su bruto.
     doc.base = n.bruto;
     doc.rate = 0;
     doc.igic = 0;
-    doc.total = n.neto != null ? n.neto : n.bruto;
-    doc.confidence = n.bruto != null && n.neto != null ? 0.9 : 0.45;
+    doc.total = n.neto;
+    doc.confidence = n.bruto != null && n.neto != null ? (n.notas?.length ? 0.65 : 0.9) : 0.45;
     doc.notes = Array.isArray(n.notas) ? n.notas.slice() : [];
     if (n.bruto == null) {
       doc.notes.push(
@@ -210,6 +211,9 @@ const LIQUIDACION = {
       category: l.category || "",
       ok: !!l.ok,
     };
+    if (l.number) doc.number = l.number;
+    if (l.supplierName) doc.supplierName = l.supplierName;
+    doc.liquidacion.partidas = l.partidas || [];
     // La base es el líquido a percibir; el IGIC, el que traiga el papel (si no
     // trae ninguno, entra al 0 % en vez de inventarse uno).
     const r = l.rate != null && Number.isFinite(Number(l.rate)) ? Number(l.rate) : 0;
@@ -221,7 +225,7 @@ const LIQUIDACION = {
     doc.confidence = l.ok ? 0.85 : 0.4;
     doc.notes = Array.isArray(l.notes) ? l.notes.slice() : [];
     doc.classifyNote = `Liquidación de fruta${
-      l.kg != null && l.price != null ? `: ${fmtNum(l.kg, 2)} kg a ${fmtNum(l.price, 3)} €/kg` : ""
+      l.kg != null && l.price != null ? `: ${fmtNum(l.kg, 2)} kg a ${fmtNum(l.price, 4)} €/kg` : ""
     }, líquido a percibir ${fmtEUR(l.net)}. Va como ingreso, con sus kilos y su precio por kilo.`;
     return doc;
   },

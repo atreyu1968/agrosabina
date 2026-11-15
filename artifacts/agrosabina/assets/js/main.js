@@ -9,6 +9,7 @@ import * as views from "./views.js";
 const ROUTES = [
   "resumen",
   "ventas",
+  "control-fruta",
   "nominas",
   "contabilidad",
   "compras",

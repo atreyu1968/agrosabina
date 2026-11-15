@@ -17,6 +17,7 @@
 
 import { CATEGORIES, DOC_KINDS, categoryInfo, classifyLocal, kindInfo } from "./model.js";
 import { nifKey, parseAmount } from "./util.js";
+import { EXTRACTION_RULES, normalizeExtraction } from "./ai-extraction.js";
 
 export const AI_DEFAULTS = Object.freeze({
   aiEnabled: false,
@@ -140,7 +141,7 @@ function explainHttpError(status, body) {
  * Una llamada al servicio de IA. Devuelve el texto que contesta.
  * Aquí está todo lo que puede salir mal, con mensajes en castellano.
  */
-async function requestContent(settings, { system, user, timeoutMs = 20000, temperature = 0 }) {
+async function requestContent(settings, { system, user, timeoutMs = 20000, temperature = 0, json = false }) {
   const url = completionsUrl(settings.aiEndpoint);
   if (!url) throw new Error("Falta la dirección de la IA en los ajustes.");
 
@@ -152,11 +153,13 @@ async function requestContent(settings, { system, user, timeoutMs = 20000, tempe
       { role: "user", content: user },
     ],
   };
+  if (json) body.response_format = { type: "json_object" };
 
   const ctrl = typeof AbortController === "function" ? new AbortController() : null;
   const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
 
   let res;
+  let raw;
   try {
     res = await fetch(url, {
       method: "POST",
@@ -167,6 +170,7 @@ async function requestContent(settings, { system, user, timeoutMs = 20000, tempe
       body: JSON.stringify(body),
       signal: ctrl ? ctrl.signal : undefined,
     });
+    raw = await res.text();
   } catch (err) {
     if (err && err.name === "AbortError") throw new Error("La IA ha tardado demasiado y lo he dejado estar.");
     throw new Error("No he podido llegar a la IA. ¿Hay conexión a internet?");
@@ -174,12 +178,15 @@ async function requestContent(settings, { system, user, timeoutMs = 20000, tempe
     if (timer) clearTimeout(timer);
   }
 
-  const raw = await res.text().catch(() => "");
   if (!res.ok) throw new Error(explainHttpError(res.status, raw));
 
   try {
     const data = JSON.parse(raw);
-    return data?.choices?.[0]?.message?.content || "";
+    const choice = data?.choices?.[0];
+    if (choice?.finish_reason === "length") throw new Error("La respuesta de la IA se ha cortado; el documento necesita revisión.");
+    if (choice?.message?.refusal) throw new Error("La IA no ha podido interpretar este documento.");
+    if (typeof choice?.message?.content !== "string") throw new Error("Respuesta de IA sin contenido.");
+    return choice.message.content;
   } catch (_) {
     throw new Error("La IA ha contestado algo que no entiendo.");
   }
@@ -191,7 +198,8 @@ async function requestContent(settings, { system, user, timeoutMs = 20000, tempe
 
 const EXTRACT_SYSTEM =
   "Eres un auxiliar contable que rellena fichas a partir del texto de un documento. " +
-  "Contestas solo con un objeto JSON válido, sin nada alrededor. Nunca inventas un dato: si no está en el texto, pones null.";
+   "Contestas solo con un objeto JSON válido, sin nada alrededor. Nunca inventas un dato: si no está en el texto, pones null. " +
+   EXTRACTION_RULES;
 
 function extractPrompt(text) {
   const kinds = DOC_KINDS.map((k) => `${k.id} (${k.label})`).join("; ");
@@ -219,6 +227,7 @@ function extractPrompt(text) {
     "- Kilos en kilogramos: 4.520 kg se escribe 4520.",
     "- Precio por kilo en euros por kilo, con punto decimal: «0,853 €/kg» es 0.853, no 853.",
     "- Si el documento no es una liquidación de fruta, deja liquidacion en null.",
+    EXTRACTION_RULES,
     "",
     "Texto del documento:",
     String(text || "").slice(0, 8000),
@@ -248,7 +257,7 @@ function asIsoDate(value) {
 const EXTRACT_SYSTEM_PAPEL =
   "Eres un auxiliar contable que lee documentos mirando el papel: te mandan la foto o las hojas del propio documento. " +
   "Lees lo que está escrito en él, no lo que te digan de palabra. Contestas solo con un objeto JSON válido, sin nada alrededor. " +
-  "Nunca inventas un dato: si no está en el papel, pones null.";
+   "Nunca inventas un dato: si no está en el papel, pones null. " + EXTRACTION_RULES;
 
 /**
  * Las instrucciones que van con las imágenes. Devuelve el contenido partido
@@ -289,6 +298,7 @@ function extractPromptPapel(text, images, contexto = "") {
     "- Kilos en kilogramos: 4.520 kg se escribe 4520.",
     "- Precio por kilo en euros por kilo, con punto decimal: «0,853 €/kg» es 0.853, no 853.",
     "- Si el documento no es una liquidación de fruta, deja liquidacion en null.",
+    EXTRACTION_RULES,
   ].join("\n");
 
   const ayuda = String(text || "").trim();
@@ -334,6 +344,7 @@ export async function aiExtract(
         user: extractPromptPapel(text, pics, contexto),
         timeoutMs: Math.max(timeoutMs, 90000),
         temperature: 0,
+        json: true,
       });
       leido = "papel";
     } catch (err) {
@@ -346,11 +357,13 @@ export async function aiExtract(
   }
 
   if (!content) {
+    if (!String(text || "").trim()) throw new Error("No hay texto legible y la IA no ha podido leer las imágenes. Revisa el documento manualmente.");
     content = await requestContent(settings, {
       system: EXTRACT_SYSTEM,
       user: extractPrompt(text),
       timeoutMs,
       temperature: 0,
+      json: true,
     });
     leido = "texto";
   }
@@ -359,54 +372,8 @@ export async function aiExtract(
   if (!json || typeof json !== "object") throw new Error("La IA no ha devuelto los datos del documento.");
   const hojasLeidas = leido === "papel" ? pics.length : 0;
 
-  const kind = DOC_KINDS.some((k) => k.id === String(json.tipo || "").toUpperCase())
-    ? String(json.tipo).toUpperCase()
-    : "";
-  const catRaw = String(json.categoria || "").toUpperCase().trim();
-  const category = CATEGORIES.some((c) => c.id === catRaw) ? catRaw : "";
-
-  let liquidacion = null;
-  const liq = json.liquidacion;
-  if (liq && typeof liq === "object") {
-    const discounts = Array.isArray(liq.descuentos)
-      ? liq.descuentos
-          .map((d) => ({
-            label: String((d && (d.concepto || d.label)) || "Descuento").trim().slice(0, 60),
-            amount: toNum(d && (d.importe != null ? d.importe : d.amount)),
-          }))
-          .filter((d) => d.amount != null && d.amount !== 0)
-          .slice(0, 12)
-      : [];
-    const kg = toNum(liq.kilos != null ? liq.kilos : liq.kg);
-    const price = toNum(liq.precio != null ? liq.precio : liq.price);
-    const net = toNum(liq.liquido != null ? liq.liquido : liq.net);
-    if (kg != null || price != null || net != null) {
-      liquidacion = {
-        product: String(liq.producto || liq.product || "").trim().slice(0, 60),
-        category: String(liq.categoria || liq.category || "").trim().slice(0, 40),
-        kg: kg != null && kg >= 0 ? kg : null,
-        price: price != null && price >= 0 && price < 100 ? price : null,
-        discounts,
-        net: net != null ? net : null,
-      };
-    }
-  }
-
-  const conf = Number(json.confianza);
   return {
-    kind,
-    category,
-    confidence: Number.isFinite(conf) ? Math.max(0, Math.min(1, conf)) : 0.6,
-    why: String(json.motivo || "").slice(0, 220),
-    supplierName: String(json.proveedor || "").trim().slice(0, 80),
-    supplierNif: nifKey(json.nif || ""),
-    number: String(json.numero || "").trim().slice(0, 40),
-    issueDate: asIsoDate(json.fecha),
-    dueDate: asIsoDate(json.vencimiento),
-    base: toNum(json.base),
-    igic: toNum(json.igic),
-    total: toNum(json.total),
-    liquidacion,
+    ...normalizeExtraction(json),
     leido,
     hojas: hojasLeidas,
     note: nota,

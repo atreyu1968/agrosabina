@@ -118,20 +118,23 @@ export function disposeReader() {
 /* PDF                                                                */
 /* ------------------------------------------------------------------ */
 
-function itemsToLines(items) {
-  const rows = new Map();
-  for (const it of items) {
+export function itemsToLines(items) {
+  const rows = [];
+  // No redondear las coordenadas a casillas fijas: dos textos en la misma
+  // línea pueden caer a ambos lados de una frontera y separar cifra y rótulo.
+  for (const it of [...items].sort((a, b) => b.transform[5] - a.transform[5])) {
     const str = it.str;
     if (!str || !str.trim()) continue;
-    const y = Math.round(it.transform[5]);
-    const key = Math.round(y / 3) * 3;
-    if (!rows.has(key)) rows.set(key, []);
-    rows.get(key).push(it);
+    const y = it.transform[5];
+    let row = rows.find((candidate) => Math.abs(candidate.y - y) <= 2.5);
+    if (!row) {
+      row = { y, items: [] };
+      rows.push(row);
+    }
+    row.items.push(it);
   }
-  const keys = [...rows.keys()].sort((a, b) => b - a);
-  return keys.map((k) =>
-    rows
-      .get(k)
+  return rows.map((row) =>
+    row.items
       .sort((a, b) => a.transform[4] - b.transform[4])
       .map((it) => it.str)
       .join(" ")

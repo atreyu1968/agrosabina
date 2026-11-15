@@ -1,6 +1,7 @@
 /*
  * Las pantallas del sitio y lo que hace cada botón.
  */
+import { renderFruitControl } from "./fruit-control-view.js";
 
 import {
   IGIC_RATES,
@@ -96,7 +97,7 @@ import {
 
 export const ui = {
   route: "resumen",
-  filters: { status: "all", supplier: "", q: "", direction: "all" },
+  filters: { status: "all", supplier: "", q: "", direction: "GASTO" },
   supplierQuery: "",
   // Pantalla de terceros: si se miran los proveedores, los clientes o todos.
   supplierRole: "PROVEEDOR",
@@ -116,6 +117,7 @@ export const ui = {
 const ROUTES = [
   "resumen",
   "ventas",
+  "control-fruta",
   "nominas",
   "contabilidad",
   "compras",
@@ -366,6 +368,9 @@ export function render() {
   const view = document.getElementById("view");
   if (route === "resumen") view.innerHTML = viewResumen();
   else if (route === "ventas") view.innerHTML = viewVentas();
+  else if (route === "control-fruta") renderFruitControl(view, getState().invoices.map((inv) => ({
+    ...inv, supplierName: supplierById(inv.supplierId)?.name || inv.supplierName || "",
+  })));
   else if (route === "contabilidad") view.innerHTML = viewContabilidad();
   else if (route === "compras") view.innerHTML = viewFacturas();
   else if (route === "nominas") view.innerHTML = viewNominas();
@@ -857,6 +862,8 @@ function pageMeta(route) {
   const t = totals(getState().invoices);
   const supCount = getState().suppliers.length;
   switch (route) {
+    case "control-fruta":
+      return { title: "Control de fruta", sub: "Kilos, categorías y precios por fecha de liquidación" };
     case "ventas": {
       const list = salesDocs();
       const s = salesStats(list);
@@ -878,12 +885,13 @@ function pageMeta(route) {
         return { title: "Contabilidad", sub: "No he podido calcular los asientos" };
       }
     }
-    case "compras":
-
+    case "compras": {
+      const expenses = getState().invoices.filter((inv) => (inv.direction || directionOf(inv.kind || "FACTURA")) === "GASTO");
       return {
         title: "Compras",
-        sub: `${t.expenseCount} ${t.expenseCount === 1 ? "compra" : "compras"} y ${t.incomeCount} ${t.incomeCount === 1 ? "ingreso" : "ingresos"} · ${t.pendingCount} sin pagar`,
+        sub: `${expenses.length} ${expenses.length === 1 ? "compra" : "compras"} · ${expenses.filter((inv) => inv.status !== STATUS.PAID).length} pendientes de pago`,
       };
+    }
     case "proveedores":
       return {
         title: "Proveedores",
@@ -1865,14 +1873,17 @@ function exportSalesCsv() {
 /* ------------------------------------------------------------------ */
 
 function filteredInvoices() {
-  const { status, supplier, q, direction } = ui.filters;
+  const { status, supplier, q } = ui.filters;
   const needle = q.trim().toLowerCase();
-  let list = getState().invoices;
+  // «Compras» contiene exclusivamente gastos. Las liquidaciones de fruta y
+  // demás ingresos se consultan en Ventas o en el archivo de Documentos.
+  let list = getState().invoices.filter((i) =>
+    (i.direction || directionOf(i.kind || "FACTURA")) === "GASTO"
+  );
 
   if (status === "pending") list = list.filter((i) => i.status !== STATUS.PAID);
   else if (status === "paid") list = list.filter((i) => i.status === STATUS.PAID);
   if (supplier) list = list.filter((i) => i.supplierId === supplier);
-  if (direction && direction !== "all") list = list.filter((i) => (i.direction || "GASTO") === direction);
 
   if (needle) {
     list = list.filter((inv) => {
@@ -1908,11 +1919,6 @@ function viewFacturas() {
         <button data-filter-status="all" class="${ui.filters.status === "all" ? "active" : ""}">Todas</button>
         <button data-filter-status="pending" class="${ui.filters.status === "pending" ? "active" : ""}">Pendientes</button>
         <button data-filter-status="paid" class="${ui.filters.status === "paid" ? "active" : ""}">Pagadas</button>
-      </div>
-      <div class="segmented" data-filter-group="direction">
-        <button data-filter-direction="all" class="${ui.filters.direction === "all" ? "active" : ""}">Todo</button>
-        <button data-filter-direction="GASTO" class="${ui.filters.direction === "GASTO" ? "active" : ""}">Compras</button>
-        <button data-filter-direction="INGRESO" class="${ui.filters.direction === "INGRESO" ? "active" : ""}">Ingresos</button>
       </div>
       <select data-filter-supplier aria-label="Filtrar por proveedor">
         <option value="">Todos los proveedores</option>
@@ -2607,16 +2613,22 @@ async function runQueue() {
  * Aquí no se llama a ninguna IA: el documento se lee solo con el programa, en
  * este ordenador, sin mandar el texto a ninguna parte.
  */
-async function leerTextoDocumento(text, fileName) {
+async function leerTextoDocumento(text, fileName, { useAi = true } = {}) {
+  const finish = async (result) => {
+    if (useAi && aiConfigured(getState().settings)) {
+      await applyAiDocument({ parsed: result.lectura.doc }, text);
+    }
+    return result;
+  };
   const opciones = { defaultRate: getState().settings.defaultRate, fileName };
   let lectura = leerDocumento(text, opciones);
   let cls = null;
-  if (!lectura.generico) return { lectura, cls };
+  if (!lectura.generico) return finish({ lectura, cls });
 
   cls = classifyLocal(text, { fileName });
   if (cls.kind && cls.kind !== lectura.doc.kind) {
     const otra = leerDocumento(text, { ...opciones, tipo: cls.kind });
-    if (otra.reconoce) return { lectura: otra, cls: null };
+    if (otra.reconoce) return finish({ lectura: otra, cls: null });
     lectura.doc.kind = cls.kind;
     lectura.doc.direction = cls.direction || directionOf(cls.kind);
   }
@@ -2624,7 +2636,7 @@ async function leerTextoDocumento(text, fileName) {
   lectura.doc.direction = cls.direction || lectura.doc.direction;
   lectura.doc.classifyWhy = cls.why || "";
   lectura.doc.classifyNote = cls.note || "";
-  return { lectura, cls };
+  return finish({ lectura, cls });
 }
 
 /**
@@ -2640,7 +2652,7 @@ function hojaEsPapelPropio(texto) {
     return false;
   }
   const titulo =
-    /\b(n[oó]mina|recibo de salarios|liquidaci[oó]n|factura|factura simplificada|subvenci[oó]n|justificante)\b/i.test(
+    /\b(n[oó]mina|recibo de salarios|liquidaci[oó]n|factura|factura simplificada|subvenci[oó]n|justificante|devengos)\b/i.test(
       t
     );
   const cifras =
@@ -2802,6 +2814,7 @@ async function runOne(job) {
             preTexto: trozos[i].texto,
             preSource: source,
             pages: trozos[i].hojas,
+            trozos: trozos.length,
             papel: i + 1,
           });
         }
@@ -2830,7 +2843,7 @@ async function runOne(job) {
     // Cada tipo de documento se lee con su propio importador: la nómina con el
     // suyo, la liquidación con el suyo… Nada de leerlo todo como una factura y
     // luego ir parcheándolo.
-    const { lectura, cls } = await leerTextoDocumento(text, job.name || job.file.name);
+    const { lectura, cls } = await leerTextoDocumento(text, job.name || job.file.name, { useAi: false });
     job.importador = lectura.etiqueta;
     job.parsed = lectura.doc;
     job.parsed.rawText = text.slice(0, 30000);
@@ -2848,12 +2861,8 @@ async function runOne(job) {
     // importes de una tabla, las columnas cambiadas, un papel torcido… Aquí es
     // donde se nota: sus datos mandan sobre los míos y quedan anotados.
     const settings = getState().settings;
-    if (aiConfigured(settings) && settings.aiReadDocument !== false) {
+    if (aiConfigured(settings)) {
       await applyAiDocument(job, text);
-    } else if (aiConfigured(settings)) {
-      job.parsed.notes.push(
-        "La IA está encendida, pero en Ajustes has elegido que solo lea el texto, así que el fichero no sale de aquí."
-      );
     }
 
     job.state = "parsed";
@@ -2947,7 +2956,7 @@ async function runPruebas(files) {
             paintPruebas();
             for (const it of cola) {
               try {
-                const { lectura, cls } = await leerTextoDocumento(it.texto, it.name);
+                const { lectura, cls } = await leerTextoDocumento(it.texto, it.name, { useAi: false });
                 it.lectura = lectura;
                 it.cls = cls || null;
               } catch (err) {
@@ -2957,7 +2966,7 @@ async function runPruebas(files) {
               paintPruebas();
             }
           } else {
-            const { lectura, cls } = await leerTextoDocumento(item.texto, item.name);
+            const { lectura, cls } = await leerTextoDocumento(item.texto, item.name, { useAi: false });
             item.lectura = lectura;
             item.cls = cls || null;
           }
@@ -3065,7 +3074,7 @@ async function probarTextoPegado(nombre, texto) {
   try {
     // Sin nombre de fichero: aquí no hay fichero, así que el lector no puede
     // dejarse llevar por cómo se llame. Se decide solo por el texto.
-    const { lectura, cls } = await leerTextoDocumento(cuerpo, "");
+    const { lectura, cls } = await leerTextoDocumento(cuerpo, "", { useAi: false });
     item.lectura = lectura;
     item.cls = cls || null;
   } catch (err) {
@@ -3524,10 +3533,10 @@ function informePruebas() {
  */
 async function applyAiDocument(job, text) {
   const settings = getState().settings;
-  if (!aiConfigured(settings) || settings.aiReadDocument === false) return [];
-  if (!job.file) return [];
+  if (!aiConfigured(settings)) return [];
 
   const p = job.parsed;
+  if (!Array.isArray(p.notes)) p.notes = [];
   const model = String(settings.aiModel || AI_DEFAULTS.aiModel);
 
   // Cuando el archivo traía varios papeles, a la IA hay que decirle cuál de
@@ -3560,11 +3569,16 @@ async function applyAiDocument(job, text) {
     job.stage = "Preparando el documento para la IA";
     job.pct = 93;
     paintIngestSoon();
-    const sacadas = await documentPageImages(job.file, {
-      maxPages: pages ? Math.min(4, pages.length) : 4,
-      pages,
-    });
-    images = sacadas.images || [];
+    if (job.file && settings.aiReadDocument !== false) {
+      const sacadas = await documentPageImages(job.file, {
+        maxPages: pages ? Math.min(6, pages.length) : 6,
+        pages,
+      });
+      images = sacadas.images || [];
+      if (pages ? pages.length > images.length : sacadas.total > images.length) {
+        p.notes.push("La IA no ha visto todas las páginas en imagen; revisa las páginas restantes y sus totales.");
+      }
+    }
   } catch (_) {
     images = [];
   }
@@ -3588,6 +3602,18 @@ async function applyAiDocument(job, text) {
   }
 
   const cambiado = [];
+  p.notes.push(...(ai.warnings || []).map((v) => `Revisión de IA: ${v}`));
+  p.requiresReview = !!ai.requiresReview;
+  if (ai.confidence < 0.7) {
+    p.notes.push("La IA no sustituye datos porque su lectura tiene confianza baja.");
+    p.confidence = Math.min(p.confidence ?? 1, ai.confidence);
+    return [];
+  }
+  if (p.supplierNif && ai.supplierNif && p.supplierNif !== ai.supplierNif) {
+    p.notes.push("La IA y el lector identifican personas distintas. No se han mezclado sus datos; revisa el emisor o trabajador.");
+    p.requiresReview = true;
+    return [];
+  }
   const pon = (key, valor, etiqueta) => {
     if (valor == null || valor === "") return;
     const antes = p[key];
@@ -3598,6 +3624,9 @@ async function applyAiDocument(job, text) {
       } else if (String(antes) === String(valor)) {
         return;
       }
+      p.notes.push(`Discrepancia en ${etiqueta}: lector «${antes}», IA «${valor}». Comprueba el documento.`);
+      p.requiresReview = true;
+      if (ai.leido !== "papel") return;
     }
     p[key] = valor;
     cambiado.push(etiqueta);
@@ -3631,20 +3660,42 @@ async function applyAiDocument(job, text) {
   pon("number", ai.number, "el número");
   pon("issueDate", ai.issueDate, "la fecha");
   pon("dueDate", ai.dueDate, "el vencimiento");
-  pon("base", ai.base, "la base");
-  pon("igic", ai.igic, "la cuota de IGIC");
-  pon("total", ai.total, "el total");
+  if (ai.amountsValid && (p.kind !== "NOMINA" || ai.payrollValid)) {
+    pon("base", ai.base, "la base");
+    pon("igic", ai.igic, "la cuota de IGIC");
+    pon("total", ai.total, "el total");
+    pon("rate", ai.rate, "el tipo de IGIC");
+    if (ai.lines.length && (ai.leido === "papel" || !p.lines?.length)) {
+      p.lines = ai.lines;
+      cambiado.push("el desglose de IGIC");
+    }
+  }
+  if (p.kind === "NOMINA" && ai.nomina && ai.payrollValid) {
+    const previous = p.nomina || {};
+    const merged = { ...previous };
+    for (const [key, value] of Object.entries(ai.nomina)) {
+      if (value == null || value === "") continue;
+      if (previous[key] != null && previous[key] !== "" && previous[key] !== value) {
+        p.notes.push(`Discrepancia en nómina (${key}): lector «${previous[key]}», IA «${value}».`);
+        p.requiresReview = true;
+        if (ai.leido !== "papel") continue;
+      }
+      merged[key] = value;
+    }
+    p.nomina = merged;
+    cambiado.push("el desglose de nómina");
+  }
 
   // La liquidación de fruta: kilos, precio por kilo y descuentos. Solo se pone
   // si el papel es una liquidación (por mis reglas o por lo que dice la IA) y
   // la IA ha traído algo de eso.
   const liqIA = ai.liquidacion;
-  const esLiquidacion = p.kind === "LIQUIDACION" || tipoIA === "LIQUIDACION";
-  if (liqIA && esLiquidacion) {
+  const esLiquidacion = p.kind === "LIQUIDACION";
+  if (liqIA && esLiquidacion && ai.settlementValid && ai.amountsValid) {
     const kg = liqIA.kg;
     const price = liqIA.price;
     const discounts = Array.isArray(liqIA.discounts) ? liqIA.discounts : [];
-    const bruto = kg != null && price != null ? round2(kg * price) : null;
+    const bruto = liqIA.gross ?? (kg != null && price != null ? round2(kg * price) : null);
     const dto = round2(discounts.reduce((s, d) => s + (Number(d.amount) || 0), 0));
     const liquido = liqIA.net != null ? liqIA.net : bruto != null ? round2(bruto - dto) : null;
 
@@ -3655,6 +3706,7 @@ async function applyAiDocument(job, text) {
         kg,
         price,
         discounts,
+        partidas: liqIA.partidas?.length ? liqIA.partidas : (p.liquidacion?.partidas || []),
       };
       p.liquidacionRead = {
         kg,
@@ -3664,7 +3716,8 @@ async function applyAiDocument(job, text) {
         net: liquido,
         product: p.liquidacion.product,
         category: p.liquidacion.category,
-        ok: true,
+        partidas: p.liquidacion.partidas,
+        ok: !ai.requiresReview,
       };
       if (p.kind !== "LIQUIDACION") {
         p.kind = "LIQUIDACION";
@@ -3686,6 +3739,7 @@ async function applyAiDocument(job, text) {
   }
 
   p.aiUsed = model;
+  p.confidence = Math.min(p.confidence ?? 1, ai.confidence, p.requiresReview ? 0.65 : 1);
   p.aiLeido = ai.leido === "papel" ? "papel" : "texto";
   if (cuantos > 1 && images.length === 0) {
     p.notes.push(
@@ -4278,7 +4332,7 @@ function invoiceFormHtml(v) {  const state = getState();
         </div>
         <div class="field">
           <label for="l-price">Precio por kilo</label>
-          <div class="with-suffix"><input id="l-price" type="text" inputmode="decimal" value="${v.liquidacion && v.liquidacion.price != null ? fmtNum(v.liquidacion.price, 3) : ""}" placeholder="0,000"><span>€/kg</span></div>
+          <div class="with-suffix"><input id="l-price" type="text" inputmode="decimal" value="${v.liquidacion && v.liquidacion.price != null ? fmtNum(v.liquidacion.price, 6) : ""}" placeholder="0,000"><span>€/kg</span></div>
         </div>
       </div>
       <div class="igic-lines" id="iv-dtos">${(((v.liquidacion && v.liquidacion.discounts) || []).map((d) => dtoRowHtml(d.label, d.amount)).join(""))}</div>
@@ -4719,7 +4773,7 @@ function bindForm(wrap, initial) {
       } else {
         liqSum.hidden = false;
         liqSum.textContent =
-          `${fmtNum(liq.kg)} kg × ${fmtNum(liq.price, 3)} €/kg = ${fmtEUR(gross)}` +
+          `${fmtNum(liq.kg)} kg × ${fmtNum(liq.price, 6)} €/kg = ${fmtEUR(gross)}` +
           (dto ? ` − ${fmtEUR(dto)} de descuentos` : "") +
           ` · líquido a percibir ${fmtEUR(net)}`;
       }
