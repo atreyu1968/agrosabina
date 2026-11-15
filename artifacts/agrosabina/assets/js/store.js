@@ -55,6 +55,8 @@ function emptyState() {
       aiEndpoint: "https://api.openai.com/v1",
       aiModel: "gpt-4o-mini",
       aiKey: "",
+      // Client ID público de OAuth para configurar Gmail dentro de la app.
+      gmailClientId: "",
       createdAt: new Date().toISOString(),
     },
     suppliers: [],
@@ -142,12 +144,18 @@ function normaliseOriginal(orig) {
   const name = String(orig.name || "").trim().slice(0, 200);
   const size = Number(orig.size);
   if (!name && !(Number.isFinite(size) && size > 0)) return null;
-  return {
+  const original = {
     name: name || "documento",
     type: String(orig.type || "").slice(0, 120),
     size: Number.isFinite(size) && size > 0 ? size : 0,
     savedAt: String(orig.savedAt || "").slice(0, 30),
   };
+  const sha256 = String(orig.sha256 || "").toLowerCase();
+  if (/^[a-f0-9]{64}$/.test(sha256)) {
+    original.sha256 = sha256;
+    original.segment = String(orig.segment || "1").slice(0, 100);
+  }
+  return original;
 }
 
 /**
@@ -627,6 +635,58 @@ export function findDuplicate(supplierId, number) {
 }
 
 /**
+ * Busca una factura repetida por proveedor y número; si no hay número,
+ * comprueba proveedor, fecha, importe, tipo y sentido del documento.
+ */
+export function findDuplicateDocument(data, excludeId = "") {
+  const supplierId = data?.supplierId || findSupplierByNameOrNif(data?.supplierName, data?.supplierNif)?.id;
+  if (!supplierId) return null;
+
+  const number = String(data?.number || "").trim();
+  if (number) {
+    const found = findDuplicate(supplierId, number);
+    return found && found.id !== excludeId ? found : null;
+  }
+
+  const issueDate = String(data?.issueDate || "").slice(0, 10);
+  const total = numOrNull(data?.total);
+  if (!issueDate || total == null) return null;
+  const kind = String(data?.kind || "FACTURA").toUpperCase();
+  const direction = data?.direction || invoiceDirection(kind);
+  return (
+    state.invoices.find((inv) =>
+      inv.id !== excludeId &&
+      inv.supplierId === supplierId &&
+      String(inv.issueDate || "").slice(0, 10) === issueDate &&
+      Math.abs(Number(inv.total) - total) < 0.01 &&
+      String(inv.kind || "FACTURA").toUpperCase() === kind &&
+      (inv.direction || invoiceDirection(inv.kind)) === direction
+    ) || null
+  );
+}
+
+/** Devuelve solo coincidencias suficientemente exactas para omitir la carga automática. */
+export function findExactDuplicateDocument(data, excludeId = "") {
+  const found = findDuplicateDocument(data, excludeId);
+  if (!found) return null;
+  const issueDate = String(data?.issueDate || "").slice(0, 10);
+  const total = numOrNull(data?.total);
+  const kind = String(data?.kind || "FACTURA").toUpperCase();
+  const direction = data?.direction || invoiceDirection(kind);
+  if (
+    !issueDate ||
+    !found.issueDate ||
+    issueDate !== String(found.issueDate).slice(0, 10) ||
+    total == null ||
+    numOrNull(found.total) == null ||
+    Math.abs(total - numOrNull(found.total)) >= 0.01 ||
+    String(found.kind || "FACTURA").toUpperCase() !== kind ||
+    (found.direction || invoiceDirection(found.kind)) !== direction
+  ) return null;
+  return found;
+}
+
+/**
  * Guarda una factura. Crea el proveedor si hace falta.
  * @returns {{invoice: object|null, supplier: object|null, supplierCreated: boolean, duplicate: object|null, error?: string}}
  */
@@ -643,7 +703,16 @@ export function addInvoice(data) {
     data.supplierNif,
     rolDeDocumento(data)
   );
-  const duplicate = findDuplicate(supplier.id, data.number);
+  const duplicate = findDuplicateDocument({ ...data, supplierId: supplier.id });
+  if (duplicate && data.allowDuplicate !== true) {
+    return {
+      invoice: null,
+      supplier,
+      supplierCreated: false,
+      duplicate,
+      error: "Este documento ya está registrado. Revisa el aviso de duplicado antes de guardarlo.",
+    };
+  }
 
   const kind = String(data.kind || "FACTURA").toUpperCase();
   const base = numOrNull(data.base);
@@ -694,10 +763,14 @@ export function updateInvoice(id, patch) {
   const inv = state.invoices.find((i) => i.id === id);
   if (!inv) return null;
   if (invoiceWriteError(inv, patch)) return null;
+  const duplicate = findDuplicateDocument({ ...inv, ...patch }, id);
+  if (duplicate && patch?.allowDuplicate !== true) return null;
   if (Object.prototype.hasOwnProperty.call(patch || {}, "issueDate") && String(patch.issueDate || "") !== String(inv.issueDate || "")) {
     if (exerciseDateError(patch.issueDate)) return null;
   }
-  Object.assign(inv, patch);
+  const safePatch = { ...patch };
+  delete safePatch.allowDuplicate;
+  Object.assign(inv, safePatch);
   const payroll = String(inv.kind || "").toUpperCase() === "NOMINA";
   const base = numOrNull(inv.base);
   const total = numOrNull(inv.total);
@@ -846,7 +919,7 @@ export function invoiceById(id) {
  * Los bytes van a IndexedDB (files.js); en el documento queda solo el nombre,
  * el tipo y el tamaño, que es lo que se enseña en su ficha.
  */
-export async function keepInvoiceOriginal(id, blob) {
+export async function keepInvoiceOriginal(id, blob, info = {}) {
   const inv = invoiceById(id);
   if (!inv || !blob) return null;
   // Solo se guardan ficheros de verdad: una nota de "texto pegado" no tiene bytes.
@@ -854,11 +927,13 @@ export async function keepInvoiceOriginal(id, blob) {
   const size = Number(blob.size) || 0;
   if (!size) return null;
   try {
-    const info = await files.keepOriginal(id, blob, {
+    const fileInfo = await files.keepOriginal(id, blob, {
       name: blob.name || inv.fileName || "documento",
       type: blob.type || "",
+      sha256: info.sha256,
+      segment: info.segment,
     });
-    inv.original = normaliseOriginal(info);
+    inv.original = normaliseOriginal(fileInfo);
     inv.updatedAt = new Date().toISOString();
     save();
     return inv.original;

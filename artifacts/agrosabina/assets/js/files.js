@@ -60,7 +60,16 @@ export async function keepOriginal(id, blob, info = {}) {
   const name = String(info.name || blob.name || "documento");
   const type = String(info.type || blob.type || "");
   const size = sizeOf(blob);
-  const record = { name, type, size, savedAt: new Date().toISOString(), blob };
+  const sha256 = String(info.sha256 || "").toLowerCase();
+  const segment = String(info.segment || "1").slice(0, 100);
+  const record = {
+    name,
+    type,
+    size,
+    savedAt: new Date().toISOString(),
+    ...( /^[a-f0-9]{64}$/.test(sha256) ? { sha256, segment } : {}),
+    blob,
+  };
   const d = await openDb();
   try {
     await new Promise((resolve, reject) => {
@@ -73,7 +82,13 @@ export async function keepOriginal(id, blob, info = {}) {
   } finally {
     d.close();
   }
-  return { name, type, size, savedAt: record.savedAt };
+  return {
+    name,
+    type,
+    size,
+    savedAt: record.savedAt,
+    ...(record.sha256 ? { sha256: record.sha256, segment: record.segment } : {}),
+  };
 }
 
 /** El fichero guardado de un documento, o null si no hay ninguno. */

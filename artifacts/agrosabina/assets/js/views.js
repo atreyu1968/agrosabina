@@ -36,7 +36,8 @@ import {
   exportJSON,
   exportCompleteBackup,
   importCompleteBackup,
-  findDuplicate,
+  findDuplicateDocument,
+  findExactDuplicateDocument,
   findSupplierByNameOrNif,
   exerciseDateError,
   getState,
@@ -84,6 +85,13 @@ import {
 } from "./model.js";
 import { AI_DEFAULTS, AI_PROVIDERS, aiConfigured, aiExtract, aiPing, aiProviderOf, classifyDocument } from "./ai.js";
 import { isEmailFile, looksLikeInvoiceMail, parseEml } from "./mail.js";
+import {
+  connectGmail,
+  disconnectGmail,
+  fetchRecentGmailFiles,
+  gmailStatus,
+  prepareGmail,
+} from "./gmail.js";
 import {
   asientosDe,
   balanceSituacion,
@@ -779,6 +787,9 @@ function docPreviewModal(inv) {
     </div>`,
     {
       onMount: (wrap) => {
+        wrap.querySelectorAll("[data-modal-cancel]").forEach((btn) => {
+          btn.addEventListener("click", () => closeModal());
+        });
         wrap.querySelectorAll("[data-open-original]").forEach((btn) => {
           btn.addEventListener("click", () => showDocOriginal(btn.getAttribute("data-open-original"), "view"));
         });
@@ -963,7 +974,7 @@ function pageMeta(route) {
         title: "Correo",
         sub:
           count === 0
-            ? "Trae aquí los correos con facturas o liquidaciones"
+            ? "Conecta Gmail o importa correos con facturas y liquidaciones"
             : `${count} ${count === 1 ? "correo guardado" : "correos guardados"} en el buzón`,
       };
     }
@@ -2218,27 +2229,121 @@ function mailRow(m) {
   </div>`;
 }
 
+let gmailSdkLoadPromise = null;
+let gmailSdkLoadAttempted = false;
+let gmailSdkError = "";
+let gmailBusy = false;
+const gmailSessionImportedIds = new Set();
+
+function prepareGmailForView() {
+  const clientId = String(getState().settings?.gmailClientId || "").trim();
+  const status = gmailStatus(clientId);
+  if (!status.configured || status.ready || gmailSdkLoadAttempted) return;
+  gmailSdkLoadAttempted = true;
+  gmailSdkError = "";
+  gmailSdkLoadPromise = prepareGmail(clientId)
+    .then(() => {
+      gmailSdkError = "";
+    })
+    .catch((error) => {
+      gmailSdkError = error?.message || "No se pudo cargar la conexión de Google.";
+    })
+    .finally(() => {
+      gmailSdkLoadPromise = null;
+      if (ui.route === "correo") render();
+    });
+}
+
+function gmailConnectionCard() {
+  const clientId = String(getState().settings?.gmailClientId || "").trim();
+  const status = gmailStatus(clientId);
+  let controls = "";
+  const configPanel = `
+    <details class="gmail-config" ${clientId ? "" : "open"}>
+      <summary>${clientId ? "Cambiar configuración de Gmail" : "Configurar Gmail en la aplicación"}</summary>
+      <div class="form-grid" style="margin-top:12px">
+        <div class="field span-2">
+          <label for="gmailClientId">Client ID OAuth de Google</label>
+          <input id="gmailClientId" type="text" value="${esc(clientId)}"
+            placeholder="...apps.googleusercontent.com" autocomplete="off" spellcheck="false">
+          <span class="hint">Es el identificador público de una aplicación web de Google; no es una contraseña ni un Client Secret.</span>
+        </div>
+        <div class="row wrap">
+          <button class="btn primary" data-action="gmail-save-client-id">Guardar configuración</button>
+        </div>
+      </div>
+      <p class="subtle" style="margin-top:10px">
+        En Google Cloud activa Gmail API, añade tu cuenta como usuario de prueba y autoriza el origen HTTPS de esta aplicación.
+        <a href="https://developers.google.com/workspace/gmail/api/quickstart/js" target="_blank" rel="noopener noreferrer">Guía oficial de Google</a>.
+      </p>
+    </details>`;
+
+  if (!status.configured) {
+    controls = `
+      <div class="hint-bar">${icon("info")}
+        <span>Guarda primero el Client ID público en la configuración de esta pantalla. No introduzcas contraseñas ni secretos.</span>
+      </div>`;
+  } else if (status.connected) {
+    controls = `
+      <p class="subtle">Cuenta conectada: <strong>${esc(status.email || "Gmail")}</strong></p>
+      <div class="dz-actions">
+        <button class="btn primary" data-action="gmail-read" ${gmailBusy ? "disabled" : ""}>
+          ${icon("mail")} ${gmailBusy ? "Leyendo correos…" : "Leer adjuntos recientes"}
+        </button>
+        <button class="btn ghost" data-action="gmail-disconnect" ${gmailBusy ? "disabled" : ""}>Desconectar</button>
+      </div>`;
+  } else if (gmailSdkError) {
+    controls = `
+      <div class="hint-bar">${icon("info")}<span>${esc(gmailSdkError)}</span></div>
+      <button class="btn ghost" data-action="gmail-retry">Reintentar conexión</button>`;
+  } else {
+    controls = `
+      <button class="btn primary" data-action="gmail-connect" ${!status.ready || gmailBusy ? "disabled" : ""}>
+        ${icon("mail")} ${gmailBusy ? "Esperando autorización…" : status.ready ? "Conectar cuenta Gmail" : "Preparando conexión…"}
+      </button>`;
+  }
+
+  return `
+    <section class="card">
+      <div class="card-head">
+        <div>
+          <h2>Conectar Gmail</h2>
+          <p>Lectura bajo demanda de hasta 10 correos con adjuntos de los últimos 90 días.</p>
+        </div>
+      </div>
+      <div class="card-body">
+        ${controls}
+        ${configPanel}
+        <p class="subtle" style="margin-top:12px">
+          Agrosabina no modifica ni marca correos como leídos, y no guarda tu contraseña ni el token de acceso.
+          Los documentos pasan al flujo habitual de revisión antes de contabilizarse.
+        </p>
+      </div>
+    </section>`;
+}
+
 function viewCorreo() {
+  prepareGmailForView();
   const list = messages();
   const aiOn = aiConfigured(getState().settings);
   return `
   <div class="stack">
+    ${gmailConnectionCard()}
     <section class="card">
       <div class="card-body">
         <div id="mailDrop" class="dropzone">
           <div class="dz-icon">${icon("mail")}</div>
-          <h3>Trae aquí el correo con la factura o la liquidación</h3>
+          <h3>Importa un correo guardado</h3>
           <p>
-            En tu programa de correo abre el mensaje y elige <strong>«Guardar como…»</strong> o
-            <strong>«Descargar el original»</strong>: se guarda un archivo <strong>.eml</strong>.
-            Arrástralo aquí y leo su texto y sus adjuntos. Todo pasa en tu ordenador.
+            Si prefieres no conectar Gmail, guarda el mensaje como archivo <strong>.eml</strong>,
+            arrástralo aquí y leeré su texto y sus adjuntos.
           </p>
           <div class="dz-actions">
             <button class="btn primary" data-action="import-email">${icon("mail")} Elegir correos (.eml)</button>
             <button class="btn ghost" data-action="paste-mail">${icon("text")} Pegar el texto</button>
           </div>
           <p style="font-size:12.5px;color:var(--ink-3);margin-top:10px">
-            Un navegador no puede entrar solo en tu buzón: por eso el correo se guarda antes como archivo.
+            La conexión directa con Gmail se inicia siempre desde el botón de arriba.
           </p>
         </div>
       </div>
@@ -2267,7 +2372,7 @@ function viewCorreo() {
             : `<div class="empty">
                  <div class="e-icon">${icon("mail")}</div>
                  <h3>Todavía no hay correos</h3>
-                 <p>Lo más cómodo: desde el móvil reenvía la factura a ti mismo y guárdala como .eml la próxima vez que abras el ordenador.</p>
+                 <p>Conecta Gmail para leer adjuntos recientes o importa manualmente un correo .eml.</p>
                </div>`
         }
       </div>
@@ -2298,6 +2403,7 @@ async function importEmails(files) {
   let saved = 0;
   let attached = 0;
   let lastId = "";
+  const processedGmailIds = [];
 
   for (const file of list) {
     try {
@@ -2312,6 +2418,7 @@ async function importEmails(files) {
       const stored = addMessage(msg);
       saved++;
       lastId = stored ? stored.id : "";
+      if (file.gmailMessageId) processedGmailIds.push(String(file.gmailMessageId));
       if (hasText && !looksLikeInvoiceMail(msg)) {
         toast(`He guardado «${file.name}», pero por el texto no parece una factura: revísalo antes de darlo por bueno.`, "warn", 5600);
       }
@@ -2354,7 +2461,7 @@ async function importEmails(files) {
   } else {
     render();
   }
-  return { saved, attached, lastId };
+  return { saved, attached, lastId, processedGmailIds };
 }
 
 /** Saca la factura de un correo guardado. */
@@ -2574,14 +2681,17 @@ function paintIngest() {
     else if (job.state === "reading") stateText = job.stage || "Leyendo…";
     else if (job.state === "parsed") stateText = job.savedLabel || "Leída, esperando revisión";
     else if (job.state === "saved") { stateText = job.savedLabel || "Guardada"; pct = 100; }
+    else if (job.state === "duplicate") { stateText = job.savedLabel || "Duplicado, omitido"; pct = 100; }
     else if (job.state === "skipped") { stateText = "Descartada"; pct = 100; }
     else if (job.state === "error") { stateText = job.error || "Error al leer"; pct = 100; }
 
-    const cls = job.state === "saved" ? "done" : job.state === "error" ? "error" : "";
+    const cls = job.state === "saved" ? "done" : job.state === "duplicate" ? "duplicate" : job.state === "error" ? "error" : "";
     const right = job.state === "reading" || job.state === "queued"
       ? `<div class="spinner"></div>`
       : job.state === "saved"
         ? `<span class="status paid static">Guardada</span>`
+        : job.state === "duplicate"
+          ? `<span class="status pending static">Omitida</span>`
         : job.state === "error"
           ? `<button class="btn sm" data-action="retry-job" data-id="${job.id}">Reintentar</button>`
           : "";
@@ -2850,6 +2960,15 @@ async function runOne(job) {
       hojas = leido.textos || null;
     }
 
+    if (!job.fileHash && job.file?.arrayBuffer) {
+      if (!globalThis.crypto?.subtle) {
+        throw new Error("Este navegador no permite comprobar duplicados. Usa un navegador actualizado y vuelve a intentarlo.");
+      }
+      const bytes = await job.file.arrayBuffer();
+      const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes);
+      job.fileHash = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+    }
+
     // Varias hojas en el mismo archivo: puede haber varios papeles dentro (dos
     // nóminas, una liquidación y una factura…). Se separan antes de leer, para
     // que los importes de una hoja no se mezclen con los de la de al lado.
@@ -2867,6 +2986,7 @@ async function runOne(job) {
             preTexto: trozos[i].texto,
             preSource: source,
             pages: trozos[i].hojas,
+            fileHash: job.fileHash,
             trozos: trozos.length,
             papel: i + 1,
           });
@@ -2876,7 +2996,25 @@ async function runOne(job) {
         job.pages = trozos[0].hojas;
         job.papel = 1;
         text = trozos[0].texto;
+      } else {
+        job.pages = trozos[0]?.hojas || [];
       }
+    }
+
+    job.segmentKey = (Array.isArray(job.pages) && job.pages.length
+      ? job.pages.map(Number).filter(Number.isFinite).sort((a, b) => a - b).join(",")
+      : "1");
+    const sameFile = job.fileHash && getState().invoices.find((inv) =>
+      inv.original?.sha256 === job.fileHash &&
+      (inv.original.segment || "1") === job.segmentKey
+    );
+    if (sameFile) {
+      job.state = "duplicate";
+      job.savedLabel = `Ya guardado${sameFile.number ? ` · ${sameFile.number}` : ""}`;
+      job.pct = 100;
+      paintIngest();
+      toast("Este archivo y estas páginas ya están guardados. No se han vuelto a cargar.", "warn", 6500);
+      return;
     }
 
     job.text = text;
@@ -2916,6 +3054,16 @@ async function runOne(job) {
     const settings = getState().settings;
     if (aiConfigured(settings)) {
       await applyAiDocument(job, text);
+    }
+
+    const sameDocument = findExactDuplicateDocument(job.parsed);
+    if (sameDocument) {
+      job.state = "duplicate";
+      job.savedLabel = `Ya registrado${sameDocument.number ? ` · ${sameDocument.number}` : ""}`;
+      job.pct = 100;
+      paintIngest();
+      toast("Este documento ya está registrado con el mismo proveedor, fecha e importe. No se ha vuelto a cargar.", "warn", 7000);
+      return;
     }
 
     job.state = "parsed";
@@ -4762,12 +4910,24 @@ function bindForm(wrap, initial) {
       }
 
       const supplierId = existing ? existing.id : null;
-      const found = supplierId && number.value.trim() ? findDuplicate(supplierId, number.value) : null;
+      const kind = q("#f-kind")?.value || "FACTURA";
+      const found = supplierId
+        ? findDuplicateDocument({
+            supplierId,
+            supplierName: name.value,
+            supplierNif: nif.value,
+            number: number.value.trim(),
+            issueDate: q("#f-issue")?.value || "",
+            total: parseAmount(q("#f-total")?.value || ""),
+            kind,
+            direction: directionOf(kind),
+          }, initial?.id || "")
+        : null;
       if (found && found.id !== initial?.id) {
         dup.hidden = false;
         dup.querySelector("div").innerHTML =
-          `<div>Ya tienes una factura con el número <strong>${esc(number.value.trim())}</strong> de este proveedor (${fmtDate(found.issueDate)}, ${fmtEUR(found.total)}).</div>
-           <label class="checkline" style="margin-top:6px"><input type="checkbox" id="dupOk"> Es otra factura distinta: guárdala igualmente</label>`;
+          `<div>Ya tienes un documento de este proveedor${found.number ? ` con el número <strong>${esc(found.number)}</strong>` : " con la misma fecha e importe"} (${fmtDate(found.issueDate)}, ${fmtEUR(found.total)}).</div>
+           <label class="checkline" style="margin-top:6px"><input type="checkbox" id="dupOk"> Es otro documento distinto: guárdalo igualmente</label>`;
       } else {
         dup.hidden = true;
         dup.querySelector("div").innerHTML = "";
@@ -4778,6 +4938,11 @@ function bindForm(wrap, initial) {
   name.addEventListener("input", updateHints);
   nif.addEventListener("input", updateHints);
   number.addEventListener("input", updateHints);
+  ["#f-issue", "#f-total", "#f-kind"].forEach((selector) => {
+    const field = q(selector);
+    field?.addEventListener("input", updateHints);
+    field?.addEventListener("change", updateHints);
+  });
   updateHints();
 
   /* Varios tipos de IGIC en el mismo documento: cada línea tiene su base y su tipo */
@@ -5070,15 +5235,19 @@ async function submitInvoice(wrap, { mode, invoice, job }) {
   }
 
   const existing = findSupplierByNameOrNif(v.supplierName, v.supplierNif);
-  const dup = existing && v.number ? findDuplicate(existing.id, v.number) : null;
+  const dup = findDuplicateDocument({
+    ...v,
+    supplierId: existing?.id,
+  }, invoice?.id || "");
   if (dup && (!invoice || dup.id !== invoice.id)) {
     const ok = wrap.querySelector("#dupOk");
     if (!ok || !ok.checked) {
-      toast("Ya tienes esa factura. Si de verdad es otra distinta, marca la casilla del aviso.", "bad", 5200);
+      toast("Ya tienes un documento parecido. Si es otro documento distinto, marca la casilla del aviso.", "bad", 5200);
       if (ok) ok.focus();
       return null;
     }
   }
+  const allowDuplicate = !!dup && !!wrap.querySelector("#dupOk")?.checked;
 
   if (mode === "edit" && invoice) {
     const { supplier, created } = ensureSupplier(v.supplierName, v.supplierNif);
@@ -5101,6 +5270,7 @@ async function submitInvoice(wrap, { mode, invoice, job }) {
       kind: v.kind,
       category: v.category,
       direction: v.direction,
+      allowDuplicate,
     });
     if (!updated) {
       toast(exerciseDateError(v.issueDate) || "No se pudo actualizar el documento.", "bad", 6500);
@@ -5112,6 +5282,7 @@ async function submitInvoice(wrap, { mode, invoice, job }) {
 
   const res = addInvoice({
     ...v,
+    allowDuplicate,
     source: job ? job.source : "manual",
     fileName: job ? job.file.name : "",
     rawText: job ? job.parsed.rawText : "",
@@ -5127,7 +5298,10 @@ async function submitInvoice(wrap, { mode, invoice, job }) {
   // El fichero del que salieron los datos (la foto, el PDF) se guarda tal cual,
   // aparte de los datos, para poder volver a mirarlo desde la ficha.
   if (job && job.file && Number(job.file.size) > 0) {
-    const kept = await keepInvoiceOriginal(res.invoice.id, job.file);
+    const kept = await keepInvoiceOriginal(res.invoice.id, job.file, {
+      sha256: job.fileHash,
+      segment: job.segmentKey,
+    });
     if (kept) res.invoice.original = kept;
     else toast("El documento se guardó, pero el fichero original no se pudo guardar.", "warn", 5200);
   }
@@ -5901,6 +6075,118 @@ export async function onAction(action, el) {
     case "paste-text":
       openPasteModal();
       return;
+    case "gmail-retry":
+      gmailSdkLoadAttempted = false;
+      gmailSdkError = "";
+      render();
+      return;
+    case "gmail-save-client-id": {
+      const clientId = String(document.getElementById("gmailClientId")?.value || "").trim();
+      const currentClientId = String(getState().settings?.gmailClientId || "").trim();
+      if (clientId && !/^[A-Za-z0-9-]+\.apps\.googleusercontent\.com$/.test(clientId)) {
+        toast("Revisa el Client ID: debe terminar en .apps.googleusercontent.com.", "bad", 7000);
+        return;
+      }
+      if (!clientId && currentClientId) {
+        const confirmed = await confirmDialog({
+          title: "Quitar la configuración de Gmail",
+          message: "Se desconectará Gmail en esta aplicación. Los correos y documentos ya importados no se borrarán.",
+          confirm: "Quitar configuración",
+          danger: true,
+        });
+        if (!confirmed) return;
+      } else if (!clientId) {
+        toast("Introduce el Client ID OAuth de Google para continuar.", "warn");
+        return;
+      }
+      if (currentClientId !== clientId && gmailStatus(currentClientId).connected) {
+        await disconnectGmail().catch(() => {});
+      }
+      if (!updateSettings({ gmailClientId: clientId })) {
+        toast("No se pudo guardar la configuración de Gmail.", "bad", 7000);
+        return;
+      }
+      gmailSdkLoadAttempted = false;
+      gmailSdkError = "";
+      toast(clientId ? "Configuración de Gmail guardada en esta aplicación." : "Se quitó la configuración de Gmail.");
+      render();
+      return;
+    }
+    case "gmail-connect": {
+      const clientId = String(getState().settings?.gmailClientId || "").trim();
+      if (!gmailStatus(clientId).ready) {
+        toast("La conexión de Google aún se está preparando. Prueba en un momento.", "warn");
+        return;
+      }
+      // Inicia la ventana OAuth antes de volver a dibujar la pantalla, para
+      // conservar el gesto del usuario que Google exige para abrirla.
+      const connection = connectGmail(clientId);
+      gmailBusy = true;
+      render();
+      try {
+        const profile = await connection;
+        toast(`Gmail conectado: ${profile.email || "cuenta autorizada"}.`);
+      } catch (error) {
+        toast(error?.message || "No se pudo conectar Gmail.", "bad", 7000);
+      } finally {
+        gmailBusy = false;
+        if (ui.route === "correo") render();
+      }
+      return;
+    }
+    case "gmail-disconnect":
+      gmailBusy = true;
+      render();
+      try {
+        await disconnectGmail();
+        toast("Se ha desconectado y revocado el acceso a Gmail.");
+      } catch {
+        toast("La cuenta se desconectó, pero Google no confirmó la revocación.", "warn", 7000);
+      } finally {
+        gmailBusy = false;
+        if (ui.route === "correo") render();
+      }
+      return;
+    case "gmail-read": {
+      const clientId = String(getState().settings?.gmailClientId || "").trim();
+      if (!gmailStatus(clientId).connected) {
+        toast("Conecta Gmail antes de buscar correos.", "warn");
+        return;
+      }
+      gmailBusy = true;
+      render();
+      try {
+        const result = await fetchRecentGmailFiles([...gmailSessionImportedIds]);
+        if (!result.files.length) {
+          if (result.skippedLarge) {
+            toast(`${result.skippedLarge} correo${result.skippedLarge === 1 ? "" : "s"} supera${result.skippedLarge === 1 ? "" : "n"} el límite de tamaño y no se ha importado.`, "warn", 7000);
+          } else if (result.skippedMalformed) {
+            toast(`${result.skippedMalformed} correo${result.skippedMalformed === 1 ? "" : "s"} no se ha${result.skippedMalformed === 1 ? "" : "n"} podido leer. Descárgalo${result.skippedMalformed === 1 ? "" : "s"} como .eml para probar de nuevo.`, "warn", 7000);
+          } else if (!result.foundCount) {
+            toast("No he encontrado correos con adjuntos en los últimos 90 días.");
+          } else {
+            toast("No hay correos nuevos con adjuntos; los encontrados ya se importaron.");
+          }
+          return;
+        }
+
+        const imported = await importEmails(result.files);
+        const processedIds = imported?.processedGmailIds || [];
+        for (const messageId of processedIds) gmailSessionImportedIds.add(messageId);
+        if (result.skippedLarge) {
+          toast(`${result.skippedLarge} correo${result.skippedLarge === 1 ? "" : "s"} supera${result.skippedLarge === 1 ? "" : "n"} el límite y quedó fuera.`, "warn", 7000);
+        }
+        if (result.hasMore) {
+          toast("He importado hasta 10 correos recientes. Vuelve a buscar después de revisarlos para continuar.", "info", 6500);
+        }
+      } catch (error) {
+        toast(error?.message || "No he podido leer Gmail.", "bad", 8000);
+      } finally {
+        gmailBusy = false;
+        if (ui.route === "correo") render();
+      }
+      return;
+    }
     case "import-email":
       pickEmails();
       return;

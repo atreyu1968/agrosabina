@@ -53,6 +53,82 @@ test("la nómina conserva sus datos al crear, exportar y restaurar", () => {
   assert.equal(store.invoiceById(invoice.id).nomina.ssEmpresa, 600);
 });
 
+test("bloquea duplicados al guardar y exige permiso explícito para excepciones", () => {
+  const data = {
+    supplierName: "Proveedor control duplicados",
+    number: "FAC-DUP-001",
+    issueDate: TEST_DATE,
+    base: 100,
+    rate: 0,
+    total: 100,
+  };
+  const first = store.addInvoice(data);
+  assert.ok(first.invoice);
+
+  const duplicate = store.addInvoice(data);
+  assert.equal(duplicate.invoice, null);
+  assert.equal(duplicate.duplicate.id, first.invoice.id);
+  assert.match(duplicate.error, /duplicado/i);
+  assert.equal(
+    store.findExactDuplicateDocument(data)?.id,
+    first.invoice.id,
+  );
+  assert.equal(
+    store.findExactDuplicateDocument({ ...data, total: 101, base: 101 }),
+    null,
+  );
+
+  const allowed = store.addInvoice({ ...data, allowDuplicate: true });
+  assert.ok(allowed.invoice);
+
+  const second = store.addInvoice({
+    ...data,
+    number: "FAC-DUP-002",
+  });
+  assert.ok(second.invoice);
+  assert.equal(
+    store.updateInvoice(second.invoice.id, { number: "FAC-DUP-001" }),
+    null,
+  );
+  assert.equal(
+    store.updateInvoice(second.invoice.id, {
+      number: "FAC-DUP-001",
+      allowDuplicate: true,
+    }).number,
+    "FAC-DUP-001",
+  );
+});
+
+test("detecta documentos sin número con proveedor, fecha e importe coincidentes", () => {
+  const data = {
+    supplierName: "Proveedor sin número duplicado",
+    issueDate: TEST_DATE,
+    base: 58,
+    rate: 0,
+    total: 58,
+  };
+  const first = store.addInvoice(data);
+  const duplicate = store.addInvoice(data);
+  assert.ok(first.invoice);
+  assert.equal(duplicate.invoice, null);
+  assert.equal(duplicate.duplicate.id, first.invoice.id);
+  assert.ok(store.addInvoice({ ...data, total: 59, base: 59 }).invoice);
+});
+
+test("conserva la huella del original para reconocer futuras cargas repetidas", () => {
+  const sha256 = "a".repeat(64);
+  const { invoice } = store.addInvoice({
+    supplierName: "Proveedor con huella de original",
+    number: "HASH-001",
+    issueDate: TEST_DATE,
+    base: 12,
+    total: 12,
+    original: { name: "factura.pdf", size: 50, sha256, segment: "2,3" },
+  });
+  assert.equal(invoice.original.sha256, sha256);
+  assert.equal(invoice.original.segment, "2,3");
+});
+
 test("rechaza documentos nuevos y cambios de emisión fuera del ejercicio activo", () => {
   const year = store.activeExerciseYear();
   assert.equal(store.exerciseDateError(`${year}-03-15`), "");

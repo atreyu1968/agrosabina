@@ -44,13 +44,15 @@ export async function packCompleteBackup(data, originals) {
       throw new Error("La copia supera el límite de 200 MB. Conserva los originales por separado.");
     }
     const bytes = new Uint8Array(await original.blob.arrayBuffer());
+    const sha256 = await digest(bytes);
     attachments.push({
       invoiceId: inv.id, name: original.name, type: original.type,
       size: bytes.length, savedAt: original.savedAt,
-      sha256: await digest(bytes), base64: encode(bytes),
+      sha256, base64: encode(bytes),
     });
     inv.original = {
       name: original.name, type: original.type, size: bytes.length, savedAt: original.savedAt,
+      sha256, segment: inv.original?.segment || "1",
     };
   }
   const archive = { format: BACKUP_FORMAT, version: 1, exportedAt: new Date().toISOString(),
@@ -84,9 +86,14 @@ export async function unpackCompleteBackup(text) {
     if (bytes.length !== a.size || await digest(bytes) !== a.sha256) fail("un original está dañado");
     const meta = invoices.get(a.invoiceId).original;
     if (!meta || meta.name !== a.name || meta.type !== a.type || meta.size !== a.size ||
-        meta.savedAt !== a.savedAt) fail("el original no coincide con su documento");
+        meta.savedAt !== a.savedAt ||
+        (meta.sha256 != null && meta.sha256 !== a.sha256) ||
+        (meta.segment != null && (typeof meta.segment !== "string" || meta.segment.length > 100))) {
+      fail("el original no coincide con su documento");
+    }
     originals.set(a.invoiceId, { name: a.name, type: a.type, size: a.size,
-      savedAt: a.savedAt, blob: new Blob([bytes], { type: a.type }) });
+      savedAt: a.savedAt, sha256: a.sha256, segment: meta.segment || "1",
+      blob: new Blob([bytes], { type: a.type }) });
   }
   for (const inv of invoices.values()) {
     if (inv.original && !originals.has(inv.id)) fail("falta un original");
