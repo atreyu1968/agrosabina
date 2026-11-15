@@ -988,10 +988,10 @@ function topActions(route) {
       <button class="btn" data-action="export-acc-csv">${icon("download")}<span>Exportar</span></button>`;
   }
   if (route === "compras") {
-
     return `
       <button class="btn" data-action="export-csv">${icon("download")}<span>Exportar</span></button>
-      <button class="btn primary" data-action="new-invoice">${icon("plus")}<span>Nueva compra</span></button>`;
+      <button class="btn primary" data-action="import-files" aria-label="Importar factura de compra">${icon("upload")}<span>Importar factura</span></button>
+      <button class="btn" data-action="new-invoice">${icon("plus")}<span>Nueva compra</span></button>`;
   }
   if (route === "nominas") {
     return `
@@ -1930,7 +1930,7 @@ function viewFacturas() {
       <h3>Todavía no hay compras</h3>
       <p>Sube una foto o un PDF y la relleno yo. También puedes escribirla a mano si la tienes delante.</p>
       <div class="e-actions">
-        <button class="btn primary" data-action="import-files">${icon("upload")} Subir documento</button>
+        <button class="btn primary" data-action="import-files" aria-label="Importar factura de compra">${icon("upload")} Importar factura de compra</button>
         <button class="btn" data-action="new-invoice">${icon("plus")} Añadir a mano</button>
       </div>
     </div></section>`;
