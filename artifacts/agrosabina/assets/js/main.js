@@ -46,37 +46,31 @@ async function boot() {
   views.ui.route = routeFromHash();
   views.renderLoading(); // mientras se abre la base de datos
 
-  // Las escuchas van antes que la base de datos: así el menú y los botones responden
-  // desde el primer segundo, aunque SQLite tarde en abrir.
+  // El menú puede cambiar de sección, pero ninguna edición se permite hasta
+  // tener un estado consistente (SQLite o la copia local).
   let dbReady = false;
+  let loadingMessage;
   wireGlobalEvents();
 
-  // Abrir la base de datos SQLite y traer los datos, pero sin dejar la pantalla
-  // esperando para siempre: si en 9 segundos no ha contestado, se sigue con la copia
-  // guardada en el navegador y se avisa. Nunca se queda el programa en «Abriendo…».
+  // El plazo solo cambia el aviso: nunca libera la edición ni abandona una
+  // inicialización que podría reemplazar los datos más tarde.
+  const slowTimer = setTimeout(() => {
+    loadingMessage = "La base de datos está tardando en abrir. Para proteger tus cambios, espera a que termine la carga.";
+    views.renderLoading(loadingMessage);
+  }, 9000);
   try {
-    await Promise.race([
-      initStore().then(() => {
-        dbReady = true;
-      }),
-      new Promise((resolve) => setTimeout(resolve, 9000)),
-    ]);
+    await initStore();
+    dbReady = true;
   } catch (err) {
     console.error("No se pudo arrancar el almacén de datos:", err);
+    loadingMessage = "No se han podido cargar tus datos. La edición sigue bloqueada para protegerlos. Recarga la página para reintentarlo.";
+    views.renderLoading(loadingMessage);
+    return;
+  } finally {
+    clearTimeout(slowTimer);
   }
 
   views.render();
-  if (!dbReady) {
-    setTimeout(
-      () =>
-        toast(
-          "La base de datos está tardando en abrir. Sigo con la copia que hay guardada en este navegador.",
-          "bad",
-          9000
-        ),
-      900
-    );
-  }
   escapeKeyCloses();
   views.wireDropzone();
 
@@ -119,7 +113,7 @@ async function boot() {
       views.ui.route = routeFromHash();
       window.scrollTo(0, 0);
       if (!dbReady) {
-        views.renderLoading();
+        views.renderLoading(loadingMessage);
         return;
       }
       views.render();
@@ -143,6 +137,7 @@ async function boot() {
     const filterBtn = ev.target.closest("[data-filter-status]");
     if (filterBtn) {
       ev.preventDefault();
+      if (!dbReady) return;
       views.onFilterButton(filterBtn);
       return;
     }
@@ -150,12 +145,17 @@ async function boot() {
     const dirBtn = ev.target.closest("[data-filter-direction]");
     if (dirBtn) {
       ev.preventDefault();
+      if (!dbReady) return;
       views.onDirectionButton(dirBtn);
     }
   });
 
-    document.addEventListener("input", views.onInput);
-    document.addEventListener("change", views.onChange);
+    document.addEventListener("input", (ev) => {
+      if (dbReady) views.onInput(ev);
+    });
+    document.addEventListener("change", (ev) => {
+      if (dbReady) views.onChange(ev);
+    });
   }
 
   const filePicker = document.getElementById("filePicker");

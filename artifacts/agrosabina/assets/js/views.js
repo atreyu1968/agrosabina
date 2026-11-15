@@ -346,7 +346,7 @@ function categoryCard(t) {
 /* ------------------------------------------------------------------ */
 
 /** Lo que se ve mientras se abre la base de datos. */
-export function renderLoading() {
+export function renderLoading(message = "Un momento: preparo las tablas de proveedores y facturas.") {
   const view = document.getElementById("view");
   if (!view) return;
   const meta = pageMeta(ROUTES.includes(ui.route) ? ui.route : "resumen");
@@ -357,7 +357,7 @@ export function renderLoading() {
   view.innerHTML = `<section class="card"><div class="empty">
     <div class="spinner big" style="margin:0 auto 14px"></div>
     <h3>Abriendo tu base de datos</h3>
-    <p>Un momento: preparo las tablas de proveedores y facturas.</p>
+    <p role="status">${esc(message)}</p>
   </div></section>`;
 }
 

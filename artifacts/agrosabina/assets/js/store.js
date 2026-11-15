@@ -26,6 +26,8 @@ let state = emptyState();
 let lastSaveOk = true;
 let engine = "local"; // "sqlite" | "local"
 let persistTimer = null;
+let initPromise = null;
+let ready = false;
 
 /* ------------------------------------------------------------------ */
 /* Carga y guardado                                                   */
@@ -330,7 +332,14 @@ function load() {
  *   anterior en localStorage, los pasa a SQLite (migración de una sola vez).
  * Devuelve "sqlite" o "local".
  */
-export async function initStore() {
+export function initStore() {
+  // Compartir también el resultado terminado: reabrir después de una edición
+  // podría restaurar una instantánea anterior y perder cambios recientes.
+  if (!initPromise) initPromise = initialise();
+  return initPromise;
+}
+
+async function initialise() {
   const ok = await sqlite.init();
 
   if (ok) {
@@ -349,12 +358,14 @@ export async function initStore() {
   }
 
   lastSaveOk = true;
+  ready = true;
   emit();
   return engine;
 }
 
 /** Guarda: primero en SQLite y además una copia en texto, por si acaso. */
 export function save() {
+  if (initPromise && !ready) return false;
   let stored = false;
 
   if (engine === "sqlite" && sqlite.isAvailable()) {
@@ -392,6 +403,7 @@ function schedulePersist() {
 
 /** Fuerza el guardado pendiente (al cerrar o cambiar de pestaña). */
 export async function flush() {
+  if (!ready) return false;
   if (persistTimer) {
     clearTimeout(persistTimer);
     persistTimer = null;
@@ -409,7 +421,7 @@ export async function flush() {
 
 if (typeof window !== "undefined") {
   window.addEventListener("pagehide", () => {
-    if (engine === "sqlite" && sqlite.isAvailable()) {
+    if (ready && engine === "sqlite" && sqlite.isAvailable()) {
       try {
         sqlite.writeState(state);
         sqlite.persist();
