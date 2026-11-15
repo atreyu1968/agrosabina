@@ -90,10 +90,32 @@ async function boot() {
   function wireGlobalEvents() {
     const sidebar = document.querySelector(".sidebar");
     const navToggle = document.getElementById("mobileNavToggle");
+    const collapseToggle = document.getElementById("sidebarCollapseToggle");
+    const sidebarPreferenceKey = "agrosabina.sidebar-collapsed";
+    const setSidebarCollapsed = (collapsed) => {
+      sidebar?.classList.toggle("is-collapsed", collapsed);
+      collapseToggle?.setAttribute("aria-expanded", String(!collapsed));
+      const label = collapsed ? "Expandir barra lateral" : "Contraer barra lateral";
+      collapseToggle?.setAttribute("aria-label", label);
+      collapseToggle?.setAttribute("title", label);
+    };
     const closeMobileNav = () => {
       sidebar?.classList.remove("nav-open");
       navToggle?.setAttribute("aria-expanded", "false");
     };
+
+    try {
+      setSidebarCollapsed(localStorage.getItem(sidebarPreferenceKey) === "true");
+    } catch {
+      setSidebarCollapsed(false);
+    }
+    collapseToggle?.addEventListener("click", () => {
+      const collapsed = !sidebar?.classList.contains("is-collapsed");
+      setSidebarCollapsed(collapsed);
+      try {
+        localStorage.setItem(sidebarPreferenceKey, String(collapsed));
+      } catch {}
+    });
 
     navToggle?.addEventListener("click", () => {
       const isOpen = sidebar?.classList.toggle("nav-open") ?? false;
