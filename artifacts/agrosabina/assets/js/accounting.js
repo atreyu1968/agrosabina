@@ -440,8 +440,8 @@ export function asientosDe(invoices, opts = {}) {
     // propósito: una factura del año pasado cobrada este año entra en el libro
     // de este año, y antes no entraba porque solo se miraba la fecha del papel.
     if (String(inv.status || "") === "PAGADO") {
-      const diaPago = String(inv.paidDate || "").slice(0, 10) || dia;
-      if (dentro(diaPago)) {
+      const diaPago = String(inv.paidDate || "").slice(0, 10);
+      if (diaPago && dentro(diaPago)) {
         const teso = cuentaDeTesoreria(inv);
         const medio = medioDePagoTexto(inv);
         const linesPago = lineas(

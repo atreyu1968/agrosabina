@@ -620,7 +620,7 @@ export function addInvoice(data) {
     lines: data.lines || [],
     liquidacion: data.liquidacion || null,
     nomina: data.nomina || null,
-    paidDate: data.status === STATUS.PAID ? data.paidDate || todayISO() : "",
+    paidDate: data.status === STATUS.PAID ? data.paidDate || "" : "",
     payMethod: data.status === STATUS.PAID ? normaliseMedio(data.payMethod) : "",
     payAccount: data.status === STATUS.PAID ? String(data.payAccount || "").slice(0, 120) : "",
     source: data.source || "manual",
@@ -655,7 +655,6 @@ export function updateInvoice(id, patch) {
   inv.original = normaliseOriginal(inv.original);
   inv.payMethod = normaliseMedio(inv.payMethod);
   inv.payAccount = String(inv.payAccount || "").trim().slice(0, 120);
-  if (inv.status === STATUS.PAID && !inv.paidDate) inv.paidDate = todayISO();
   if (inv.status === STATUS.PENDING) {
     // Sin cobrar ni pagar no hay ni fecha ni medio que guardar.
     inv.paidDate = "";
@@ -696,7 +695,7 @@ function releaseBankReconciliations(invoiceIds) {
 export function setInvoiceStatus(id, status, paidDate, pay) {
   const patch = { status };
   if (status === STATUS.PAID) {
-    // La fecha del cobro o del pago la elige la persona; si no dice nada, hoy.
+    // La fecha solo se guarda si viene indicada; no se debe inventar una fecha.
     const day = String(paidDate || "").slice(0, 10);
     if (day) patch.paidDate = day;
     // Y con qué se cobró o se pagó: caja o banco, y en qué cuenta corriente.

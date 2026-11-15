@@ -120,6 +120,30 @@ test("conciliar un movimiento valida importe y sentido, y al deshacer el pago vu
   assert.equal(store.getState().settings.bankStatements[0].movements[0].matchedInvoiceId, undefined);
 });
 
+test("una factura importada como pagada conserva la fecha vacía al editar y recargar", () => {
+  const { invoice } = store.addInvoice({
+    supplierName: "Proveedor sin fecha de prueba",
+    number: "PAGADA-SIN-FECHA",
+    base: 100,
+    total: 107,
+    status: "PAGADO",
+    source: "ocr",
+  });
+
+  assert.equal(invoice.status, "PAGADO");
+  assert.equal(invoice.paidDate, "");
+
+  // Una edición de otros campos no debe completar la fecha por su cuenta.
+  store.updateInvoice(invoice.id, { notes: ["Importada sin fecha de pago"] });
+  store.importJSON(store.exportJSON());
+  assert.equal(store.invoiceById(invoice.id).paidDate, "");
+
+  // La fecha sigue siendo introducible manualmente y también sobrevive a la recarga.
+  store.updateInvoice(invoice.id, { paidDate: "2026-11-14" });
+  store.importJSON(store.exportJSON());
+  assert.equal(store.invoiceById(invoice.id).paidDate, "2026-11-14");
+});
+
 test("exportar no incluye la clave ficticia ni modifica los ajustes", () => {
   store.updateSettings({ aiKey: "CREDENCIAL-FICTICIA-LOCAL" });
   const exported = store.exportJSON();

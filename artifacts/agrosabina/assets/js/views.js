@@ -4387,7 +4387,7 @@ function invoiceFormHtml(v) {  const state = getState();
       <div class="field" id="f-paid" style="margin-top:12px" ${v.status === STATUS.PAID ? "" : "hidden"}>
         <label for="f-paid-date">Fecha ${directionOf(kind) === "INGRESO" ? "del cobro" : "del pago"}</label>
         <input id="f-paid-date" type="date" value="${esc(v.paidDate || "")}">
-        <span class="hint">Si la dejas vacía, se guarda la de hoy. Sale en la ficha y en los listados.</span>
+        <span class="hint">No se encontró la fecha en el documento. Puedes indicarla aquí; si la dejas vacía, se guardará sin fecha.</span>
         <label for="f-paid-method" style="margin-top:10px">¿Cómo se ${directionOf(kind) === "INGRESO" ? "cobró" : "pagó"}?</label>
         <select id="f-paid-method">
           <option value="">Sin decir</option>
@@ -4674,7 +4674,6 @@ function bindForm(wrap, initial) {
   );
 
   const paidWrap = q("#f-paid");
-  const paidInput = q("#f-paid-date");
   seg.querySelectorAll("button").forEach((b) =>
     b.addEventListener("click", () => {
       seg.dataset.value = b.dataset.status;
@@ -4683,7 +4682,6 @@ function bindForm(wrap, initial) {
       if (paidWrap) {
         const paid = b.dataset.status === STATUS.PAID;
         paidWrap.hidden = !paid;
-        if (paid && paidInput && !paidInput.value) paidInput.value = todayISO();
       }
     })
   );
