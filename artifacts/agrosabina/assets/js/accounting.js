@@ -360,31 +360,40 @@ export function asientosDe(invoices, opts = {}) {
 
   const ap = opts.apertura;
   if (ap) {
-    const capital = round2(Number(ap.capital) || 0);
-    const tesoreria = round2(Number(ap.tesoreria) || 0);
-    if (capital || tesoreria) {
+    let lines = [];
+    if (Array.isArray(ap.lines)) {
+      const raw = ap.lines
+        .filter((l) => l && /^\d{3,6}$/.test(String(l.account || "")))
+        .map((l) => [
+          String(l.account),
+          round2((Number(l.debit) || 0) - (Number(l.credit) || 0)),
+        ]);
+      lines = lineas(raw);
+    } else {
+      const capital = round2(Number(ap.capital) || 0);
+      const tesoreria = round2(Number(ap.tesoreria) || 0);
       // La apertura entra siempre, aunque el periodo elegido empiece más
       // tarde: es la posición de partida y sin ella el balance no cuadra.
-      const dia = String(ap.fecha || "").slice(0, 10) || from || `${new Date().getFullYear()}-01-01`;
-      {
+      if (capital || tesoreria) {
         const resto = round2(tesoreria - capital);
         const raw = [
           ["572", tesoreria],
           ["100", -capital],
           resto >= 0 ? ["113", -resto] : ["121", -resto],
         ];
-        const lines = lineas(raw);
-        if (lines.length) {
-          out.push({
-            id: "apertura",
-            date: dia || from,
-            concept: "Asiento de apertura",
-            ref: "",
-            kind: "apertura",
-            lines,
-          });
-        }
+        lines = lineas(raw);
       }
+    }
+    if (lines.length) {
+      const dia = String(ap.fecha || "").slice(0, 10) || from || `${new Date().getFullYear()}-01-01`;
+      out.push({
+        id: "apertura",
+        date: dia,
+        concept: "Asiento de apertura",
+        ref: "",
+        kind: "apertura",
+        lines,
+      });
     }
   }
 
@@ -557,6 +566,44 @@ export function libroMayor(entries) {
   }
   rows.sort((a, b) => (a.code < b.code ? -1 : a.code > b.code ? 1 : 0));
   return rows;
+}
+
+/**
+ * Prepara los saldos de cierre como apertura del ejercicio siguiente.
+ * Las cuentas de gastos e ingresos se cancelan y su resultado neto se incorpora
+ * a resultados de ejercicios anteriores (121).
+ */
+export function aperturaDesdeCierre(entries) {
+  const saldos = new Map();
+  for (const entry of entries || []) {
+    for (const row of entry?.lines || []) {
+      const code = String(row?.account || "").trim();
+      if (!/^\d{3,6}$/.test(code)) continue;
+      const movimiento = round2((Number(row.debit) || 0) - (Number(row.credit) || 0));
+      saldos.set(code, round2((saldos.get(code) || 0) + movimiento));
+    }
+  }
+
+  let resultado = 0;
+  for (const [code, saldo] of [...saldos]) {
+    if (code.startsWith("6") || code.startsWith("7")) {
+      resultado = round2(resultado + saldo);
+      saldos.delete(code);
+    }
+  }
+  if (Math.abs(resultado) >= 0.005) {
+    saldos.set("121", round2((saldos.get("121") || 0) + resultado));
+  }
+
+  return [...saldos.entries()]
+    .filter(([, saldo]) => Math.abs(saldo) >= 0.005)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([account, saldo]) => ({
+      account,
+      name: cuenta(account).name,
+      debit: saldo > 0 ? saldo : 0,
+      credit: saldo < 0 ? round2(-saldo) : 0,
+    }));
 }
 
 /* ------------------------------------------------------------------ */

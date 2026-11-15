@@ -87,6 +87,7 @@ import {
   cuentaResultados,
   libroMayor,
   setPlanDeCuentas,
+  aperturaDesdeCierre,
 } from "./accounting.js";
 import { pgcNombre, siguienteSubcuenta } from "./pgc.js";
 import { igicPorTrimestre, tesoreriaPorCuenta, vencimientos } from "./erp.js";
@@ -103,6 +104,14 @@ import {
   toast,
 } from "./dom.js";
 
+/* ------------------------------------------------------------------ */
+/* Estado de la interfaz                                              */
+/* ------------------------------------------------------------------ */
+
+
+/*
+ * Las pantallas del sitio y lo que hace cada botón.
+ */
 /* ------------------------------------------------------------------ */
 /* Estado de la interfaz                                              */
 /* ------------------------------------------------------------------ */
@@ -5023,7 +5032,6 @@ async function submitInvoice(wrap, { mode, invoice, job }) {
       return null;
     }
   }
-
   const nif = normaliseSpanishNif(v.supplierNif);
   if (v.supplierNif && !nif) {
     toast("El NIF, NIE o CIF no tiene un formato válido. Corrígelo o déjalo vacío.", "bad", 5200);
@@ -5980,6 +5988,10 @@ export async function onAction(action, el) {
       saveApertura();
       return;
     }
+    case "acc-opening-carryforward": {
+      trasladarCierreApertura();
+      return;
+    }
     case "acc-entry-new": {
       accEntryModal(null);
       return;
@@ -6338,6 +6350,10 @@ function exerciseYears() {
     const year = Number(String(entry.date || "").slice(0, 4));
     if (Number.isInteger(year) && year >= 1900 && year <= 2200) years.add(year);
   }
+  for (const yearText of Object.keys(state.settings?.aperturasPorEjercicio || {})) {
+    const year = Number(yearText);
+    if (Number.isInteger(year) && year >= 1900 && year <= 2200) years.add(year);
+  }
   for (const batch of Array.isArray(state.settings?.bankStatements) ? state.settings.bankStatements : []) {
     for (const movement of Array.isArray(batch?.movements) ? batch.movements : []) {
       const year = Number(String(movement.date || "").slice(0, 4));
@@ -6389,13 +6405,25 @@ function accDocs() {
   );
 }
 
-/** El asiento de apertura, si ya se han dicho el capital y el saldo de bancos. */
-function accApertura() {
+/** Apertura guardada para el ejercicio indicado, sea manual o trasladada. */
+function accApertura(year = activeExerciseYear()) {
   const s = getState().settings || {};
+  const saved = s.aperturasPorEjercicio?.[String(year)];
+  if (saved && Array.isArray(saved.lines)) {
+    return {
+      lines: saved.lines,
+      fecha: `${year}-01-01`,
+      sourceYear: Number(saved.sourceYear) || null,
+    };
+  }
+
+  const legacyDate = String(s.openingDate || "").slice(0, 10);
+  const legacyYear = legacyDate ? Number(legacyDate.slice(0, 4)) : activeExerciseYear();
+  if (legacyYear !== Number(year)) return null;
   const capital = Number(s.openingCapital) || 0;
   const tesoreria = Number(s.openingCash) || 0;
   if (!capital && !tesoreria) return null;
-  return { capital, tesoreria, fecha: String(s.openingDate || "").slice(0, 10) };
+  return { capital, tesoreria, fecha: legacyDate || `${year}-01-01` };
 }
 
 /** Los asientos escritos a mano que hay guardados. */
@@ -7658,33 +7686,43 @@ function viewContabilidad() {
   </div>`;
 }
 
-/** Los datos de partida: con qué capital y con cuánto dinero en el banco se empezó. */
+/** Los datos de partida y el traslado opcional desde el cierre anterior. */
 function accAperturaModal() {
   const s = getState().settings || {};
+  const year = activeExerciseYear();
+  const apertura = accApertura(year);
+  const esTrasladada = Array.isArray(apertura?.lines);
+  const esManual = !!apertura && !esTrasladada;
   openModal(
     `<div class="modal-head">
        <div>
-         <h2>Datos de partida</h2>
-         <p>Con esto se hace el asiento de apertura. Sin él, el balance no puede cuadrar.</p>
+         <h2>Apertura del ejercicio ${year}</h2>
+         <p>La apertura se fecha el primer día del ejercicio y no repite ingresos ni gastos.</p>
        </div>
        <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
      </div>
      <div class="modal-body">
+        <div class="notice info">
+          ${esTrasladada
+            ? `Esta apertura contiene ${apertura.lines.length} ${apertura.lines.length === 1 ? "saldo" : "saldos"} por cuenta${apertura.sourceYear ? ` trasladados desde el cierre de ${apertura.sourceYear}` : ""}. Si vuelves a traer los saldos, se sustituirá.`
+            : "Puedes traer los saldos de cierre del ejercicio anterior. La acción sustituirá cualquier apertura guardada para este ejercicio."}
+        </div>
+        <p><button class="btn" data-action="acc-opening-carryforward">${icon("download")}<span>Traer saldos de ${year - 1}</span></button></p>
        <div class="form-grid">
          <label class="field">
            <span>Capital social (€)</span>
-           <input id="accCapital" type="text" inputmode="decimal" value="${s.openingCapital ? esc(String(s.openingCapital)) : ""}" placeholder="3.000,00">
+           <input id="accCapital" type="text" inputmode="decimal" value="${esManual && apertura.capital ? esc(String(apertura.capital)) : ""}" placeholder="3.000,00">
          </label>
          <label class="field">
            <span>Dinero en el banco y en caja (€)</span>
-           <input id="accCash" type="text" inputmode="decimal" value="${s.openingCash ? esc(String(s.openingCash)) : ""}" placeholder="12.000,00">
+           <input id="accCash" type="text" inputmode="decimal" value="${esManual && apertura.tesoreria ? esc(String(apertura.tesoreria)) : ""}" placeholder="12.000,00">
          </label>
          <label class="field">
            <span>Fecha de apertura</span>
-           <input id="accDate" type="date" value="${esc(s.openingDate || "")}">
+           <input id="accDate" type="date" value="${esc(apertura?.fecha || `${year}-01-01`)}">
          </label>
        </div>
-       <p class="muted">Si el dinero del banco es más que el capital, la diferencia se apunta en reservas; si es menos, en resultados negativos. No me invento ninguna cifra.</p>
+        <p class="muted">La apertura manual solo permite indicar capital y tesorería. Para copiar el cierre completo, usa «Traer saldos»; al guardar los campos manuales se sustituirá el traslado de este ejercicio.</p>
      </div>
      <div class="modal-foot">
        <button class="btn primary" data-action="acc-save-apertura">${icon("check")}<span>Guardar</span></button>
@@ -7708,8 +7746,17 @@ function saveApertura() {
   const day = document.getElementById("accDate");
   const capital = accNum(cap ? cap.value : "");
   const tesoreria = accNum(cash ? cash.value : "");
-  const fecha = String((day && day.value) || "").slice(0, 10) || `${new Date().getFullYear()}-01-01`;
-  updateSettings({ openingCapital: capital, openingCash: tesoreria, openingDate: fecha });
+  const year = activeExerciseYear();
+  const fecha = String((day && day.value) || "").slice(0, 10) || `${year}-01-01`;
+  const settings = getState().settings || {};
+  const aperturasPorEjercicio = { ...(settings.aperturasPorEjercicio || {}) };
+  delete aperturasPorEjercicio[String(year)];
+  updateSettings({
+    openingCapital: capital,
+    openingCash: tesoreria,
+    openingDate: fecha,
+    aperturasPorEjercicio,
+  });
   closeModal();
   toast(
     capital || tesoreria
@@ -7717,6 +7764,35 @@ function saveApertura() {
       : "Datos de partida borrados.",
     "ok"
   );
+  render();
+}
+
+/** Genera la apertura actual con los saldos de cierre del año anterior. */
+function trasladarCierreApertura() {
+  const year = activeExerciseYear();
+  const sourceYear = year - 1;
+  setPlanDeCuentas(accPlan());
+  const entries = asientosDe(accDocs(), {
+    from: `${sourceYear}-01-01`,
+    to: `${sourceYear}-12-31`,
+    apertura: accApertura(sourceYear),
+    manuales: accManuales(),
+  });
+  const lines = aperturaDesdeCierre(entries);
+  if (!lines.length) {
+    toast(`No hay saldos que trasladar desde el ejercicio ${sourceYear}.`, "warn");
+    return;
+  }
+
+  const settings = getState().settings || {};
+  const aperturasPorEjercicio = { ...(settings.aperturasPorEjercicio || {}) };
+  aperturasPorEjercicio[String(year)] = {
+    sourceYear,
+    lines,
+  };
+  updateSettings({ aperturasPorEjercicio });
+  closeModal();
+  toast(`Apertura de ${year} creada con los saldos de cierre de ${sourceYear}.`, "ok");
   render();
 }
 
