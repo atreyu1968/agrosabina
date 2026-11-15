@@ -5021,6 +5021,14 @@ async function submitInvoice(wrap, { mode, invoice, job }) {
     }
   }
 
+  const nif = normaliseSpanishNif(v.supplierNif);
+  if (v.supplierNif && !nif) {
+    toast("El NIF, NIE o CIF no tiene un formato válido. Corrígelo o déjalo vacío.", "bad", 5200);
+    wrap.querySelector("#f-nif").focus();
+    return null;
+  }
+  v.supplierNif = nif;
+
   if (!v.supplierName) {
     toast("Escribe el nombre del proveedor.", "bad");
     wrap.querySelector("#f-name").focus();
@@ -5308,9 +5316,16 @@ export function openSupplierModal(supplier = null) {
             toast("El proveedor necesita un nombre.", "bad");
             return;
           }
+          const rawNif = wrap.querySelector("#s-nif").value.trim();
+          const nif = normaliseSpanishNif(rawNif);
+          if (rawNif && !nif) {
+            toast("El NIF, NIE o CIF no tiene un formato válido. Corrígelo o déjalo vacío.", "bad", 5200);
+            wrap.querySelector("#s-nif").focus();
+            return;
+          }
           const data = {
             name,
-            nif: wrap.querySelector("#s-nif").value.trim(),
+            nif,
             role: (wrap.querySelector("#s-role") && wrap.querySelector("#s-role").value) || "PROVEEDOR",
             phone: wrap.querySelector("#s-phone").value.trim(),
             email: wrap.querySelector("#s-email").value.trim(),

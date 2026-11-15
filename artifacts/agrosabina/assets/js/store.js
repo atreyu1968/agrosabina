@@ -10,6 +10,7 @@ import {
   completeAmounts,
   fold,
   nifKey,
+  normaliseSpanishNif,
   round2,
   todayISO,
   uid,
@@ -523,7 +524,11 @@ export function findSupplierByNameOrNif(name, nif) {
 /** Devuelve el proveedor o cliente que corresponde y, si no existía, lo crea. */
 export function ensureSupplier(name, nif, role) {
   const cleanName = String(name || "").trim();
-  const cleanNif = String(nif || "").trim().toUpperCase();
+  const rawNif = String(nif || "").trim();
+  const cleanNif = rawNif ? normaliseSpanishNif(rawNif) : "";
+  if (rawNif && !cleanNif) {
+    throw new Error("El NIF, NIE o CIF no tiene un formato válido.");
+  }
   const roleWanted = rolValido(role);
   const existing = findSupplierByNameOrNif(cleanName, cleanNif);
 
@@ -565,6 +570,14 @@ export function ensureSupplier(name, nif, role) {
 export function updateSupplier(id, patch) {
   const s = state.suppliers.find((x) => x.id === id);
   if (!s) return null;
+  if (Object.hasOwn(patch, "nif")) {
+    const rawNif = String(patch.nif || "").trim();
+    const cleanNif = rawNif ? normaliseSpanishNif(rawNif) : "";
+    if (rawNif && !cleanNif) {
+      throw new Error("El NIF, NIE o CIF no tiene un formato válido.");
+    }
+    patch = { ...patch, nif: cleanNif };
+  }
   Object.assign(s, patch);
   save();
   return s;
