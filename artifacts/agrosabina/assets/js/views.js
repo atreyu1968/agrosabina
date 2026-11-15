@@ -34,6 +34,8 @@ import {
   deleteSupplier,
   ensureSupplier,
   exportJSON,
+  exportCompleteBackup,
+  importCompleteBackup,
   findDuplicate,
   findSupplierByNameOrNif,
   exerciseDateError,
@@ -60,6 +62,7 @@ import {
   invoiceOriginalBody,
   originalsUsage,
 } from "./store.js";
+import { MAX_BACKUP_BYTES, unpackCompleteBackup } from "./complete-backup.js";
 import { parseKg, parseLiquidacion, parsePrice, looksLikeInvoice } from "./parse.js";
 import { leerDocumento, importadoresDisponibles } from "./importers.js";
 import { documentPageImages, describeFile, readFile, sourceLabel } from "./read.js";
@@ -5396,6 +5399,8 @@ export function openSettings() {
       <div class="row wrap">
         <button class="btn sm" data-action="export-json">${icon("download")} Descargar copia</button>
         <button class="btn sm" data-action="import-json">${icon("upload")} Restaurar copia</button>
+        <button class="btn sm" data-action="export-complete">${icon("download")} Descargar copia completa</button>
+        <button class="btn sm" data-action="import-complete">${icon("upload")} Restaurar copia completa</button>
         <div class="spacer"></div>
         <button class="btn sm danger" data-action="clear-all">${icon("trash")} Borrar todo</button>
       </div>
@@ -5405,8 +5410,11 @@ export function openSettings() {
       <h3 style="font-size:14px;font-weight:650;margin-bottom:4px">Los originales</h3>
       <p style="font-size:13px;color:var(--ink-3);margin-bottom:8px">
         De cada documento se guarda también el fichero tal y como entró —la foto, el PDF o el correo— y se puede
-        volver a ver o descargar desde su ficha. Ojo: la copia en .json y el fichero .sqlite no lo llevan dentro,
-        porque pesarían demasiado; lo que se copia son los datos.
+        volver a ver o descargar desde su ficha. La copia de datos habitual y el fichero .sqlite no incluyen
+        originales. Elige «Descargar copia completa» para llevarte también los PDF, fotos y correos originales.
+        Se descarga un JSON completo (máximo 200 MB), sin claves ni configuración de IA.
+        Guárdalo en un lugar seguro: contiene tus documentos y datos personales.
+        Al restaurarlo se añaden los registros sin borrar ni sustituir los actuales; los ajustes de este navegador se conservan.
       </p>
       <p id="origUsage" style="font-size:12.5px;color:var(--ink-3)">Mirando cuánto ocupan los originales…</p>
 
@@ -5603,6 +5611,52 @@ export function exportCsv() {
 export function exportBackup() {
   downloadText(`copia-facturas-${todayISO()}.json`, exportJSON(), "application/json");
   toast("Copia descargada.");
+}
+
+async function downloadCompleteBackup(el) {
+  if (el) el.disabled = true;
+  toast("Preparando la copia completa y comprobando los originales…", "ok", 6000);
+  try {
+    downloadText(`copia-completa-agrosabina-${todayISO()}.json`, await exportCompleteBackup(), "application/json");
+    toast("Copia completa descargada, con sus originales.");
+  } catch (err) {
+    toast(err.message || "No se pudo crear la copia completa.", "bad", 10000);
+  } finally { if (el) el.disabled = false; }
+}
+
+function askImportCompleteBackup() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "application/json,.json";
+  input.addEventListener("change", async () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    try {
+      if (file.size > MAX_BACKUP_BYTES) throw new Error("La copia supera el límite de 200 MB.");
+      toast("Comprobando la copia completa y la integridad de sus originales…", "ok", 6000);
+      const text = await file.text();
+      const { data, originals, bytes } = await unpackCompleteBackup(text);
+      const ok = await confirmDialog({
+        title: "Añadir una copia completa",
+        message: `Copia validada: ${data.suppliers.length} proveedores/clientes, ${data.invoices.length} documentos, ${(data.messages || []).length} correos y ${originals.size} originales (${(bytes / 1024 / 1024).toFixed(2)} MB). Se añadirán sin borrar ni sustituir los datos actuales. Los ajustes y claves de este navegador no cambian. Si ya restauraste esta copia, se duplicarán los registros. ¿Continuar?`,
+        confirm: "Añadir documentos y originales",
+      });
+      if (!ok) return;
+      // Evitar cambios desde otra pantalla mientras se confirma el guardado.
+      const previousInert = document.body.inert;
+      let result;
+      document.body.inert = true;
+      try {
+        result = await importCompleteBackup(text);
+      } finally { document.body.inert = previousInert; }
+      closeModal();
+      render();
+      toast(`Restaurados ${result.invoices} documentos y ${result.originals} originales.`, "ok", 7000);
+    } catch (err) {
+      toast(err.message || "No se pudo restaurar la copia completa.", "bad", 10000);
+    }
+  });
+  input.click();
 }
 
 export function askImportBackup() {
@@ -5811,6 +5865,12 @@ export async function onAction(action, el) {
       return;
     case "export-json":
       exportBackup();
+      return;
+    case "export-complete":
+      await downloadCompleteBackup(el);
+      return;
+    case "import-complete":
+      askImportCompleteBackup();
       return;
     case "import-json":
       askImportBackup();

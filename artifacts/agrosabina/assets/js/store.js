@@ -19,6 +19,7 @@ import * as sqlite from "./sqlite.js";
 import * as files from "./files.js";
 import { validateBackup } from "./backup.js";
 import { invoiceDirection } from "./model.js";
+import { packCompleteBackup, unpackCompleteBackup } from "./complete-backup.js";
 
 const KEY = "facturas.igic.v1";
 const listeners = new Set();
@@ -1075,6 +1076,67 @@ export function clearAll() {
 export function exportJSON() {
   const { aiKey, ...settings } = state.settings;
   return JSON.stringify({ ...state, settings, exportedAt: new Date().toISOString() }, null, 2);
+}
+
+export async function exportCompleteBackup() {
+  const snapshot = JSON.stringify(state);
+  const originals = await files.snapshotOriginals();
+  const text = await packCompleteBackup(JSON.parse(snapshot), originals);
+  if (snapshot !== JSON.stringify(state)) throw new Error("Los datos han cambiado durante la copia. Vuelve a descargarla.");
+  return text;
+}
+
+/** Restaura de forma aditiva; nunca reutiliza IDs ni credenciales de la copia. */
+export async function importCompleteBackup(text) {
+  // Volver a validar incluso si la interfaz ya mostró el resumen.
+  const { data, originals } = await unpackCompleteBackup(text);
+  const before = state;
+  const fingerprint = JSON.stringify(before);
+  const restored = normalise({ ...data, settings: {} });
+  const supplierIds = new Map(restored.suppliers.map((s) => [s.id, uid("sup")]));
+  const invoiceIds = new Map(restored.invoices.map((inv) => [inv.id, uid("inv")]));
+  const staged = new Map([...originals].map(([id, record]) => [invoiceIds.get(id), record]));
+  const next = {
+    ...before,
+    settings: before.settings,
+    suppliers: [...before.suppliers, ...restored.suppliers.map((s) => ({ ...s, id: supplierIds.get(s.id) }))],
+    invoices: [...before.invoices, ...restored.invoices.map((inv) => ({
+      ...inv, id: invoiceIds.get(inv.id), supplierId: supplierIds.get(inv.supplierId) || null,
+    }))],
+    messages: [...before.messages, ...restored.messages.map((m) => ({ ...m, id: uid("msg") }))],
+  };
+  await files.addOriginals(staged);
+  let installed = false;
+  try {
+    if (fingerprint !== JSON.stringify(state)) throw new Error("Los datos han cambiado. Repite la restauración.");
+    if (persistTimer) {
+      clearTimeout(persistTimer);
+      persistTimer = null;
+    }
+    // Exigir almacenamiento duradero antes de anunciar éxito.
+    localStorage.setItem(KEY, JSON.stringify(next));
+    state = next;
+    installed = true;
+    if (engine === "sqlite" && sqlite.isAvailable()) {
+      if (!sqlite.writeState(next) || !(await sqlite.persist())) throw new Error("No se pudo guardar la restauración en SQLite.");
+    }
+    lastSaveOk = true;
+    emit();
+    return { invoices: restored.invoices.length, originals: staged.size };
+  } catch (err) {
+    // Reponer los registros previos; nunca tocar originales preexistentes.
+    if (installed) state = before;
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+      if (engine === "sqlite" && sqlite.isAvailable()) {
+        sqlite.writeState(state);
+        await sqlite.persist();
+      }
+    } finally {
+      await Promise.all([...staged.keys()].map((id) => files.dropOriginal(id)));
+    }
+    throw err;
+  }
 }
 
 export function importJSON(text) {

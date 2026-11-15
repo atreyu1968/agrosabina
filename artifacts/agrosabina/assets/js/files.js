@@ -151,3 +151,39 @@ export async function originalsUsed() {
     d.close();
   }
 }
+
+/** Lee todos los originales en una única transacción consistente. */
+export async function snapshotOriginals() {
+  const d = await openDb();
+  try {
+    return await new Promise((resolve, reject) => {
+      const records = new Map();
+      const tx = d.transaction(STORE, "readonly");
+      const rq = tx.objectStore(STORE).openCursor();
+      rq.onsuccess = () => {
+        const cursor = rq.result;
+        if (cursor) {
+          records.set(String(cursor.key), cursor.value);
+          cursor.continue();
+        }
+      };
+      tx.oncomplete = () => resolve(records);
+      tx.onerror = tx.onabort = () => reject(tx.error || new Error("No se pudieron leer los originales."));
+    });
+  } finally { d.close(); }
+}
+
+/** Solo añade: una colisión o falta de espacio aborta el lote entero. */
+export async function addOriginals(records) {
+  if (!records.size) return;
+  const d = await openDb();
+  try {
+    await new Promise((resolve, reject) => {
+      const tx = d.transaction(STORE, "readwrite");
+      const store = tx.objectStore(STORE);
+      for (const [id, record] of records) store.add(record, id);
+      tx.oncomplete = () => resolve();
+      tx.onerror = tx.onabort = () => reject(tx.error || new Error("No se pudieron añadir los originales (espacio insuficiente o identificador repetido)."));
+    });
+  } finally { d.close(); }
+}

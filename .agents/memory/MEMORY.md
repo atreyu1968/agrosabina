@@ -3,3 +3,4 @@
 - [Ejercicios contables naturales](accounting-exercises.md) — cada ejercicio va de enero a diciembre; la factura se asigna por emisión, el pago por su fecha real.
 - [Nóminas sin IGIC](payroll-no-igic.md) — una nómina es gasto laboral, no factura sujeta a IGIC; descartar y avisar de importes fiscales mal leídos.
 - [Arranque y protección de datos](startup-safety.md) — esperar a la carga completa antes de editar; un plazo de aviso no autoriza usar una copia alternativa.
+- [Restauración no destructiva](backup-restoration.md) — las copias completas se añaden; no deben sustituir registros o credenciales del destino.
