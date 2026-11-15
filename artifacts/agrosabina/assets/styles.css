@@ -1387,10 +1387,39 @@ textarea { resize: vertical; line-height: 1.5; }
 .mail-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
 .mail-item .row-actions { flex: 0 0 auto; }
 
+.gmail-date-range { align-items: flex-end; gap: 10px; margin: 12px 0 6px; }
+.gmail-date-range .date-filter { flex: 0 1 190px; }
+.gmail-preview-list { display: flex; flex-direction: column; gap: 10px; }
+.gmail-preview-message { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.gmail-preview-message:last-child { border-bottom: 0; }
+.gmail-attachment-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.gmail-attachment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.gmail-attachment-info { display: flex; flex-direction: column; min-width: 0; gap: 3px; }
+.gmail-attachment-info strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.gmail-attachment-info span { color: var(--ink-3); font-size: 12px; }
+.gmail-preview-actions { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-top: 16px; }
+.gmail-original-view { height: min(72vh, 760px); min-height: 300px; overflow: hidden; background: var(--surface-3); }
+.gmail-original-view iframe { width: 100%; height: 100%; border: 0; background: #fff; }
+.gmail-original-view img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; margin: 0 auto; }
+
 @media (max-width: 620px) {
   .cat-row { grid-template-columns: 1fr auto; }
   .cat-track { display: none; }
   .mail-item { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .gmail-date-range { align-items: stretch; }
+  .gmail-date-range .date-filter { flex: 1 1 100%; }
+  .gmail-date-range > button { width: 100%; }
+  .gmail-attachment-row { align-items: flex-start; flex-direction: column; }
+  .gmail-attachment-row > .row { width: 100%; }
 }
 
 /* ------------------------------------------------------------------ */

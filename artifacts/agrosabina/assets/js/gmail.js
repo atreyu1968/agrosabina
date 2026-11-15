@@ -15,6 +15,33 @@ const MAX_LIST_PAGES = 20;
 const MAX_RAW_MESSAGE_BYTES = 10 * 1024 * 1024;
 const MAX_TOTAL_RAW_BYTES = 30 * 1024 * 1024;
 
+function nextIsoDate(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
+  if (!match) return "";
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]) + 1));
+  return date.toISOString().slice(0, 10);
+}
+
+function isValidIsoDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ""))) return false;
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
+export function buildGmailSearchQuery({ from = "", to = "" } = {}) {
+  const query = ["has:attachment"];
+  if (from && !isValidIsoDate(from)) throw new Error("La fecha inicial de Gmail no es válida.");
+  if (to && !isValidIsoDate(to)) throw new Error("La fecha final de Gmail no es válida.");
+  if (from && to && from > to) throw new Error("La fecha inicial no puede ser posterior a la fecha final.");
+  if (from) query.push(`after:${String(from).replace(/-/g, "/")}`);
+  if (to) {
+    const exclusiveEnd = nextIsoDate(to);
+    if (!exclusiveEnd) throw new Error("La fecha final de Gmail no es válida.");
+    query.push(`before:${exclusiveEnd.replace(/-/g, "/")}`);
+  }
+  return query.join(" ");
+}
+
 let scriptPromise = null;
 let accessToken = "";
 let accessTokenExpiresAt = 0;
@@ -193,7 +220,7 @@ export function decodeGmailRaw(raw) {
   return new TextDecoder("utf-8").decode(bytes);
 }
 
-export async function fetchRecentGmailFiles(importedIds = []) {
+export async function fetchRecentGmailFiles(importedIds = [], dateRange = null) {
   const alreadyImported = new Set(Array.isArray(importedIds) ? importedIds : []);
   const found = [];
   const newMessages = [];
@@ -202,7 +229,9 @@ export async function fetchRecentGmailFiles(importedIds = []) {
 
   while (pagesScanned < MAX_LIST_PAGES && newMessages.length < MAX_RESULTS) {
     const params = new URLSearchParams({
-      q: "has:attachment newer_than:90d",
+      q: dateRange
+        ? buildGmailSearchQuery(dateRange)
+        : "has:attachment newer_than:90d",
       maxResults: String(MAX_LIST_PAGE_SIZE),
     });
     if (pageToken) params.set("pageToken", pageToken);
@@ -247,6 +276,7 @@ export async function fetchRecentGmailFiles(importedIds = []) {
 
   return {
     files,
+    messageIds: newMessages.slice(0, MAX_RESULTS).map((message) => String(message.id || "")).filter(Boolean),
     foundCount: found.length,
     alreadyImportedCount: found.filter((message) => message.id && alreadyImported.has(message.id)).length,
     skippedLarge,

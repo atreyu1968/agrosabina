@@ -2234,6 +2234,19 @@ let gmailSdkLoadAttempted = false;
 let gmailSdkError = "";
 let gmailBusy = false;
 const gmailSessionImportedIds = new Set();
+function gmailIsoShift(value, days) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
+  if (!match) return todayISO();
+  return new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]) + days))
+    .toISOString()
+    .slice(0, 10);
+}
+let gmailSearchFrom = gmailIsoShift(todayISO(), -89);
+let gmailSearchTo = todayISO();
+let gmailPreviewItems = [];
+let gmailPreviewMessageIds = [];
+let gmailPreviewHasMore = false;
+let gmailPreviewSkipped = 0;
 
 function prepareGmailForView() {
   const clientId = String(getState().settings?.gmailClientId || "").trim();
@@ -2286,12 +2299,17 @@ function gmailConnectionCard() {
   } else if (status.connected) {
     controls = `
       <p class="subtle">Cuenta conectada: <strong>${esc(status.email || "Gmail")}</strong></p>
-      <div class="dz-actions">
-        <button class="btn primary" data-action="gmail-read" ${gmailBusy ? "disabled" : ""}>
-          ${icon("mail")} ${gmailBusy ? "Leyendo correos…" : "Leer adjuntos recientes"}
+      <div class="row wrap gmail-date-range">
+        <label class="date-filter"><span>Desde</span><input id="gmailFromDate" type="date" value="${esc(gmailSearchFrom)}" ${gmailBusy || gmailPreviewItems.length ? "disabled" : ""}></label>
+        <label class="date-filter"><span>Hasta</span><input id="gmailToDate" type="date" value="${esc(gmailSearchTo)}" ${gmailBusy || gmailPreviewItems.length ? "disabled" : ""}></label>
+        <button class="btn primary" data-action="gmail-read" ${gmailBusy || gmailPreviewItems.length ? "disabled" : ""}>
+          ${icon("mail")} ${gmailBusy ? "Buscando correos…" : "Buscar correos con adjuntos"}
         </button>
         <button class="btn ghost" data-action="gmail-disconnect" ${gmailBusy ? "disabled" : ""}>Desconectar</button>
-      </div>`;
+      </div>
+      <p class="subtle">Solo se buscan correos con adjuntos. Podrás ver cada original y elegir qué documentos importar.</p>
+      ${gmailPreviewHasMore && !gmailPreviewItems.length ? `<p class="subtle">Quedan más correos en este intervalo; busca otra vez después de revisar el lote.</p>` : ""}
+      ${gmailPreviewItems.length ? `<p class="subtle">Revisa o descarta los adjuntos encontrados antes de hacer otra búsqueda.</p>` : ""}`;
   } else if (gmailSdkError) {
     controls = `
       <div class="hint-bar">${icon("info")}<span>${esc(gmailSdkError)}</span></div>
@@ -2308,7 +2326,7 @@ function gmailConnectionCard() {
       <div class="card-head">
         <div>
           <h2>Conectar Gmail</h2>
-          <p>Lectura bajo demanda de hasta 10 correos con adjuntos de los últimos 90 días.</p>
+          <p>Elige un intervalo, revisa los originales y selecciona los adjuntos que quieras importar.</p>
         </div>
       </div>
       <div class="card-body">
@@ -2322,6 +2340,87 @@ function gmailConnectionCard() {
     </section>`;
 }
 
+function gmailPreviewPanel() {
+  if (!gmailPreviewItems.length) return "";
+  const selected = gmailPreviewItems.reduce(
+    (count, message) => count + message.attachments.filter((attachment) => attachment.selected).length,
+    0,
+  );
+  return `
+    <section class="card gmail-preview">
+      <div class="card-head">
+        <div>
+          <h2>Revisar originales antes de importar</h2>
+          <p>${gmailPreviewItems.length} correos con adjuntos compatibles${gmailPreviewHasMore ? " · hay más resultados en este intervalo" : ""}</p>
+        </div>
+      </div>
+      <div class="card-body">
+        ${gmailPreviewSkipped ? `<div class="hint-bar">${icon("info")}<span>${gmailPreviewSkipped} correo${gmailPreviewSkipped === 1 ? "" : "s"} omitido${gmailPreviewSkipped === 1 ? "" : "s"} por no tener adjuntos PDF o imagen legibles.</span></div>` : ""}
+        <div class="gmail-preview-list">
+          ${gmailPreviewItems.map((message) => `
+            <article class="gmail-preview-message">
+              <div class="mail-main">
+                <div class="mail-subject">${esc(message.subject || "(sin asunto)")}</div>
+                <div class="mail-meta">${esc(message.from || "remitente desconocido")}${message.date ? ` · ${esc(mailDateText(message.date))}` : ""}</div>
+              </div>
+              <div class="gmail-attachment-list">
+                ${message.attachments.map((attachment) => `
+                  <div class="gmail-attachment-row">
+                    <div class="gmail-attachment-info">
+                      <strong>${esc(attachment.file.name)}</strong>
+                      <span>${esc(attachment.file.type || "Documento")} · ${originalSizeText(attachment.file.size)}</span>
+                    </div>
+                    <div class="row wrap">
+                      <button class="btn xs" data-action="gmail-attachment-preview" data-id="${esc(attachment.id)}">${icon("file")} Ver original</button>
+                      <button class="btn xs ${attachment.selected ? "primary" : "ghost"}" data-action="gmail-attachment-toggle" data-id="${esc(attachment.id)}" aria-pressed="${attachment.selected ? "true" : "false"}">${attachment.selected ? "Seleccionado" : "No importar"}</button>
+                    </div>
+                  </div>`).join("")}
+              </div>
+            </article>`).join("")}
+        </div>
+        <div class="gmail-preview-actions">
+          <button class="btn primary" data-action="gmail-preview-import" ${selected ? "" : "disabled"}>${icon("upload")} Importar ${selected} adjunto${selected === 1 ? "" : "s"} seleccionado${selected === 1 ? "" : "s"}</button>
+          <button class="btn ghost" data-action="gmail-preview-discard">Descartar resultados</button>
+        </div>
+      </div>
+    </section>`;
+}
+
+function previewGmailAttachment(id) {
+  const attachment = gmailPreviewItems
+    .flatMap((message) => message.attachments)
+    .find((item) => item.id === id);
+  if (!attachment) return;
+
+  const file = attachment.file;
+  const url = URL.createObjectURL(file);
+  const image = file.type.startsWith("image/") || /\.(png|jpe?g|webp)$/i.test(file.name);
+  openModal(`
+    <div class="modal-head">
+      <div><h2>${esc(file.name)}</h2><p>Original adjunto de Gmail</p></div>
+      <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
+    </div>
+    <div class="modal-body gmail-original-view">
+      ${image
+        ? `<img src="${esc(url)}" alt="${esc(file.name)}">`
+        : `<iframe src="${esc(url)}" title="${esc(file.name)}"></iframe>`}
+    </div>
+    <div class="modal-foot">
+      <a class="btn" href="${esc(url)}" target="_blank" rel="noopener noreferrer">Abrir original en otra pestaña</a>
+      <div class="spacer"></div>
+      <button class="btn ghost" data-modal-cancel>Cerrar</button>
+    </div>`, {
+    onMount(wrap) {
+      wrap.querySelectorAll("[data-modal-cancel]").forEach((button) =>
+        button.addEventListener("click", closeModal),
+      );
+    },
+    onClose() {
+      URL.revokeObjectURL(url);
+    },
+  });
+}
+
 function viewCorreo() {
   prepareGmailForView();
   const list = messages();
@@ -2329,6 +2428,7 @@ function viewCorreo() {
   return `
   <div class="stack">
     ${gmailConnectionCard()}
+    ${gmailPreviewPanel()}
     <section class="card">
       <div class="card-body">
         <div id="mailDrop" class="dropzone">
@@ -6147,38 +6247,158 @@ export async function onAction(action, el) {
         if (ui.route === "correo") render();
       }
       return;
+    case "gmail-attachment-toggle": {
+      for (const message of gmailPreviewItems) {
+        const attachment = message.attachments.find((item) => item.id === id);
+        if (attachment) {
+          attachment.selected = !attachment.selected;
+          break;
+        }
+      }
+      render();
+      return;
+    }
+    case "gmail-attachment-preview":
+      previewGmailAttachment(id);
+      return;
+    case "gmail-preview-discard":
+      for (const messageId of gmailPreviewMessageIds) gmailSessionImportedIds.add(messageId);
+      gmailPreviewItems = [];
+      gmailPreviewMessageIds = [];
+      gmailPreviewSkipped = 0;
+      render();
+      toast("Se descartó el lote. No se ha guardado ningún adjunto.");
+      return;
+    case "gmail-preview-import": {
+      const selected = gmailPreviewItems.flatMap((message) =>
+        message.attachments.filter((attachment) => attachment.selected),
+      );
+      if (!selected.length) {
+        toast("Selecciona al menos un adjunto para importar.", "warn");
+        return;
+      }
+      const previewIds = new Set(gmailPreviewItems.map((message) => message.id));
+      const completedMessageIds = new Set(
+        gmailPreviewMessageIds.filter((messageId) => !previewIds.has(messageId)),
+      );
+      const remainingItems = [];
+      for (const message of gmailPreviewItems) {
+        const remainingAttachments = message.attachments.filter((attachment) => !attachment.selected);
+        if (remainingAttachments.length) {
+          remainingItems.push({ ...message, attachments: remainingAttachments });
+        } else if (message.id) {
+          completedMessageIds.add(message.id);
+        }
+      }
+      for (const messageId of completedMessageIds) gmailSessionImportedIds.add(messageId);
+      ui.jobs.push(...selected.map((attachment) => ({
+        id: `job_${uid()}`,
+        file: attachment.file,
+        source: "email",
+        state: "queued",
+        pct: 0,
+        stage: "Adjunto seleccionado desde Gmail",
+      })));
+      gmailPreviewItems = remainingItems;
+      gmailPreviewMessageIds = remainingItems.map((message) => message.id).filter(Boolean);
+      if (!remainingItems.length) gmailPreviewSkipped = 0;
+      const count = selected.length;
+      toast(`${count} adjunto${count === 1 ? "" : "s"} en cola para revisar.${remainingItems.length ? " Los no seleccionados quedan pendientes en Correo." : ""}`);
+      ui.route = "importar";
+      if (location.hash !== "#/importar") location.hash = "#/importar";
+      else render();
+      paintIngest();
+      runQueue();
+      return;
+    }
     case "gmail-read": {
       const clientId = String(getState().settings?.gmailClientId || "").trim();
       if (!gmailStatus(clientId).connected) {
         toast("Conecta Gmail antes de buscar correos.", "warn");
         return;
       }
+      const from = String(document.getElementById("gmailFromDate")?.value || "");
+      const to = String(document.getElementById("gmailToDate")?.value || "");
+      if (!from || !to) {
+        toast("Elige las fechas Desde y Hasta para buscar en Gmail.", "warn");
+        return;
+      }
+      if (from > to) {
+        toast("La fecha Desde no puede ser posterior a Hasta.", "bad");
+        return;
+      }
+      gmailSearchFrom = from;
+      gmailSearchTo = to;
       gmailBusy = true;
       render();
       try {
-        const result = await fetchRecentGmailFiles([...gmailSessionImportedIds]);
+        const result = await fetchRecentGmailFiles([...gmailSessionImportedIds], { from, to });
+        gmailPreviewHasMore = result.hasMore;
+        const messageIds = Array.isArray(result.messageIds)
+          ? result.messageIds.filter(Boolean).map(String)
+          : result.files.map((file) => String(file.gmailMessageId || "")).filter(Boolean);
         if (!result.files.length) {
+          for (const messageId of messageIds) gmailSessionImportedIds.add(messageId);
           if (result.skippedLarge) {
             toast(`${result.skippedLarge} correo${result.skippedLarge === 1 ? "" : "s"} supera${result.skippedLarge === 1 ? "" : "n"} el límite de tamaño y no se ha importado.`, "warn", 7000);
           } else if (result.skippedMalformed) {
             toast(`${result.skippedMalformed} correo${result.skippedMalformed === 1 ? "" : "s"} no se ha${result.skippedMalformed === 1 ? "" : "n"} podido leer. Descárgalo${result.skippedMalformed === 1 ? "" : "s"} como .eml para probar de nuevo.`, "warn", 7000);
           } else if (!result.foundCount) {
-            toast("No he encontrado correos con adjuntos en los últimos 90 días.");
+            toast("No he encontrado correos con adjuntos en ese intervalo.");
           } else {
-            toast("No hay correos nuevos con adjuntos; los encontrados ya se importaron.");
+            toast("No hay correos nuevos con adjuntos en ese intervalo; los encontrados ya se revisaron.");
           }
           return;
         }
 
-        const imported = await importEmails(result.files);
-        const processedIds = imported?.processedGmailIds || [];
-        for (const messageId of processedIds) gmailSessionImportedIds.add(messageId);
-        if (result.skippedLarge) {
-          toast(`${result.skippedLarge} correo${result.skippedLarge === 1 ? "" : "s"} supera${result.skippedLarge === 1 ? "" : "n"} el límite y quedó fuera.`, "warn", 7000);
+        const previewItems = [];
+        let skippedWithoutReadableAttachments = 0;
+        for (const eml of result.files) {
+          try {
+            const message = parseEml(await eml.text(), eml.name);
+            const attachments = [];
+            for (const item of message.attachments || []) {
+              if (!item.readable || !item.bytes) continue;
+              const blob = new Blob([item.bytes], { type: item.type || "application/pdf" });
+              const file = new File([blob], item.name || "adjunto.pdf", { type: blob.type });
+              if (describeFile(file) === "unknown") continue;
+              attachments.push({
+                id: `gmail_${uid()}`,
+                file,
+                selected: true,
+              });
+            }
+            if (attachments.length) {
+              previewItems.push({
+                id: String(eml.gmailMessageId || uid()),
+                subject: message.subject,
+                from: message.from,
+                date: message.date,
+                attachments,
+              });
+            } else {
+              skippedWithoutReadableAttachments++;
+            }
+          } catch {
+            skippedWithoutReadableAttachments++;
+          }
         }
-        if (result.hasMore) {
-          toast("He importado hasta 10 correos recientes. Vuelve a buscar después de revisarlos para continuar.", "info", 6500);
+
+        gmailPreviewMessageIds = messageIds;
+        gmailPreviewItems = previewItems;
+        gmailPreviewSkipped = skippedWithoutReadableAttachments + (result.skippedMalformed || 0) + (result.skippedLarge || 0);
+        if (!previewItems.length) {
+          for (const messageId of messageIds) gmailSessionImportedIds.add(messageId);
+          if (skippedWithoutReadableAttachments) {
+            toast("Los correos encontrados no tienen adjuntos PDF o imágenes que Agrosabina pueda revisar.", "info", 7000);
+          } else {
+            toast("No hay adjuntos legibles para mostrar en ese intervalo.", "info", 6500);
+          }
+          return;
         }
+        render();
+        const attachmentCount = previewItems.reduce((sum, message) => sum + message.attachments.length, 0);
+        toast(`${previewItems.length} correos y ${attachmentCount} adjunto${attachmentCount === 1 ? "" : "s"} listos para previsualizar.`);
       } catch (error) {
         toast(error?.message || "No he podido leer Gmail.", "bad", 8000);
       } finally {

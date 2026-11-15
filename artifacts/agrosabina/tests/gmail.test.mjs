@@ -1,13 +1,24 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { decodeGmailRaw } from "../assets/js/gmail.js";
+import { buildGmailSearchQuery, decodeGmailRaw } from "../assets/js/gmail.js";
 import { parseEml } from "../assets/js/mail.js";
 
 test("decodifica el correo raw base64url de Gmail en UTF-8", () => {
   const expected = "From: tienda@example.com\r\nSubject: Factura ágil\r\n\r\nAdjunto factura.";
   const raw = Buffer.from(expected, "utf8").toString("base64url");
   assert.equal(decodeGmailRaw(raw), expected);
+});
+
+test("filtra Gmail por intervalo inclusivo y solo busca correos con adjuntos", () => {
+  assert.equal(
+    buildGmailSearchQuery({ from: "2026-10-01", to: "2026-10-31" }),
+    "has:attachment after:2026/10/01 before:2026/11/01",
+  );
+  assert.throws(
+    () => buildGmailSearchQuery({ from: "2026-11-01", to: "2026-10-31" }),
+    /posterior/,
+  );
 });
 
 test("el correo raw de Gmail conserva el PDF para la revisión existente", () => {
