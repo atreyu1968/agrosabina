@@ -1,3 +1,4 @@
+import { startRegistration } from "@simplewebauthn/browser";
 import { renderMobileScreen } from "./mobile-view.js";
 import { mountAuthScreen } from "./auth-screen.js";
 import { keepOriginal, originalOf, forgetOriginal } from "./files.js";
@@ -15,6 +16,39 @@ let busy = false;
 let message = "";
 let storageAlert = "";
 let uploadSyncAlert = "";
+let passkeyCount = 0;
+let passkeySupported = false;
+let passkeySetupOpen = false;
+let passkeyBusy = false;
+
+const PASSKEY_API = {
+  list: "/api/auth/passkeys",
+  registerOptions: "/api/auth/passkeys/register/options",
+  registerVerify: "/api/auth/passkeys/register/verify",
+};
+
+function supportsPasskeys() {
+  return Boolean(window.isSecureContext && window.PublicKeyCredential && navigator.credentials);
+}
+
+async function passkeyRequest(url, options = {}) {
+  const response = await fetch(url, {
+    credentials: "include",
+    ...options,
+    headers: {
+      ...(options.body ? { "Content-Type": "application/json" } : {}),
+      ...options.headers,
+    },
+  });
+  let payload = {};
+  try {
+    payload = await response.json();
+  } catch {
+    payload = {};
+  }
+  if (!response.ok) throw new Error(payload.error || payload.message || "No se pudo completar la operación.");
+  return payload;
+}
 
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, (character) => ({
@@ -70,7 +104,51 @@ function render() {
     busy,
     message,
     storageAlert,
+    passkeyCount,
+    passkeySupported,
+    passkeySetupOpen,
+    passkeyBusy,
   });
+}
+
+async function registerPasskey(password) {
+  if (passkeyBusy || !passkeySupported) return;
+  passkeyBusy = true;
+  message = "";
+  render();
+  try {
+    const setup = await passkeyRequest(PASSKEY_API.registerOptions, {
+      method: "POST",
+      body: JSON.stringify({ password }),
+    });
+    const credential = await startRegistration({ optionsJSON: setup.options });
+    const result = await passkeyRequest(PASSKEY_API.registerVerify, {
+      method: "POST",
+      body: JSON.stringify({ flowId: setup.flowId, credential }),
+    });
+    passkeyCount = Number(result.count) || passkeyCount + 1;
+    message = "Acceso del móvil activado. La próxima vez podrás entrar con la huella o el desbloqueo del dispositivo.";
+    passkeySetupOpen = false;
+  } catch (error) {
+    message = error instanceof DOMException && error.name === "NotAllowedError"
+      ? "No se completó la configuración. Puedes volver a intentarlo cuando quieras."
+      : error instanceof Error
+        ? error.message
+        : "No se pudo activar el acceso del móvil.";
+    passkeySetupOpen = false;
+  } finally {
+    passkeyBusy = false;
+    render();
+  }
+}
+
+async function loadPasskeyCount() {
+  try {
+    const result = await passkeyRequest(PASSKEY_API.list);
+    passkeyCount = Number(result.count) || 0;
+  } catch {
+    passkeyCount = 0;
+  }
 }
 
 function sha256Hex(buffer) {
@@ -213,10 +291,29 @@ function wireInteractions() {
     if (!actionButton) return;
     const action = actionButton.dataset.mobileAction;
     if (action === "logout") void logout();
+    else if (action === "open-passkey-setup" && passkeySupported) {
+      passkeySetupOpen = true;
+      message = "";
+      render();
+      window.requestAnimationFrame(() => root.querySelector("#mobile-passkey-password")?.focus());
+    }
+    else if (action === "close-passkey-setup" && !passkeyBusy) {
+      passkeySetupOpen = false;
+      render();
+    }
     else if (action === "take-photo") root.querySelector("#mobile-camera-file")?.click();
     else if (action === "pick-files") root.querySelector("#mobile-picker-file")?.click();
     else if (action === "open-original") void openOriginalInNewTab(actionButton.dataset.mobileId || "");
     else if (action === "reload") window.location.reload();
+  });
+
+  root?.addEventListener("submit", (event) => {
+    const form = event.target;
+    if (!(form instanceof HTMLFormElement) || form.dataset.mobileForm !== "passkey") return;
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const password = new FormData(form).get("password");
+    void registerPasskey(typeof password === "string" ? password : "");
   });
 
   root?.addEventListener("change", (event) => {
@@ -254,12 +351,14 @@ async function boot() {
   const authRoot = document.createElement("div");
   authRoot.id = "agrosabina-auth-root";
   document.body.append(authRoot);
-  currentUser = await new Promise((resolve) => mountAuthScreen(authRoot, resolve));
+  passkeySupported = supportsPasskeys();
+  currentUser = await new Promise((resolve) => mountAuthScreen(authRoot, resolve, { mobile: true }));
   authRoot.remove();
   window.agrosabinaAuthUser = currentUser || null;
   window.agrosabinaSharedStorage = true;
 
   try {
+    await loadPasskeyCount();
     await initStore();
     render();
     subscribe(render);

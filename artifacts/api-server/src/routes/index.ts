@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
 import healthRouter from "./health";
 import authRouter from "./auth";
+import passkeysRouter from "./passkeys";
 import adminRouter from "./admin";
 import stateRouter from "./state";
 import filesRouter from "./files";
@@ -17,6 +18,7 @@ router.use((req, res, next) => {
 });
 router.use(healthRouter);
 router.use(authRouter);
+router.use(passkeysRouter);
 router.use(adminRouter);
 router.use(stateRouter);
 router.use(filesRouter);

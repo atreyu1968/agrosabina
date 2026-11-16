@@ -207,6 +207,11 @@
 .ag-auth-button-label { display: inline-flex; align-items: center; gap: 10px; }
 .ag-auth-button-secondary { background: transparent; color: var(--ag-forest); }
 .ag-auth-button-secondary:hover { background: var(--ag-mint); color: var(--ag-forest); border-color: var(--ag-forest); }
+.ag-auth-passkey { display: grid; gap: 10px; margin-top: 4px; }
+.ag-auth-passkey-divider { display: flex; align-items: center; gap: 12px; color: #8b978c; font-size: 11px; }
+.ag-auth-passkey-divider::before,
+.ag-auth-passkey-divider::after { content: ""; height: 1px; flex: 1; background: #e1e7dd; }
+.ag-auth-passkey-note { margin: 12px 0 0; color: var(--ag-muted); font-size: 11px; line-height: 1.5; text-align: center; }
 .ag-auth-spinner {
   width: 15px;
   height: 15px;

@@ -1,7 +1,11 @@
+import { startAuthentication } from "@simplewebauthn/browser";
+
 const API = {
   status: "/api/auth/status",
   setup: "/api/auth/setup",
   login: "/api/auth/login",
+  passkeyOptions: "/api/auth/passkeys/authenticate/options",
+  passkeyVerify: "/api/auth/passkeys/authenticate/verify",
   requestPassword: "/api/auth/password/request",
   resetPassword: "/api/auth/password/reset",
 };
@@ -55,7 +59,11 @@ function escapeHtml(value) {
   })[character]);
 }
 
-export function mountAuthScreen(root, onAuthenticated) {
+function supportsPasskeys() {
+  return Boolean(window.isSecureContext && window.PublicKeyCredential && navigator.credentials);
+}
+
+export function mountAuthScreen(root, onAuthenticated, { mobile = false } = {}) {
   if (!(root instanceof Element)) throw new TypeError("Se necesita un elemento raíz para mostrar el acceso.");
   ensureStylesheet();
 
@@ -103,6 +111,16 @@ export function mountAuthScreen(root, onAuthenticated) {
         : isRequest
           ? `<div class="ag-field"><label for="ag-email">Correo electrónico</label><input id="ag-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="nombre@empresa.es"></div>`
           : `<div class="ag-field"><label for="ag-password">Nueva contraseña</label><input id="ag-password" name="password" type="password" autocomplete="new-password" required minlength="12" aria-describedby="ag-password-hint" placeholder="Al menos 12 caracteres"><small id="ag-password-hint">Usa al menos 12 caracteres.</small></div>`;
+    const passkeyMarkup = isLogin && mobile
+      ? supportsPasskeys()
+        ? `<div class="ag-auth-passkey">
+             <span class="ag-auth-passkey-divider">o</span>
+             <button class="ag-auth-button ag-auth-button-secondary" type="button" data-action="passkey-login" ${busy ? "disabled" : ""}>
+               ${busy ? "Comprobando el dispositivo…" : "Entrar con huella o desbloqueo"}
+             </button>
+           </div>`
+        : `<p class="ag-auth-passkey-note">Para entrar con huella, abre la aplicación desde una conexión segura (HTTPS) en un móvil compatible.</p>`
+      : "";
 
     root.innerHTML = `
       <main class="ag-auth" aria-labelledby="ag-auth-title">
@@ -140,6 +158,7 @@ export function mountAuthScreen(root, onAuthenticated) {
                 </button>
               </form>
             `}
+            ${passkeyMarkup}
             ${!successMessage || !isRequest ? `
               <div class="ag-auth-foot">
                 ${isSetup ? `<span>Acceso privado para el equipo de Agrosabina.</span>` : isLogin ? `<button type="button" class="ag-auth-text-button" data-action="request-reset">¿Has olvidado tu contraseña?</button>` : isRequest || isReset ? `<button type="button" class="ag-auth-text-button" data-action="back-login">Volver al acceso</button>` : ""}
@@ -211,6 +230,10 @@ export function mountAuthScreen(root, onAuthenticated) {
   const onClick = (event) => {
     const button = event.target.closest("[data-action]");
     if (!button || !root.contains(button) || busy) return;
+    if (button.dataset.action === "passkey-login") {
+      void signInWithPasskey();
+      return;
+    }
     if (button.dataset.action === "request-reset") {
       state = "request-reset";
       errorMessage = "";
@@ -224,6 +247,37 @@ export function mountAuthScreen(root, onAuthenticated) {
       successMessage = "";
       render();
       root.querySelector("#ag-email")?.focus();
+    }
+  };
+
+  const signInWithPasskey = async () => {
+    if (busy || disposed || !supportsPasskeys()) return;
+    busy = true;
+    errorMessage = "";
+    successMessage = "";
+    render();
+    let authenticated = false;
+    try {
+      const challenge = await request(API.passkeyOptions, {
+        method: "POST",
+        body: JSON.stringify({}),
+      });
+      const credential = await startAuthentication({ optionsJSON: challenge.options });
+      const result = await request(API.passkeyVerify, {
+        method: "POST",
+        body: JSON.stringify({ flowId: challenge.flowId, credential }),
+      });
+      authenticated = true;
+      if (typeof onAuthenticated === "function") onAuthenticated(result.user);
+    } catch (error) {
+      errorMessage = error instanceof DOMException && error.name === "NotAllowedError"
+        ? "No se completó la comprobación. Vuelve a intentarlo o entra con tu contraseña."
+        : error instanceof Error
+          ? error.message
+          : "No se pudo comprobar el acceso del dispositivo.";
+    } finally {
+      busy = false;
+      if (!authenticated && !disposed) render();
     }
   };
 

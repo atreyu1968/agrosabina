@@ -57,6 +57,10 @@ export function renderMobileScreen({
   busy,
   message,
   storageAlert,
+  passkeyCount = 0,
+  passkeySupported = false,
+  passkeySetupOpen = false,
+  passkeyBusy = false,
 } = {}) {
   const safeUser = user && typeof user === "object" ? user : {};
   const selectedFilter = ["ALL", "IN", "OUT"].includes(filter) ? filter : "ALL";
@@ -120,6 +124,40 @@ export function renderMobileScreen({
     ? `<div class="mobile-storage-alert" role="alert"><strong>La sincronización necesita atención</strong><p>${escapeHTML(storageAlert)}</p></div>`
     : "";
   const displayName = safeUser.name || safeUser.email || "Cuenta Agrosabina";
+  const registeredPasskeys = Number.isInteger(Number(passkeyCount)) ? Number(passkeyCount) : 0;
+  const securityMarkup = passkeySupported
+    ? `<section class="mobile-security" aria-labelledby="mobile-security-title">
+        <div class="mobile-security-copy">
+          <p class="mobile-section-kicker">Acceso rápido</p>
+          <h2 id="mobile-security-title">Entra con tu móvil</h2>
+          <p>Activa la huella, Face ID o el desbloqueo seguro del dispositivo. Tus datos biométricos permanecen en el teléfono.</p>
+          ${registeredPasskeys ? `<small>${registeredPasskeys} acceso${registeredPasskeys === 1 ? "" : "s"} registrado${registeredPasskeys === 1 ? "" : "s"}</small>` : ""}
+        </div>
+        <button class="mobile-security-button" type="button" data-mobile-action="open-passkey-setup"${passkeyBusy ? " disabled" : ""}>
+          ${passkeyBusy ? "Configurando…" : registeredPasskeys ? "Añadir otro dispositivo" : "Activar acceso biométrico"}
+        </button>
+      </section>`
+    : `<section class="mobile-security is-unavailable" aria-label="Acceso biométrico">
+        <strong>Acceso biométrico</strong>
+        <p>Para activarlo, abre la aplicación desde HTTPS en un móvil compatible.</p>
+      </section>`;
+  const passkeyDialog = passkeySetupOpen
+    ? `<dialog class="mobile-passkey-dialog" open aria-labelledby="mobile-passkey-dialog-title" aria-modal="true">
+        <section class="mobile-passkey-panel">
+          <p class="mobile-section-kicker">Confirmación de seguridad</p>
+          <h2 id="mobile-passkey-dialog-title">Activa el acceso del móvil</h2>
+          <p>Confirma tu contraseña para vincular este dispositivo. Después podrás entrar con la huella, Face ID o el desbloqueo seguro configurado.</p>
+          <form data-mobile-form="passkey">
+            <label for="mobile-passkey-password">Contraseña actual</label>
+            <input id="mobile-passkey-password" name="password" type="password" autocomplete="current-password" required>
+            <div class="mobile-passkey-actions">
+              <button type="button" class="mobile-passkey-cancel" data-mobile-action="close-passkey-setup"${passkeyBusy ? " disabled" : ""}>Cancelar</button>
+              <button type="submit" class="mobile-security-button"${passkeyBusy ? " disabled" : ""}>${passkeyBusy ? "Preparando…" : "Continuar"}</button>
+            </div>
+          </form>
+        </section>
+      </dialog>`
+    : "";
 
   return `<div class="mobile-screen">
     <header class="mobile-header">
@@ -139,6 +177,7 @@ export function renderMobileScreen({
         <p class="mobile-intro-copy">Consulta facturas abiertas y guarda los documentos para revisarlos más tarde.</p>
       </section>
 
+      ${securityMarkup}
       ${storageMarkup}
       ${messageMarkup}
 
@@ -188,5 +227,6 @@ export function renderMobileScreen({
       </section>
     </main>
     <footer class="mobile-footer"><span class="mobile-footer-mark"></span><span>Agrosabina · Compañera de campo</span></footer>
+    ${passkeyDialog}
   </div>`;
 }

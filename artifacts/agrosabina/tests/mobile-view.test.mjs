@@ -41,3 +41,23 @@ test("los datos dinámicos se escapan y las subidas quedan pendientes de revisi�
   assert.match(html, /Sin clasificar/);
   assert.match(html, /No se contabiliza automáticamente/);
 });
+
+test("la página móvil permite activar el acceso biométrico con confirmación de contraseña", () => {
+  const html = renderMobileScreen({
+    user: { name: "Ana" },
+    invoices: [],
+    inbox: [],
+    passkeySupported: true,
+    passkeySetupOpen: true,
+  });
+  assert.match(html, /Activar acceso biométrico/);
+  assert.match(html, /data-mobile-form="passkey"/);
+  assert.match(html, /autocomplete="current-password"/);
+  assert.match(html, /tus datos biométricos permanecen en el teléfono/i);
+});
+
+test("la página móvil explica cuándo no está disponible el acceso biométrico", () => {
+  const html = renderMobileScreen({ invoices: [], inbox: [], passkeySupported: false });
+  assert.match(html, /abre la aplicación desde HTTPS/);
+  assert.doesNotMatch(html, /data-mobile-action="open-passkey-setup"/);
+});
