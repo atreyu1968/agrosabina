@@ -2,6 +2,7 @@
  * Las pantallas del sitio y lo que hace cada botón.
  */
 import { renderFruitControl } from "./fruit-control-view.js";
+import { chooseDocumentImporter, documentReviewSpec, isolateDocumentKind, originalPreviewHtml, mountOriginalPreview } from "./document-review.js";
 
 import {
   IGIC_RATES,
@@ -84,7 +85,7 @@ import {
   kindOptions,
 } from "./model.js";
 import { AI_DEFAULTS, AI_PROVIDERS, aiConfigured, aiExtract, aiPing, aiProviderOf, classifyDocument } from "./ai.js";
-import { isEmailFile, looksLikeInvoiceMail, parseEml } from "./mail.js";
+import { isEmailFile, emailDocumentFiles, parseEml } from "./mail.js";
 import {
   connectGmail,
   disconnectGmail,
@@ -2223,7 +2224,7 @@ function mailRow(m) {
       </div>
     </div>
     <div class="row-actions">
-      <button class="btn sm" data-action="use-mail" data-id="${m.id}">Leer y revisar</button>
+      <button class="btn sm" data-action="use-mail" data-id="${m.id}">Ver adjuntos</button>
       <button class="icon-btn" data-action="delete-mail" data-id="${m.id}" title="Borrar" aria-label="Borrar correo">${icon("trash")}</button>
     </div>
   </div>`;
@@ -2394,16 +2395,14 @@ function previewGmailAttachment(id) {
 
   const file = attachment.file;
   const url = URL.createObjectURL(file);
-  const image = file.type.startsWith("image/") || /\.(png|jpe?g|webp)$/i.test(file.name);
+  let preview = null;
   openModal(`
     <div class="modal-head">
       <div><h2>${esc(file.name)}</h2><p>Original adjunto de Gmail</p></div>
       <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
     </div>
-    <div class="modal-body gmail-original-view">
-      ${image
-        ? `<img src="${esc(url)}" alt="${esc(file.name)}">`
-        : `<iframe src="${esc(url)}" title="${esc(file.name)}"></iframe>`}
+    <div class="modal-body gmail-original-view import-original">
+      ${originalPreviewHtml({ file }, url)}
     </div>
     <div class="modal-foot">
       <a class="btn" href="${esc(url)}" target="_blank" rel="noopener noreferrer">Abrir original en otra pestaña</a>
@@ -2411,11 +2410,13 @@ function previewGmailAttachment(id) {
       <button class="btn ghost" data-modal-cancel>Cerrar</button>
     </div>`, {
     onMount(wrap) {
+      preview = mountOriginalPreview(wrap.querySelector(".gmail-original-view"), { file });
       wrap.querySelectorAll("[data-modal-cancel]").forEach((button) =>
         button.addEventListener("click", closeModal),
       );
     },
     onClose() {
+      preview?.dispose();
       URL.revokeObjectURL(url);
     },
   });
@@ -2434,13 +2435,10 @@ function viewCorreo() {
         <div id="mailDrop" class="dropzone">
           <div class="dz-icon">${icon("mail")}</div>
           <h3>Importa un correo guardado</h3>
-          <p>
-            Si prefieres no conectar Gmail, guarda el mensaje como archivo <strong>.eml</strong>,
-            arrástralo aquí y leeré su texto y sus adjuntos.
-          </p>
+          <p>Guarda el mensaje como archivo <strong>.eml</strong> y arrástralo aquí para ver e importar solo sus adjuntos. El asunto y el cuerpo del correo no se contabilizan.</p>
           <div class="dz-actions">
             <button class="btn primary" data-action="import-email">${icon("mail")} Elegir correos (.eml)</button>
-            <button class="btn ghost" data-action="paste-mail">${icon("text")} Pegar el texto</button>
+            <button class="btn ghost" data-action="paste-text">${icon("text")} Pegar texto de un documento</button>
           </div>
           <p style="font-size:12.5px;color:var(--ink-3);margin-top:10px">
             La conexión directa con Gmail se inicia siempre desde el botón de arriba.
@@ -2462,7 +2460,7 @@ function viewCorreo() {
       <div class="card-head">
         <div>
           <h2>Correos guardados</h2>
-          <p>${list.length ? "Pulsa «Leer y revisar» para sacar la factura del correo" : "Aquí aparecerán los correos que traigas"}</p>
+          <p>${list.length ? "Pulsa «Ver adjuntos» para abrir los documentos originales, no el texto del correo." : "Aquí aparecerán los correos que traigas"}</p>
         </div>
       </div>
       <div class="card-body">
@@ -2509,34 +2507,28 @@ async function importEmails(files) {
     try {
       const raw = await file.text();
       const msg = parseEml(raw, file.name);
-      const hasText = !!(msg.text && msg.text.trim());
-      const attach = (msg.attachments || []).length;
-      if (!hasText && !attach) {
-        toast(`El correo «${file.name}» no tiene texto que leer.`, "bad", 5200);
+      const documents = emailDocumentFiles(msg);
+      if (!documents.length) {
+        toast(`El correo «${file.name}» no tiene adjuntos PDF o imágenes compatibles. No se importará su texto como documento.`, "warn", 6500);
         continue;
       }
       const stored = addMessage(msg);
+      try {
+        await keepOriginal(`mail:${stored.id}`, file, { name: file.name, type: "message/rfc822" });
+      } catch {
+        toast("No se pudo conservar el correo original. Sus adjuntos se pueden revisar ahora, pero tendrás que volver a cargar el .eml para abrirlos después.", "warn", 8000);
+      }
       saved++;
       lastId = stored ? stored.id : "";
       if (file.gmailMessageId) processedGmailIds.push(String(file.gmailMessageId));
-      if (hasText && !looksLikeInvoiceMail(msg)) {
-        toast(`He guardado «${file.name}», pero por el texto no parece una factura: revísalo antes de darlo por bueno.`, "warn", 5600);
-      }
-
-      for (const att of msg.attachments || []) {
-        if (!att.readable || !att.bytes) continue;
-        const blob = new Blob([att.bytes], { type: att.type || "application/pdf" });
-        const adj = new File([blob], att.name || `adjunto-${attached + 1}.pdf`, { type: blob.type });
-        if (describeFile(adj) === "unknown") continue;
-        ui.jobs.push({
-          id: `job_${Math.random().toString(36).slice(2, 9)}`,
-          file: adj,
-          state: "queued",
-          pct: 0,
-          stage: "En cola",
-        });
-        attached++;
-      }
+      gmailPreviewItems.push({
+        id: `mail:${stored.id}`,
+        subject: msg.subject,
+        from: msg.from,
+        date: msg.date,
+        attachments: documents.map((file) => ({ id: `mail_attachment_${uid()}`, file, selected: true, mailMessageId: stored.id })),
+      });
+      attached += documents.length;
     } catch (err) {
       toast(`No he podido leer «${file.name}»: ${(err && err.message) || "formato no reconocido"}`, "bad", 6000);
     }
@@ -2547,17 +2539,15 @@ async function importEmails(files) {
   if (saved) {
     toast(
       `Guardado${saved === 1 ? "" : "s"} ${saved} correo${saved === 1 ? "" : "s"}${
-        attached ? ` y ${attached} adjunto${attached === 1 ? "" : "s"} en cola` : ""
+        attached ? ` y ${attached} adjunto${attached === 1 ? "" : "s"} para previsualizar` : ""
       }.`
     );
   }
 
   if (attached) {
-    ui.route = "importar";
-    if (location.hash !== "#/importar") location.hash = "#/importar";
+    ui.route = "correo";
+    if (location.hash !== "#/correo") location.hash = "#/correo";
     else render();
-    paintIngest();
-    runQueue();
   } else {
     render();
   }
@@ -2568,25 +2558,35 @@ async function importEmails(files) {
 async function useMail(id) {
   const msg = messages().find((m) => m.id === id);
   if (!msg) return;
-  const text = [msg.subject, msg.from, msg.date, msg.text].filter(Boolean).join("\n");
-  if (text.trim().length < 12) {
-    toast("Ese correo no tiene texto suficiente. Prueba con sus adjuntos.", "bad", 5200);
+  if (!(msg.attachments || []).length) {
+    toast("Este correo no tiene adjuntos. Su texto no se importará como si fuera un documento.", "warn", 6500);
     return;
   }
-  const { lectura } = await leerTextoDocumento(text, msg.subject || "correo.eml");
-  const parsed = lectura.doc;
-  parsed.rawText = text.slice(0, 6000);
-  parsed.notes = Array.isArray(parsed.notes) ? parsed.notes : [];
-
-  markMessageUsed(id);
-
-  const job = {
-    id: `mail_${id}`,
-    file: { name: msg.subject || "correo.eml" },
-    source: "email",
-    parsed,
-  };
-  await reviewJob(job);
+  const previewId = `mail:${id}`;
+  if (gmailPreviewItems.some((message) => message.id === previewId)) {
+    toast("Los adjuntos de ese correo ya están en «Revisar originales antes de importar».");
+    return;
+  }
+  try {
+    const original = await originalOf(previewId);
+    if (!original?.blob) {
+      toast("Este correo antiguo solo conserva el texto y los nombres de los adjuntos. Vuelve a cargar su .eml o búscalo en Gmail para recuperar los originales. No se importará el cuerpo del correo.", "warn", 10000);
+      return;
+    }
+    const parsed = parseEml(await original.blob.text(), original.name);
+    const documents = emailDocumentFiles(parsed);
+    if (!documents.length) {
+      toast("El correo no contiene adjuntos PDF o imágenes compatibles.", "warn");
+      return;
+    }
+    gmailPreviewItems.push({
+      id: previewId, subject: msg.subject, from: msg.from, date: msg.date,
+      attachments: documents.map((file) => ({ id: `mail_attachment_${uid()}`, file, selected: true, mailMessageId: id })),
+    });
+  } catch (error) {
+    toast(`No se han podido abrir los adjuntos: ${error.message}`, "bad", 7000);
+    return;
+  }
   render();
 }
 
@@ -2876,16 +2876,18 @@ async function runQueue() {
  * Aquí no se llama a ninguna IA: el documento se lee solo con el programa, en
  * este ordenador, sin mandar el texto a ninguna parte.
  */
-async function leerTextoDocumento(text, fileName, { useAi = true } = {}) {
+async function leerTextoDocumento(text, fileName, { useAi = true, tipo = "" } = {}) {
   const finish = async (result) => {
-    if (useAi && aiConfigured(getState().settings)) {
-      await applyAiDocument({ parsed: result.lectura.doc }, text);
+    if (useAi && (!tipo || result.lectura.reconoce || result.lectura.id === "otro") && aiConfigured(getState().settings)) {
+      await applyAiDocument({ parsed: result.lectura.doc, selectedKind: tipo }, text);
     }
+    if (tipo) result.lectura.doc = isolateDocumentKind(result.lectura.doc, tipo);
     return result;
   };
-  const opciones = { defaultRate: getState().settings.defaultRate, fileName };
+  const opciones = { defaultRate: getState().settings.defaultRate, fileName, tipo };
   let lectura = leerDocumento(text, opciones);
   let cls = null;
+  if (tipo) return finish({ lectura, cls });
   if (!lectura.generico) return finish({ lectura, cls });
 
   cls = classifyLocal(text, { fileName });
@@ -3041,6 +3043,12 @@ async function runOne(job) {
   paintIngestSoon();
 
   try {
+    job.selectedKind = await chooseDocumentImporter(job);
+    if (!job.selectedKind) {
+      job.state = "skipped";
+      paintIngest();
+      return;
+    }
     let text = "";
     let source = job.preSource || "pdf-text";
     let hojas = null;
@@ -3134,7 +3142,7 @@ async function runOne(job) {
     // Cada tipo de documento se lee con su propio importador: la nómina con el
     // suyo, la liquidación con el suyo… Nada de leerlo todo como una factura y
     // luego ir parcheándolo.
-    const { lectura, cls } = await leerTextoDocumento(text, job.name || job.file.name, { useAi: false });
+    const { lectura, cls } = await leerTextoDocumento(text, job.name || job.file.name, { useAi: false, tipo: job.selectedKind });
     job.importador = lectura.etiqueta;
     job.parsed = lectura.doc;
     job.parsed.rawText = text.slice(0, 30000);
@@ -3152,9 +3160,10 @@ async function runOne(job) {
     // importes de una tabla, las columnas cambiadas, un papel torcido… Aquí es
     // donde se nota: sus datos mandan sobre los míos y quedan anotados.
     const settings = getState().settings;
-    if (aiConfigured(settings)) {
+    if ((lectura.reconoce || lectura.id === "otro") && aiConfigured(settings)) {
       await applyAiDocument(job, text);
     }
+    job.parsed = isolateDocumentKind(job.parsed, job.selectedKind);
 
     const sameDocument = findExactDuplicateDocument(job.parsed);
     if (sameDocument) {
@@ -3864,6 +3873,9 @@ async function applyAiDocument(job, text) {
       (titulo ? `El suyo empieza en la línea «${titulo}». ` : "") +
       "Lee SOLO ese papel: no mezcles sus importes con los de los demás.";
   }
+  if (job.selectedKind) {
+    contexto += ` El usuario ha elegido el importador de ${kindInfo(job.selectedKind).label}. Lee los campos de ese tipo; si no coincide con el papel, señala la discrepancia.`;
+  }
 
   let images = [];
   try {
@@ -3903,6 +3915,11 @@ async function applyAiDocument(job, text) {
   }
 
   const cambiado = [];
+  if (job.selectedKind && ai.kind && ai.kind !== job.selectedKind) {
+    p.notes.push(`La IA propone ${kindInfo(ai.kind).label}, pero elegiste ${kindInfo(job.selectedKind).label}. No se han mezclado sus datos. Comprueba el original y cambia de importador si es necesario.`);
+    p.requiresReview = true;
+    return [];
+  }
   p.notes.push(...(ai.warnings || []).map((v) => `Revisión de IA: ${v}`));
   const aiSupplierNif = normaliseSpanishNif(ai.supplierNif);
   if (ai.supplierNif && !aiSupplierNif) {
@@ -4402,7 +4419,7 @@ function nominaReadHtml(v) {
  * El bloque de la nómina en la ficha del documento: solo se ve cuando el tipo
  * es «Nómina». El líquido sale solo (bruto − Seguridad Social − IRPF).
  */
-function nominaFormHtml(v) {
+function nominaFormHtml(v, { dedicated = false } = {}) {
   const n = calcularNomina((v && v.nomina) || {});
   const kind = (v && v.kind) || "FACTURA";
   const val = (x) => (x == null ? "" : fmtNum(x));
@@ -4414,9 +4431,9 @@ function nominaFormHtml(v) {
       </div>
     </div>
     <div class="form-grid">
-      <div class="field">
+      <div class="field" ${dedicated ? "hidden" : ""}>
         <label for="n-trabajador">Trabajador</label>
-        <input id="n-trabajador" type="text" autocomplete="off" value="${esc(n.trabajador)}" placeholder="Nombre y apellidos">
+        <input id="n-trabajador" type="text" autocomplete="off" value="${esc(dedicated ? v.supplierName || n.trabajador : n.trabajador)}" placeholder="Nombre y apellidos">
       </div>
       <div class="field">
         <label for="n-periodo">Periodo <span class="hint">(opcional)</span></label>
@@ -4463,6 +4480,11 @@ function bindNomina(wrap, ctx) {
   const nNeto = q("#n-neto");
   const sum = q("#iv-nom-sum");
   if (!nBruto || !nSs || !nIrpf || !nSsEmp || !nNeto) return;
+  if (q("[data-document-form]")?.dataset.dedicated === "true") {
+    q("#f-name")?.addEventListener("input", () => {
+      if (q("#n-trabajador")) q("#n-trabajador").value = q("#f-name").value;
+    });
+  }
 
   const valor = (el) => (el && typeof el.value === "string" ? parseAmount(el.value) : null);
 
@@ -4551,7 +4573,7 @@ function readNomina(wrap) {
   return algo ? n : null;
 }
 
-function invoiceFormHtml(v) {
+function invoiceFormHtml(v, { dedicated = false } = {}) {
   const state = getState();
   const exerciseYear = activeExerciseYear();
   const missingDetectedDate = !v.id && Array.isArray(v.notes) && v.notes.some((note) => /no he encontrado la fecha de la factura/i.test(String(note)));
@@ -4569,13 +4591,18 @@ function invoiceFormHtml(v) {
     ? `Este documento pertenece al ejercicio ${issueYear}. Para cambiar su fecha, selecciona primero ese ejercicio en Contabilidad.`
     : `La fecha de emisión debe pertenecer al ejercicio ${exerciseYear}. El vencimiento o el pago pueden ser de otro año.`;
   const kind = v.kind || "FACTURA";
+  const spec = documentReviewSpec(kind);
   const direction = v.direction || directionOf(kind);
+  const nonFiscal = dedicated && ["SUBVENCION", "COBRO"].includes(kind);
+  const taxHidden = kind === "NOMINA" || nonFiscal ? "hidden" : "";
   const payrollTaxHidden = kind === "NOMINA" ? "hidden" : "";
   return `
-  <div class="form-grid">
+  <div class="form-grid" data-document-form="${esc(kind)}" data-dedicated="${dedicated}" data-non-fiscal="${nonFiscal}">
     <div class="field">
       <label for="f-kind">Tipo de documento</label>
-      <select id="f-kind">${kindOptions(kind)}</select>
+      ${dedicated
+        ? `<input id="f-kind" type="hidden" value="${esc(kind)}"><strong>${esc(kindInfo(kind).label)}</strong><span class="hint">Tipo elegido antes de importar. No se cambia en este formulario.</span>`
+        : `<select id="f-kind">${kindOptions(kind)}</select>`}
     </div>
     <div class="field">
       <label for="f-cat">Concepto</label>
@@ -4587,8 +4614,8 @@ function invoiceFormHtml(v) {
     ${liquidacionReadHtml(v)}
     ${nominaReadHtml(v)}
     <div class="field span-2">
-      <label for="f-name">${kind === "NOMINA" ? "Trabajador" : kind === "LIQUIDACION" ? "Cliente o comprador" : "Proveedor"} <span class="tag" id="supplierHint" hidden></span></label>
-      <input id="f-name" type="text" list="supplierNames" autocomplete="off" value="${esc(v.supplierName || "")}" placeholder="Nombre del proveedor">
+      <label for="f-name">${esc(spec.party)} <span class="tag" id="supplierHint" hidden></span></label>
+      <input id="f-name" type="text" list="supplierNames" autocomplete="off" value="${esc(v.supplierName || "")}" placeholder="${esc(spec.party)}">
       <datalist id="supplierNames">
         ${state.suppliers.map((s) => `<option value="${esc(s.name)}">`).join("")}
       </datalist>
@@ -4598,35 +4625,35 @@ function invoiceFormHtml(v) {
       <input id="f-nif" type="text" autocomplete="off" value="${esc(v.supplierNif || "")}" placeholder="B12345678">
     </div>
     <div class="field">
-      <label for="f-number">Número de factura</label>
+      <label for="f-number">${esc(spec.number)}</label>
       <input id="f-number" type="text" autocomplete="off" value="${esc(v.number || "")}" placeholder="2024/0184">
     </div>
     <div class="field">
-      <label for="f-issue">Fecha de la factura</label>
+      <label for="f-issue">${esc(spec.issueDate)}</label>
       <input id="f-issue" type="date" ${dateBounds} value="${esc(issueDateValue)}" required>
       <span class="hint">${esc(exerciseHint)}</span>
     </div>
     <div class="field">
-      <label for="f-due">Vencimiento <span class="hint">(opcional)</span></label>
+      <label for="f-due">${esc(spec.dueDate)} <span class="hint">(opcional)</span></label>
       <input id="f-due" type="date" value="${esc(v.dueDate || "")}">
     </div>
-    <div class="field invoice-tax-field" id="f-base-field" ${payrollTaxHidden}>
+    <div class="field invoice-tax-field" id="f-base-field" ${taxHidden}>
       <label for="f-base">Base imponible</label>
       <div class="with-suffix"><input id="f-base" type="text" inputmode="decimal" value="${v.base != null ? fmtNum(v.base) : ""}" placeholder="0,00"><span>€</span></div>
     </div>
-    <div class="field invoice-tax-field" id="f-rate-field" ${payrollTaxHidden}>
+    <div class="field invoice-tax-field" id="f-rate-field" ${taxHidden}>
       <label for="f-rate">Tipo de IGIC</label>
       <select id="f-rate">${rateOptions(v.rate)}</select>
     </div>
-    <div class="field invoice-tax-field" id="f-igic-field" ${payrollTaxHidden}>
+    <div class="field invoice-tax-field" id="f-igic-field" ${taxHidden}>
       <label for="f-igic">Cuota de IGIC</label>
       <div class="with-suffix"><input id="f-igic" type="text" inputmode="decimal" value="${v.igic != null ? fmtNum(v.igic) : ""}" placeholder="0,00"><span>€</span></div>
     </div>
     <div class="field invoice-tax-field" id="f-total-field" ${payrollTaxHidden}>
-      <label for="f-total">Total de la factura</label>
+      <label for="f-total">${esc(spec.total)}</label>
       <div class="with-suffix"><input id="f-total" type="text" inputmode="decimal" value="${v.total != null ? fmtNum(v.total) : ""}" placeholder="0,00"><span>€</span></div>
     </div>
-    <div class="field span-2 invoice-tax-field" id="f-lines-field" ${payrollTaxHidden}>
+    <div class="field span-2 invoice-tax-field" id="f-lines-field" ${taxHidden}>
       <div class="lines-head">
         <div>
           <label for="iv-lines">Varios tipos de IGIC en el mismo documento</label>
@@ -4639,7 +4666,7 @@ function invoiceFormHtml(v) {
       </div>
       <p class="lines-sum" id="iv-lines-sum" hidden></p>
     </div>
-    <div class="field span-2" id="f-liq" ${kind === "LIQUIDACION" ? "" : "hidden"}>
+    ${!dedicated || kind === "LIQUIDACION" ? `<div class="field span-2" id="f-liq" ${kind === "LIQUIDACION" ? "" : "hidden"}>
       <div class="lines-head">
         <div>
           <label for="l-kg">Liquidación de fruta</label>
@@ -4679,8 +4706,8 @@ function invoiceFormHtml(v) {
           : v.liquidacionRead || v.liquidacion
       )}
       <p class="lines-sum" id="iv-liq-sum" hidden></p>
-    </div>
-    ${nominaFormHtml(v)}
+    </div>` : ""}
+    ${!dedicated || kind === "NOMINA" ? nominaFormHtml(v, { dedicated }) : ""}
     <div class="field span-2">
       <label>Estado</label>
       <div class="segmented" id="f-status-seg" data-value="${v.status === STATUS.PAID ? STATUS.PAID : STATUS.PENDING}">
@@ -4761,9 +4788,10 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
 
   // Una venta o liquidación que se escribe a mano: el tipo ya viene puesto.
   if (preset) Object.assign(values, preset);
+  if (job?.selectedKind) Object.assign(values, isolateDocumentKind(values, job.selectedKind));
 
   // Si es una liquidación de fruta y el texto trae kilos y precio, se rellenan.
-  if (!values.liquidacion && values.kind === "LIQUIDACION" && values.rawText) {
+  if (!job?.selectedKind && !values.liquidacion && values.kind === "LIQUIDACION" && values.rawText) {
     const liq = guessLiquidacion(values.rawText);
     if (liq) {
       if (liq.notes && liq.notes.length) {
@@ -4777,7 +4805,8 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
     }
   }
 
-  const title = editing ? "Editar documento" : job ? "Revisa lo que he leído" : "Nuevo documento";
+  const reviewSpec = documentReviewSpec(values.kind);
+  const title = editing ? `Editar ${reviewSpec.title}` : job ? `Revisar ${reviewSpec.title}` : "Nuevo documento";
   const sub = editing
     ? "Cambia lo que haga falta y guarda."
     : job
@@ -4787,6 +4816,7 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
       : "Escribe los datos de la factura.";
 
   const conf = job ? Math.round((job.parsed.confidence || 0) * 100) : null;
+  const originalUrl = job?.file instanceof Blob ? URL.createObjectURL(job.file) : "";
 
   const html = `
     <div class="modal-head">
@@ -4799,16 +4829,18 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
       <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
     </div>
     <div class="modal-body">
+      ${job ? `<div class="summary-box" style="margin-bottom:12px">${icon("info")}<div>${esc(reviewSpec.description)}</div></div>` : ""}
       ${job ? notesHtml(job.parsed.notes) : ""}
       <div id="dupWarning" class="summary-box warn" hidden style="margin-bottom:14px">${icon("alert")}<div></div></div>
       <div class="review-layout">
         <div>
-          ${invoiceFormHtml(values)}
+          ${invoiceFormHtml(values, { dedicated: !!job })}
         </div>
         <div>
+          ${job ? `<h3>Documento original</h3><div class="import-original review-original">${originalPreviewHtml(job, originalUrl)}</div>` : ""}
           <div class="summary-box" style="margin-bottom:12px">
             ${icon("info")}
-            <div id="supplierInfo">Al guardar, el proveedor se añade solo a tu lista.</div>
+            <div id="supplierInfo">Los datos se guardarán en la ficha de ${esc(reviewSpec.party.toLowerCase())}.</div>
           </div>
           ${job && job.parsed.rawText ? `
           <details>
@@ -4819,7 +4851,8 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn primary" data-save>${editing ? "Guardar cambios" : "Guardar documento"}</button>
+      <button class="btn primary" data-save>${editing ? "Guardar cambios" : job ? `Guardar ${reviewSpec.title}` : "Guardar documento"}</button>
+      ${job ? `<button class="btn" data-reclassify>Cambiar de importador</button>` : ""}
       <button class="btn ghost" data-modal-cancel>${job ? "Descartar" : "Cancelar"}</button>
       <div class="spacer"></div>
       ${job ? `<span class="muted" style="font-size:12px;color:var(--ink-3)">Comprueba los importes antes de guardar</span>` : ""}
@@ -4827,6 +4860,7 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
 
   return new Promise((resolve) => {
     let settled = false;
+    let preview = null;
     const finish = (result) => {
       if (settled) return;
       settled = true;
@@ -4836,12 +4870,24 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
     openModal(html, {
       onMount(wrap) {
         bindForm(wrap, values);
+        if (job) preview = mountOriginalPreview(wrap.querySelector(".review-original"), job);
 
-        wrap.querySelector("[data-save]").addEventListener("click", async () => {
-          const saved = await submitInvoice(wrap, { mode, invoice, job });
-          if (saved) {
-            finish(saved);
-            closeModal();
+        wrap.querySelector("[data-reclassify]")?.addEventListener("click", () => {
+          finish({ reclassify: true });
+          closeModal();
+        });
+        wrap.querySelector("[data-save]").addEventListener("click", async (event) => {
+          const button = event.currentTarget;
+          if (button.disabled) return;
+          button.disabled = true;
+          try {
+            const saved = await submitInvoice(wrap, { mode, invoice, job });
+            if (saved) {
+              finish(saved);
+              closeModal();
+            }
+          } finally {
+            button.disabled = false;
           }
         });
         wrap.querySelectorAll("[data-modal-cancel]").forEach((b) =>
@@ -4852,6 +4898,8 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
         );
       },
       onClose() {
+        preview?.dispose();
+        if (originalUrl) URL.revokeObjectURL(originalUrl);
         finish(null);
       },
     });
@@ -4967,7 +5015,9 @@ function bindForm(wrap, initial) {
   base.addEventListener("input", recalcFromBase);
   rate.addEventListener("change", recalcFromBase);
   igic.addEventListener("input", recalcFromIgic);
-  total.addEventListener("input", recalcFromTotal);
+  if (q("[data-document-form]")?.dataset.nonFiscal !== "true") {
+    total.addEventListener("input", recalcFromTotal);
+  }
 
   [base, igic, total].forEach((el) =>
     el.addEventListener("blur", () => {
@@ -4994,19 +5044,20 @@ function bindForm(wrap, initial) {
     clearTimeout(hintTimer);
     hintTimer = setTimeout(() => {
       const existing = findSupplierByNameOrNif(name.value, nif.value);
+      const party = documentReviewSpec(kindSel.value).party.toLowerCase();
       if (existing) {
         hint.hidden = false;
         hint.textContent = "ya existe";
         hint.className = "tag kind";
-        info.textContent = `Este proveedor ya está en tu lista como «${existing.name}». La factura se añadirá a su ficha.`;
+        info.textContent = `Ya existe como «${existing.name}». El documento se añadirá a su ficha de ${party}.`;
       } else if (name.value.trim().length >= 2) {
         hint.hidden = false;
-        hint.textContent = "proveedor nuevo";
+        hint.textContent = "tercero nuevo";
         hint.className = "tag";
-        info.textContent = "Al guardar, este proveedor se añade solo a tu lista.";
+        info.textContent = `Al guardar, se crea la ficha de ${party}.`;
       } else {
         hint.hidden = true;
-        info.textContent = "Al guardar, el proveedor se añade solo a tu lista.";
+        info.textContent = `Al guardar, se crea la ficha de ${party}.`;
       }
 
       const supplierId = existing ? existing.id : null;
@@ -5259,6 +5310,7 @@ function readForm(wrap) {
   const lines = readIgicLines(wrap);
   const kind = (q("#f-kind") && q("#f-kind").value) || "FACTURA";
   const payroll = kind === "NOMINA";
+  const nonFiscal = q("[data-document-form]")?.dataset.nonFiscal === "true";
   const nomina = payroll ? readNomina(wrap) : null;
 
   return {
@@ -5270,21 +5322,21 @@ function readForm(wrap) {
     kind,
     category: (q("#f-cat") && q("#f-cat").value) || "",
     direction: directionOf(kind),
-    base: payroll ? nomina?.bruto ?? null : base,
-    rate: payroll
+    base: payroll ? nomina?.bruto ?? null : nonFiscal ? total : base,
+    rate: payroll || nonFiscal
       ? 0
       : lines.length > 1 && base > 0 && igic != null
         ? round2((igic / base) * 100)
         : Number.isFinite(rate)
           ? rate
           : null,
-    igic: payroll ? 0 : igic,
+    igic: payroll || nonFiscal ? 0 : igic,
     total: payroll ? nomina?.neto ?? null : total,
-    lines: payroll ? [] : lines,
+    lines: payroll || nonFiscal ? [] : lines,
     // Cada tipo guarda solo lo suyo: una nómina no se queda con kilos ni una
     // liquidación con el recibo de salarios.
-    liquidacion: kind === "NOMINA" ? null : readLiquidacion(wrap),
-    nomina: kind === "LIQUIDACION" ? null : payroll ? nomina : readNomina(wrap),
+    liquidacion: kind === "LIQUIDACION" ? readLiquidacion(wrap) : null,
+    nomina: payroll ? nomina : null,
     status: status === STATUS.PAID ? STATUS.PAID : STATUS.PENDING,
     paidDate:
       status === STATUS.PAID
@@ -5300,6 +5352,10 @@ function readForm(wrap) {
 
 async function submitInvoice(wrap, { mode, invoice, job }) {
   const v = readForm(wrap);
+  if (job && (!job.selectedKind || v.kind !== job.selectedKind)) {
+    toast("Elige el importador antes de guardar. No se permite cambiar el tipo dentro del formulario.", "bad", 6500);
+    return null;
+  }
 
   const lockError = invoice ? invoiceWriteError(invoice, v) : exerciseWriteError(v.issueDate.slice(0, 4));
   if (lockError) {
@@ -5494,8 +5550,26 @@ function exportSqlite() {
 }
 
 async function reviewJob(job) {
-  const res = await openInvoiceModal({ mode: "review", job });
+  let res;
+  for (;;) {
+    res = await openInvoiceModal({ mode: "review", job });
+    if (!res?.reclassify) break;
+    const selectedKind = await chooseDocumentImporter(job);
+    if (!selectedKind) {
+      res = null;
+      break;
+    }
+    job.selectedKind = selectedKind;
+    const text = job.text || job.parsed?.rawText || "";
+    const { lectura } = await leerTextoDocumento(text, job.name || job.file.name, { useAi: false, tipo: selectedKind });
+    job.importador = lectura.etiqueta;
+    job.parsed = lectura.doc;
+    job.parsed.rawText = text.slice(0, 30000);
+    if ((lectura.reconoce || lectura.id === "otro") && aiConfigured(getState().settings)) await applyAiDocument(job, text);
+    job.parsed = isolateDocumentKind(job.parsed, selectedKind);
+  }
   if (res) {
+    if (job.mailMessageId) markMessageUsed(job.mailMessageId);
     job.state = "saved";
     job.savedLabel = `Guardada como ${res.invoice.number || "sin número"} · ${fmtEUR(res.invoice.total)}`;
   } else {
@@ -5538,18 +5612,17 @@ export function openPasteModal() {
             toast("Pega un poco más de texto.", "bad");
             return;
           }
-          // El importador que reconozca el texto: si es una nómina la lee el
-          // lector de nóminas, si es una liquidación el de liquidaciones.
-          const { lectura } = await leerTextoDocumento(text, "texto pegado");
-          const parsed = lectura.doc;
           closeModal();
-          openInvoiceModal({
-            mode: "review",
-            job: {
+          const selectedKind = await chooseDocumentImporter({ file: { name: "Texto pegado" }, text });
+          if (!selectedKind) return;
+          const { lectura } = await leerTextoDocumento(text, "texto pegado", { tipo: selectedKind });
+          const parsed = lectura.doc;
+          await reviewJob({
               file: { name: "Texto pegado" },
               source: "pasted",
+              text,
+              selectedKind,
               parsed: { ...parsed, rawText: text.slice(0, 6000) },
-            },
           });
         });
       },
@@ -6294,6 +6367,7 @@ export async function onAction(action, el) {
       ui.jobs.push(...selected.map((attachment) => ({
         id: `job_${uid()}`,
         file: attachment.file,
+        mailMessageId: attachment.mailMessageId || "",
         source: "email",
         state: "queued",
         pct: 0,
@@ -6356,18 +6430,11 @@ export async function onAction(action, el) {
         for (const eml of result.files) {
           try {
             const message = parseEml(await eml.text(), eml.name);
-            const attachments = [];
-            for (const item of message.attachments || []) {
-              if (!item.readable || !item.bytes) continue;
-              const blob = new Blob([item.bytes], { type: item.type || "application/pdf" });
-              const file = new File([blob], item.name || "adjunto.pdf", { type: blob.type });
-              if (describeFile(file) === "unknown") continue;
-              attachments.push({
+            const attachments = emailDocumentFiles(message).map((file) => ({
                 id: `gmail_${uid()}`,
                 file,
                 selected: true,
-              });
-            }
+              }));
             if (attachments.length) {
               previewItems.push({
                 id: String(eml.gmailMessageId || uid()),
@@ -6411,7 +6478,7 @@ export async function onAction(action, el) {
       pickEmails();
       return;
     case "paste-mail":
-      openMailPasteModal();
+      openPasteModal();
       return;
     case "use-mail":
       useMail(id);

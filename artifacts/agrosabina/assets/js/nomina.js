@@ -224,7 +224,7 @@ export function leerNomina(textoCrudo) {
     const valor = importeDeLinea(l);
     if (valor == null) continue;
 
-    if (/total\s+devengad|importe\s+total\s+devengado|total\s+bruto|salario\s+bruto\s+total/.test(bajo)) {
+    if (/total\s+devengad|importe\s+total\s+devengado|total\s+bruto|salario\s+bruto\b/.test(bajo)) {
       bruto = valor;
       continue;
     }
@@ -236,7 +236,7 @@ export function leerNomina(textoCrudo) {
       ssEmpresa = valor;
       continue;
     }
-    if (/total.*(?:trabajador|a\s+cargo\s+del\s+trabajador)|aportaci[oó]n(?:es)?\s+del\s+trabajador|total\s+deducciones\s+(?:ss|seguridad)/.test(bajo)) {
+    if (/total.*(?:trabajador|a\s+cargo\s+del\s+trabajador)|aportaci[oó]n(?:es)?\s+del\s+trabajador|total\s+deducciones\s+(?:ss|seguridad)|seguridad\s+social\s+(?:del\s+)?trabajador\b/.test(bajo)) {
       ssTrabajador = valor;
       continue;
     }

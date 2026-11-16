@@ -5,3 +5,4 @@
 - [Arranque y protección de datos](startup-safety.md) — esperar la carga completa y mantener los datos contables fuera de la caché PWA.
 - [Restauración no destructiva](backup-restoration.md) — las copias completas se añaden; no deben sustituir registros o credenciales del destino.
 - [Categorías de terceros](third-party-categories.md) — separar empleados y acreedores de proveedores.
+- [Elección previa del importador](import-type-choice.md) — ver el original y elegir el tipo antes de extraer; revisión específica sin mezclar datos entre tipos.

@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { buildGmailSearchQuery, decodeGmailRaw } from "../assets/js/gmail.js";
-import { parseEml } from "../assets/js/mail.js";
+import { emailDocumentFiles, parseEml } from "../assets/js/mail.js";
 
 test("decodifica el correo raw base64url de Gmail en UTF-8", () => {
   const expected = "From: tienda@example.com\r\nSubject: Factura ágil\r\n\r\nAdjunto factura.";
@@ -21,7 +21,7 @@ test("filtra Gmail por intervalo inclusivo y solo busca correos con adjuntos", (
   );
 });
 
-test("el correo raw de Gmail conserva el PDF para la revisión existente", () => {
+test("el correo raw de Gmail conserva el PDF para la revisión existente", async () => {
   const email = [
     "From: tienda@example.com",
     "Subject: Factura de prueba",
@@ -47,4 +47,19 @@ test("el correo raw de Gmail conserva el PDF para la revisión existente", () =>
   assert.equal(parsed.attachments.length, 1);
   assert.equal(parsed.attachments[0].name, "factura.pdf");
   assert.equal(new TextDecoder().decode(parsed.attachments[0].bytes), "Hello");
+  const files = emailDocumentFiles(parsed);
+  assert.equal(files.length, 1);
+  assert.equal(files[0].name, "factura.pdf");
+  assert.equal(await files[0].text(), "Hello");
+});
+
+test("nunca convierte el cuerpo, asunto o firma del correo en documento importable", () => {
+  assert.deepEqual(emailDocumentFiles({
+    subject: "FACTURA TOTAL 99999", text: "BASE IMPONIBLE 99999\nTOTAL 99999",
+    attachments: [],
+  }), []);
+  assert.deepEqual(emailDocumentFiles({
+    text: "Factura con adjunto no compatible",
+    attachments: [{ name: "instrucciones.txt", readable: false, bytes: new Uint8Array([65]) }],
+  }), []);
 });

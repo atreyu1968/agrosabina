@@ -1096,7 +1096,8 @@ export function addMessage(raw) {
   const msg = normaliseMessage(raw);
   if (!msg) return null;
   const same = state.messages.find(
-    (m) => m.subject === msg.subject && m.from === msg.from && m.text.slice(0, 200) === msg.text.slice(0, 200)
+    (m) => m.subject === msg.subject && m.from === msg.from && m.date === msg.date &&
+      m.text === msg.text && JSON.stringify(m.attachments) === JSON.stringify(msg.attachments)
   );
   if (same) return same;
   state.messages.unshift(msg);
@@ -1115,6 +1116,7 @@ export function markMessageUsed(id) {
 
 export function deleteMessage(id) {
   state.messages = state.messages.filter((m) => m.id !== id);
+  files.dropOriginal(`mail:${id}`).catch(() => {});
   save();
 }
 

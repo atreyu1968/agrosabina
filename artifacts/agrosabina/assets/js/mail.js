@@ -19,6 +19,17 @@ export function isEmailFile(file) {
   return name.endsWith(".eml") || name.endsWith(".emlx") || type === "message/rfc822";
 }
 
+/** Only attachment bytes are eligible for document import; never the mail body. */
+export function emailDocumentFiles(message) {
+  return (message?.attachments || []).flatMap((attachment, index) => {
+    if (!attachment?.readable || !attachment.bytes?.length) return [];
+    const name = String(attachment.name || `adjunto-${index + 1}.pdf`);
+    if (!/\.(pdf|jpe?g|png|webp)$/i.test(name) &&
+        !/^(application\/pdf|image\/(jpeg|png|webp))$/i.test(attachment.type || "")) return [];
+    return [new File([attachment.bytes], name, { type: attachment.type || "application/pdf" })];
+  });
+}
+
 /* ---------------- bytes y texto ---------------- */
 
 function normCharset(cs) {

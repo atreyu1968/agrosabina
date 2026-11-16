@@ -397,10 +397,13 @@ export function importadorDe(texto, tipoElegido) {
  */
 export function leerDocumento(texto, opciones = {}) {
   const { importador, forzado, reconoce } = importadorDe(texto, opciones.tipo);
-  const doc = importador.leer(texto, opciones);
+  const incompatible = forzado && !reconoce && importador.id !== "otro";
+  const doc = incompatible
+    ? { ...documentoVacio(importador.kinds[0]), issueDate: "", requiresReview: true }
+    : importador.leer(texto, opciones);
   if (forzado && !reconoce) {
     doc.notes.push(
-      `Me has dicho que es ${importador.label.toLowerCase()}, pero el papel no lo parece: mira los datos antes de guardar.`
+      `Me has dicho que es ${importador.label.toLowerCase()}, pero el papel no lo parece.${incompatible ? " Los campos se han dejado vacíos por seguridad; cambia de importador o complétalos contrastando el original." : " Mira los datos antes de guardar."}`
     );
   }
   return {
