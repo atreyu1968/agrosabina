@@ -94,13 +94,13 @@ test("la descarga real del cliente incluye leídos y no leídos, excluye extremo
   assert.doesNotMatch(queries[0], /is:(unread|read)|label:unread|-is:read/i);
 });
 
-test("mantiene el intervalo en todas las páginas y lotes sin volver a descargar los revisados", async (t) => {
+test("carga 37 correos en lotes sucesivos, manteniendo intervalo y sin repetir pendientes ni revisados", async (t) => {
   const range = { from: "2026-01-01", to: "2026-01-31" };
   const { start } = gmailDateBounds(range);
   const queries = [];
   const downloaded = [];
   const raw = Buffer.from("Subject: adjunto sintético\r\n\r\nOriginal.").toString("base64url");
-  const candidates = Array.from({ length: 12 }, (_, index) => ({ id: `message${index}` }));
+  const candidates = Array.from({ length: 37 }, (_, index) => ({ id: `message${index}` }));
   await mockConnectedGmail(t, (url) => {
     if (url.pathname.endsWith("/messages")) {
       queries.push(url.searchParams.get("q"));
@@ -112,15 +112,22 @@ test("mantiene el intervalo en todas las páginas y lotes sin volver a descargar
     downloaded.push(id);
     return { internalDate: String(start + 1000), raw, labelIds: ["INBOX"] };
   });
-  const first = await fetchRecentGmailFiles(["previously-reviewed"], range);
-  assert.equal(first.files.length, 10);
-  assert.equal(first.hasMore, true);
-  const second = await fetchRecentGmailFiles(["previously-reviewed", ...first.messageIds], range);
-  assert.equal(second.files.length, 2);
-  assert.equal(second.hasMore, false);
-  assert.equal(new Set(downloaded).size, 12);
-  assert.equal(downloaded.length, 12);
-  assert.equal(queries.length, 4);
+  const pendingIds = [];
+  const pendingFiles = [];
+  for (const expectedCount of [10, 10, 10, 7]) {
+    const result = await fetchRecentGmailFiles(["previously-reviewed", ...pendingIds], range);
+    assert.equal(result.files.length, expectedCount);
+    pendingIds.push(...result.messageIds);
+    pendingFiles.push(...result.files);
+    assert.equal(result.hasMore, pendingIds.length < 37);
+  }
+  assert.equal(pendingFiles.length, 37);
+  assert.equal(new Set(downloaded).size, 37);
+  assert.equal(downloaded.length, 37);
+  const exhausted = await fetchRecentGmailFiles(["previously-reviewed", ...pendingIds], range);
+  assert.equal(exhausted.files.length, 0);
+  assert.equal(exhausted.hasMore, false);
+  assert.equal(queries.length, 10);
   assert.ok(queries.every((query) => query === buildGmailSearchQuery(range)));
 });
 

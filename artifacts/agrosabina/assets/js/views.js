@@ -2310,8 +2310,8 @@ function gmailConnectionCard() {
         <button class="btn ghost" data-action="gmail-disconnect" ${gmailBusy ? "disabled" : ""}>Desconectar</button>
       </div>
       <p class="subtle">Incluye correos abiertos y no leídos, siempre con adjuntos. Fechas de recepción del correo, incluidos ambos días completos, en horario de Canarias. No son las fechas de las facturas adjuntas; estas se comprueban al guardar en su ejercicio.</p>
-      ${gmailPreviewHasMore && !gmailPreviewItems.length ? `<p class="subtle">Quedan más correos en este intervalo; busca otra vez después de revisar el lote.</p>` : ""}
-      ${gmailPreviewItems.length ? `<p class="subtle">Revisa o descarta los adjuntos encontrados antes de hacer otra búsqueda.</p>` : ""}`;
+      ${gmailPreviewHasMore ? `<button class="btn" data-action="gmail-load-more" ${gmailBusy ? "disabled" : ""}>${gmailBusy ? "Cargando…" : "Cargar más correos"}</button><p class="subtle">Hay más resultados. Se descargan en lotes de hasta 10 para no saturar el navegador; puedes seguir añadiéndolos antes de importar.</p>` : ""}
+      ${gmailPreviewItems.length ? `<p class="subtle">Puedes cargar más correos del mismo intervalo sin perder estos adjuntos. Para cambiar las fechas, importa o descarta los resultados pendientes.</p>` : ""}`;
   } else if (gmailSdkError) {
     controls = `
       <div class="hint-bar">${icon("info")}<span>${esc(gmailSdkError)}</span></div>
@@ -2381,8 +2381,9 @@ function gmailPreviewPanel() {
             </article>`).join("")}
         </div>
         <div class="gmail-preview-actions">
-          <button class="btn primary" data-action="gmail-preview-import" ${selected ? "" : "disabled"}>${icon("upload")} Importar ${selected} adjunto${selected === 1 ? "" : "s"} seleccionado${selected === 1 ? "" : "s"}</button>
-          <button class="btn ghost" data-action="gmail-preview-discard">Descartar resultados</button>
+          ${gmailPreviewHasMore ? `<button class="btn" data-action="gmail-load-more" ${gmailBusy ? "disabled" : ""}>${gmailBusy ? "Cargando…" : "Cargar más correos"}</button>` : ""}
+          <button class="btn primary" data-action="gmail-preview-import" ${selected && !gmailBusy ? "" : "disabled"}>${icon("upload")} Importar ${selected} adjunto${selected === 1 ? "" : "s"} seleccionado${selected === 1 ? "" : "s"}</button>
+          <button class="btn ghost" data-action="gmail-preview-discard" ${gmailBusy ? "disabled" : ""}>Descartar resultados</button>
         </div>
       </div>
     </section>`;
@@ -6386,7 +6387,9 @@ export async function onAction(action, el) {
       runQueue();
       return;
     }
+    case "gmail-load-more":
     case "gmail-read": {
+      if (gmailBusy) return;
       const clientId = String(getState().settings?.gmailClientId || "").trim();
       if (!gmailStatus(clientId).connected) {
         toast("Conecta Gmail antes de buscar correos.", "warn");
@@ -6407,7 +6410,10 @@ export async function onAction(action, el) {
       gmailBusy = true;
       render();
       try {
-        const result = await fetchRecentGmailFiles([...gmailSessionImportedIds], { from, to });
+        // Pending previews count as fetched too, not as accounted documents.
+        // This lets the user append successive batches without duplicates.
+        const seenIds = new Set([...gmailSessionImportedIds, ...gmailPreviewMessageIds]);
+        const result = await fetchRecentGmailFiles([...seenIds], { from, to });
         gmailPreviewHasMore = result.hasMore;
         const messageIds = Array.isArray(result.messageIds)
           ? result.messageIds.filter(Boolean).map(String)
@@ -6454,9 +6460,9 @@ export async function onAction(action, el) {
           }
         }
 
-        gmailPreviewMessageIds = messageIds;
-        gmailPreviewItems = previewItems;
-        gmailPreviewSkipped = skippedWithoutReadableAttachments + (result.skippedMalformed || 0) + (result.skippedLarge || 0);
+        gmailPreviewMessageIds = [...new Set([...gmailPreviewMessageIds, ...messageIds])];
+        gmailPreviewItems = [...gmailPreviewItems, ...previewItems];
+        gmailPreviewSkipped += skippedWithoutReadableAttachments + (result.skippedMalformed || 0) + (result.skippedLarge || 0);
         if (!previewItems.length) {
           for (const messageId of messageIds) gmailSessionImportedIds.add(messageId);
           if (skippedWithoutReadableAttachments) {
@@ -6468,7 +6474,7 @@ export async function onAction(action, el) {
         }
         render();
         const attachmentCount = previewItems.reduce((sum, message) => sum + message.attachments.length, 0);
-        toast(`${previewItems.length} correos y ${attachmentCount} adjunto${attachmentCount === 1 ? "" : "s"} listos para previsualizar.`);
+        toast(`${previewItems.length} correos más y ${attachmentCount} adjunto${attachmentCount === 1 ? "" : "s"} añadidos. ${gmailPreviewItems.length} correos pendientes de revisión.${result.hasMore ? " Pulsa «Cargar más correos» para continuar." : " No quedan más correos en esta búsqueda."}`, "info", 7000);
       } catch (error) {
         toast(error?.message || "No he podido leer Gmail.", "bad", 8000);
       } finally {
