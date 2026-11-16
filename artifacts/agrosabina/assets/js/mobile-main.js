@@ -12,6 +12,7 @@ const MAX_VISIBLE_UPLOADS = 8;
 
 let currentUser = null;
 let filter = "ALL";
+let activeTab = "pending";
 let busy = false;
 let message = "";
 let storageAlert = "";
@@ -100,6 +101,7 @@ function render() {
     user: currentUser,
     invoices: mobileInvoices(),
     filter,
+    activeTab,
     inbox: [...inbox].sort((a, b) => String(b.savedAt || "").localeCompare(String(a.savedAt || ""))).slice(0, MAX_VISIBLE_UPLOADS),
     busy,
     message,
@@ -281,6 +283,16 @@ async function logout() {
 function wireInteractions() {
   root?.addEventListener("click", (event) => {
     const target = event.target instanceof Element ? event.target : null;
+    const tabButton = target?.closest("[data-mobile-tab]");
+    if (tabButton) {
+      const nextTab = tabButton.dataset.mobileTab || "pending";
+      if (["pending", "upload", "review", "account"].includes(nextTab)) {
+        activeTab = nextTab;
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      return;
+    }
     const filterButton = target?.closest("[data-mobile-filter]");
     if (filterButton) {
       filter = filterButton.dataset.mobileFilter || "ALL";

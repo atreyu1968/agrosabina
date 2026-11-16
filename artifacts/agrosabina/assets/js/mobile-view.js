@@ -16,6 +16,7 @@ const icon = (name, className = "") => {
     logout: '<path d="M10 4H5.5A1.5 1.5 0 0 0 4 5.5v13A1.5 1.5 0 0 0 5.5 20H10"/><path d="M14 8l4 4-4 4m4-4H9"/>',
     check: '<path d="m5 12.5 4.5 4L19 7"/>',
     receipt: '<path d="M6 3.5h12v17l-3-1.7-3 1.7-3-1.7-3 1.7v-17Z"/><path d="M9 8h6m-6 4h6m-6 4h3"/>',
+    user: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20v-1.5a7 7 0 0 1 14 0V20Z"/>',
   };
   return `<svg class="mobile-icon ${escapeHTML(className)}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name] || paths.file}</svg>`;
 };
@@ -53,6 +54,7 @@ export function renderMobileScreen({
   user,
   invoices,
   filter,
+  activeTab = "pending",
   inbox,
   busy,
   message,
@@ -73,6 +75,7 @@ export function renderMobileScreen({
   const pendingCount = allInvoices.length;
   const visibleInbox = Array.isArray(inbox) ? inbox : [];
   const isBusy = Boolean(busy);
+  const selectedTab = ["pending", "upload", "review", "account"].includes(activeTab) ? activeTab : "pending";
   const filterButton = (key, label) =>
     `<button type="button" class="mobile-filter${selectedFilter === key ? " is-active" : ""}" data-mobile-filter="${key}" aria-pressed="${selectedFilter === key}">${label}</button>`;
 
@@ -159,29 +162,22 @@ export function renderMobileScreen({
       </dialog>`
     : "";
 
-  return `<div class="mobile-screen">
-    <header class="mobile-header">
-      <a class="mobile-brand" href="./" aria-label="Abrir Agrosabina completa">
-        <img src="assets/img/agrosabina.png" width="429" height="179" alt="Agrosabina">
-      </a>
-      <div class="mobile-account">
-        <span class="mobile-account-name">${escapeHTML(displayName)}</span>
-        <button class="mobile-logout" type="button" data-mobile-action="logout" aria-label="Cerrar sesión">${icon("logout")}<span>Salir</span></button>
-      </div>
-    </header>
+  const tabs = [
+    { id: "pending", label: "Pendientes", icon: "receipt", count: pendingCount },
+    { id: "upload", label: "Subir", icon: "camera" },
+    { id: "review", label: "Revisar", icon: "file", count: visibleInbox.length },
+    { id: "account", label: "Cuenta", icon: "user" },
+  ];
+  const tabNav = `<nav class="mobile-tabbar" aria-label="Secciones del móvil">
+    ${tabs.map((tab) => `<button type="button" class="mobile-tab${selectedTab === tab.id ? " is-active" : ""}" data-mobile-tab="${tab.id}" aria-current="${selectedTab === tab.id ? "page" : "false"}" aria-label="${tab.label}${tab.count ? `, ${tab.count}` : ""}">
+      <span class="mobile-tab-icon">${icon(tab.icon)}</span>
+      <span class="mobile-tab-label">${tab.label}</span>
+      ${tab.count ? `<span class="mobile-tab-count">${tab.count > 99 ? "99+" : tab.count}</span>` : ""}
+    </button>`).join("")}
+  </nav>`;
 
-    <main class="mobile-content">
-      <section class="mobile-intro" aria-labelledby="mobile-title">
-        <p class="mobile-eyebrow"><span class="mobile-live-dot"></span> Vista de campo</p>
-        <h1 id="mobile-title">Lo pendiente,<br><em>de un vistazo.</em></h1>
-        <p class="mobile-intro-copy">Consulta facturas abiertas y guarda los documentos para revisarlos más tarde.</p>
-      </section>
-
-      ${securityMarkup}
-      ${storageMarkup}
-      ${messageMarkup}
-
-      <section class="mobile-invoices" aria-labelledby="pending-title">
+  const tabContent = selectedTab === "pending"
+    ? `<section class="mobile-invoices mobile-panel" aria-labelledby="pending-title">
         <div class="mobile-section-heading">
           <div><p class="mobile-section-kicker">Seguimiento</p><h2 id="pending-title">Facturas pendientes</h2></div>
           <span class="mobile-count" aria-label="${pendingCount} facturas pendientes">${pendingCount}</span>
@@ -192,41 +188,65 @@ export function renderMobileScreen({
           ${filterButton("OUT", "Por pagar")}
         </div>
         ${invoiceMarkup}
-      </section>
+      </section>`
+    : selectedTab === "upload"
+      ? `<section class="mobile-capture mobile-panel" aria-labelledby="capture-title">
+          <div class="mobile-section-heading capture-heading">
+            <div><p class="mobile-section-kicker">Añadir documento</p><h2 id="capture-title">Captura o selección</h2></div>
+            <span class="mobile-capture-stamp">Sin clasificar</span>
+          </div>
+          <p class="mobile-capture-copy">Guarda una foto o un PDF para revisarlo después. No se contabiliza automáticamente.</p>
+          <div class="mobile-action-grid">
+            <button class="mobile-action-button is-primary" type="button" data-mobile-action="take-photo"${isBusy ? " disabled" : ""}>
+              <span class="mobile-action-icon">${icon("camera")}</span>
+              <span><strong>Hacer una foto</strong><small>Abrir cámara trasera</small></span>
+              ${icon("arrow", "mobile-action-arrow")}
+            </button>
+            <button class="mobile-action-button" type="button" data-mobile-action="pick-files"${isBusy ? " disabled" : ""}>
+              <span class="mobile-action-icon">${icon("upload")}</span>
+              <span><strong>Elegir archivos</strong><small>Imágenes o PDF</small></span>
+              ${icon("arrow", "mobile-action-arrow")}
+            </button>
+          </div>
+          <input class="mobile-file-input" id="mobile-camera-file" type="file" accept="image/*" capture="environment" aria-label="Hacer una foto del documento"${isBusy ? " disabled" : ""}>
+          <input class="mobile-file-input" id="mobile-picker-file" type="file" accept="image/*,application/pdf,.pdf" multiple aria-label="Elegir imágenes o archivos PDF"${isBusy ? " disabled" : ""}>
+          ${isBusy ? '<p class="mobile-busy-note" role="status">Guardando el documento…</p>' : ""}
+        </section>`
+      : selectedTab === "review"
+        ? `<section class="mobile-inbox mobile-panel" aria-labelledby="inbox-title">
+            <div class="mobile-section-heading">
+              <div><p class="mobile-section-kicker">Bandeja móvil</p><h2 id="inbox-title">Por revisar</h2></div>
+              <span class="mobile-inbox-count">${visibleInbox.length} ${visibleInbox.length === 1 ? "archivo" : "archivos"}</span>
+            </div>
+            ${inboxMarkup}
+            <p class="mobile-review-note">Los originales se conservan tal como los subes; la revisión y contabilización se hacen desde la aplicación completa.</p>
+          </section>`
+        : `<section class="mobile-panel mobile-account-panel" aria-labelledby="account-title">
+            <div class="mobile-section-heading">
+              <div><p class="mobile-section-kicker">Acceso y seguridad</p><h2 id="account-title">Tu cuenta</h2></div>
+            </div>
+            <section class="mobile-account-card" aria-label="Sesión activa">
+              <span class="mobile-account-avatar">${icon("user")}</span>
+              <div class="mobile-account-copy"><small>Sesión iniciada</small><strong>${escapeHTML(displayName)}</strong></div>
+              <button class="mobile-account-logout" type="button" data-mobile-action="logout" aria-label="Cerrar sesión">${icon("logout")}</button>
+            </section>
+            ${securityMarkup}
+          </section>`;
 
-      <section class="mobile-capture" aria-labelledby="capture-title">
-        <div class="mobile-section-heading capture-heading">
-          <div><p class="mobile-section-kicker">Añadir documento</p><h2 id="capture-title">Guárdalo para revisarlo</h2></div>
-          <span class="mobile-capture-stamp">Sin clasificar</span>
-        </div>
-        <p class="mobile-capture-copy">El archivo quedará pendiente de revisión. No se contabiliza automáticamente.</p>
-        <div class="mobile-action-grid">
-          <button class="mobile-action-button is-primary" type="button" data-mobile-action="take-photo"${isBusy ? " disabled" : ""}>
-            <span class="mobile-action-icon">${icon("camera")}</span>
-            <span><strong>Hacer una foto</strong><small>Usar la cámara</small></span>
-            ${icon("arrow", "mobile-action-arrow")}
-          </button>
-          <button class="mobile-action-button" type="button" data-mobile-action="pick-files"${isBusy ? " disabled" : ""}>
-            <span class="mobile-action-icon">${icon("upload")}</span>
-            <span><strong>Elegir un archivo</strong><small>Imagen o PDF</small></span>
-            ${icon("arrow", "mobile-action-arrow")}
-          </button>
-        </div>
-        <input class="mobile-file-input" id="mobile-camera-file" type="file" accept="image/*" capture="environment" aria-label="Hacer una foto del documento"${isBusy ? " disabled" : ""}>
-        <input class="mobile-file-input" id="mobile-picker-file" type="file" accept="image/*,application/pdf,.pdf" multiple aria-label="Elegir imágenes o archivos PDF"${isBusy ? " disabled" : ""}>
-        ${isBusy ? '<p class="mobile-busy-note" role="status">Guardando el documento…</p>' : ""}
-      </section>
+  return `<div class="mobile-screen">
+    <header class="mobile-header">
+      <a class="mobile-brand" href="./" aria-label="Abrir Agrosabina completa">
+        <img src="assets/img/agrosabina.png" width="429" height="179" alt="Agrosabina">
+      </a>
+      <span class="mobile-header-tag">AGROSABINA <span aria-hidden="true">·</span> CAMPO</span>
+    </header>
 
-      <section class="mobile-inbox" aria-labelledby="inbox-title">
-        <div class="mobile-section-heading">
-          <div><p class="mobile-section-kicker">Bandeja</p><h2 id="inbox-title">Por revisar</h2></div>
-          <span class="mobile-inbox-count">${visibleInbox.length} ${visibleInbox.length === 1 ? "archivo" : "archivos"}</span>
-        </div>
-        ${inboxMarkup}
-        <p class="mobile-review-note">Los documentos se conservan tal cual los añades. La revisión se hace después.</p>
-      </section>
+    <main class="mobile-content" id="mobile-tab-panel" aria-live="polite">
+      ${storageMarkup}
+      ${messageMarkup}
+      ${tabContent}
     </main>
-    <footer class="mobile-footer"><span class="mobile-footer-mark"></span><span>Agrosabina · Compañera de campo</span></footer>
+    ${tabNav}
     ${passkeyDialog}
   </div>`;
 }

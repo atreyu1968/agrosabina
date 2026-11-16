@@ -10,8 +10,9 @@ test("la vista móvil ofrece filtros y captura con cámara trasera", () => {
   });
   assert.match(html, /data-mobile-filter="IN"/);
   assert.match(html, /data-mobile-filter="OUT"/);
-  assert.match(html, /id="mobile-camera-file"[^>]*capture="environment"/);
-  assert.match(html, /id="mobile-picker-file"[^>]*application\/pdf/);
+  const upload = renderMobileScreen({ invoices: [], inbox: [], activeTab: "upload" });
+  assert.match(upload, /id="mobile-camera-file"[^>]*capture="environment"/);
+  assert.match(upload, /id="mobile-picker-file"[^>]*application\/pdf/);
 });
 
 test("el filtro móvil separa cobros y pagos pendientes", () => {
@@ -30,16 +31,24 @@ test("el filtro móvil separa cobros y pagos pendientes", () => {
 
 test("los datos dinámicos se escapan y las subidas quedan pendientes de revisión", () => {
   const html = renderMobileScreen({
-    user: { name: "<script>alert(1)</script>" },
     invoices: [],
     inbox: [{ id: 'x" onclick="alert(1)', name: "<img src=x>", size: 1024, savedAt: "2026-11-16T12:00:00Z" }],
+    activeTab: "review",
   });
-  assert.doesNotMatch(html, /<script>alert/);
   assert.doesNotMatch(html, /<img src=x>/);
-  assert.match(html, /&lt;script&gt;/);
   assert.match(html, /&lt;img src=x&gt;/);
-  assert.match(html, /Sin clasificar/);
-  assert.match(html, /No se contabiliza automáticamente/);
+  const account = renderMobileScreen({
+    user: { name: "<script>alert(1)</script>" },
+    invoices: [],
+    inbox: [],
+    activeTab: "account",
+  });
+  assert.doesNotMatch(account, /<script>alert/);
+  assert.match(account, /&lt;script&gt;/);
+  assert.match(html, /originales se conservan/);
+  const upload = renderMobileScreen({ invoices: [], inbox: [], activeTab: "upload" });
+  assert.match(upload, /Sin clasificar/);
+  assert.match(upload, /No se contabiliza automáticamente/);
 });
 
 test("la página móvil permite activar el acceso biométrico con confirmación de contraseña", () => {
@@ -47,6 +56,7 @@ test("la página móvil permite activar el acceso biométrico con confirmación 
     user: { name: "Ana" },
     invoices: [],
     inbox: [],
+    activeTab: "account",
     passkeySupported: true,
     passkeySetupOpen: true,
   });
@@ -57,7 +67,47 @@ test("la página móvil permite activar el acceso biométrico con confirmación 
 });
 
 test("la página móvil explica cuándo no está disponible el acceso biométrico", () => {
-  const html = renderMobileScreen({ invoices: [], inbox: [], passkeySupported: false });
+  const html = renderMobileScreen({ invoices: [], inbox: [], activeTab: "account", passkeySupported: false });
   assert.match(html, /abre la aplicación desde HTTPS/);
   assert.doesNotMatch(html, /data-mobile-action="open-passkey-setup"/);
+});
+
+test("la navegación inferior ofrece pestañas compactas para las cuatro tareas móviles", () => {
+  const html = renderMobileScreen({
+    invoices: [{ id: "invoice", direction: "GASTO", party: "Proveedor", total: 24 }],
+    inbox: [{ id: "file", name: "recibo.pdf" }],
+  });
+  assert.match(html, /class="mobile-tabbar" aria-label="Secciones del móvil"/);
+  for (const tab of ["pending", "upload", "review", "account"]) {
+    assert.match(html, new RegExp(`data-mobile-tab="${tab}"`));
+  }
+  assert.match(html, /Pendientes/);
+  assert.match(html, /Subir/);
+  assert.match(html, /Revisar/);
+  assert.match(html, /Cuenta/);
+  assert.match(html, /aria-current="page"/);
+  assert.doesNotMatch(html, /id="mobile-camera-file"/);
+});
+
+test("cada pestaña muestra solo su contenido y mantiene captura, revisión y cuenta accesibles", () => {
+  const common = {
+    invoices: [{ id: "invoice", direction: "GASTO", party: "Proveedor", total: 24 }],
+    inbox: [{ id: "file", name: "recibo.pdf" }],
+    passkeySupported: true,
+  };
+  const upload = renderMobileScreen({ ...common, activeTab: "upload" });
+  assert.match(upload, /id="mobile-camera-file"[^>]*capture="environment"/);
+  assert.match(upload, /id="mobile-picker-file"/);
+  assert.doesNotMatch(upload, /id="pending-title"/);
+
+  const review = renderMobileScreen({ ...common, activeTab: "review" });
+  assert.match(review, /id="inbox-title"/);
+  assert.match(review, /recibo\.pdf/);
+  assert.doesNotMatch(review, /id="mobile-camera-file"/);
+
+  const account = renderMobileScreen({ ...common, activeTab: "account", user: { name: "Ana" } });
+  assert.match(account, /id="account-title"/);
+  assert.match(account, /Activar acceso biométrico/);
+  assert.match(account, /data-mobile-action="logout"/);
+  assert.doesNotMatch(account, /id="pending-title"/);
 });
