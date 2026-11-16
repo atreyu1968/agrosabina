@@ -138,6 +138,14 @@ CREATE TABLE IF NOT EXISTS proveedores (
   nif        TEXT DEFAULT '',
   email      TEXT DEFAULT '',
   telefono   TEXT DEFAULT '',
+  persona_contacto TEXT DEFAULT '',
+  direccion  TEXT DEFAULT '',
+  poblacion  TEXT DEFAULT '',
+  codigo_postal TEXT DEFAULT '',
+  pais       TEXT DEFAULT '',
+  web        TEXT DEFAULT '',
+  forma_pago TEXT DEFAULT '',
+  plazo_pago_dias INTEGER,
   nota       TEXT DEFAULT '',
   rol        TEXT DEFAULT 'PROVEEDOR',
   creado_en  TEXT NOT NULL
@@ -161,6 +169,7 @@ CREATE TABLE IF NOT EXISTS facturas (
   lineas         TEXT DEFAULT '',
   liquidacion    TEXT DEFAULT '',
   nomina         TEXT DEFAULT '',
+  financiero     TEXT DEFAULT '',
   origen         TEXT DEFAULT 'manual',
   fichero        TEXT DEFAULT '',
   original       TEXT DEFAULT '',
@@ -200,7 +209,7 @@ CREATE TABLE IF NOT EXISTS correos (
   usado_en    TEXT DEFAULT ''
 );
 
-PRAGMA user_version = 7;
+PRAGMA user_version = 8;
 `;
 
 function exec(sql, params) {
@@ -234,6 +243,7 @@ function addMissingColumns() {
   if (!have.has("liquidacion")) exec("ALTER TABLE facturas ADD COLUMN liquidacion TEXT DEFAULT ''");
   // Los datos de una nómina (bruto, Seguridad Social, IRPF y líquido).
   if (!have.has("nomina")) exec("ALTER TABLE facturas ADD COLUMN nomina TEXT DEFAULT ''");
+  if (!have.has("financiero")) exec("ALTER TABLE facturas ADD COLUMN financiero TEXT DEFAULT ''");
   // El fichero original del documento (nombre, tipo y tamaño; los bytes van aparte).
   if (!have.has("original")) exec("ALTER TABLE facturas ADD COLUMN original TEXT DEFAULT ''");
   // Con qué se cobró o se pagó: caja o banco, y en qué cuenta corriente.
@@ -244,6 +254,14 @@ function addMissingColumns() {
   // Un tercero es proveedor, cliente o las dos cosas.
   const haveSup = new Set(rows("PRAGMA table_info(proveedores)").map((r) => String(r.name)));
   if (!haveSup.has("rol")) exec("ALTER TABLE proveedores ADD COLUMN rol TEXT DEFAULT 'PROVEEDOR'");
+  if (!haveSup.has("persona_contacto")) exec("ALTER TABLE proveedores ADD COLUMN persona_contacto TEXT DEFAULT ''");
+  if (!haveSup.has("direccion")) exec("ALTER TABLE proveedores ADD COLUMN direccion TEXT DEFAULT ''");
+  if (!haveSup.has("poblacion")) exec("ALTER TABLE proveedores ADD COLUMN poblacion TEXT DEFAULT ''");
+  if (!haveSup.has("codigo_postal")) exec("ALTER TABLE proveedores ADD COLUMN codigo_postal TEXT DEFAULT ''");
+  if (!haveSup.has("pais")) exec("ALTER TABLE proveedores ADD COLUMN pais TEXT DEFAULT ''");
+  if (!haveSup.has("web")) exec("ALTER TABLE proveedores ADD COLUMN web TEXT DEFAULT ''");
+  if (!haveSup.has("forma_pago")) exec("ALTER TABLE proveedores ADD COLUMN forma_pago TEXT DEFAULT ''");
+  if (!haveSup.has("plazo_pago_dias")) exec("ALTER TABLE proveedores ADD COLUMN plazo_pago_dias INTEGER");
 
   exec("DROP VIEW IF EXISTS igic_por_proveedor");
   exec(`CREATE VIEW igic_por_proveedor AS
@@ -256,7 +274,7 @@ function addMissingColumns() {
            ROUND(SUM(f.total), 2) AS total
       FROM facturas f
       JOIN proveedores p ON p.id = f.proveedor_id
-     WHERE UPPER(COALESCE(f.tipo, '')) <> 'NOMINA'
+     WHERE UPPER(COALESCE(f.tipo, '')) NOT IN ('NOMINA','IGIC','RECIBO_BANCARIO','PRESTAMO','POLIZA_CREDITO')
      GROUP BY p.id, f.estado`);
 }
 
@@ -317,13 +335,21 @@ export function readState() {
 
   const settings = settingsFromDb();
   const suppliers = rows(
-    "SELECT id, nombre, nif, email, telefono, nota, rol, creado_en FROM proveedores ORDER BY creado_en"
+    "SELECT id, nombre, nif, email, telefono, persona_contacto, direccion, poblacion, codigo_postal, pais, web, forma_pago, plazo_pago_dias, nota, rol, creado_en FROM proveedores ORDER BY creado_en"
   ).map((r) => ({
     id: r.id,
     name: r.nombre,
     nif: r.nif || "",
     email: r.email || "",
     phone: r.telefono || "",
+    contactName: r.persona_contacto || "",
+    address: r.direccion || "",
+    city: r.poblacion || "",
+    postalCode: r.codigo_postal || "",
+    country: r.pais || "",
+    website: r.web || "",
+    paymentMethod: r.forma_pago || "",
+    paymentTermDays: Number.isInteger(r.plazo_pago_dias) ? r.plazo_pago_dias : null,
     note: r.nota || "",
     role: r.rol || "",
     createdAt: r.creado_en,
@@ -331,7 +357,7 @@ export function readState() {
 
   const invoices = rows(
     `SELECT id, proveedor_id, numero, fecha, vencimiento, base, tipo_igic, cuota_igic, total,
-            estado, fecha_pago, tipo, categoria, sentido, lineas, liquidacion, nomina, origen, fichero, original,
+            estado, fecha_pago, tipo, categoria, sentido, lineas, liquidacion, nomina, financiero, origen, fichero, original,
             medio_pago, cuenta_corriente,
             texto, notas, confianza, creado_en, actualizado_en
        FROM facturas ORDER BY creado_en DESC`
@@ -366,6 +392,12 @@ export function readState() {
     } catch (_) {
       nomina = null;
     }
+    let financial = null;
+    try {
+      financial = r.financiero ? JSON.parse(r.financiero) : null;
+    } catch (_) {
+      financial = null;
+    }
     return {
       id: r.id,
       supplierId: r.proveedor_id || null,
@@ -386,6 +418,7 @@ export function readState() {
       lines: Array.isArray(lines) ? lines : [],
       liquidacion: liquidacion && typeof liquidacion === "object" ? liquidacion : null,
       nomina: nomina && typeof nomina === "object" ? nomina : null,
+      financial: financial && typeof financial === "object" ? financial : null,
       source: r.origen || "manual",
       fileName: r.fichero || "",
       original: original && typeof original === "object" ? original : null,
@@ -448,14 +481,22 @@ export function writeState(state) {
 
     for (const s of suppliers) {
       exec(
-        `INSERT INTO proveedores (id, nombre, nif, email, telefono, nota, rol, creado_en)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO proveedores (id, nombre, nif, email, telefono, persona_contacto, direccion, poblacion, codigo_postal, pais, web, forma_pago, plazo_pago_dias, nota, rol, creado_en)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           s.id,
           s.name || "(sin nombre)",
           s.nif || "",
           s.email || "",
           s.phone || "",
+          s.contactName || "",
+          s.address || "",
+          s.city || "",
+          s.postalCode || "",
+          s.country || "",
+          s.website || "",
+          s.paymentMethod || "",
+          s.paymentTermDays ?? null,
           s.note || "",
           s.role === "CLIENTE" ? "CLIENTE" : s.role === "AMBOS" ? "AMBOS" : "PROVEEDOR",
           s.createdAt || new Date().toISOString(),
@@ -467,10 +508,10 @@ export function writeState(state) {
       exec(
         `INSERT INTO facturas (id, proveedor_id, numero, fecha, vencimiento, base, tipo_igic,
                                cuota_igic, total, estado, fecha_pago, tipo, categoria, sentido,
-                               lineas, liquidacion, nomina, origen, fichero, original,
+                               lineas, liquidacion, nomina, financiero, origen, fichero, original,
                                medio_pago, cuenta_corriente, texto, notas, confianza,
                                creado_en, actualizado_en)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           inv.id,
           inv.supplierId || null,
@@ -489,6 +530,7 @@ export function writeState(state) {
           JSON.stringify(Array.isArray(inv.lines) ? inv.lines : []),
           JSON.stringify(inv.liquidacion || null),
           JSON.stringify(inv.nomina || null),
+          JSON.stringify(inv.financial || null),
           inv.source || "manual",
           inv.fileName || "",
           JSON.stringify(inv.original || null),

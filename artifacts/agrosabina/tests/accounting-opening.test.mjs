@@ -30,11 +30,11 @@ test("traslada los saldos patrimoniales y cierra ingresos y gastos en la 121", (
     Number((line.debit - line.credit).toFixed(2)),
   ]));
 
-  assert.equal(balance.get("572"), 100);
-  assert.equal(balance.get("100"), -100);
-  assert.equal(balance.get("400"), -30);
-  assert.equal(balance.get("430"), 50);
-  assert.equal(balance.get("121"), -20);
+  assert.equal(balance.get("572000"), 100);
+  assert.equal(balance.get("100000"), -100);
+  assert.equal(balance.get("400000"), -30);
+  assert.equal(balance.get("430000"), 50);
+  assert.equal(balance.get("121000"), -20);
   assert.equal(lines.some((line) => line.account.startsWith("6") || line.account.startsWith("7")), false);
   assert.equal(
     Number([...balance.values()].reduce((sum, amount) => sum + amount, 0).toFixed(2)),
@@ -54,6 +54,25 @@ test("el asiento de apertura por cuenta conserva el primer día del nuevo ejerci
   assert.equal(entries[0].date, "2026-01-01");
   assert.equal(entries[0].kind, "apertura");
   assert.equal(entries[0].lines.some((line) => line.account.startsWith("6") || line.account.startsWith("7")), false);
+});
+
+test("el asiento de apertura admite saldos manuales equilibrados en cuentas de seis cifras", () => {
+  const entries = asientosDe([], {
+    from: "2026-01-01",
+    to: "2026-12-31",
+    apertura: {
+      lines: [
+        { account: "572000", debit: 1000, credit: 0 },
+        { account: "211001", debit: 2000, credit: 0 },
+        { account: "100000", debit: 0, credit: 3000 },
+      ],
+    },
+  });
+  assert.equal(entries.length, 1);
+  assert.equal(entries[0].date, "2026-01-01");
+  assert.equal(entries[0].kind, "apertura");
+  assert.deepEqual(entries[0].lines.map((line) => line.account), ["572000", "211001", "100000"]);
+  assert.equal(entries[0].total, 3000);
 });
 
 test("traslada facturas pendientes y las cancela al cobrarlas o pagarlas en el ejercicio siguiente", () => {
@@ -91,8 +110,8 @@ test("traslada facturas pendientes y las cancela al cobrarlas o pagarlas en el e
     Number((line.debit - line.credit).toFixed(2)),
   ]));
 
-  assert.equal(opening.get("430"), 160);
-  assert.equal(opening.get("400"), -107);
+  assert.equal(opening.get("430000"), 160);
+  assert.equal(opening.get("400000"), -107);
   assert.equal(
     openingLines.some((line) => line.account.startsWith("6") || line.account.startsWith("7")),
     false
@@ -115,9 +134,9 @@ test("traslada facturas pendientes y las cancela al cobrarlas o pagarlas en el e
     newYearEntries.map((entry) => entry.kind).sort(),
     ["apertura", "cobro", "pago"]
   );
-  assert.equal(newYearBalances.get("430"), 0);
-  assert.equal(newYearBalances.get("400"), 0);
-  assert.equal(newYearBalances.get("572"), 53);
+  assert.equal(newYearBalances.get("430000"), 0);
+  assert.equal(newYearBalances.get("400000"), 0);
+  assert.equal(newYearBalances.get("572000"), 53);
   assert.equal(
     newYearEntries.find((entry) => entry.kind === "apertura").lines.some(
       (line) => line.account.startsWith("6") || line.account.startsWith("7")

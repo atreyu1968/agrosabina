@@ -10,13 +10,13 @@
  *    contabilidad, para que las dos enseñen exactamente lo mismo.
  *
  * El asiento que sale de aquí es el del PGC para una nómina:
- *   640 Sueldos y salarios ...................... al debe (bruto)
- *   642 Seguridad Social a cargo de la empresa .. al debe
- *   476 Organismos de la Seguridad Social ...... al haber (trabajador + empresa)
- *   4751 Hacienda Pública, acreedora por IRPF .. al haber
- *   465 Remuneraciones pendientes de pago ...... al haber (el líquido)
+ *   640000 Sueldos y salarios ...................... al debe (bruto)
+ *   642000 Seguridad Social a cargo de la empresa .. al debe
+ *   476000 Organismos de la Seguridad Social ...... al haber (trabajador + empresa)
+ *   475100 Hacienda Pública, acreedora por IRPF .. al haber
+ *   465000 Remuneraciones pendientes de pago ...... al haber (el líquido)
  * Cuando la nómina se marca pagada, la contabilidad saca el dinero de la
- * cuenta 465 contra caja (570) o banco (572), como cualquier otro pago.
+ * cuenta 465000 contra caja (570000) o banco (572000), como cualquier otro pago.
  */
 
 import { parseAmount, round2 } from "./util.js";
@@ -25,11 +25,11 @@ import { leerTablaNomina } from "./nomina-tabla.js";
 
 /** Las cuentas del PGC que toca una nómina. */
 export const CUENTAS_NOMINA = Object.freeze({
-  sueldos: "640",
-  ssEmpresa: "642",
-  ssPagar: "476",
-  irpf: "4751",
-  liquido: "465",
+  sueldos: "640000",
+  ssEmpresa: "642000",
+  ssPagar: "476000",
+  irpf: "475100",
+  liquido: "465000",
 });
 
 /** Porcentajes de referencia del régimen general, solo como pista. */
@@ -146,7 +146,7 @@ export function calcularNomina(n) {
  * El asiento de la nómina en forma de líneas con signo: positivo al debe,
  * negativo al haber (el mismo formato que usa accounting.js). El líquido va a
  * la subcuenta del trabajador (465001, 465002…) para que cada uno tenga la
- * suya; si no se le ha abierto todavía, a la 465.
+ * suya; si no se le ha abierto todavía, a la 465000.
  */
 export function lineasNomina(n, cuentaLiquido) {
   const c = calcularNomina(n);
@@ -297,7 +297,7 @@ export function leerNomina(textoCrudo) {
   }
   if (n.ssEmpresa == null) {
     notas.push(
-      "No he visto la Seguridad Social a cargo de la empresa: el asiento llevará el sueldo, la parte del trabajador y el IRPF, y la 642 quedará a cero."
+      "No he visto la Seguridad Social a cargo de la empresa: el asiento llevará el sueldo, la parte del trabajador y el IRPF, y la 642000 quedará a cero."
     );
   }
 

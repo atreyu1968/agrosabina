@@ -15,7 +15,6 @@ import {
   fmtEUR,
   fmtNum,
   initials,
-  lastMonths,
   monthKey,
   monthLabel,
   normaliseSpanishNif,
@@ -32,13 +31,16 @@ import {
   clearAll,
   deleteInvoice,
   deleteMessage,
+  deleteMessages,
   deleteSupplier,
   ensureSupplier,
   exportJSON,
   exportCompleteBackup,
   importCompleteBackup,
+  importSupplierContacts,
   findDuplicateDocument,
   findExactDuplicateDocument,
+  findSupplierForContactImport,
   findSupplierByNameOrNif,
   exerciseDateError,
   getState,
@@ -60,6 +62,8 @@ import {
   exportSqliteBytes,
   sqliteIgicSummary,
   storageInfo,
+  resolveSharedConflict,
+  sharedConflictBackup,
   keepInvoiceOriginal,
   invoiceOriginalBody,
   originalsUsage,
@@ -70,9 +74,13 @@ import {
   settingsWriteError,
   supplierWriteError,
 } from "./store.js";
+import { sharedRequest } from "./shared-api.js";
+import { crmPaymentMethodLabel, normalizeCrmRows } from "./crm-import.js";
 import { MAX_BACKUP_BYTES, unpackCompleteBackup } from "./complete-backup.js";
 import { parseKg, parseLiquidacion, parsePrice, looksLikeInvoice } from "./parse.js";
-import { leerDocumento, importadoresDisponibles } from "./importers.js";
+import { leerDocumento } from "./importers.js";
+import { isFinancial, financialDirection, financialError, financialProfitAmount, debtBalances } from "./financial-documents.js";
+import { financialFormHtml, bindFinancialForm, readFinancialForm } from "./financial-form.js";
 import { documentPageImages, describeFile, readFile, sourceLabel } from "./read.js";
 import { cameraSupported, openCamera } from "./camera.js";
 import {
@@ -81,6 +89,11 @@ import {
   classifyLocal,
   directionOf,
   invoiceDirection,
+  invoiceExerciseYear,
+  isIssuedInExercise,
+  isPendingCarryover,
+  isVisibleInExercise,
+  isPurchaseExpense,
   kindInfo,
   kindOptions,
 } from "./model.js";
@@ -105,12 +118,19 @@ import {
   setPlanDeCuentas,
   aperturaDesdeCierre,
 } from "./accounting.js";
-import { pgcNombre, siguienteSubcuenta } from "./pgc.js";
+import { normalizarCodigoCuenta, PGC_CUENTAS, pgcNombre, siguienteSubcuenta } from "./pgc.js";
 import { igicPorTrimestre, tesoreriaPorCuenta, vencimientos } from "./erp.js";
 import { parseBankStatement, statementFingerprint, suggestBankMatches } from "./bank-reconciliation.js";
-import { dropOriginal, keepOriginal, originalOf } from "./files.js";
+import {
+  dropOriginal,
+  keepOriginal,
+  originalOf,
+  persistentStorageStatus,
+  requestPersistentStorage,
+} from "./files.js";
 import { CUENTAS_NOMINA, calcularNomina, esNomina } from "./nomina.js";
-import { informeBalancePdf, informeResultadosPdf } from "./reports.js";
+import { balanceAsOfWindow, informeBalancePdf, informeResultadosPdf } from "./reports.js";
+import { reportPdf, reportXls } from "./report-export.js";
 import {
   closeModal,
   confirmDialog,
@@ -134,8 +154,20 @@ import {
 
 export const ui = {
   route: "resumen",
-  filters: { status: "all", supplier: "", q: "", direction: "GASTO" },
+  filters: { status: "all", supplier: "", q: "", direction: "GASTO", category: "", from: "", to: "" },
   supplierQuery: "",
+  nominaFilters: { q: "", status: "all", from: "", to: "" },
+  salesListFilters: { q: "", status: "all", sort: "recent" },
+  pagination: {
+    documents: { page: 1, size: 25 },
+    purchases: { page: 1, size: 25 },
+    payroll: { page: 1, size: 25 },
+    suppliers: { page: 1, size: 25 },
+    sales: { page: 1, size: 25 },
+    mail: { page: 1, size: 25 },
+  },
+  mailFilters: { q: "", status: "all" },
+  selectedMailIds: new Set(),
   // Pantalla de terceros: si se miran los proveedores, los clientes o todos.
   supplierRole: "PROVEEDOR",
   jobs: [],
@@ -150,6 +182,64 @@ export const ui = {
   // No se guarda nada: se vacía al cerrar la pestaña.
   pruebas: { list: [], busy: false, status: "" },
 };
+
+const LIST_PAGE_SIZES = [25, 50, 100];
+
+function foldSearch(value) {
+  return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+}
+
+function listPageInfo(total, scope) {
+  const config = ui.pagination[scope];
+  const size = LIST_PAGE_SIZES.includes(Number(config?.size)) ? Number(config.size) : 25;
+  const pages = Math.max(1, Math.ceil(total / size));
+  const page = Math.min(pages, Math.max(1, Number(config?.page) || 1));
+  if (config) {
+    config.size = size;
+    config.page = page;
+  }
+  return { size, pages, page, start: total ? (page - 1) * size : 0, end: Math.min(total, page * size) };
+}
+
+function pageRows(list, scope) {
+  const page = listPageInfo(list.length, scope);
+  return list.slice(page.start, page.end);
+}
+
+function listPageControls(total, scope) {
+  if (!total) return "";
+  const page = listPageInfo(total, scope);
+  if (total <= page.size) {
+    return `<div class="list-pagination"><span>Mostrando ${total} de ${total}</span></div>`;
+  }
+  return `<nav class="list-pagination" aria-label="Paginación de resultados">
+    <span>Mostrando ${page.start + 1}–${page.end} de ${total}</span>
+    <label>Filas
+      <select data-list-size="${scope}" aria-label="Filas por página">
+        ${LIST_PAGE_SIZES.map((size) => `<option value="${size}" ${page.size === size ? "selected" : ""}>${size}</option>`).join("")}
+      </select>
+      por página
+    </label>
+    <div class="list-pagination-actions">
+      <button class="btn sm" data-action="list-page" data-scope="${scope}" data-page="${page.page - 1}" ${page.page <= 1 ? "disabled" : ""}>Anterior</button>
+      <span>Página ${page.page} de ${page.pages}</span>
+      <button class="btn sm" data-action="list-page" data-scope="${scope}" data-page="${page.page + 1}" ${page.page >= page.pages ? "disabled" : ""}>Siguiente</button>
+    </div>
+  </nav>`;
+}
+
+function resetListPage(scope) {
+  if (ui.pagination[scope]) ui.pagination[scope].page = 1;
+}
+
+function renderListScope(scope) {
+  if (scope === "documents") refreshDocResults();
+  else if (scope === "purchases") refreshInvoiceTable();
+  else if (scope === "payroll") render();
+  else if (scope === "suppliers") refreshSupplierGrid();
+  else if (scope === "sales") refreshSalesTable();
+  else if (scope === "mail") refreshSavedMailList();
+}
 
 let aperturaPendienteDeConfirmar = null;
 
@@ -178,6 +268,8 @@ const ROUTES = [
  */
 function askPaidDate(inv, isIncome, onSave) {
   const today = todayISO();
+  const year = activeExerciseYear();
+  const defaultDate = today.startsWith(`${year}-`) ? today : "";
   const ajustes = getState().settings || {};
   const guardadas = Array.isArray(ajustes.bankAccounts) ? ajustes.bankAccounts : [];
   const cajaNombre = String(ajustes.cashAccount || "").trim() || "Caja general";
@@ -197,9 +289,9 @@ function askPaidDate(inv, isIncome, onSave) {
     </div>
     <div class="modal-body">
       <div class="field">
-        <label for="paid-date">Fecha ${isIncome ? "del cobro" : "del pago"}</label>
-        <input id="paid-date" type="date" value="${esc(today)}">
-        <span class="hint">Se guarda con el documento y sale en su ficha y en los listados. Puedes cambiarla después.</span>
+        <label for="paid-date">Fecha real ${isIncome ? "del cobro" : "del pago"} · ejercicio ${year}</label>
+        <input id="paid-date" type="date" min="${year}-01-01" max="${year}-12-31" value="${esc(defaultDate)}" required>
+        <span class="hint">Debe pertenecer al ejercicio activo. Indica la fecha real; no se asignará una fecha si no coincide el año.</span>
       </div>
       <div class="field">
         <label>¿Cómo se ${isIncome ? "ha cobrado" : "ha pagado"}?</label>
@@ -208,7 +300,7 @@ function askPaidDate(inv, isIncome, onSave) {
           <button type="button" data-method="BANCO" class="${medioInicial === "BANCO" ? "active" : ""}">Por el banco</button>
           <button type="button" data-method="TARJETA" class="${medioInicial === "TARJETA" ? "active" : ""}">Con tarjeta</button>
         </div>
-        <span class="hint">La caja entra en la cuenta 570; banco y tarjeta, en la 572.</span>
+        <span class="hint">La caja entra en la cuenta 570000; banco y tarjeta, en la 572000.</span>
       </div>
       <div class="field">
         <label for="paid-account">Cuenta corriente <span class="hint">(o el nombre de la caja)</span></label>
@@ -223,6 +315,7 @@ function askPaidDate(inv, isIncome, onSave) {
     </div>`,
     {
       onMount(wrap) {
+        refreshAdminAccess(wrap);
         wrap.querySelectorAll("[data-modal-cancel]").forEach((b) =>
           b.addEventListener("click", () => closeModal())
         );
@@ -235,7 +328,7 @@ function askPaidDate(inv, isIncome, onSave) {
           if (hint) {
             hint.textContent = banco
               ? "Escribe el nombre de la cuenta. Se guarda con el documento y se recuerda para la próxima vez."
-              : "Un nombre para la caja, por ejemplo «Caja general». El dinero entra en la cuenta 570 del PGC.";
+              : "Un nombre para la caja, por ejemplo «Caja general». El dinero entra en la cuenta 570000 del PGC.";
           }
           if (acc) {
             acc.placeholder = banco ? "Cuenta corriente" : "Caja general";
@@ -353,7 +446,7 @@ function categoryCard(t) {
           <p>Gastos e ingresos agrupados por concepto</p>
         </div>
         <div class="spacer"></div>
-        <a class="btn sm ghost" href="#/compras">Ver documentos ${icon("arrow")}</a>
+         <a class="btn sm ghost" href="#/documentos">Ver documentos ${icon("arrow")}</a>
       </div>
       <div class="card-body">
         <div class="cat-list">
@@ -393,6 +486,22 @@ export function renderLoading(message = "Un momento: preparo las tablas de prove
   </div></section>`;
 }
 
+function carryoverSubline(invoice) {
+  return isPendingCarryover(invoice, activeExerciseYear())
+    ? `<div class="sub">Pendiente · ejercicio ${invoiceExerciseYear(invoice)}</div>`
+    : "";
+}
+
+function exerciseSelectorHtml() {
+  const year = activeExerciseYear();
+  return `<label class="exercise-global">
+    <span>Ejercicio</span>
+    <select id="globalExercise" aria-label="Ejercicio activo">
+      ${exerciseYears().map((item) => `<option value="${item}"${item === year ? " selected" : ""}>${item}</option>`).join("")}
+    </select>
+  </label>`;
+}
+
 export function render() {
   const route = ROUTES.includes(ui.route) ? ui.route : "resumen";
   ui.route = route;
@@ -407,12 +516,14 @@ export function render() {
   const meta = pageMeta(route);
   document.getElementById("viewTitle").textContent = meta.title;
   document.getElementById("viewSub").textContent = meta.sub;
-  document.getElementById("topActions").innerHTML = topActions(route);
+  document.getElementById("topActions").innerHTML = exerciseSelectorHtml();
 
   const view = document.getElementById("view");
   if (route === "resumen") view.innerHTML = viewResumen();
   else if (route === "ventas") view.innerHTML = viewVentas();
-  else if (route === "control-fruta") renderFruitControl(view, getState().invoices.map((inv) => ({
+  else if (route === "control-fruta") renderFruitControl(view, getState().invoices
+    .filter((inv) => isIssuedInExercise(inv, activeExerciseYear()))
+    .map((inv) => ({
     ...inv, supplierName: supplierById(inv.supplierId)?.name || inv.supplierName || "",
   })));
   else if (route === "contabilidad") view.innerHTML = viewContabilidad();
@@ -422,8 +533,11 @@ export function render() {
   else if (route === "documentos") view.innerHTML = viewDocumentos();
   else if (route === "correo") view.innerHTML = viewCorreo();
   else if (route === "pruebas") view.innerHTML = viewPruebas();
+  else if (route === "movil") view.innerHTML = viewInstallMobile();
   else view.innerHTML = viewImportar();
 
+  mountPageActions(view, route);
+  if (route === "movil") void mountMobileInstallQr(view);
   updateNavBadge();
 }
 
@@ -457,15 +571,19 @@ function docSupplier(inv) {
 function docList() {
   const st = ui.docs;
   const w = windowFor(st);
-  const needle = st.q.trim().toLowerCase();
-  let list = getState().invoices.slice();
+  const needle = foldSearch(st.q);
+  let list = getState().invoices.filter((inv) => isVisibleInExercise(inv, activeExerciseYear()));
 
   if (st.kind !== "all") list = list.filter((inv) => (inv.kind || "FACTURA") === st.kind);
   if (st.dir !== "all") list = list.filter((inv) => docDirection(inv) === st.dir);
   if (st.status === "pending") list = list.filter((inv) => inv.status !== STATUS.PAID);
   else if (st.status === "paid") list = list.filter((inv) => inv.status === STATUS.PAID);
   if (st.supplier) list = list.filter((inv) => inv.supplierId === st.supplier);
-  if (w.from || w.to) list = list.filter((inv) => inSalesWindow(docDay(inv), w));
+  if (w.from || w.to) {
+    list = list.filter((inv) =>
+      isPendingCarryover(inv, activeExerciseYear()) || inSalesWindow(docDay(inv), w)
+    );
+  }
 
   if (needle) {
     list = list.filter((inv) => {
@@ -483,9 +601,9 @@ function docList() {
         String(inv.rawText || "").slice(0, 3000),
       ]
         .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      return hay.includes(needle);
+        .join(" ");
+      const foldedHay = foldSearch(hay);
+      return foldedHay.includes(needle);
     });
   }
 
@@ -548,15 +666,15 @@ function docsFilters() {
 }
 
 /** La tabla de documentos, con sus totales debajo. */
-function docTableHtml(list) {
-  const t = totals(list);
+function docTableHtml(list, totalsList = list) {
+  const t = totals(totalsList);
   const filas = list
     .map((inv) => {
       const info = kindInfo(inv.kind || "FACTURA") || {};
       const sup = docSupplier(inv) || {};
       const isIn = docDirection(inv) === "INGRESO";
       return `<tr data-id="${inv.id}">
-        <td class="num">${fmtDate(docDay(inv))}</td>
+        <td class="num">${fmtDate(docDay(inv))}${carryoverSubline(inv)}</td>
         <td><span class="tag${isIn ? " is-in" : ""}">${esc(info.label || "Documento")}</span></td>
         <td>
           <div class="cell-main">
@@ -592,7 +710,7 @@ function docTableHtml(list) {
       <tbody>${filas}</tbody>
       <tfoot>
         <tr>
-          <td colspan="4">${list.length} ${list.length === 1 ? "documento" : "documentos"}</td>
+          <td colspan="4">${totalsList.length} ${totalsList.length === 1 ? "documento" : "documentos"}</td>
           <td class="num">${fmtEUR(t.base)}</td>
           <td class="num">${fmtEUR(t.igic)}</td>
           <td class="num strong">${fmtEUR(t.total)}</td>
@@ -606,8 +724,9 @@ function docTableHtml(list) {
 /** El recuadro de cifras y la tabla; se repinta solo al filtrar. */
 function docResults() {
   const list = docList();
+  const visible = pageRows(list, "documents");
   const t = totals(list);
-  const todos = getState().invoices.length;
+  const todos = getState().invoices.filter((inv) => isVisibleInExercise(inv, activeExerciseYear())).length;
   const vacio = `<section class="card">
     <div class="empty">
       <div class="e-icon">${icon("folder")}</div>
@@ -622,7 +741,7 @@ function docResults() {
       <article class="kpi">
         <div class="kpi-label"><span class="dot"></span>Documentos</div>
         <div class="kpi-value">${list.length}</div>
-        <div class="kpi-foot">de ${todos} guardados</div>
+        <div class="kpi-foot">de ${todos} documentos del ejercicio y pendientes anteriores</div>
       </article>
       <article class="kpi is-brand">
         <div class="kpi-label"><span class="dot"></span>Importe</div>
@@ -649,15 +768,47 @@ function docResults() {
         <div class="spacer"></div>
         <button class="btn sm ghost" data-action="docs-export">${icon("download")}<span>Exportar índice</span></button>
       </div>
-      ${list.length ? docTableHtml(list) : ""}
+      ${list.length ? `${docTableHtml(visible, list)}${listPageControls(list.length, "documents")}` : ""}
     </section>
     ${list.length ? "" : vacio}`;
+}
+
+function mobileUploadInboxHtml() {
+  const inbox = Array.isArray(getState().settings?.mobileDocumentInbox)
+    ? getState().settings.mobileDocumentInbox
+    : [];
+  if (!inbox.length) return "";
+  const visible = [...inbox]
+    .sort((a, b) => String(b.savedAt || "").localeCompare(String(a.savedAt || "")))
+    .slice(0, 20);
+  return `
+    <section class="card" style="padding:16px">
+      <div class="row wrap" style="align-items:flex-start;justify-content:space-between;gap:10px">
+        <div>
+          <p class="eyebrow">Capturados desde el móvil</p>
+          <h2 style="font-size:18px;margin:2px 0 4px">Documentos pendientes de revisión</h2>
+          <p class="muted" style="font-size:13px">Se guardan como originales y no se contabilizan hasta que selecciones su tipo.</p>
+        </div>
+        <span class="pill">${inbox.length} pendientes</span>
+      </div>
+      <div class="stack" style="margin-top:10px">
+        ${visible.map((file) => `
+          <div class="row wrap" style="justify-content:space-between;padding:9px 0;border-top:1px solid var(--line);gap:10px">
+            <div style="min-width:0">
+              <strong style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(file.name || "Documento sin nombre")}</strong>
+              <span class="muted" style="font-size:12px">${esc(file.type || "Archivo")} · ${file.savedAt ? fmtDate(String(file.savedAt).slice(0, 10)) : "Fecha no indicada"}</span>
+            </div>
+            <button class="btn sm" type="button" data-action="view-mobile-upload" data-id="${esc(file.id)}">Ver original</button>
+          </div>`).join("")}
+      </div>
+      ${inbox.length > visible.length ? `<p class="hint" style="margin-top:8px">Se muestran los 20 documentos más recientes.</p>` : ""}
+    </section>`;
 }
 
 function viewDocumentos() {
   const state = getState();
   if (!state.invoices.length) {
-    return `<section class="card">
+    return `${mobileUploadInboxHtml()}<section class="card">
       <div class="empty">
         <div class="e-icon">${icon("folder")}</div>
         <h3>Todavía no hay documentos</h3>
@@ -671,6 +822,7 @@ function viewDocumentos() {
   }
   return `
     <div class="stack">
+      ${mobileUploadInboxHtml()}
       <section class="card">${docsFilters()}</section>
       <div id="docResults">${docResults()}</div>
     </div>`;
@@ -716,15 +868,11 @@ function docPreviewModal(inv) {
     ["Cómo entró", esc(sourceLabel(inv.source))],
     [
       "Archivo",
-      inv.original
-        ? `${esc(inv.original.name || inv.fileName || "documento")} <span class="sub">· ${esc(originalSizeText(inv.original.size))}</span>
-           <div class="row wrap" style="margin-top:8px;gap:8px">
-             <button type="button" class="btn sm" data-open-original="${esc(inv.id)}">Ver el original</button>
-             <button type="button" class="btn sm" data-save-original="${esc(inv.id)}">Descargar el original</button>
-           </div>`
-        : inv.fileName
-          ? `${esc(inv.fileName)} <span class="sub">· el fichero no se guardó, solo lo leído</span>`
-          : "El archivo no se guardó, solo lo leído",
+      `<span id="docOriginalStatus">Comprobando el almacén…</span>
+       <div id="docOriginalActions" class="row wrap" style="margin-top:8px;gap:8px" hidden>
+         <button type="button" class="btn sm" data-open-original="${esc(inv.id)}">Ver el original</button>
+         <button type="button" class="btn sm" data-save-original="${esc(inv.id)}">Descargar el original</button>
+       </div>`,
     ],
   ];
 
@@ -798,6 +946,22 @@ function docPreviewModal(inv) {
         wrap.querySelectorAll("[data-save-original]").forEach((btn) => {
           btn.addEventListener("click", () => showDocOriginal(btn.getAttribute("data-save-original"), "download"));
         });
+        originalOf(inv.id).then((original) => {
+          const status = wrap.querySelector("#docOriginalStatus");
+          const actions = wrap.querySelector("#docOriginalActions");
+          if (!wrap.isConnected || !status || !actions) return;
+          if (original?.blob) {
+            status.textContent = `${original.name || inv.fileName || "Documento"} · ${originalSizeText(original.size || original.blob.size)}`;
+            actions.hidden = false;
+          } else {
+            status.textContent = inv.fileName
+              ? `No se conserva el archivo «${inv.fileName}»; solo los datos leídos.`
+              : "Este registro no tiene un archivo original adjunto.";
+          }
+        }).catch(() => {
+          const status = wrap.querySelector("#docOriginalStatus");
+          if (wrap.isConnected && status) status.textContent = "No se pudo consultar el almacén de originales.";
+        });
       },
     }
   );
@@ -844,8 +1008,37 @@ async function showDocOriginal(id, mode) {
   setTimeout(() => URL.revokeObjectURL(url), 90000);
 }
 
-/** El índice de documentos en CSV, con lo que se está viendo. */
-function exportDocsCsv() {
+function reportFormatButtons(scope) {
+  return `<button class="btn sm" data-action="report-pdf" data-scope="${scope}">${icon("download")}<span>Informe PDF</span></button>
+    <button class="btn sm" data-action="report-xls" data-scope="${scope}">${icon("download")}<span>Excel XLS</span></button>`;
+}
+
+function reportFiltersText(filters) {
+  const parts = [];
+  if (filters.q) parts.push(`Búsqueda: ${filters.q}`);
+  if (filters.status && filters.status !== "all") parts.push(`Estado: ${filters.status === "paid" ? "pagado / cobrado" : "pendiente"}`);
+  if (filters.kind && filters.kind !== "all") parts.push(`Tipo: ${kindInfo(filters.kind).label}`);
+  if (filters.dir && filters.dir !== "all") parts.push(`Sentido: ${filters.dir}`);
+  if (filters.supplier && filters.supplier !== "all") parts.push(`Tercero: ${supplierName(filters.supplier)}`);
+  return parts.length ? parts.join(" · ") : "Sin filtros adicionales.";
+}
+
+async function downloadReport(report, format) {
+  if (!report.rows?.length) throw new Error("No hay registros para este informe.");
+  if (format === "pdf") {
+    const result = reportPdf(report);
+    downloadBytes(result.filename, result.bytes, "application/pdf");
+  } else if (format === "xls") {
+    const result = await reportXls(report);
+    downloadBytes(result.filename, result.bytes, "application/vnd.ms-excel");
+  } else {
+    const csv = "\ufeff" + [report.headers, ...report.rows].map((row) => row.map(csvCell).join(";")).join("\r\n");
+    downloadText(`${report.filename}.csv`, csv);
+  }
+}
+
+/** Índice de documentos con los filtros actuales. */
+async function exportDocsCsv(format = "csv") {
   const list = docList();
   if (!list.length) {
     toast("No hay documentos con esos filtros.", "warn");
@@ -865,6 +1058,7 @@ function exportDocsCsv() {
     "Fecha de cobro o pago",
     "Cómo entró",
     "Archivo",
+    "Avisos de revisión",
   ];
   const rows = list.map((inv) => {
     const sup = docSupplier(inv) || {};
@@ -883,21 +1077,23 @@ function exportDocsCsv() {
       inv.status === STATUS.PAID && inv.paidDate ? inv.paidDate : "",
       sourceLabel(inv.source),
       inv.fileName || "",
-    ]
-      .map(csvCell)
-      .join(";");
+      (inv.notes || []).join(" · "),
+    ];
   });
   const w = windowFor(ui.docs);
-  const csv = "﻿" + [headers.map(csvCell).join(";"), ...rows].join("\r\n");
-  downloadText(`documentos-${w.from || "todo"}-${todayISO()}.csv`, csv);
+  await downloadReport({
+    filename: `documentos-${w.from || "todo"}-${todayISO()}`, title: "Índice de documentos",
+    period: `${w.from || "Inicio"} — ${w.to || "Sin límite"}`,
+    filters: reportFiltersText(ui.docs), headers, rows,
+  }, format);
   toast(`Exportados ${list.length} ${list.length === 1 ? "documento" : "documentos"}.`);
 }
 
 function updateNavBadge() {
   const pendingPurchases = getState().invoices.filter(
     (invoice) =>
-      invoiceDirection(invoice) === "GASTO" &&
-      String(invoice.kind || "").toUpperCase() !== "NOMINA" &&
+      isPurchaseExpense(invoice) &&
+      isVisibleInExercise(invoice, activeExerciseYear()) &&
       invoice.status !== STATUS.PAID,
   ).length;
   const badge = document.getElementById("navPending");
@@ -911,14 +1107,16 @@ function updateNavBadge() {
 }
 
 function pageMeta(route) {
-  const t = totals(getState().invoices);
+  const invoices = getState().invoices;
+  const currentTotals = totals(invoices.filter((inv) => isIssuedInExercise(inv, activeExerciseYear())));
+  const carryoverTotals = totals(invoices.filter((inv) => isPendingCarryover(inv, activeExerciseYear())));
   const supCount = getState().suppliers.length;
   switch (route) {
     case "control-fruta":
       return { title: "Control de fruta", sub: "Kilos, categorías y precios por fecha de liquidación" };
     case "ventas": {
       const list = salesDocs();
-      const s = salesStats(list);
+      const s = salesStats(list.filter((inv) => isIssuedInExercise(inv, activeExerciseYear())));
       return {
         title: "Ventas e ingresos",
         sub: `${salesWindow().label} · ${fmtNum(Math.round(s.kg))} kg vendidos · ${fmtEUR(s.money)} de ingresos`,
@@ -938,10 +1136,14 @@ function pageMeta(route) {
       }
     }
     case "compras": {
-      const expenses = getState().invoices.filter((inv) => invoiceDirection(inv) === "GASTO");
+      const expenses = invoices.filter((inv) =>
+        isPurchaseExpense(inv) && isVisibleInExercise(inv, activeExerciseYear())
+      );
+      const currentCount = expenses.filter((inv) => isIssuedInExercise(inv, activeExerciseYear())).length;
+      const carryoverCount = expenses.filter((inv) => isPendingCarryover(inv, activeExerciseYear())).length;
       return {
         title: "Compras",
-        sub: `${expenses.length} ${expenses.length === 1 ? "compra" : "compras"} · ${expenses.filter((inv) => inv.status !== STATUS.PAID).length} pendientes de pago`,
+        sub: `${currentCount} compras del ejercicio · ${expenses.filter((inv) => inv.status !== STATUS.PAID).length} pendientes de pago${carryoverCount ? ` · ${carryoverCount} de ejercicios anteriores` : ""}`,
       };
     }
     case "proveedores":
@@ -950,24 +1152,26 @@ function pageMeta(route) {
         sub: `${supCount} ${supCount === 1 ? "contacto" : "contactos"} guardados`,
       };
     case "documentos": {
-      const docs = getState().invoices.length;
+      const docs = invoices.filter((inv) => isVisibleInExercise(inv, activeExerciseYear())).length;
       return {
         title: "Documentos",
         sub:
           docs === 0
-            ? "El archivo de todo lo que subas: busca, filtra y mira lo que se leyó"
-            : `${docs} ${docs === 1 ? "documento guardado" : "documentos guardados"} · busca, filtra y mira lo que se leyó`,
+            ? `Ejercicio ${activeExerciseYear()} · aquí aparecerán los documentos de este año y los pendientes anteriores`
+            : `${docs} ${docs === 1 ? "documento visible" : "documentos visibles"} · ejercicio ${activeExerciseYear()} y pendientes anteriores`,
       };
     }
     case "nominas": {
       const nom = nominasList();
-      const s = nominasTotals(nom);
+      const currentNominas = nom.filter((inv) => isIssuedInExercise(inv, activeExerciseYear()));
+      const carryoverCount = nom.filter((inv) => isPendingCarryover(inv, activeExerciseYear())).length;
+      const s = nominasTotals(currentNominas);
       return {
         title: "Nóminas",
         sub:
           nom.length === 0
-            ? "Sube un recibo de salarios y lo leo yo: sueldo bruto, Seguridad Social, IRPF y líquido"
-            : `${nom.length} ${nom.length === 1 ? "nómina" : "nóminas"} · ${fmtEUR(s.neto)} de líquido a percibir · ${fmtEUR(s.coste)} de coste para la empresa`,
+            ? `Ejercicio ${activeExerciseYear()} · sube un recibo de salarios`
+            : `${currentNominas.length} del ejercicio · ${fmtEUR(s.coste)} de coste personal${carryoverCount ? ` · ${carryoverCount} pendientes de ejercicios anteriores` : ""}`,
       };
     }
     case "correo": {
@@ -985,6 +1189,11 @@ function pageMeta(route) {
         title: "Importar documentos",
         sub: "Sube una foto o un PDF y yo relleno los datos",
       };
+    case "movil":
+      return {
+        title: "Instalar en el móvil",
+        sub: "Acceso móvil de Agrosabina",
+      };
     case "pruebas": {
       const n = ui.pruebas.list.length;
       return {
@@ -998,12 +1207,14 @@ function pageMeta(route) {
     default: {
       const who = (getState().settings.businessName || "Agrosabina SL").trim();
       const pendingParts = [];
-      if (t.expensePending > 0) pendingParts.push(`${fmtEUR(t.expensePending)} por pagar`);
-      if (t.incomePending > 0) pendingParts.push(`${fmtEUR(t.incomePending)} por cobrar`);
+      const expensePending = round2(currentTotals.expensePending + carryoverTotals.expensePending);
+      const incomePending = round2(currentTotals.incomePending + carryoverTotals.incomePending);
+      if (expensePending > 0) pendingParts.push(`${fmtEUR(expensePending)} por pagar`);
+      if (incomePending > 0) pendingParts.push(`${fmtEUR(incomePending)} por cobrar`);
       const pending = pendingParts.length ? pendingParts.join(" · ") : "Todo al día";
       return {
         title: "Resumen",
-        sub: `${who} · ${pending}`,
+        sub: `${who} · Ejercicio ${activeExerciseYear()} · ${pending}`,
       };
     }
   }
@@ -1027,7 +1238,8 @@ function topActions(route) {
   }
   if (route === "compras") {
     return `
-      <button class="btn" data-action="export-csv">${icon("download")}<span>Exportar</span></button>
+      ${reportFormatButtons("purchases")}
+      <button class="btn" data-action="export-csv">${icon("download")}<span>CSV</span></button>
       <button class="btn primary" data-action="import-files" aria-label="Importar factura de compra">${icon("upload")}<span>Importar factura</span></button>
       <button class="btn" data-action="new-invoice">${icon("plus")}<span>Nueva compra</span></button>`;
   }
@@ -1037,27 +1249,112 @@ function topActions(route) {
       <button class="btn primary" data-action="import-files">${icon("upload")}<span>Subir nómina</span></button>`;
   }
   if (route === "proveedores") {
-    return `<button class="btn primary" data-action="new-supplier">${icon("plus")}<span>Nuevo proveedor</span></button>`;
+    return `
+      <button class="btn" data-action="crm-import">${icon("upload")}<span>Importar contactos</span></button>
+      <button class="btn primary" data-action="new-supplier">${icon("plus")}<span>Nuevo contacto</span></button>`;
   }
   if (route === "documentos") {
     return `
-      <button class="btn" data-action="docs-export" aria-label="Exportar el índice">${icon("download")}<span>Exportar índice</span></button>
+      ${reportFormatButtons("documents")}
+      <button class="btn" data-action="docs-export" aria-label="Exportar el índice">${icon("download")}<span>Exportar índice CSV</span></button>
       <button class="btn primary" data-action="import-files">${icon("upload")}<span>Subir documento</span></button>`;
   }
   if (route === "importar") {
-    return `<button class="btn" data-action="new-invoice">${icon("edit")}<span>Añadir a mano</span></button>`;
+    return `<button class="btn" data-action="new-invoice">${icon("edit")}<span>Añadir a mano</span></button>
+      <button class="btn primary" data-action="import-files">${icon("upload")}<span>Importar documentos</span></button>`;
   }
   if (route === "correo") {
-    return `
-      <button class="btn" data-action="settings" aria-label="Ajustes">${icon("gear")}<span>Ajustes</span></button>
-      <button class="btn primary" data-action="import-email">${icon("mail")}<span>Añadir correo</span></button>`;
+    return `<button class="btn primary" data-action="import-email">${icon("mail")}<span>Añadir correo</span></button>`;
   }
   if (route === "pruebas") {
     return `<button class="btn primary" data-action="prueba-open">${icon("upload")}<span>Elegir un PDF o una foto</span></button>`;
   }
+  if (route === "resumen" || route === "movil") {
+    return "";
+  }
+  return `<button class="btn primary" data-action="import-files">${icon("upload")}<span>Importar factura</span></button>`;
+}
+
+function mountPageActions(view, route) {
+  const actionsHtml = topActions(route);
+  if (!actionsHtml) return;
+  const actions = document.createElement("div");
+  actions.className = "page-actions";
+  actions.setAttribute("role", "group");
+  actions.setAttribute("aria-label", "Acciones de esta sección");
+  actions.innerHTML = actionsHtml;
+  view.prepend(actions);
+}
+
+function mobileInstallUrl() {
+  return new URL("mobile.html", new URL("./", window.location.href)).href;
+}
+
+function viewInstallMobile() {
+  const url = esc(mobileInstallUrl());
   return `
-    <button class="btn" data-action="settings" aria-label="Ajustes">${icon("gear")}<span>Ajustes</span></button>
-    <button class="btn primary" data-action="import-files">${icon("upload")}<span>Importar factura</span></button>`;
+    <div class="stack mobile-install-page">
+      <section class="card mobile-install-card">
+        <div class="mobile-install-copy">
+          <p class="eyebrow">Agrosabina móvil</p>
+          <h2>Facturas pendientes y documentos, desde el teléfono</h2>
+          <p class="muted">Escanea el código QR con la cámara del móvil para abrir la versión ligera e instalarla en la pantalla de inicio.</p>
+          <div class="row wrap mobile-install-actions">
+            <a id="mobileInstallLink" class="btn primary" href="${url}" target="_blank" rel="noopener">Abrir versión móvil</a>
+            <button class="btn" type="button" data-action="copy-mobile-link">Copiar enlace</button>
+          </div>
+          <p class="mobile-install-address" id="mobileInstallAddress">${url}</p>
+          <div class="mobile-install-warning" id="mobileInstallWarning" role="status" hidden></div>
+        </div>
+        <div class="mobile-qr-wrap">
+          <div class="mobile-qr-frame">
+            <img id="mobileInstallQr" width="220" height="220" alt="Código QR para abrir Agrosabina en el móvil" hidden>
+            <p id="mobileQrStatus" class="mobile-qr-status" role="status">Generando código QR…</p>
+          </div>
+          <p class="muted">Escanéalo con la cámara del teléfono</p>
+        </div>
+      </section>
+      <section class="card mobile-install-help">
+        <h3>Cómo instalarla</h3>
+        <ol>
+          <li><strong>Android:</strong> abre el enlace en Chrome y elige «Instalar aplicación» o «Añadir a pantalla de inicio».</li>
+          <li><strong>iPhone:</strong> abre el enlace en Safari, pulsa «Compartir» y después «Añadir a pantalla de inicio».</li>
+        </ol>
+        <p class="hint">Es una aplicación web instalable; no descarga un APK. Para instalarla, el teléfono debe abrir una dirección HTTPS accesible.</p>
+      </section>
+    </div>`;
+}
+
+async function mountMobileInstallQr(view) {
+  const image = view.querySelector("#mobileInstallQr");
+  const status = view.querySelector("#mobileQrStatus");
+  const warning = view.querySelector("#mobileInstallWarning");
+  const url = mobileInstallUrl();
+  const host = window.location.hostname.toLowerCase();
+  const loopback = host === "localhost" || host === "127.0.0.1" || host === "::1";
+  if (warning && loopback) {
+    warning.hidden = false;
+    warning.textContent = "Esta dirección usa localhost y solo funciona en este equipo. Para escanearla desde el teléfono, abre Agrosabina con un dominio HTTPS accesible desde ambos dispositivos.";
+  } else if (warning && !window.isSecureContext) {
+    warning.hidden = false;
+    warning.textContent = "La dirección actual no usa HTTPS. El teléfono necesita una conexión HTTPS segura para instalar la aplicación.";
+  }
+  try {
+    const { default: QRCode } = await import("qrcode");
+    const dataUrl = await QRCode.toDataURL(url, {
+      width: 220,
+      margin: 2,
+      errorCorrectionLevel: "M",
+      color: { dark: "#0d513d", light: "#ffffff" },
+    });
+    if (!image?.isConnected) return;
+    image.src = dataUrl;
+    image.hidden = false;
+    if (status) status.hidden = true;
+  } catch (error) {
+    if (status) status.textContent = "No se pudo generar el QR. Usa el enlace directo.";
+    console.error("No se pudo crear el código QR de instalación:", error);
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -1067,18 +1364,54 @@ function topActions(route) {
 function viewResumen() {
   const state = getState();
   const invs = state.invoices;
+  const year = activeExerciseYear();
 
-  if (!invs.length) return emptyResumen();
-
-  const t = totals(invs);
-  const expenses = invs.filter((inv) => invoiceDirection(inv) === "GASTO");
-  const expensePending = expenses.filter((inv) => inv.status !== STATUS.PAID);
+  const currentDocs = invs.filter((inv) => isIssuedInExercise(inv, year));
+  const carryoverDocs = invs.filter((inv) => isPendingCarryover(inv, year));
+  if (!currentDocs.length && !carryoverDocs.length) return emptyResumen();
+  const payrolls = currentDocs.filter(esNomina);
+  const carryoverPayrolls = carryoverDocs.filter(esNomina);
+  const otherTotals = totals(currentDocs.filter((inv) => !esNomina(inv)));
+  const carryoverTotals = totals(carryoverDocs.filter((inv) => !esNomina(inv)));
+  const payroll = nominasTotals(payrolls);
+  const carryoverPayroll = nominasTotals(carryoverPayrolls);
+  const t = {
+    ...otherTotals,
+    incomePending: round2(otherTotals.incomePending + carryoverTotals.incomePending),
+    expense: round2(otherTotals.expense + payroll.coste),
+    expenseCount: otherTotals.expenseCount + payrolls.length,
+    expensePending: round2(otherTotals.expensePending + carryoverTotals.expensePending + payroll.pendiente + carryoverPayroll.pendiente),
+    byCategory: { ...otherTotals.byCategory },
+  };
+  if (payrolls.length) {
+    const labor = t.byCategory.LABORALES || { total: 0, count: 0, pending: 0, direction: "GASTO" };
+    t.byCategory.LABORALES = {
+      ...labor,
+      total: round2(labor.total + payroll.coste),
+      count: labor.count + payrolls.length,
+      pending: round2(labor.pending + payroll.pendiente),
+      direction: "GASTO",
+    };
+  }
+  const isOperatingCost = (inv) => isFinancial(inv.kind)
+    ? financialProfitAmount(inv) > 0
+    : invoiceDirection(inv) === "GASTO";
+  const expenses = currentDocs.filter((inv) => !esNomina(inv) && isOperatingCost(inv))
+    .map((inv) => isFinancial(inv.kind) ? { ...inv, total: financialProfitAmount(inv), igic: 0 } : inv);
+  const carryoverExpenses = carryoverDocs.filter((inv) => !esNomina(inv) && isOperatingCost(inv))
+    .map((inv) => isFinancial(inv.kind) ? { ...inv, total: financialProfitAmount(inv), igic: 0 } : inv);
+  const expensePending = [...expenses, ...carryoverExpenses].filter((inv) => inv.status !== STATUS.PAID);
   const expensePaid = expenses.filter((inv) => inv.status === STATUS.PAID);
   const expenseOverdue = expensePending.filter((inv) => inv.dueDate && inv.dueDate < todayISO());
+  const pendingIncomeCount = currentDocs.filter((inv) => isIncomeDoc(inv) && inv.status !== STATUS.PAID).length
+    + carryoverDocs.filter(isIncomeDoc).length;
+  const pendingPaymentCount = currentDocs.filter((inv) => !isIncomeDoc(inv) && inv.status !== STATUS.PAID).length
+    + carryoverDocs.filter((inv) => !isIncomeDoc(inv)).length;
   const paidExpenseTotal = expensePaid.reduce((sum, inv) => sum + (Number(inv.total) || 0), 0);
   const expenseIgic = expenses.reduce((sum, inv) => sum + (Number(inv.igic) || 0), 0);
-  const pendingExpenseIgic = expensePending.reduce((sum, inv) => sum + (Number(inv.igic) || 0), 0);
-  const months = lastMonths(6);
+  const pendingExpenseIgic = expenses.filter((inv) => inv.status !== STATUS.PAID)
+    .reduce((sum, inv) => sum + (Number(inv.igic) || 0), 0);
+  const months = lastMonthsForExercise(6, year);
   const byMonth = new Map(months.map((m) => [m, { paid: 0, pending: 0 }]));
   for (const inv of expenses) {
     const k = monthKey(inv.issueDate);
@@ -1090,8 +1423,8 @@ function viewResumen() {
   }
   const monthMax = Math.max(1, ...months.map((m) => byMonth.get(m).paid + byMonth.get(m).pending));
 
-  const latest = sortedInvoices(invs).slice(0, 5);
-  const upcoming = expenses
+  const latest = sortedInvoices([...currentDocs, ...carryoverDocs]).slice(0, 5);
+  const upcoming = [...expenses, ...carryoverExpenses]
     .filter((i) => i.status === STATUS.PENDING)
     .sort((a, b) => (a.dueDate || a.issueDate || "9999").localeCompare(b.dueDate || b.issueDate || "9999"))
     .slice(0, 5);
@@ -1111,32 +1444,34 @@ function viewResumen() {
 
   return `
   <div class="stack">
+    ${carryoverDocs.length ? `<div class="notice info">${carryoverDocs.length} documentos pendientes de ejercicios anteriores siguen visibles. Sus saldos se incluyen en cobros y pagos pendientes, pero no alteran los ingresos ni gastos del ejercicio ${year}.</div>` : ""}
     <section class="kpis">
       <article class="kpi is-income">
         <div class="kpi-label"><span class="dot"></span>Ingresos registrados</div>
         <div class="kpi-value">${fmtEUR(t.income)}</div>
-        <div class="kpi-foot">${t.incomeCount} ${t.incomeCount === 1 ? "documento" : "documentos"} · ${fmtEUR(t.incomePending)} por cobrar</div>
+        <div class="kpi-foot">${t.incomeCount} ${t.incomeCount === 1 ? "documento" : "documentos"} del ejercicio · ${fmtEUR(t.incomePending)} por cobrar</div>
       </article>
       <article class="kpi is-expense">
-        <div class="kpi-label"><span class="dot"></span>Compras y gastos</div>
+        <div class="kpi-label"><span class="dot"></span>Gastos registrados</div>
         <div class="kpi-value">${fmtEUR(t.expense)}</div>
-        <div class="kpi-foot">${t.expenseCount} ${t.expenseCount === 1 ? "documento" : "documentos"} · ${fmtEUR(t.expensePending)} por pagar</div>
+        <div class="kpi-foot">${fmtEUR(otherTotals.expense)} de compras y otros gastos · ${fmtEUR(payroll.coste)} de personal</div>
       </article>
       <article class="kpi">
         <div class="kpi-label"><span class="dot"></span>Pendiente de cobro</div>
         <div class="kpi-value">${fmtEUR(t.incomePending)}</div>
-        <div class="kpi-foot">${t.incomeCount} ${t.incomeCount === 1 ? "ingreso registrado" : "ingresos registrados"}</div>
+        <div class="kpi-foot">${pendingIncomeCount} ${pendingIncomeCount === 1 ? "saldo pendiente" : "saldos pendientes"}${carryoverDocs.some(isIncomeDoc) ? " · incluye ejercicios anteriores" : ""}</div>
       </article>
       <article class="kpi is-brand">
         <div class="kpi-label"><span class="dot"></span>Pendiente de pago</div>
         <div class="kpi-value">${fmtEUR(t.expensePending)}</div>
-        <div class="kpi-foot">${expensePending.length === 0 ? "Nada pendiente" : `${expensePending.length} ${expensePending.length === 1 ? "compra" : "compras"}${expenseOverdue.length ? ` · ${expenseOverdue.length} vencida${expenseOverdue.length === 1 ? "" : "s"}` : ""}`}</div>
+        <div class="kpi-foot">${pendingPaymentCount === 0 ? "Nada pendiente" : `${pendingPaymentCount} ${pendingPaymentCount === 1 ? "saldo pendiente" : "saldos pendientes"}${expenseOverdue.length ? ` · ${expenseOverdue.length} vencido${expenseOverdue.length === 1 ? "" : "s"}` : ""}${carryoverDocs.some((inv) => !isIncomeDoc(inv)) ? " · incluye ejercicios anteriores" : ""}`}</div>
       </article>
     </section>
 
     <section class="summary-strip" aria-label="Otros datos del resumen">
-      <article><span>Compras pagadas</span><strong>${fmtEUR(paidExpenseTotal)}</strong><small>${expensePaid.length} documentos</small></article>
+      <article><span>Compras y otros gastos pagados</span><strong>${fmtEUR(paidExpenseTotal)}</strong><small>${expensePaid.length} documentos</small></article>
       <article><span>IGIC soportado</span><strong>${fmtEUR(expenseIgic)}</strong><small>${fmtEUR(pendingExpenseIgic)} en compras pendientes</small></article>
+      <article><span>Gastos de personal</span><strong>${fmtEUR(payroll.coste)}</strong><small>${payrolls.length} ${payrolls.length === 1 ? "nómina" : "nóminas"}</small></article>
       <article><span>Resultado provisional</span><strong>${fmtEUR(round2(t.income - t.expense))}</strong><small>Ingresos menos gastos registrados</small></article>
     </section>
 
@@ -1147,7 +1482,7 @@ function viewResumen() {
         <div class="card-head">
           <div>
             <h2>Actividad reciente</h2>
-            <p>Últimas compras, ventas y liquidaciones</p>
+            <p>Últimos documentos, ventas y nóminas</p>
           </div>
           <div class="spacer"></div>
           <a class="btn sm ghost" href="#/documentos">Ver documentos ${icon("arrow")}</a>
@@ -1163,9 +1498,9 @@ function viewResumen() {
             <tbody>
               ${latest.map((inv) => `
                 <tr data-id="${inv.id}">
-                  <td><div class="cell-main"><span class="name">${esc(supplierName(inv.supplierId))}</span><span class="sub">${esc(kindInfo(inv.kind).short)} · ${invoiceDirection(inv) === "INGRESO" ? "ingreso" : "gasto"}</span></div></td>
+                  <td><div class="cell-main"><span class="name">${esc(supplierName(inv.supplierId))}</span><span class="sub">${esc(kindInfo(inv.kind).short)} · ${esNomina(inv) ? "gasto de personal" : invoiceDirection(inv) === "INGRESO" ? "ingreso" : "gasto"}</span></div></td>
                   <td class="mono">${esc(inv.number || "—")}</td>
-                  <td class="num">${fmtDate(inv.issueDate)}</td>
+                  <td class="num">${fmtDate(inv.issueDate)}${carryoverSubline(inv)}</td>
                   <td class="num strong">${fmtEUR(inv.total)}</td>
                   <td>${statusPill(inv)}</td>
                 </tr>`).join("")}
@@ -1179,7 +1514,7 @@ function viewResumen() {
           <div class="card-head">
             <div>
               <h2>Próximos pagos</h2>
-              <p>Compras pendientes con fecha de vencimiento</p>
+              <p>Compras y otros gastos pendientes con fecha de vencimiento</p>
             </div>
           </div>
           ${upcoming.length ? `<div class="mini-list">
@@ -1195,22 +1530,22 @@ function viewResumen() {
               return `<div class="mini-row">
                 <div class="m-main">
                   <div class="t">${esc(supplierName(inv.supplierId))}</div>
-                  <div class="s">${esc(when)}</div>
+                  <div class="s">${esc(when)}${carryoverSubline(inv)}</div>
                 </div>
                 <div class="num">${fmtEUR(inv.total)}</div>
               </div>`;
             }).join("")}
           </div>` : `<div class="empty" style="padding:30px 18px">
             <h3>No hay pagos pendientes</h3>
-            <p>Las compras aparecerán aquí cuando tengan una fecha de vencimiento.</p>
+            <p>Las compras y otros gastos aparecerán aquí cuando tengan una fecha de vencimiento.</p>
           </div>`}
         </section>
 
         <section class="card">
           <div class="card-head">
             <div>
-              <h2>Pagos de compras</h2>
-              <p>Pagado y pendiente en los últimos 6 meses</p>
+              <h2>Pagos de compras y otros gastos</h2>
+            <p>Pagado y pendiente por mes del ejercicio ${year}</p>
             </div>
             <div class="spacer"></div>
             <div class="legend">
@@ -1270,10 +1605,9 @@ function emptyResumen() {
     <section class="card">
       <div class="empty" style="padding:54px 24px">
         <div class="e-icon">${icon("sparkle")}</div>
-        <h3>Empieza por una compra o una venta de fruta</h3>
-        <p>Sube una factura o liquidación. Revisamos los datos juntos antes de guardarlos y luego aparecen en compras, ventas y control de fruta.</p>
+        <h3>Sin actividad en el ejercicio ${activeExerciseYear()}</h3>
+        <p>Cambia el ejercicio activo o registra una compra o liquidación con fecha de este año. Las facturas anteriores pendientes seguirán apareciendo en sus listas.</p>
         <div class="e-actions">
-          <button class="btn primary" data-action="import-files">${icon("upload")} Subir factura o liquidación</button>
           <button class="btn" data-action="new-sale">${icon("edit")} Registrar liquidación</button>
           <button class="btn" data-action="new-invoice">${icon("edit")} Añadir compra a mano</button>
           <button class="btn ghost" data-action="seed-demo">Ver con datos de ejemplo</button>
@@ -1316,11 +1650,11 @@ function emptyResumen() {
 /* ------------------------------------------------------------------ */
 
 const SALES_RANGES = [
-  { id: "year", label: "Este año" },
+  { id: "year", label: "Ejercicio seleccionado" },
   { id: "quarter", label: "Este trimestre" },
   { id: "month", label: "Este mes" },
   { id: "campaign", label: "Últimos 12 meses" },
-  { id: "all", label: "Todo lo registrado" },
+  { id: "all", label: "Ejercicio y pendientes anteriores" },
   { id: "custom", label: "Elegir fechas" },
 ];
 
@@ -1332,18 +1666,27 @@ function salesWindow() {
 /** Lo mismo, para cualquier pantalla que elija un periodo. */
 function windowFor(state) {
   const now = new Date();
-  const y = now.getFullYear();
+  const y = activeExerciseYear();
   const two = (n) => String(n).padStart(2, "0");
-  const today = todayISO();
-  const monthFrom = `${y}-${two(now.getMonth() + 1)}-01`;
-  const quarterFrom = `${y}-${two(Math.floor(now.getMonth() / 3) * 3 + 1)}-01`;
-  const yearAgo = `${y - 1}-${two(now.getMonth() + 1)}-${two(now.getDate())}`;
+  const currentYear = y === now.getFullYear();
+  const currentMonth = now.getMonth() + 1;
+  const currentQuarterMonth = Math.floor(now.getMonth() / 3) * 3 + 1;
+  const endOfMonth = (month) => two(new Date(y, month, 0).getDate());
+  const today = currentYear ? todayISO() : `${y}-12-31`;
+  const monthFrom = `${y}-${two(currentMonth)}-01`;
+  const monthTo = currentYear ? today : `${y}-${two(currentMonth)}-${endOfMonth(currentMonth)}`;
+  const quarterFrom = `${y}-${two(currentQuarterMonth)}-01`;
+  const quarterEndMonth = currentQuarterMonth + 2;
+  const quarterTo = currentYear
+    ? today
+    : `${y}-${two(quarterEndMonth)}-${endOfMonth(quarterEndMonth)}`;
+  const yearAgo = `${y - 1}-${two(currentMonth)}-${two(now.getDate())}`;
   const range = state.range;
 
-  if (range === "month") return { id: range, from: monthFrom, to: today, label: "Este mes" };
-  if (range === "quarter") return { id: range, from: quarterFrom, to: today, label: "Este trimestre" };
-  if (range === "campaign") return { id: range, from: yearAgo, to: today, label: "Últimos 12 meses" };
-  if (range === "all") return { id: range, from: "", to: "", label: "Todo lo registrado" };
+  if (range === "month") return { id: range, from: monthFrom, to: monthTo, label: `Mes del ejercicio ${y}` };
+  if (range === "quarter") return { id: range, from: quarterFrom, to: quarterTo, label: `Trimestre del ejercicio ${y}` };
+  if (range === "campaign") return { id: range, from: currentYear ? yearAgo : `${y}-01-01`, to: today, label: `Últimos 12 meses · ejercicio ${y}` };
+  if (range === "all") return { id: range, from: "", to: "", label: `Ejercicio ${y} y pendientes anteriores` };
   if (range === "custom") {
     const from = state.from || "";
     const to = state.to || "";
@@ -1356,7 +1699,16 @@ function windowFor(state) {
           : "Elige las fechas";
     return { id: range, from, to, label };
   }
-  return { id: "year", from: `${y}-01-01`, to: today, label: "Este año" };
+  return { id: "year", from: `${y}-01-01`, to: `${y}-12-31`, label: `Ejercicio ${y}` };
+}
+
+function lastMonthsForExercise(count, year) {
+  const now = new Date();
+  const lastMonth = Number(year) === now.getFullYear() ? now.getMonth() : 11;
+  return Array.from({ length: count }, (_, index) => {
+    const month = new Date(Number(year), lastMonth - count + 1 + index, 1);
+    return `${month.getFullYear()}-${String(month.getMonth() + 1).padStart(2, "0")}`;
+  });
 }
 
 function inSalesWindow(date, w) {
@@ -1371,10 +1723,50 @@ function inSalesWindow(date, w) {
 /* ------------------------------------------------------------------ */
 
 /** Todas las nóminas guardadas, de la más reciente a la más antigua. */
-function nominasList() {
+function allNominas() {
   return getState()
     .invoices.filter(esNomina)
     .sort((a, b) => String(b.issueDate || "").localeCompare(String(a.issueDate || "")));
+}
+
+function nominasList() {
+  const filters = ui.nominaFilters;
+  const q = foldSearch(filters.q);
+  let list = allNominas().filter((inv) => isVisibleInExercise(inv, activeExerciseYear()));
+  if (filters.status === "pending") list = list.filter((inv) => inv.status !== STATUS.PAID);
+  else if (filters.status === "paid") list = list.filter((inv) => inv.status === STATUS.PAID);
+  if (filters.from) list = list.filter((inv) => isPendingCarryover(inv, activeExerciseYear()) || (inv.issueDate && inv.issueDate >= filters.from));
+  if (filters.to) list = list.filter((inv) => isPendingCarryover(inv, activeExerciseYear()) || (inv.issueDate && inv.issueDate <= filters.to));
+  if (q) {
+    list = list.filter((inv) => {
+      const supplier = docSupplier(inv) || {};
+      const name = inv.nomina?.trabajador || supplier.name || "";
+      return foldSearch([name, supplier.nif, inv.nomina?.periodo, inv.number, inv.fileName, inv.issueDate, fmtEUR(inv.total)]
+        .filter(Boolean).join(" ")).includes(q);
+    });
+  }
+  return list;
+}
+
+function nominasFiltersHtml() {
+  const filters = ui.nominaFilters;
+  return `<section class="card">
+    <div class="filters">
+      <label class="search">${icon("search")}
+        <input type="search" id="nominaSearch" value="${esc(filters.q)}" placeholder="Buscar trabajador, NIF o periodo" aria-label="Buscar nóminas">
+      </label>
+      <div class="segmented">
+        <button data-action="nomina-status" data-value="all" class="${filters.status === "all" ? "active" : ""}">Todas</button>
+        <button data-action="nomina-status" data-value="pending" class="${filters.status === "pending" ? "active" : ""}">Pendientes</button>
+        <button data-action="nomina-status" data-value="paid" class="${filters.status === "paid" ? "active" : ""}">Pagadas</button>
+      </div>
+    </div>
+    <div class="filters">
+      <label class="date-filter"><span>Desde</span><input type="date" id="nominaFrom" value="${esc(filters.from)}"></label>
+      <label class="date-filter"><span>Hasta</span><input type="date" id="nominaTo" value="${esc(filters.to)}"></label>
+      <button class="btn sm ghost" data-action="nominas-reset">${icon("x")} Quitar filtros</button>
+    </div>
+  </section>`;
 }
 
 /**
@@ -1398,8 +1790,12 @@ function nominasTotals(list) {
 }
 
 function viewNominas() {
+  const all = allNominas().filter((inv) => isVisibleInExercise(inv, activeExerciseYear()));
   const list = nominasList();
-  const t = nominasTotals(list);
+  const currentList = list.filter((inv) => isIssuedInExercise(inv, activeExerciseYear()));
+  const carryovers = list.filter((inv) => isPendingCarryover(inv, activeExerciseYear()));
+  const t = nominasTotals(currentList);
+  const carryoverAmount = round2(carryovers.reduce((sum, inv) => sum + (Number(inv.total) || 0), 0));
 
   const cuentas = `
     <section class="card">
@@ -1415,18 +1811,18 @@ function viewNominas() {
           a cargo de la empresa a la <strong>${CUENTAS_NOMINA.ssEmpresa}</strong> (Seguridad Social a cargo de la empresa).
           Al haber quedan la <strong>${CUENTAS_NOMINA.ssPagar}</strong> (Seguridad Social, obrera más empresa), la
           <strong>${CUENTAS_NOMINA.irpf}</strong> (IRPF) y la <strong>${CUENTAS_NOMINA.liquido}</strong> (remuneraciones
-          pendientes de pago) por el líquido. Cuando marques la nómina como pagada, el dinero sale de la caja (570) o del
-          banco (572) contra esa ${CUENTAS_NOMINA.liquido}.
+          pendientes de pago) por el líquido. Cuando marques la nómina como pagada, el dinero sale de la caja (570000) o del
+          banco (572000) contra esa ${CUENTAS_NOMINA.liquido}.
         </p>
       </div>
     </section>`;
 
-  if (!list.length) {
+  if (!all.length) {
     return `<div class="stack">
       <section class="card">
         <div class="empty" style="padding:54px 24px">
           <div class="e-icon">${icon("wallet")}</div>
-          <h3>Todavía no hay ninguna nómina</h3>
+          <h3>No hay nóminas del ejercicio ${activeExerciseYear()}</h3>
           <p>Sube el PDF o una foto del recibo de salarios, o pégalo como texto, y yo saco el sueldo bruto, la
           Seguridad Social, el IRPF y el líquido a percibir. También puedes escribirla a mano.</p>
           <div class="row" style="justify-content:center;gap:10px;margin-top:14px">
@@ -1439,14 +1835,25 @@ function viewNominas() {
     </div>`;
   }
 
-  const rows = list
+  if (!list.length) {
+    return `<div class="stack">${nominasFiltersHtml()}
+      <section class="card"><div class="empty">
+        <div class="e-icon">${icon("search")}</div>
+        <h3>No hay nóminas que coincidan</h3>
+        <p>Cambia la búsqueda, el estado o las fechas para ver otros recibos.</p>
+        <div class="e-actions"><button class="btn" data-action="nominas-reset">Quitar filtros</button></div>
+      </div></section>${cuentas}</div>`;
+  }
+
+  const visible = pageRows(list, "payroll");
+  const rows = visible
     .map((inv) => {
       const c = calcularNomina(inv.nomina || {});
       const sup = docSupplier(inv) || {};
       const quien = sup.name || (inv.nomina && inv.nomina.trabajador) || "Sin nombre";
       const pagada = inv.status === STATUS.PAID;
       return `<tr data-id="${inv.id}">
-        <td class="num">${inv.issueDate ? fmtDate(inv.issueDate) : "—"}</td>
+        <td class="num">${inv.issueDate ? fmtDate(inv.issueDate) : "—"}${isPendingCarryover(inv, activeExerciseYear()) ? `<div class="sub">Pendiente de ${invoiceExerciseYear(inv)}</div>` : ""}</td>
         <td>${esc(quien)}</td>
         <td>${esc((inv.nomina && inv.nomina.periodo) || "—")}</td>
         <td class="num">${c.bruto == null ? "—" : fmtEUR(c.bruto)}</td>
@@ -1465,11 +1872,13 @@ function viewNominas() {
     .join("");
 
   return `<div class="stack">
+    ${nominasFiltersHtml()}
+    ${carryovers.length ? `<div class="notice info"><strong>${carryovers.length} nóminas pendientes de ejercicios anteriores</strong> · ${fmtEUR(carryoverAmount)} por pagar. Su coste permanece imputado al ejercicio de emisión.</div>` : ""}
     <section class="card">
       <div class="card-head">
         <div>
           <h2>Recibos de salarios</h2>
-          <p>${list.length} ${list.length === 1 ? "nómina" : "nóminas"} · el líquido es lo que se paga y el bruto lo que cuesta el sueldo</p>
+          <p>${currentList.length} nóminas del ejercicio ${activeExerciseYear()} · ${fmtEUR(t.coste)} de coste personal${carryovers.length ? ` · ${carryovers.length} pendientes anteriores` : ""}</p>
         </div>
       </div>
       <div class="table-wrap">
@@ -1504,6 +1913,7 @@ function viewNominas() {
           </tfoot>
         </table>
       </div>
+      ${listPageControls(list.length, "payroll")}
     </section>
     ${cuentas}
   </div>`;
@@ -1518,8 +1928,29 @@ function salesDocs() {
   const w = salesWindow();
   return getState()
     .invoices.filter(isIncomeDoc)
-    .filter((inv) => inSalesWindow(inv.issueDate, w))
+    .filter((inv) => isVisibleInExercise(inv, activeExerciseYear()))
+    .filter((inv) => isPendingCarryover(inv, activeExerciseYear()) || inSalesWindow(inv.issueDate, w))
     .sort((a, b) => String(b.issueDate || "").localeCompare(String(a.issueDate || "")));
+}
+
+function filteredSalesDocs(base = salesDocs()) {
+  const { q, status, sort } = ui.salesListFilters;
+  const needle = foldSearch(q);
+  let list = base;
+  if (status === "pending") list = list.filter((inv) => inv.status !== STATUS.PAID);
+  else if (status === "paid") list = list.filter((inv) => inv.status === STATUS.PAID);
+  if (needle) {
+    list = list.filter((inv) => {
+      const supplier = supplierById(inv.supplierId) || {};
+      const liq = inv.liquidacion || {};
+      return foldSearch([supplier.name, supplier.nif, inv.number, inv.issueDate, liq.product, liq.category, fmtEUR(inv.total)]
+        .filter(Boolean).join(" ")).includes(needle);
+    });
+  }
+  if (sort === "oldest") list = list.slice().sort((a, b) => String(a.issueDate || "").localeCompare(String(b.issueDate || "")));
+  else if (sort === "amount") list = list.slice().sort((a, b) => (Number(b.total) || 0) - (Number(a.total) || 0));
+  else if (sort === "kg") list = list.slice().sort((a, b) => liquidacionNumbers(b).kg - liquidacionNumbers(a).kg);
+  return list;
 }
 
 /** Kilos, precio por kilo, descuentos, bruto y líquido de un documento. */
@@ -1663,30 +2094,14 @@ function salesRangeBar(w) {
 
 function viewVentas() {
   const w = salesWindow();
-  const list = salesDocs();
-  const s = salesStats(list);
+  const allList = salesDocs();
+  const list = filteredSalesDocs(allList);
+  const carryoverCount = allList.filter((inv) => isPendingCarryover(inv, activeExerciseYear())).length;
+  const s = salesStats(allList.filter((inv) => isIssuedInExercise(inv, activeExerciseYear())));
 
-  const drop = `
-    <section class="card">
-      <div class="card-body">
-        <div id="dropzone" class="dropzone">
-          <div class="dz-icon">${icon("upload")}</div>
-          <h3>Sube aquí las liquidaciones</h3>
-          <p>Fotos o PDF de la liquidación de fruta, varios a la vez. Leo los kilos, el precio por kilo y los descuentos, y quedan sumados en los totales de abajo.</p>
-          <div class="dz-actions">
-            <button class="btn primary" data-action="import-files">${icon("file")} Elegir archivos</button>
-            <button class="btn" data-action="import-camera">${icon("camera")} Hacer una foto</button>
-            <button class="btn ghost" data-action="new-sale">${icon("edit")} Escribirla a mano</button>
-          </div>
-        </div>
-        <div id="ingestList" class="filelist"></div>
-      </div>
-    </section>`;
-
-  if (!list.length) {
+  if (!allList.length) {
     return `
     <div class="stack">
-      ${drop}
       <section class="card">
         ${salesRangeBar(w)}
         <div class="empty">
@@ -1709,11 +2124,10 @@ function viewVentas() {
 
   return `
   <div class="stack">
-    ${drop}
-
     <section class="card">
       ${salesRangeBar(w)}
       <div class="card-body">
+        ${carryoverCount ? `<div class="notice info" style="margin-bottom:14px">${carryoverCount} liquidaciones pendientes de ejercicios anteriores se muestran en la lista; no se suman a los kilos ni a los ingresos del ejercicio ${activeExerciseYear()}.</div>` : ""}
         <div class="kpis">
           <article class="kpi is-brand">
             <div class="kpi-label"><span class="dot"></span>Kilos vendidos</div>
@@ -1792,77 +2206,83 @@ function viewVentas() {
       </section>
     </div>
 
-    <section class="card">
-      <div class="card-head">
-        <div>
-          <h2>Liquidaciones del periodo</h2>
-          <p>${s.count} ${s.count === 1 ? "documento" : "documentos"} · ${esc(w.label)}</p>
-        </div>
-        <div class="spacer"></div>
-        <button class="btn sm ghost" data-action="export-sales-csv">${icon("download")}<span>Exportar CSV</span></button>
-      </div>
-      <div class="table-wrap">
-        <table class="data">
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Comprador</th>
-              <th>Producto</th>
-              <th class="num">Kilos</th>
-              <th class="num">€/kg</th>
-              <th class="num">Descuentos</th>
-              <th class="num">Líquido</th>
-              <th>Estado</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            ${list.map((inv) => {
-              const num = liquidacionNumbers(inv);
-              const liq = inv.liquidacion || {};
-              const product = String(liq.product || "").trim();
-              const category = String(liq.category || "").trim();
-              return `<tr data-id="${inv.id}">
-                <td class="num">${fmtDate(inv.issueDate)}</td>
-                <td>
-                  <div class="cell-main">
-                    <span class="name">${esc(supplierName(inv.supplierId))}</span>
-                    ${tagOf(inv)}
-                  </div>
-                </td>
-                <td>
-                  <span class="name">${esc(product || kindInfo(inv.kind).short)}</span>
-                  ${category ? `<div class="sub">${esc(category)}</div>` : ""}
-                  ${inv.number ? `<div class="sub mono">${esc(inv.number)}</div>` : ""}
-                </td>
-                <td class="num">${num.kg > 0 ? fmtNum(num.kg) : '<span class="muted">—</span>'}</td>
-                <td class="num">${num.price > 0 ? fmtNum(num.price, 3) : '<span class="muted">—</span>'}</td>
-                <td class="num">${num.discounts > 0 ? fmtEUR(num.discounts) : '<span class="muted">—</span>'}</td>
-                <td class="num strong">${fmtEUR(num.net)}</td>
-                <td>${statusPill(inv)}</td>
-                <td>
-                  <div class="row-actions">
-                    <button class="icon-btn" data-action="edit-invoice" data-id="${inv.id}" title="Editar" aria-label="Editar liquidación">${icon("edit")}</button>
-                    <button class="icon-btn" data-action="delete-invoice" data-id="${inv.id}" title="Borrar" aria-label="Borrar liquidación">${icon("trash")}</button>
-                  </div>
-                </td>
-              </tr>`;
-            }).join("")}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="3">${s.count} ${s.count === 1 ? "documento" : "documentos"}</td>
-              <td class="num">${fmtNum(Math.round(s.kg))} kg</td>
-              <td class="num">${s.kg > 0 ? fmtNum(s.avgPrice, 3) : "—"}</td>
-              <td class="num">${fmtEUR(s.discounts)}</td>
-              <td class="num">${fmtEUR(s.net)}</td>
-              <td colspan="2">${fmtEUR(s.pending)} por cobrar</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </section>
+    <div id="salesTransactions">${salesTransactionsCard(list, w)}</div>
   </div>`;
+}
+
+function salesTransactionsCard(list, w) {
+  const visible = pageRows(list, "sales");
+  const t = salesStats(list);
+  return `<section class="card">
+    <div class="card-head">
+      <div>
+        <h2>Liquidaciones del periodo</h2>
+        <p>${list.length} ${list.length === 1 ? "documento" : "documentos"} encontrados · ${esc(w.label)}</p>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn sm ghost" data-action="export-sales-csv">${icon("download")}<span>Exportar CSV</span></button>
+    </div>
+    <div class="filters">
+      <label class="search">${icon("search")}
+        <input type="search" id="salesListSearch" value="${esc(ui.salesListFilters.q)}" placeholder="Buscar comprador, producto, categoría o número" aria-label="Buscar liquidaciones">
+      </label>
+      <div class="segmented">
+        <button data-action="sales-status" data-value="all" class="${ui.salesListFilters.status === "all" ? "active" : ""}">Todas</button>
+        <button data-action="sales-status" data-value="pending" class="${ui.salesListFilters.status === "pending" ? "active" : ""}">Por cobrar</button>
+        <button data-action="sales-status" data-value="paid" class="${ui.salesListFilters.status === "paid" ? "active" : ""}">Cobradas</button>
+      </div>
+      <select id="salesListSort" aria-label="Ordenar liquidaciones">
+        <option value="recent" ${ui.salesListFilters.sort === "recent" ? "selected" : ""}>Más recientes</option>
+        <option value="oldest" ${ui.salesListFilters.sort === "oldest" ? "selected" : ""}>Más antiguas</option>
+        <option value="amount" ${ui.salesListFilters.sort === "amount" ? "selected" : ""}>Mayor importe</option>
+        <option value="kg" ${ui.salesListFilters.sort === "kg" ? "selected" : ""}>Más kilos</option>
+      </select>
+      <button class="btn sm ghost" data-action="sales-list-reset">${icon("x")} Quitar filtros</button>
+    </div>
+    ${list.length ? "" : `<div class="empty"><h3>No hay liquidaciones que coincidan</h3><p>Cambia la búsqueda o el estado para ver otros resultados.</p><button class="btn" data-action="sales-list-reset">Quitar filtros</button></div>`}
+    ${list.length ? `<div class="table-wrap">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>Fecha</th><th>Comprador</th><th>Producto</th>
+            <th class="num">Kilos</th><th class="num">€/kg</th>
+            <th class="num">Descuentos</th><th class="num">Líquido</th><th>Estado</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${visible.map((inv) => {
+            const num = liquidacionNumbers(inv);
+            const liq = inv.liquidacion || {};
+            const product = String(liq.product || "").trim();
+            const category = String(liq.category || "").trim();
+            return `<tr data-id="${inv.id}">
+              <td class="num">${fmtDate(inv.issueDate)}${carryoverSubline(inv)}</td>
+              <td><div class="cell-main"><span class="name">${esc(supplierName(inv.supplierId))}</span>${tagOf(inv)}</div></td>
+              <td><span class="name">${esc(product || kindInfo(inv.kind).short)}</span>${category ? `<div class="sub">${esc(category)}</div>` : ""}${inv.number ? `<div class="sub mono">${esc(inv.number)}</div>` : ""}</td>
+              <td class="num">${num.kg > 0 ? fmtNum(num.kg) : '<span class="muted">—</span>'}</td>
+              <td class="num">${num.price > 0 ? fmtNum(num.price, 3) : '<span class="muted">—</span>'}</td>
+              <td class="num">${num.discounts > 0 ? fmtEUR(num.discounts) : '<span class="muted">—</span>'}</td>
+              <td class="num strong">${fmtEUR(num.net)}</td>
+              <td>${statusPill(inv)}</td>
+              <td><div class="row-actions">
+                <button class="icon-btn" data-action="doc-open" data-id="${inv.id}" title="Ver el documento original" aria-label="Ver liquidación y documento original">${icon("file")}</button>
+                <button class="icon-btn" data-action="edit-invoice" data-id="${inv.id}" title="Editar" aria-label="Editar liquidación">${icon("edit")}</button>
+                <button class="icon-btn" data-action="delete-invoice" data-id="${inv.id}" title="Borrar" aria-label="Borrar liquidación">${icon("trash")}</button>
+              </div></td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+        <tfoot><tr>
+          <td colspan="3">${t.count} ${t.count === 1 ? "documento" : "documentos"} coincidentes</td>
+          <td class="num">${fmtNum(Math.round(t.kg))} kg</td>
+          <td class="num">${t.kg > 0 ? fmtNum(t.avgPrice, 3) : "—"}</td>
+          <td class="num">${fmtEUR(t.discounts)}</td>
+          <td class="num">${fmtEUR(t.net)}</td>
+          <td colspan="2">${fmtEUR(t.pending)} por cobrar</td>
+        </tr></tfoot>
+      </table>
+    </div>${listPageControls(list.length, "sales")}` : ""}
+  </section>`;
 }
 
 /** Vuelve a pintar solo la pantalla de ventas (al cambiar el periodo). */
@@ -1871,6 +2291,7 @@ function refreshSales() {
   const view = document.getElementById("view");
   if (!view) return;
   view.innerHTML = viewVentas();
+  mountPageActions(view, "ventas");
   const meta = pageMeta("ventas");
   const title = document.getElementById("viewTitle");
   const sub = document.getElementById("viewSub");
@@ -1879,9 +2300,15 @@ function refreshSales() {
   paintIngest();
 }
 
+function refreshSalesTable() {
+  if (ui.route !== "ventas") return;
+  const host = document.getElementById("salesTransactions");
+  if (host) host.innerHTML = salesTransactionsCard(filteredSalesDocs(), salesWindow());
+}
+
 function exportSalesCsv() {
   const w = salesWindow();
-  const list = salesDocs();
+  const list = filteredSalesDocs();
   if (!list.length) {
     toast("No hay ventas en ese periodo.", "warn");
     return;
@@ -1935,25 +2362,27 @@ function exportSalesCsv() {
 /* ------------------------------------------------------------------ */
 
 function filteredInvoices() {
-  const { status, supplier, q } = ui.filters;
-  const needle = q.trim().toLowerCase();
-  // «Compras» contiene exclusivamente gastos. Las liquidaciones de fruta y
-  // demás ingresos se consultan en Ventas o en el archivo de Documentos.
-  let list = getState().invoices.filter((i) =>
-    invoiceDirection(i) === "GASTO"
+  const { status, supplier, q, category, from, to } = ui.filters;
+  const needle = foldSearch(q);
+  // «Compras» no incluye nóminas: son gastos de personal y tienen apartado propio.
+  let list = getState().invoices.filter((inv) =>
+    isPurchaseExpense(inv) && isVisibleInExercise(inv, activeExerciseYear())
   );
 
   if (status === "pending") list = list.filter((i) => i.status !== STATUS.PAID);
   else if (status === "paid") list = list.filter((i) => i.status === STATUS.PAID);
+  else if (status === "overdue") list = list.filter((i) => i.status !== STATUS.PAID && i.dueDate && i.dueDate < todayISO());
   if (supplier) list = list.filter((i) => i.supplierId === supplier);
+  if (category === "__uncategorized__") list = list.filter((i) => !i.category);
+  else if (category) list = list.filter((i) => i.category === category);
+  if (from) list = list.filter((i) => isPendingCarryover(i, activeExerciseYear()) || (i.issueDate && i.issueDate >= from));
+  if (to) list = list.filter((i) => isPendingCarryover(i, activeExerciseYear()) || (i.issueDate && i.issueDate <= to));
 
   if (needle) {
     list = list.filter((inv) => {
       const sup = supplierById(inv.supplierId);
-      const hay = [inv.number, sup && sup.name, sup && sup.nif, inv.issueDate, String(inv.total)]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
+      const hay = foldSearch([inv.number, inv.fileName, inv.notes, inv.rawText, inv.category, sup && sup.name, sup && sup.nif, inv.issueDate, inv.dueDate, fmtEUR(inv.total)]
+        .filter(Boolean).join(" "));
       return hay.includes(needle);
     });
   }
@@ -1962,12 +2391,28 @@ function filteredInvoices() {
 
 function viewFacturas() {
   const state = getState();
-  if (!state.invoices.length) {
+  const hasPurchases = state.invoices.some((inv) =>
+    isPurchaseExpense(inv) && isVisibleInExercise(inv, activeExerciseYear())
+  );
+  const hasPayroll = state.invoices.some((inv) =>
+    esNomina(inv) && isVisibleInExercise(inv, activeExerciseYear())
+  );
+  const categoryOptionsHtml = categoryOptions(
+    ui.filters.category === "__uncategorized__" ? "" : ui.filters.category,
+    "GASTO",
+  ).replace(
+    /<option value=""[^>]*>Sin clasificar<\/option>/,
+    `<option value="__uncategorized__" ${ui.filters.category === "__uncategorized__" ? "selected" : ""}>Sin clasificar</option>`,
+  );
+  if (!hasPurchases) {
     return `<section class="card"><div class="empty">
       <div class="e-icon">${icon("file")}</div>
-      <h3>Todavía no hay compras</h3>
-      <p>Sube una foto o un PDF y la relleno yo. También puedes escribirla a mano si la tienes delante.</p>
+      <h3>No hay compras registradas</h3>
+      <p>${hasPayroll
+        ? "Las nóminas son gastos de personal y se gestionan en su apartado, no como compras."
+        : "Sube una foto o un PDF de una factura de compra. También puedes escribirla a mano."}</p>
       <div class="e-actions">
+        ${hasPayroll ? `<a class="btn" href="#/nominas">${icon("users")} Ver nóminas</a>` : ""}
         <button class="btn primary" data-action="import-files" aria-label="Importar factura de compra">${icon("upload")} Importar factura de compra</button>
         <button class="btn" data-action="new-invoice">${icon("plus")} Añadir a mano</button>
       </div>
@@ -1981,15 +2426,26 @@ function viewFacturas() {
         <button data-filter-status="all" class="${ui.filters.status === "all" ? "active" : ""}">Todas</button>
         <button data-filter-status="pending" class="${ui.filters.status === "pending" ? "active" : ""}">Pendientes</button>
         <button data-filter-status="paid" class="${ui.filters.status === "paid" ? "active" : ""}">Pagadas</button>
+        <button data-filter-status="overdue" class="${ui.filters.status === "overdue" ? "active" : ""}">Vencidas</button>
       </div>
       <select data-filter-supplier aria-label="Filtrar por proveedor">
         <option value="">Todos los proveedores</option>
         ${state.suppliers.map((s) => `<option value="${s.id}" ${ui.filters.supplier === s.id ? "selected" : ""}>${esc(s.name)}</option>`).join("")}
       </select>
+      <select id="purchaseCategory" aria-label="Filtrar por categoría">
+        <option value="">Todas las categorías</option>
+        ${categoryOptionsHtml}
+      </select>
       <label class="search">
         ${icon("search")}
-        <input type="search" id="invoiceSearch" placeholder="Buscar por número o proveedor" value="${esc(ui.filters.q)}" aria-label="Buscar documentos">
+        <input type="search" id="invoiceSearch" placeholder="Buscar proveedor, NIF, número o concepto" value="${esc(ui.filters.q)}" aria-label="Buscar compras">
       </label>
+    </div>
+    <div class="filters">
+      <label class="date-filter"><span>Desde</span><input id="purchaseFrom" type="date" value="${esc(ui.filters.from)}" aria-label="Desde fecha de compra"></label>
+      <label class="date-filter"><span>Hasta</span><input id="purchaseTo" type="date" value="${esc(ui.filters.to)}" aria-label="Hasta fecha de compra"></label>
+      <button class="btn sm ghost" data-action="purchases-reset">${icon("x")} Quitar filtros</button>
+      <div class="spacer"></div>
     </div>
     <div id="invoiceTableWrap">${invoiceTable()}</div>
   </section>`;
@@ -1997,6 +2453,7 @@ function viewFacturas() {
 
 function invoiceTable() {
   const list = filteredInvoices();
+  const visible = pageRows(list, "purchases");
   const t = totals(list);
   const today = todayISO();
 
@@ -2004,10 +2461,10 @@ function invoiceTable() {
     return `<div class="empty">
       <div class="e-icon">${icon("search")}</div>
       <h3>Ninguna compra con esos filtros</h3>
-      <p>Las ventas y las liquidaciones de fruta se consultan en Ventas.</p>
+      <p>Las nóminas, que son gastos de personal, se consultan en Nóminas. Las ventas y liquidaciones se consultan en Ventas.</p>
       <div class="e-actions">
         <a class="btn primary" href="#/ventas">${icon("wallet")} Ir a ventas</a>
-        <button class="btn" data-filter-status="all">Quitar filtro de estado</button>
+      <button class="btn" data-action="purchases-reset">Quitar filtros</button>
       </div>
     </div>`;
   }
@@ -2029,7 +2486,7 @@ function invoiceTable() {
         </tr>
       </thead>
       <tbody>
-        ${list.map((inv) => {
+        ${visible.map((inv) => {
           const overdue = inv.status !== STATUS.PAID && inv.dueDate && inv.dueDate < today;
           return `<tr data-id="${inv.id}">
             <td>
@@ -2040,7 +2497,7 @@ function invoiceTable() {
               </div>
             </td>
             <td class="mono">${esc(inv.number || "—")}</td>
-            <td class="num">${fmtDate(inv.issueDate)}</td>
+            <td class="num">${fmtDate(inv.issueDate)}${carryoverSubline(inv)}</td>
             <td class="num">${inv.dueDate ? `${fmtDate(inv.dueDate)}${overdue ? ' <span class="tag" style="background:var(--danger-soft);color:var(--danger)">vencida</span>' : ""}` : '<span class="muted">—</span>'}</td>
             <td class="num">${fmtEUR(inv.base)}</td>
             <td class="num">${fmtEUR(inv.igic)}<div class="sub" style="font-size:11px;color:var(--ink-3)">${inv.lines && inv.lines.length > 1 ? `${inv.lines.length} tipos` : rateText(inv.rate)}</div></td>
@@ -2065,7 +2522,7 @@ function invoiceTable() {
         </tr>
       </tfoot>
     </table>
-  </div>`;
+  </div>${listPageControls(list.length, "purchases")}`;
 }
 
 function refreshInvoiceTable() {
@@ -2102,17 +2559,18 @@ function viewProveedores() {
   if (!state.suppliers.length) {
     return `<section class="card"><div class="empty">
       <div class="e-icon">${icon("store")}</div>
-      <h3>Los proveedores y los clientes se crean solos</h3>
-      <p>En cuanto subas una factura, guardo el proveedor con su nombre y su NIF; con las liquidaciones y los ingresos pasa lo mismo con el cliente. Si quieres, también puedes darlos de alta tú.</p>
+      <h3>Empieza tu CRM de clientes y proveedores</h3>
+      <p>Importa tu lista desde una hoja de cálculo o añade contactos. Las facturas y liquidaciones también completan el historial de cada ficha.</p>
       <div class="e-actions">
-        <button class="btn primary" data-action="import-files">${icon("upload")} Subir factura</button>
-        <button class="btn" data-action="new-supplier">${icon("plus")} Añadir proveedor o cliente</button>
+        <button class="btn primary" data-action="crm-import">${icon("upload")} Importar contactos</button>
+        <button class="btn" data-action="crm-template">${icon("download")} Descargar plantilla</button>
+        <button class="btn" data-action="new-supplier">${icon("plus")} Añadir contacto</button>
       </div>
     </div></section>`;
   }
 
   const rol = ui.supplierRole || "PROVEEDOR";
-  const cuantos = tercerosPorRol(rol).length;
+  const cuantos = supplierList().length;
   return `
   <section class="card" style="margin-bottom:16px">
     <div class="filters">
@@ -2122,24 +2580,28 @@ function viewProveedores() {
         <button type="button" data-action="supplier-role" data-role="TODOS" class="${rol === "TODOS" ? "active" : ""}">Todos</button>
       </div>
       <div class="spacer"></div>
-      <span class="tag">${cuantos} de ${state.suppliers.length}</span>
+      <span class="tag" id="supplierCount">${cuantos} de ${state.suppliers.length}</span>
     </div>
     <div class="filters" style="margin-top:10px">
       <label class="search">
         ${icon("search")}
-        <input type="search" id="supplierSearch" placeholder="Buscar por nombre o NIF" value="${esc(ui.supplierQuery)}" aria-label="Buscar proveedores y clientes">
+        <input type="search" id="supplierSearch" placeholder="Buscar contacto, NIF, correo o teléfono" value="${esc(ui.supplierQuery)}" aria-label="Buscar clientes y proveedores">
       </label>
+      <button class="btn sm ghost" data-action="crm-template">${icon("download")} Plantilla CSV</button>
     </div>
   </section>
   <div id="supplierGridWrap">${supplierGrid()}</div>`;
 }
 
-function supplierGrid() {
+function supplierList() {
   const bySupplier = statsBySupplier();
-  const q = ui.supplierQuery.trim().toLowerCase();
+  const q = foldSearch(ui.supplierQuery);
   let list = tercerosPorRol(ui.supplierRole || "PROVEEDOR");
   if (q) {
-    list = list.filter((s) => `${s.name} ${s.nif}`.toLowerCase().includes(q));
+    list = list.filter((s) => foldSearch([
+      s.name, s.nif, s.contactName, s.email, s.phone, s.address, s.city,
+      s.paymentMethod, s.paymentTermDays,
+    ].filter(Boolean).join(" ")).includes(q));
   }
   list.sort((a, b) => {
     const pa = (bySupplier.get(a.id) || {}).pending || 0;
@@ -2147,6 +2609,13 @@ function supplierGrid() {
     if (pb !== pa) return pb - pa;
     return a.name.localeCompare(b.name, "es");
   });
+  return list;
+}
+
+function supplierGrid() {
+  const list = supplierList();
+  const visible = pageRows(list, "suppliers");
+  const bySupplier = statsBySupplier();
 
   if (!list.length) {
     return `<section class="card"><div class="empty">
@@ -2157,7 +2626,7 @@ function supplierGrid() {
   }
 
   return `<div class="supplier-grid">
-    ${list.map((s) => {
+    ${visible.map((s) => {
       const st = bySupplier.get(s.id) || { count: 0, total: 0, pending: 0, countPending: 0, lastDate: "" };
       const suRol = String(s.role || "").toUpperCase();
       const esCliente = suRol === "CLIENTE" || (suRol === "AMBOS" && ui.supplierRole === "CLIENTE");
@@ -2170,6 +2639,13 @@ function supplierGrid() {
             <div class="i">${esc(s.nif || "sin NIF")} · ${etiqueta}</div>
           </div>
         </div>
+        <div class="crm-contact-details">
+          ${s.contactName ? `<div><span>Contacto</span><strong>${esc(s.contactName)}</strong></div>` : ""}
+          ${s.email ? `<div><span>Correo</span><strong>${esc(s.email)}</strong></div>` : ""}
+          ${s.phone ? `<div><span>Teléfono</span><strong>${esc(s.phone)}</strong></div>` : ""}
+          ${(s.address || s.city || s.postalCode) ? `<div><span>Dirección</span><strong>${esc([s.address, s.postalCode, s.city, s.country].filter(Boolean).join(", "))}</strong></div>` : ""}
+          ${s.website ? `<div><span>Web</span><strong>${esc(s.website)}</strong></div>` : ""}
+        </div>
         <div class="supplier-figures">
           <div>
             <div class="f-label">${esCliente ? "Vendido" : "Facturado"}</div>
@@ -2180,21 +2656,147 @@ function supplierGrid() {
             <div class="f-value ${st.pending > 0 ? "pending" : ""}">${fmtEUR(st.pending)}</div>
           </div>
         </div>
+        <div class="crm-payment-details">
+          <span>${icon("wallet")} ${esc(crmPaymentMethodLabel(s.paymentMethod))}</span>
+          ${s.paymentTermDays != null ? `<span>Plazo: ${Number(s.paymentTermDays)} días</span>` : ""}
+        </div>
         <div class="supplier-foot">
           <span class="meta">${st.count} ${st.count === 1 ? "factura" : "facturas"}${st.lastDate ? ` · ${fmtDate(st.lastDate)}` : ""}</span>
           <div class="spacer"></div>
-          <button class="icon-btn" data-action="edit-supplier" data-id="${s.id}" title="Editar" aria-label="Editar proveedor o cliente">${icon("edit")}</button>
+          <button class="icon-btn" data-action="edit-supplier" data-id="${s.id}" title="Editar ficha CRM" aria-label="Editar ficha de ${esc(s.name)}">${icon("edit")}</button>
           <button class="icon-btn" data-action="delete-supplier" data-id="${s.id}" title="Borrar" aria-label="Borrar proveedor o cliente">${icon("trash")}</button>
           <button class="btn sm" data-action="filter-supplier" data-id="${s.id}">Ver movimientos</button>
         </div>
       </article>`;
     }).join("")}
-  </div>`;
+  </div>${listPageControls(list.length, "suppliers")}`;
 }
 
 function refreshSupplierGrid() {
   const wrap = document.getElementById("supplierGridWrap");
   if (wrap) wrap.innerHTML = supplierGrid();
+  const count = document.getElementById("supplierCount");
+  if (count) count.textContent = `${supplierList().length} de ${getState().suppliers.length}`;
+}
+
+function downloadCrmTemplate() {
+  const headers = [
+    "Nombre", "NIF", "Tipo", "Persona de contacto", "Correo", "Teléfono",
+    "Dirección", "Población", "Código postal", "País", "Web", "Forma de pago",
+    "Plazo de pago (días)", "Notas",
+  ];
+  const example = [
+    "Proveedor Ejemplo SL", "B12345674", "Proveedor", "Ana Pérez", "facturas@example.test",
+    "922 000 000", "Calle Uno 2", "Arrecife", "35500", "España", "https://example.test",
+    "Transferencia", "30", "Contacto de facturación",
+  ];
+  const csv = `\ufeff${headers.join(";")}\r\n${example.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(";")}\r\n`;
+  downloadText("plantilla-contactos-agrosabina.csv", csv, "text/csv;charset=utf-8");
+}
+
+function pickCrmImportFile() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".csv,.xls,.xlsx,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+  input.addEventListener("change", async () => {
+    const file = input.files?.[0];
+    if (!file) return;
+    if (file.size > 15 * 1024 * 1024) {
+      toast("El archivo supera el límite de 15 MB.", "bad");
+      return;
+    }
+    try {
+      const XLSX = await import("xlsx");
+      const workbook = XLSX.read(await file.arrayBuffer(), { type: "array", cellDates: false });
+      const firstSheet = workbook.SheetNames[0];
+      if (!firstSheet) throw new Error("El archivo no tiene ninguna hoja con datos.");
+      const rawRows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], {
+        defval: "",
+        raw: false,
+        blankrows: false,
+      });
+      if (rawRows.length > 5000) throw new Error("El archivo supera el límite de 5.000 filas.");
+      const parsed = normalizeCrmRows(rawRows);
+      if (!parsed.records.length && !parsed.errors.length) {
+        toast("No encontré filas de contactos debajo de los encabezados.", "warn");
+        return;
+      }
+      showCrmImportPreview(file.name, parsed.records, parsed.errors);
+    } catch (error) {
+      toast(`No se pudo leer el archivo: ${error?.message || error}`, "bad", 7000);
+    }
+  });
+  input.click();
+}
+
+function showCrmImportPreview(fileName, records, errors) {
+  const seen = new Set();
+  const duplicateInfo = records.map((record) => {
+    const existing = findSupplierForContactImport(record.name, record.nif);
+    const key = record.nif ? `nif:${record.nif}` : `name:${foldSearch(record.name)}`;
+    const duplicateInFile = seen.has(key);
+    seen.add(key);
+    return { existing, duplicateInFile };
+  });
+  const previewRows = records.slice(0, 20);
+  openModal(`
+    <div class="modal-head">
+      <div>
+        <h2>Revisar importación de contactos</h2>
+        <p>${esc(fileName)} · ${records.length} filas válidas${errors.length ? ` · ${errors.length} con errores` : ""}</p>
+      </div>
+      <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
+    </div>
+    <div class="modal-body crm-import-preview">
+      <p>Las coincidencias se actualizarán sin borrar datos cuando una celda esté vacía. Los contactos nuevos se crearán una sola vez.</p>
+      <div class="field crm-default-role">
+        <label for="crmDefaultRole">Tipo para filas sin tipo indicado</label>
+        <select id="crmDefaultRole">
+          <option value="PROVEEDOR">Proveedor</option>
+          <option value="CLIENTE">Cliente</option>
+          <option value="AMBOS">Cliente y proveedor</option>
+        </select>
+      </div>
+      ${records.length ? `<div class="table-wrap"><table class="data crm-import-table">
+        <thead><tr><th>Contacto</th><th>NIF</th><th>Tipo</th><th>Correo</th><th>Forma de pago</th><th>Plazo</th><th>Resultado</th></tr></thead>
+        <tbody>${previewRows.map((record, index) => {
+          const duplicate = duplicateInfo[index];
+          const role = record.role || "PROVEEDOR";
+          const method = record.paymentMethod ? crmPaymentMethodLabel(record.paymentMethod) : "—";
+          const result = duplicate.existing
+            ? "Actualizar ficha"
+            : duplicate.duplicateInFile ? "Coincide en el archivo" : "Crear contacto";
+          return `<tr>
+            <td>${esc(record.name)}</td><td>${esc(record.nif || "—")}</td>
+            <td>${esc(role === "CLIENTE" ? "Cliente" : role === "AMBOS" ? "Cliente y proveedor" : record.role ? "Proveedor" : "Usar tipo elegido")}</td>
+            <td>${esc(record.email || "—")}</td><td>${esc(method)}</td><td>${record.paymentTermDays == null ? "—" : `${record.paymentTermDays} días`}</td><td>${esc(result)}</td>
+          </tr>`;
+        }).join("")}</tbody>
+      </table></div>${records.length > previewRows.length ? `<p class="hint">Se muestran las primeras ${previewRows.length} filas; se procesarán las ${records.length} válidas.</p>` : ""}` : ""}
+      ${errors.length ? `<details class="crm-import-errors">
+        <summary>Revisar ${errors.length} filas que se omitirán</summary>
+        <ul>${errors.slice(0, 30).map((error) => `<li>Fila ${error.row} · ${esc(error.name)}: ${esc(error.issues.join(" "))}</li>`).join("")}</ul>
+        ${errors.length > 30 ? `<p class="hint">Y ${errors.length - 30} filas más.</p>` : ""}
+      </details>` : ""}
+    </div>
+    <div class="modal-foot">
+      <button class="btn primary" data-crm-import-confirm ${records.length ? "" : "disabled"}>${icon("upload")} Importar ${records.length} contactos</button>
+      <button class="btn ghost" data-modal-cancel>Cancelar</button>
+    </div>`, {
+    onMount(wrap) {
+      wrap.querySelectorAll("[data-modal-cancel]").forEach((button) =>
+        button.addEventListener("click", closeModal),
+      );
+      wrap.querySelector("[data-crm-import-confirm]")?.addEventListener("click", () => {
+        const defaultRole = wrap.querySelector("#crmDefaultRole").value;
+        const result = importSupplierContacts(records, defaultRole);
+        closeModal();
+        render();
+        const omitted = errors.length + result.failed;
+        toast(`Importación terminada: ${result.created} nuevos, ${result.updated} actualizados${omitted ? ` y ${omitted} omitidos` : ""}.`, omitted ? "warn" : "ok", 8500);
+      });
+    },
+  });
 }
 
 /* ------------------------------------------------------------------ */
@@ -2216,6 +2818,9 @@ function mailRow(m) {
   else bits.push("sin adjuntos");
   if (readable.length && readable.length < all.length) bits.push(`${readable.length} legible${readable.length === 1 ? "" : "s"}`);
   return `<div class="mail-item">
+    <label class="mail-select">
+      <input type="checkbox" data-mail-select value="${esc(m.id)}" aria-label="Seleccionar correo ${esc(m.subject || "sin asunto")}" ${ui.selectedMailIds.has(m.id) ? "checked" : ""}>
+    </label>
     <div class="mail-main">
       <div class="mail-subject">${esc(m.subject || "(sin asunto)")}</div>
       <div class="mail-meta">${esc(m.from || "remitente desconocido")}${m.date ? ` · ${esc(mailDateText(m.date))}` : ""}</div>
@@ -2229,6 +2834,73 @@ function mailRow(m) {
       <button class="icon-btn" data-action="delete-mail" data-id="${m.id}" title="Borrar" aria-label="Borrar correo">${icon("trash")}</button>
     </div>
   </div>`;
+}
+
+function filteredMailMessages() {
+  const q = foldSearch(ui.mailFilters.q);
+  let list = messages().slice();
+  if (ui.mailFilters.status === "unused") list = list.filter((message) => !message.usedAt);
+  else if (ui.mailFilters.status === "used") list = list.filter((message) => !!message.usedAt);
+  if (q) {
+    list = list.filter((message) => foldSearch([
+      message.subject, message.from, message.date,
+      ...(message.attachments || []).map((attachment) => attachment.name),
+    ].filter(Boolean).join(" ")).includes(q));
+  }
+  return list;
+}
+
+function savedMailListHtml(list) {
+  const allMessages = messages();
+  const selectedCount = allMessages.filter((message) => ui.selectedMailIds.has(message.id)).length;
+  const selectedInFilter = list.filter((message) => ui.selectedMailIds.has(message.id)).length;
+  if (!allMessages.length) {
+    return `<div class="empty">
+      <div class="e-icon">${icon("mail")}</div>
+      <h3>Todavía no hay correos</h3>
+      <p>Conecta Gmail para leer adjuntos recientes o importa manualmente un correo .eml.</p>
+    </div>`;
+  }
+  if (!list.length) {
+    return `<div class="empty">
+      <div class="e-icon">${icon("search")}</div>
+      <h3>No hay correos que coincidan</h3>
+      <p>Cambia la búsqueda o el filtro de estado.</p>
+      <button class="btn" data-action="mail-clear-filters">Quitar filtros</button>
+      ${selectedCount ? `<button class="btn ghost" data-action="mail-clear-selection">Cancelar selección (${selectedCount})</button>` : ""}
+    </div>`;
+  }
+  return `<div class="mail-bulk-toolbar">
+    <label class="mail-select-all">
+      <input id="mailSelectAll" type="checkbox" data-mail-select-all ${selectedInFilter === list.length ? "checked" : ""}>
+      Seleccionar los ${list.length} correos filtrados
+    </label>
+    <span class="mail-selected-count">${selectedCount} seleccionados</span>
+    ${selectedCount ? `<div class="row wrap">
+      <button class="btn sm primary" data-action="mail-bulk-review">${icon("file")} Revisar adjuntos (${selectedCount})</button>
+      <button class="btn sm danger" data-action="mail-bulk-delete">${icon("trash")} Borrar seleccionados</button>
+      <button class="btn sm ghost" data-action="mail-clear-selection">Cancelar selección</button>
+    </div>` : ""}
+  </div>
+  <div class="mail-list">${pageRows(list, "mail").map(mailRow).join("")}</div>
+  ${listPageControls(list.length, "mail")}`;
+}
+
+function refreshSavedMailList() {
+  const liveIds = new Set(messages().map((message) => message.id));
+  for (const id of ui.selectedMailIds) if (!liveIds.has(id)) ui.selectedMailIds.delete(id);
+  const host = document.getElementById("mailListResults");
+  const list = filteredMailMessages();
+  if (host) {
+    host.innerHTML = savedMailListHtml(list);
+    const selectAll = host.querySelector("#mailSelectAll");
+    if (selectAll && list.length) {
+      const selectedInFilter = list.filter((message) => ui.selectedMailIds.has(message.id)).length;
+      selectAll.indeterminate = selectedInFilter > 0 && selectedInFilter < list.length;
+    }
+  }
+  const count = document.getElementById("mailCount");
+  if (count) count.textContent = `${list.length} de ${messages().length}`;
 }
 
 let gmailSdkLoadPromise = null;
@@ -2344,6 +3016,7 @@ function gmailConnectionCard() {
 
 function gmailPreviewPanel() {
   if (!gmailPreviewItems.length) return "";
+  const attachmentTotal = gmailPreviewItems.reduce((count, message) => count + message.attachments.length, 0);
   const selected = gmailPreviewItems.reduce(
     (count, message) => count + message.attachments.filter((attachment) => attachment.selected).length,
     0,
@@ -2357,13 +3030,25 @@ function gmailPreviewPanel() {
         </div>
       </div>
       <div class="card-body">
+        <div class="mail-bulk-toolbar">
+          <label class="mail-select-all">
+            <input type="checkbox" data-gmail-select-all ${selected === attachmentTotal ? "checked" : ""}>
+            Seleccionar todos los adjuntos (${attachmentTotal})
+          </label>
+          <span class="mail-selected-count">${selected} seleccionados</span>
+        </div>
         ${gmailPreviewSkipped ? `<div class="hint-bar">${icon("info")}<span>${gmailPreviewSkipped} correo${gmailPreviewSkipped === 1 ? "" : "s"} omitido${gmailPreviewSkipped === 1 ? "" : "s"} por no tener adjuntos PDF o imagen legibles.</span></div>` : ""}
         <div class="gmail-preview-list">
           ${gmailPreviewItems.map((message) => `
             <article class="gmail-preview-message">
-              <div class="mail-main">
-                <div class="mail-subject">${esc(message.subject || "(sin asunto)")}</div>
-                <div class="mail-meta">${esc(message.from || "remitente desconocido")}${message.date ? ` · ${esc(mailDateText(message.date))}` : ""}</div>
+              <div class="gmail-message-heading">
+                <label class="mail-select">
+                  <input type="checkbox" data-gmail-message-select="${esc(message.id)}" ${message.attachments.length && message.attachments.every((attachment) => attachment.selected) ? "checked" : ""} aria-label="Seleccionar adjuntos de ${esc(message.subject || "correo")}">
+                </label>
+                <div class="mail-main">
+                  <div class="mail-subject">${esc(message.subject || "(sin asunto)")}</div>
+                  <div class="mail-meta">${esc(message.from || "remitente desconocido")}${message.date ? ` · ${esc(mailDateText(message.date))}` : ""}</div>
+                </div>
               </div>
               <div class="gmail-attachment-list">
                 ${message.attachments.map((attachment) => `
@@ -2426,29 +3111,13 @@ function previewGmailAttachment(id) {
 
 function viewCorreo() {
   prepareGmailForView();
-  const list = messages();
+  const allMessages = messages();
+  const list = filteredMailMessages();
   const aiOn = aiConfigured(getState().settings);
   return `
   <div class="stack">
     ${gmailConnectionCard()}
     ${gmailPreviewPanel()}
-    <section class="card">
-      <div class="card-body">
-        <div id="mailDrop" class="dropzone">
-          <div class="dz-icon">${icon("mail")}</div>
-          <h3>Importa un correo guardado</h3>
-          <p>Guarda el mensaje como archivo <strong>.eml</strong> y arrástralo aquí para ver e importar solo sus adjuntos. El asunto y el cuerpo del correo no se contabilizan.</p>
-          <div class="dz-actions">
-            <button class="btn primary" data-action="import-email">${icon("mail")} Elegir correos (.eml)</button>
-            <button class="btn ghost" data-action="paste-text">${icon("text")} Pegar texto de un documento</button>
-          </div>
-          <p style="font-size:12.5px;color:var(--ink-3);margin-top:10px">
-            La conexión directa con Gmail se inicia siempre desde el botón de arriba.
-          </p>
-        </div>
-      </div>
-    </section>
-
     <div class="hint-bar">
       ${icon(aiOn ? "sparkle" : "info")}
       <span>${
@@ -2462,19 +3131,21 @@ function viewCorreo() {
       <div class="card-head">
         <div>
           <h2>Correos guardados</h2>
-          <p>${list.length ? "Pulsa «Ver adjuntos» para abrir los documentos originales, no el texto del correo." : "Aquí aparecerán los correos que traigas"}</p>
+          <p id="mailCount">${list.length} de ${allMessages.length}</p>
         </div>
       </div>
       <div class="card-body">
-        ${
-          list.length
-            ? `<div class="mail-list">${list.map(mailRow).join("")}</div>`
-            : `<div class="empty">
-                 <div class="e-icon">${icon("mail")}</div>
-                 <h3>Todavía no hay correos</h3>
-                 <p>Conecta Gmail para leer adjuntos recientes o importa manualmente un correo .eml.</p>
-               </div>`
-        }
+        <div class="filters mail-filters">
+          <label class="search">${icon("search")}
+            <input id="mailSearch" type="search" value="${esc(ui.mailFilters.q)}" placeholder="Buscar remitente, asunto o adjunto" aria-label="Buscar correos guardados">
+          </label>
+          <select id="mailStatus" aria-label="Filtrar por estado del correo">
+            <option value="all" ${ui.mailFilters.status === "all" ? "selected" : ""}>Todos los correos</option>
+            <option value="unused" ${ui.mailFilters.status === "unused" ? "selected" : ""}>Pendientes de revisar</option>
+            <option value="used" ${ui.mailFilters.status === "used" ? "selected" : ""}>Ya revisados</option>
+          </select>
+        </div>
+        <div id="mailListResults">${savedMailListHtml(list)}</div>
       </div>
     </section>
   </div>`;
@@ -2499,6 +3170,7 @@ async function importEmails(files) {
     toast("Solo sé leer correos guardados como .eml.", "bad", 5200);
     return null;
   }
+  closeEmailImportModal();
 
   let saved = 0;
   let attached = 0;
@@ -2556,40 +3228,67 @@ async function importEmails(files) {
   return { saved, attached, lastId, processedGmailIds };
 }
 
-/** Saca la factura de un correo guardado. */
-async function useMail(id) {
+/** Añade a revisión los originales de un correo guardado, nunca su cuerpo. */
+async function queueMailAttachments(id) {
   const msg = messages().find((m) => m.id === id);
-  if (!msg) return;
+  if (!msg) return { ok: false, message: "El correo ya no está en la lista." };
   if (!(msg.attachments || []).length) {
-    toast("Este correo no tiene adjuntos. Su texto no se importará como si fuera un documento.", "warn", 6500);
-    return;
+    return { ok: false, message: "El correo no tiene adjuntos." };
   }
   const previewId = `mail:${id}`;
   if (gmailPreviewItems.some((message) => message.id === previewId)) {
-    toast("Los adjuntos de ese correo ya están en «Revisar originales antes de importar».");
-    return;
+    return { ok: false, message: "Los adjuntos ya están en la lista de revisión." };
   }
   try {
     const original = await originalOf(previewId);
     if (!original?.blob) {
-      toast("Este correo antiguo solo conserva el texto y los nombres de los adjuntos. Vuelve a cargar su .eml o búscalo en Gmail para recuperar los originales. No se importará el cuerpo del correo.", "warn", 10000);
-      return;
+      return { ok: false, message: "No se conserva el original .eml." };
     }
     const parsed = parseEml(await original.blob.text(), original.name);
     const documents = emailDocumentFiles(parsed);
     if (!documents.length) {
-      toast("El correo no contiene adjuntos PDF o imágenes compatibles.", "warn");
-      return;
+      return { ok: false, message: "No contiene adjuntos PDF o imágenes compatibles." };
     }
     gmailPreviewItems.push({
       id: previewId, subject: msg.subject, from: msg.from, date: msg.date,
       attachments: documents.map((file) => ({ id: `mail_attachment_${uid()}`, file, selected: true, mailMessageId: id })),
     });
+    return { ok: true, attachments: documents.length };
   } catch (error) {
-    toast(`No se han podido abrir los adjuntos: ${error.message}`, "bad", 7000);
+    return { ok: false, message: error.message || "No se han podido abrir los adjuntos." };
+  }
+}
+
+/** Saca los adjuntos de un correo guardado a la revisión de originales. */
+async function useMail(id) {
+  const result = await queueMailAttachments(id);
+  if (!result.ok) {
+    toast(result.message, "warn", 7000);
     return;
   }
   render();
+}
+
+async function useSelectedMails() {
+  const ids = messages().filter((message) => ui.selectedMailIds.has(message.id)).map((message) => message.id);
+  if (!ids.length) return;
+  let staged = 0;
+  let attachments = 0;
+  let skipped = 0;
+  for (const id of ids) {
+    const result = await queueMailAttachments(id);
+    if (result.ok) {
+      staged++;
+      attachments += result.attachments;
+    } else skipped++;
+  }
+  ui.selectedMailIds.clear();
+  render();
+  if (staged) {
+    toast(`${staged} correos y ${attachments} adjuntos preparados para revisar.${skipped ? ` ${skipped} no se pudieron añadir; comprueba que conservan el original.` : ""}`, skipped ? "warn" : "ok", 8000);
+  } else {
+    toast("No se pudo añadir ningún correo. Los correos antiguos sin archivo original no se pueden volver a leer.", "warn", 8000);
+  }
 }
 
 export function openMailPasteModal() {
@@ -2689,70 +3388,99 @@ async function testAi() {
 /* Importar                                                           */
 /* ------------------------------------------------------------------ */
 
+function closeImportModal() {
+  if (document.querySelector("#modalRoot .modal #dropzone")) closeModal();
+}
+
+function closeEmailImportModal() {
+  if (document.querySelector("#modalRoot .modal #mailDrop")) closeModal();
+}
+
+function openImportModal() {
+  openModal(
+    `<div class="modal-head">
+      <div>
+        <h2>Importar documentos</h2>
+        <p>Sube varios originales; se revisan uno a uno antes de guardarlos.</p>
+      </div>
+      <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
+    </div>
+    <div class="modal-body">
+      <div id="dropzone" class="dropzone">
+        <div class="dz-icon">${icon("upload")}</div>
+        <h3>Arrastra aquí fotos o PDF</h3>
+        <p>Primero verás el original y elegirás su tipo. Después podrás comprobar los datos antes de guardarlos.</p>
+        <div class="dz-actions">
+          <button class="btn primary" data-action="import-files-select">${icon("file")} Elegir archivos</button>
+          <button class="btn" data-action="import-camera">${icon("camera")} Hacer una foto</button>
+          <button class="btn ghost" data-action="paste-text">${icon("text")} Pegar texto</button>
+          <button class="btn ghost" data-action="import-email">${icon("mail")} Correo .eml</button>
+        </div>
+      </div>
+      <div id="ingestList" class="filelist"></div>
+    </div>
+    <div class="modal-foot">
+      <span class="muted">Los datos no se guardan hasta que revises y confirmes.</span>
+      <div class="spacer"></div>
+      <button class="btn ghost" data-modal-cancel>Cerrar</button>
+    </div>`,
+    {
+      onMount(wrap) {
+        wrap.querySelectorAll("[data-modal-cancel]").forEach((button) => button.addEventListener("click", closeModal));
+      },
+    },
+  );
+}
+
+function openEmailImportModal() {
+  openModal(
+    `<div class="modal-head">
+      <div>
+        <h2>Importar correo guardado</h2>
+        <p>Solo se guardan el correo y sus adjuntos compatibles; el texto no se contabiliza.</p>
+      </div>
+      <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
+    </div>
+    <div class="modal-body">
+      <div id="mailDrop" class="dropzone">
+        <div class="dz-icon">${icon("mail")}</div>
+        <h3>Arrastra aquí un archivo .eml</h3>
+        <p>Podrás revisar los PDF e imágenes adjuntos antes de importarlos.</p>
+        <div class="dz-actions">
+          <button class="btn primary" data-action="import-email-select">${icon("mail")} Elegir correo</button>
+          <button class="btn ghost" data-action="paste-text">${icon("text")} Pegar texto de documento</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div class="spacer"></div>
+      <button class="btn ghost" data-modal-cancel>Cerrar</button>
+    </div>`,
+    {
+      narrow: true,
+      onMount(wrap) {
+        wrap.querySelectorAll("[data-modal-cancel]").forEach((button) => button.addEventListener("click", closeModal));
+      },
+    },
+  );
+}
+
 function viewImportar() {
   const defaultRate = getState().settings.defaultRate;
   return `
-  <div class="stack">
-    <section class="card">
-      <div class="card-body">
-        <div id="dropzone" class="dropzone">
-          <div class="dz-icon">${icon("upload")}</div>
-          <h3>Arrastra aquí los documentos</h3>
-          <p>Fotos (JPG, PNG) o PDF, varias a la vez. Cada tipo se lee con su propio lector: ${importadoresDisponibles()
-            .map((i) => i.label.toLowerCase())
-            .join(", ")}. Todo se lee en tu ordenador y se guarda en tu base de datos.</p>
-          <div class="dz-actions">
-            <button class="btn primary" data-action="import-files">${icon("file")} Elegir archivos</button>
-            <button class="btn" data-action="import-camera">${icon("camera")} Hacer una foto</button>
-            <button class="btn ghost" data-action="paste-text">${icon("text")} Pegar el texto</button>
-            <button class="btn ghost" data-action="import-email">${icon("mail")} Correo</button>
-          </div>
-          <p style="font-size:12.5px;color:var(--ink-3);margin-top:10px">
-            Con «Hacer una foto» puedes disparar varias seguidas y luego revisarlas todas juntas.
-          </p>
-        </div>
-        <div id="ingestList" class="filelist"></div>
+  <section class="card">
+    <div class="empty" style="padding:46px 24px">
+      <div class="e-icon">${icon("upload")}</div>
+      <h3>La importación se abre en una ventana</h3>
+      <p>Elige archivos o arrástralos al modal. Verás el documento original y seleccionarás su tipo antes de revisar y guardar los datos.</p>
+      <div class="e-actions">
+        <button class="btn primary" data-action="import-files">${icon("upload")}<span>Elegir documentos</span></button>
+        <button class="btn" data-action="import-camera">${icon("camera")}<span>Hacer una foto</span></button>
+        <button class="btn ghost" data-action="paste-text">${icon("text")}<span>Pegar texto</span></button>
       </div>
-    </section>
-
-    <div class="hint-bar">
-      ${icon("info")}
-      <span>El IGIC por defecto es <strong>${rateText(defaultRate)}</strong>. Puedes cambiarlo en Ajustes, y en cada factura si es otro tipo.</span>
+      <p class="hint" style="margin-top:16px">IGIC por defecto: ${rateText(defaultRate)}. Puedes corregirlo en la revisión de cada documento.</p>
     </div>
-
-    <section class="card">
-      <div class="card-head">
-        <div>
-          <h2>Qué leo de cada factura</h2>
-          <p>Y qué puedes corregir antes de guardar</p>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="howto">
-          <div class="step">
-            <div class="n">1</div>
-            <h4>Proveedor</h4>
-            <p>Nombre y NIF. Si ya lo tengo, la factura se une a su ficha; si no, lo creo.</p>
-          </div>
-          <div class="step">
-            <div class="n">2</div>
-            <h4>Importes</h4>
-            <p>Base imponible, tipo de IGIC, cuota y total. Si falta uno, lo calculo con los otros.</p>
-          </div>
-          <div class="step">
-            <div class="n">3</div>
-            <h4>Qué documento es</h4>
-            <p>Factura, liquidación de fruta, subvención, nómina… y en qué concepto entra (agua, luz, laborales, fitosanitarios, abonos…).</p>
-          </div>
-          <div class="step">
-            <div class="n">4</div>
-            <h4>Fechas y estado</h4>
-            <p>Fecha, vencimiento y si el documento está cobrado, pagado o pendiente.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>`;
+  </section>`;
 }
 
 /* ---- lista de ficheros de esta sesión ---- */
@@ -2822,10 +3550,13 @@ export function queueFiles(files) {
   const emails = list.filter(isEmailFile);
   if (emails.length) {
     const rest = list.filter((f) => !isEmailFile(f));
+    closeImportModal();
     importEmails(emails);
     if (rest.length) queueFiles(rest);
     return;
   }
+
+  closeImportModal();
 
   const ignored = [];
   for (const file of list) {
@@ -2846,15 +3577,12 @@ export function queueFiles(files) {
   }
   if (!ui.jobs.some((j) => j.state === "queued")) return;
 
-  ui.route = "importar";
-  if (location.hash !== "#/importar") location.hash = "#/importar";
-  else render();
-  paintIngest();
   runQueue();
 }
 
 async function runQueue() {
   if (runningQueue) return;
+  const existingErrors = new Set(ui.jobs.filter((job) => job.state === "error").map((job) => job.id));
   runningQueue = true;
   try {
     for (;;) {
@@ -2865,6 +3593,31 @@ async function runQueue() {
   } finally {
     runningQueue = false;
     paintIngest();
+    const errors = ui.jobs.filter((job) => job.state === "error" && !existingErrors.has(job.id));
+    if (errors.length) {
+      openModal(
+        `<div class="modal-head">
+          <div>
+            <h2>No se pudieron leer algunos archivos</h2>
+            <p>Puedes reintentar cada archivo o cerrar este aviso.</p>
+          </div>
+          <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
+        </div>
+        <div class="modal-body">
+          <div class="filelist">
+            ${errors.map((job) => `<div class="fileitem error">
+              <div class="fi-icon">${icon("file")}</div>
+              <div class="fi-body"><div class="fi-name">${esc(job.name || job.file?.name || "Archivo")}</div><div class="fi-state">${esc(job.error || "Error al leer")}</div></div>
+              <button class="btn sm" data-action="retry-job" data-id="${esc(job.id)}">Reintentar</button>
+            </div>`).join("")}
+          </div>
+        </div>
+        <div class="modal-foot"><div class="spacer"></div><button class="btn ghost" data-modal-cancel>Cerrar</button></div>`,
+        { onMount(wrap) {
+          wrap.querySelectorAll("[data-modal-cancel]").forEach((button) => button.addEventListener("click", closeModal));
+        } },
+      );
+    }
   }
 }
 
@@ -3925,6 +4678,7 @@ async function applyAiDocument(job, text) {
     return [];
   }
   p.notes.push(...(ai.warnings || []).map((v) => `Revisión de IA: ${v}`));
+  if (isFinancial(p.kind) && ai.financial && ai.confidence >= 0.7) p.financial = ai.financial;
   const aiSupplierNif = normaliseSpanishNif(ai.supplierNif);
   if (ai.supplierNif && !aiSupplierNif) {
     p.notes.push("La lectura de IA del NIF no supera la comprobación; no la he usado.");
@@ -4590,14 +5344,14 @@ function invoiceFormHtml(v, { dedicated = false } = {}) {
   const exerciseHint = missingDetectedDate
     ? "No se detectó la fecha del documento. Escríbela para poder asignarlo al ejercicio correcto."
     : issueDateValue && !matchesExercise
-      ? `El documento está fechado en ${issueYear}, fuera del ejercicio ${exerciseYear}. Selecciona ese año en Contabilidad para guardarlo.`
+      ? `El documento está fechado en ${issueYear}, fuera del ejercicio ${exerciseYear}. Selecciona ese año en el selector de Ejercicio de la barra superior para guardarlo.`
     : v.id && v.issueDate && !matchesExercise
     ? `Este documento pertenece al ejercicio ${issueYear}. Para cambiar su fecha, selecciona primero ese ejercicio en Contabilidad.`
     : `La fecha de emisión debe pertenecer al ejercicio ${exerciseYear}. El vencimiento o el pago pueden ser de otro año.`;
   const kind = v.kind || "FACTURA";
   const spec = documentReviewSpec(kind);
   const direction = v.direction || directionOf(kind);
-  const nonFiscal = dedicated && ["SUBVENCION", "COBRO"].includes(kind);
+  const nonFiscal = isFinancial(kind) || dedicated && ["SUBVENCION", "COBRO"].includes(kind);
   const taxHidden = kind === "NOMINA" || nonFiscal ? "hidden" : "";
   const payrollTaxHidden = kind === "NOMINA" ? "hidden" : "";
   return `
@@ -4712,6 +5466,7 @@ function invoiceFormHtml(v, { dedicated = false } = {}) {
       <p class="lines-sum" id="iv-liq-sum" hidden></p>
     </div>` : ""}
     ${!dedicated || kind === "NOMINA" ? nominaFormHtml(v, { dedicated }) : ""}
+    ${financialFormHtml(v, state.invoices)}
     <div class="field span-2">
       <label>Estado</label>
       <div class="segmented" id="f-status-seg" data-value="${v.status === STATUS.PAID ? STATUS.PAID : STATUS.PENDING}">
@@ -4725,9 +5480,9 @@ function invoiceFormHtml(v, { dedicated = false } = {}) {
         <label for="f-paid-method" style="margin-top:10px">¿Cómo se ${directionOf(kind) === "INGRESO" ? "cobró" : "pagó"}?</label>
         <select id="f-paid-method">
           <option value="">Sin decir</option>
-          <option value="CAJA" ${v.payMethod === "CAJA" ? "selected" : ""}>En efectivo (caja) · cuenta 570</option>
-          <option value="BANCO" ${v.payMethod === "BANCO" ? "selected" : ""}>Por el banco · cuenta 572</option>
-          <option value="TARJETA" ${v.payMethod === "TARJETA" ? "selected" : ""}>Con tarjeta · cuenta 572</option>
+          <option value="CAJA" ${v.payMethod === "CAJA" ? "selected" : ""}>En efectivo (caja) · cuenta 570000</option>
+          <option value="BANCO" ${v.payMethod === "BANCO" ? "selected" : ""}>Por el banco · cuenta 572000</option>
+          <option value="TARJETA" ${v.payMethod === "TARJETA" ? "selected" : ""}>Con tarjeta · cuenta 572000</option>
         </select>
         <label for="f-paid-account" style="margin-top:10px">Cuenta corriente <span class="hint">(o el nombre de la caja)</span></label>
         <input id="f-paid-account" type="text" value="${esc(v.payAccount || "")}" placeholder="Caja general · ES91 2100 0418 4502 0005 1332">
@@ -4752,6 +5507,7 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
   const values = editing
     ? {
         id: invoice.id,
+        id: invoice.id,
         supplierName: supplierName(invoice.supplierId),
         supplierNif: (supplierById(invoice.supplierId) || {}).nif || "",
         number: invoice.number,
@@ -4771,6 +5527,7 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
         lines: invoice.lines || [],
         liquidacion: invoice.liquidacion || null,
         nomina: invoice.nomina || null,
+        financial: invoice.financial || null,
       }
     : job
       ? { ...job.parsed }
@@ -4838,10 +5595,22 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
       <div id="dupWarning" class="summary-box warn" hidden style="margin-bottom:14px">${icon("alert")}<div></div></div>
       <div class="review-layout">
         <div>
-          ${invoiceFormHtml(values, { dedicated: !!job })}
+          ${invoiceFormHtml(values, { dedicated: !!job || isFinancial(values.kind) })}
         </div>
         <div>
           ${job ? `<h3>Documento original</h3><div class="import-original review-original">${originalPreviewHtml(job, originalUrl)}</div>` : ""}
+          ${editing ? `
+            <div class="summary-box" style="margin-bottom:12px">
+              ${icon("file")}
+              <div style="flex:1">
+                <strong>Documento original</strong>
+                <div id="invoiceOriginalStatus" class="sub" style="margin-top:3px">Comprobando el almacén…</div>
+                <div id="invoiceOriginalActions" class="row wrap" style="margin-top:8px;gap:8px" hidden>
+                  <button type="button" class="btn sm" data-view-invoice-original>Ver original</button>
+                  <button type="button" class="btn sm ghost" data-download-invoice-original>Descargar original</button>
+                </div>
+              </div>
+            </div>` : ""}
           <div class="summary-box" style="margin-bottom:12px">
             ${icon("info")}
             <div id="supplierInfo">Los datos se guardarán en la ficha de ${esc(reviewSpec.party.toLowerCase())}.</div>
@@ -4875,6 +5644,25 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
       onMount(wrap) {
         bindForm(wrap, values);
         if (job) preview = mountOriginalPreview(wrap.querySelector(".review-original"), job);
+        if (editing) {
+          const status = wrap.querySelector("#invoiceOriginalStatus");
+          const actions = wrap.querySelector("#invoiceOriginalActions");
+          wrap.querySelector("[data-view-invoice-original]")?.addEventListener("click", () => showDocOriginal(invoice.id, "view"));
+          wrap.querySelector("[data-download-invoice-original]")?.addEventListener("click", () => showDocOriginal(invoice.id, "download"));
+          originalOf(invoice.id).then((original) => {
+            if (!wrap.isConnected || !status || !actions) return;
+            if (original?.blob) {
+              status.textContent = `${original.name || invoice.fileName || "Documento"} · ${originalSizeText(original.size || original.blob.size)}`;
+              actions.hidden = false;
+            } else {
+              status.textContent = invoice.fileName
+                ? `No se conserva el archivo «${invoice.fileName}»; solo los datos leídos.`
+                : "Este registro no tiene un archivo original adjunto.";
+            }
+          }).catch(() => {
+            if (wrap.isConnected && status) status.textContent = "No se pudo consultar el almacén de originales.";
+          });
+        }
 
         wrap.querySelector("[data-reclassify]")?.addEventListener("click", () => {
           finish({ reclassify: true });
@@ -4911,6 +5699,7 @@ export function openInvoiceModal({ mode = "new", invoice = null, job = null, pre
 }
 
 function bindForm(wrap, initial) {
+  bindFinancialForm(wrap);
   const q = (id) => wrap.querySelector(id);
   const base = q("#f-base");
   const rate = q("#f-rate");
@@ -4957,6 +5746,14 @@ function bindForm(wrap, initial) {
       catSel.innerHTML = categoryOptions(catSel.value, directionOf(kindSel.value));
     }
     kindSel.addEventListener("change", repaintCategories);
+    kindSel.addEventListener("change", () => {
+      if (isFinancial(kindSel.value)) {
+        const preset = { ...readForm(wrap), kind: kindSel.value };
+        const existingInvoice = initial?.id ? getState().invoices.find((doc) => doc.id === initial.id) : null;
+        closeModal();
+        openInvoiceModal({ mode: existingInvoice ? "edit" : "new", invoice: existingInvoice, preset });
+      }
+    });
     catSel.dataset.direction = directionOf(kindSel.value);
     catSel.addEventListener("change", () => {
       catSel.dataset.direction = directionOf(kindSel.value);
@@ -5316,6 +6113,7 @@ function readForm(wrap) {
   const payroll = kind === "NOMINA";
   const nonFiscal = q("[data-document-form]")?.dataset.nonFiscal === "true";
   const nomina = payroll ? readNomina(wrap) : null;
+  const financial = readFinancialForm(wrap, kind);
 
   return {
     supplierName: q("#f-name").value.trim(),
@@ -5325,7 +6123,7 @@ function readForm(wrap) {
     dueDate: q("#f-due").value || "",
     kind,
     category: (q("#f-cat") && q("#f-cat").value) || "",
-    direction: directionOf(kind),
+    direction: isFinancial(kind) ? financialDirection(kind, financial) : directionOf(kind),
     base: payroll ? nomina?.bruto ?? null : nonFiscal ? total : base,
     rate: payroll || nonFiscal
       ? 0
@@ -5341,6 +6139,7 @@ function readForm(wrap) {
     // liquidación con el recibo de salarios.
     liquidacion: kind === "LIQUIDACION" ? readLiquidacion(wrap) : null,
     nomina: payroll ? nomina : null,
+    financial,
     status: status === STATUS.PAID ? STATUS.PAID : STATUS.PENDING,
     paidDate:
       status === STATUS.PAID
@@ -5356,6 +6155,30 @@ function readForm(wrap) {
 
 async function submitInvoice(wrap, { mode, invoice, job }) {
   const v = readForm(wrap);
+  const financeError = financialError(v);
+  if (financeError) {
+    toast(financeError, "bad", 7000);
+    return null;
+  }
+  if (isFinancial(v.kind)) {
+    if (v.kind === "RECIBO_BANCARIO" && v.financial.operation === "JUSTIFICANTE") {
+      const linked = getState().invoices.find((doc) => doc.id === v.financial.linkedDocumentId);
+      if (!linked || Math.abs(Number(linked.total) - v.total) > 0.01) {
+        toast("El justificante debe corresponder a un documento existente con el mismo importe.", "bad", 7000);
+        return null;
+      }
+    }
+    if (v.kind === "PRESTAMO" && v.financial.operation === "RECLASIFICACION") {
+      const prior = asientosDe(accDocs().filter((doc) => doc.id !== invoice?.id), {
+        from: `${activeExerciseYear()}-01-01`, to: v.issueDate, apertura: accApertura(), manuales: accManuales(),
+      });
+      const available = debtBalances(prior).find((row) => row.account === v.financial.longAccount)?.amount || 0;
+      if (v.financial.reclassAmount > available + 0.01) {
+        toast("La reclasificación supera la deuda a largo plazo registrada. Revisa el saldo inicial y los movimientos del préstamo.", "bad", 8000);
+        return null;
+      }
+    }
+  }
   if (job && (!job.selectedKind || v.kind !== job.selectedKind)) {
     toast("Elige el importador antes de guardar. No se permite cambiar el tipo dentro del formulario.", "bad", 6500);
     return null;
@@ -5423,6 +6246,7 @@ async function submitInvoice(wrap, { mode, invoice, job }) {
       lines: v.lines,
       liquidacion: v.liquidacion,
       nomina: v.nomina,
+      financial: v.financial,
       status: v.status,
       paidDate: v.paidDate,
       payMethod: v.payMethod,
@@ -5463,7 +6287,7 @@ async function submitInvoice(wrap, { mode, invoice, job }) {
       segment: job.segmentKey,
     });
     if (kept) res.invoice.original = kept;
-    else toast("El documento se guardó, pero el fichero original no se pudo guardar.", "warn", 5200);
+    else toast("El documento se guardó, pero no se pudo confirmar el guardado persistente del original. Revisa Ajustes y descarga una copia completa.", "warn", 7500);
   }
 
   if (res.supplierCreated) {
@@ -5520,7 +6344,7 @@ function sqlitePanel() {
   const d = info.detail || {};
   const kb = d.bytes ? Math.max(1, Math.round(d.bytes / 1024)) : 1;
   return `<p style="font-size:13px;color:var(--ink-3);margin-bottom:10px">
-      Todo está en una base de datos <strong>SQLite</strong> guardada dentro de este navegador
+      ${info.shared ? "Este archivo es una copia local de trabajo; la base compartida del servidor es la versión principal." : "Los datos están en una base de datos SQLite guardada dentro de este navegador."}
       (${kb} KB, SQLite ${esc(d.version || "3")}). Se puede descargar y abrir con cualquier programa de SQLite.
     </p>
     <ul class="db-stats">
@@ -5530,7 +6354,7 @@ function sqlitePanel() {
       <li><strong>${d.pending || 0}</strong> pendientes</li>
     </ul>
     <div class="row wrap" style="margin-top:12px">
-      <button class="btn sm" data-action="export-sqlite">${icon("download")} Descargar base de datos (.sqlite)</button>
+      <button class="btn sm" data-action="export-sqlite">${icon("download")} Descargar copia local (.sqlite)</button>
     </div>
     <p style="font-size:12px;color:var(--ink-3);margin-top:8px">
       Dentro están las tablas <code>proveedores</code>, <code>facturas</code> y <code>ajustes</code>,
@@ -5643,8 +6467,8 @@ export function openSupplierModal(supplier = null) {
   openModal(
     `<div class="modal-head">
       <div>
-        <h2>${editing ? "Editar proveedor o cliente" : "Nuevo proveedor o cliente"}</h2>
-        <p>Lo normal es que se creen solos al subir una factura o una liquidación.</p>
+        <h2>${editing ? "Editar ficha CRM" : "Nuevo contacto"}</h2>
+        <p>Guarda datos de contacto y condiciones habituales de pago.</p>
       </div>
       <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
     </div>
@@ -5659,7 +6483,7 @@ export function openSupplierModal(supplier = null) {
           <input id="s-nif" type="text" value="${esc(supplier ? supplier.nif : "")}" placeholder="B12345678">
         </div>
         <div class="field span-2">
-          <label for="s-role">¿Qué es para ti?</label>
+          <label for="s-role">Tipo de contacto</label>
           <select id="s-role">
             <option value="PROVEEDOR" ${!supplier || supplier.role === "PROVEEDOR" || !supplier.role ? "selected" : ""}>Proveedor · le compras</option>
             <option value="CLIENTE" ${supplier && supplier.role === "CLIENTE" ? "selected" : ""}>Cliente · le vendes</option>
@@ -5668,16 +6492,57 @@ export function openSupplierModal(supplier = null) {
           <span class="hint">Decide en qué lista sale (proveedores o clientes). También se pone solo, mirando los documentos que tenga.</span>
         </div>
         <div class="field">
-          <label for="s-phone">Teléfono <span class="hint">(opcional)</span></label>
-          <input id="s-phone" type="text" value="${esc(supplier ? supplier.phone : "")}" placeholder="922 000 000">
+          <label for="s-contact">Persona de contacto</label>
+          <input id="s-contact" type="text" value="${esc(supplier?.contactName || "")}" placeholder="Nombre y apellidos">
+        </div>
+        <div class="field">
+          <label for="s-phone">Teléfono</label>
+          <input id="s-phone" type="tel" value="${esc(supplier?.phone || "")}" placeholder="922 000 000">
         </div>
         <div class="field span-2">
-          <label for="s-email">Correo <span class="hint">(opcional)</span></label>
-          <input id="s-email" type="text" value="${esc(supplier ? supplier.email : "")}" placeholder="facturas@proveedor.com">
+          <label for="s-email">Correo electrónico</label>
+          <input id="s-email" type="email" value="${esc(supplier?.email || "")}" placeholder="facturas@proveedor.com">
+        </div>
+        <div class="field span-2">
+          <label for="s-address">Dirección</label>
+          <input id="s-address" type="text" value="${esc(supplier?.address || "")}" placeholder="Calle, número y local">
+        </div>
+        <div class="field">
+          <label for="s-city">Población</label>
+          <input id="s-city" type="text" value="${esc(supplier?.city || "")}">
+        </div>
+        <div class="field">
+          <label for="s-postal">Código postal</label>
+          <input id="s-postal" type="text" value="${esc(supplier?.postalCode || "")}">
+        </div>
+        <div class="field">
+          <label for="s-country">País</label>
+          <input id="s-country" type="text" value="${esc(supplier ? supplier.country || "" : "España")}">
+        </div>
+        <div class="field span-2">
+          <label for="s-website">Página web</label>
+          <input id="s-website" type="url" value="${esc(supplier?.website || "")}" placeholder="https://empresa.example">
+        </div>
+        <div class="field">
+          <label for="s-payment-method">Forma de pago habitual</label>
+          <select id="s-payment-method">
+            <option value="" ${!supplier?.paymentMethod ? "selected" : ""}>Sin especificar</option>
+            <option value="TRANSFERENCIA" ${supplier?.paymentMethod === "TRANSFERENCIA" ? "selected" : ""}>Transferencia</option>
+            <option value="DOMICILIACION" ${supplier?.paymentMethod === "DOMICILIACION" ? "selected" : ""}>Domiciliación bancaria</option>
+            <option value="BANCO" ${supplier?.paymentMethod === "BANCO" ? "selected" : ""}>Otro pago bancario</option>
+            <option value="TARJETA" ${supplier?.paymentMethod === "TARJETA" ? "selected" : ""}>Tarjeta</option>
+            <option value="CAJA" ${supplier?.paymentMethod === "CAJA" ? "selected" : ""}>Efectivo</option>
+            <option value="CHEQUE" ${supplier?.paymentMethod === "CHEQUE" ? "selected" : ""}>Cheque</option>
+            <option value="OTRO" ${supplier?.paymentMethod === "OTRO" ? "selected" : ""}>Otro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="s-payment-days">Plazo de pago en días</label>
+          <input id="s-payment-days" type="number" min="0" max="3650" step="1" value="${supplier?.paymentTermDays ?? ""}" placeholder="30">
         </div>
         <div class="field span-2">
           <label for="s-note">Nota <span class="hint">(opcional)</span></label>
-          <input id="s-note" type="text" value="${esc(supplier ? supplier.note : "")}" placeholder="Forma de pago, persona de contacto…">
+          <input id="s-note" type="text" value="${esc(supplier?.note || "")}" placeholder="Observaciones del contacto">
         </div>
       </div>
     </div>
@@ -5709,8 +6574,23 @@ export function openSupplierModal(supplier = null) {
             role: (wrap.querySelector("#s-role") && wrap.querySelector("#s-role").value) || "PROVEEDOR",
             phone: wrap.querySelector("#s-phone").value.trim(),
             email: wrap.querySelector("#s-email").value.trim(),
+            contactName: wrap.querySelector("#s-contact").value.trim(),
+            address: wrap.querySelector("#s-address").value.trim(),
+            city: wrap.querySelector("#s-city").value.trim(),
+            postalCode: wrap.querySelector("#s-postal").value.trim(),
+            country: wrap.querySelector("#s-country").value.trim(),
+            website: wrap.querySelector("#s-website").value.trim(),
+            paymentMethod: wrap.querySelector("#s-payment-method").value,
+            paymentTermDays: wrap.querySelector("#s-payment-days").value === ""
+              ? null
+              : Number(wrap.querySelector("#s-payment-days").value),
             note: wrap.querySelector("#s-note").value.trim(),
           };
+          if (data.paymentTermDays != null && (!Number.isInteger(data.paymentTermDays) || data.paymentTermDays < 0 || data.paymentTermDays > 3650)) {
+            toast("El plazo de pago debe ser un número de días entre 0 y 3650.", "bad");
+            wrap.querySelector("#s-payment-days").focus();
+            return;
+          }
           if (editing) {
             const lockError = supplierWriteError(supplier.id);
             if (lockError) {
@@ -5726,10 +6606,7 @@ export function openSupplierModal(supplier = null) {
             const res = ensureSupplier(data.name, data.nif, data.role);
             if (res.created) {
               updateSupplier(res.supplier.id, {
-                role: data.role,
-                phone: data.phone,
-                email: data.email,
-                note: data.note,
+                ...data,
               });
               toast(`«${res.supplier.name}» creado.`);
             } else {
@@ -5747,6 +6624,84 @@ export function openSupplierModal(supplier = null) {
 /* ------------------------------------------------------------------ */
 /* Ajustes                                                            */
 /* ------------------------------------------------------------------ */
+
+function sharedAccessPanel() {
+  const info = storageInfo();
+  const user = typeof window !== "undefined" ? window.agrosabinaAuthUser : null;
+  const isAdmin = user?.role === "admin";
+  const backupAvailable = !!sharedConflictBackup();
+  return `
+    <section class="card" style="padding:16px;margin:8px 0 18px">
+      <h3 style="font-size:14px;font-weight:650;margin-bottom:4px">Acceso y datos compartidos</h3>
+      <p style="font-size:13px;color:var(--ink-3);margin-bottom:10px">
+        ${info.shared ? `Contabilidad y documentos sincronizados con el servidor · revisión ${info.sharedRevision || 0}.` : "El servidor compartido no está conectado."}
+      </p>
+      ${info.sharedConflict ? `
+        <p class="hint" role="status">Hay cambios locales pendientes. Descarga una copia antes de elegir qué versión conservar.</p>
+        <div class="row wrap">
+          ${backupAvailable ? `<button class="btn sm" data-action="shared-download-conflict">${icon("download")} Descargar copia local</button>` : ""}
+          ${isAdmin ? `<button class="btn sm danger" data-action="shared-resolve-local">${icon("check")} Usar copia local compartida</button>` : ""}
+          <button class="btn sm" data-action="shared-resolve-server">Usar versión del servidor</button>
+        </div>
+      ` : info.sharedStale ? `
+        <p class="hint" role="status">Otra persona guardó cambios. Recarga para trabajar sobre la versión más reciente.</p>
+        <button class="btn sm" data-action="shared-reload">Recargar datos</button>
+      ` : ""}
+      ${isAdmin ? `
+        <details style="margin-top:14px">
+          <summary style="cursor:pointer;font-weight:650">Administración de cuentas y correo</summary>
+          <div style="padding-top:14px">
+            <h4 style="font-size:13px;margin-bottom:7px">Personas autorizadas</h4>
+            <div id="adminUserList" aria-live="polite" class="muted">Cargando cuentas…</div>
+            <div class="form-grid" style="margin-top:12px">
+              <div class="field"><label for="admin-new-name">Nombre</label><input id="admin-new-name" maxlength="120" autocomplete="name"></div>
+              <div class="field"><label for="admin-new-email">Correo</label><input id="admin-new-email" type="email" maxlength="254" autocomplete="email"></div>
+              <div class="field span-2"><label for="admin-new-password">Contraseña inicial</label><input id="admin-new-password" type="password" minlength="12" autocomplete="new-password"><span class="hint">Al menos 12 caracteres. Compártela por un canal seguro.</span></div>
+              <div class="field span-2"><button class="btn sm primary" data-action="admin-add-user">${icon("plus")} Crear acceso autorizado</button></div>
+            </div>
+            <hr style="border:none;border-top:1px solid var(--line);margin:18px 0">
+            <h4 style="font-size:13px;margin-bottom:7px">Recuperación de contraseñas por Resend</h4>
+            <p id="resend-config-status" class="hint" aria-live="polite">Comprobando configuración…</p>
+            <div class="form-grid">
+              <div class="field span-2"><label for="admin-resend-from">Remitente verificado</label><input id="admin-resend-from" type="text" maxlength="254" placeholder="Agrosabina &lt;avisos@tudominio.es&gt;"></div>
+              <div class="field span-2"><label for="admin-app-public-url">Dirección pública de la aplicación</label><input id="admin-app-public-url" type="url" maxlength="500" placeholder="https://agrosabina.tudominio.es"><span class="hint">Se usará en los enlaces de recuperación. Déjala vacía para usar la dirección actual del navegador.</span></div>
+              <div class="field span-2"><label for="admin-resend-key">Clave API de Resend</label><input id="admin-resend-key" type="password" autocomplete="new-password" maxlength="500" placeholder="re_…"><span class="hint">Se guarda cifrada en el servidor y nunca se vuelve a mostrar.</span></div>
+              <div class="field span-2"><button class="btn sm primary" data-action="admin-save-resend">${icon("check")} Guardar correo de recuperación</button></div>
+              <div class="field"><label for="admin-resend-test-to">Enviar prueba a</label><input id="admin-resend-test-to" type="email" value="${esc(user.email || "")}" maxlength="254"></div>
+              <div class="field" style="align-self:end"><button class="btn sm" data-action="admin-test-resend">${icon("mail")} Probar envío</button></div>
+            </div>
+          </div>
+        </details>
+      ` : `<p class="hint" style="margin-top:12px">La cuenta administradora autoriza a las personas que pueden entrar y configura la recuperación por correo.</p>`}
+    </section>`;
+}
+
+async function refreshAdminAccess(wrap) {
+  const list = wrap.querySelector("#adminUserList");
+  const mailStatus = wrap.querySelector("#resend-config-status");
+  const fromInput = wrap.querySelector("#admin-resend-from");
+  const publicUrlInput = wrap.querySelector("#admin-app-public-url");
+  if (!list || !mailStatus || !fromInput || !publicUrlInput) return;
+  try {
+    const [userResult, mail] = await Promise.all([
+      sharedRequest("/admin/users"),
+      sharedRequest("/admin/mail"),
+    ]);
+    list.innerHTML = (userResult.users || []).map((user) => `
+      <div class="row wrap" style="justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line)">
+        <span><strong>${esc(user.name)}</strong> · ${esc(user.email)}${user.role === "admin" ? " · Administrador" : ""}${user.active ? "" : " · Desactivado"}</span>
+        ${user.role !== "admin" ? `<button class="btn sm ${user.active ? "ghost" : ""}" data-action="admin-toggle-user" data-user-id="${esc(user.id)}" data-next-active="${user.active ? "false" : "true"}">${user.active ? "Desactivar" : "Activar"}</button>` : ""}
+      </div>`).join("") || `<p class="muted">Todavía no hay cuentas autorizadas.</p>`;
+    fromInput.value = mail.fromEmail || "";
+    publicUrlInput.value = mail.publicUrl || "";
+    mailStatus.textContent = mail.configured
+      ? `Resend configurado · remitente ${mail.fromEmail}. La clave no se muestra.`
+      : "Falta una clave API de Resend y un remitente verificado. La recuperación no enviará mensajes hasta configurarlos.";
+  } catch (error) {
+    list.textContent = error instanceof Error ? error.message : "No se pudo cargar la administración.";
+    mailStatus.textContent = "No se pudo comprobar la configuración de Resend.";
+  }
+}
 
 export function openSettings() {
   const s = getState().settings;
@@ -5775,11 +6730,11 @@ export function openSettings() {
 
       <hr style="border:none;border-top:1px solid var(--line);margin:20px 0">
 
+      ${sharedAccessPanel()}
       <h3 style="font-size:14px;font-weight:650;margin-bottom:4px">Copia de seguridad</h3>
       <p style="font-size:13px;color:var(--ink-3);margin-bottom:12px">
-        Los datos viven en este navegador. Si limpias el historial o cambias de ordenador, se pierden:
-        descarga una copia de vez en cuando.
-        La copia JSON no incluye la clave de IA; configúrala de nuevo si cambias de navegador.
+        La contabilidad y los documentos se guardan en la base compartida del servidor Ubuntu. Descarga copias con regularidad.
+        La clave de IA permanece en este navegador y no se comparte con otros usuarios.
       </p>
       <div class="row wrap">
         <button class="btn sm" data-action="export-json">${icon("download")} Descargar copia</button>
@@ -5787,7 +6742,7 @@ export function openSettings() {
         <button class="btn sm" data-action="export-complete">${icon("download")} Descargar copia completa</button>
         <button class="btn sm" data-action="import-complete">${icon("upload")} Restaurar copia completa</button>
         <div class="spacer"></div>
-        <button class="btn sm danger" data-action="clear-all">${icon("trash")} Borrar todo</button>
+        ${typeof window !== "undefined" && window.agrosabinaAuthUser?.role === "admin" ? `<button class="btn sm danger" data-action="clear-all">${icon("trash")} Borrar todo</button>` : ""}
       </div>
 
       <hr style="border:none;border-top:1px solid var(--line);margin:20px 0">
@@ -5802,14 +6757,19 @@ export function openSettings() {
         Al restaurarlo se añaden los registros sin borrar ni sustituir los actuales; los ajustes de este navegador se conservan.
       </p>
       <p id="origUsage" style="font-size:12.5px;color:var(--ink-3)">Mirando cuánto ocupan los originales…</p>
+      <div class="row wrap" style="align-items:center;gap:10px;margin-top:8px">
+        <p id="storagePersistenceStatus" role="status" style="font-size:12.5px;color:var(--ink-3);margin:0">Comprobando la protección del almacén…</p>
+        <button type="button" class="btn sm" id="requestStoragePersistence">Proteger el almacén</button>
+      </div>
+      <p class="hint" style="margin-top:6px">Los originales se guardan en el servidor compartido. La copia completa permite recuperarlos si cambias de equipo o de instalación.</p>
 
       <hr style="border:none;border-top:1px solid var(--line);margin:20px 0">
 
       <h3 style="font-size:14px;font-weight:650;margin-bottom:4px">Cuentas de cobro y pago</h3>
       <p style="font-size:13px;color:var(--ink-3);margin-bottom:12px">
         Al marcar un documento como cobrado o pagado se pregunta si fue en efectivo (caja) o por el banco, y en qué
-        cuenta. Aquí se guardan los nombres para elegirlos sin escribirlos cada vez. La caja entra en la cuenta 570
-        del PGC y el banco en la 572.
+        cuenta. Aquí se guardan los nombres para elegirlos sin escribirlos cada vez. La caja entra en la cuenta 570000
+        del PGC y el banco en la 572000.
       </p>
       <div class="form-grid">
         <div class="field span-2">
@@ -5882,7 +6842,7 @@ export function openSettings() {
 
       <hr style="border:none;border-top:1px solid var(--line);margin:20px 0">
 
-      <h3 style="font-size:14px;font-weight:650;margin-bottom:4px">Base de datos SQLite</h3>
+      <h3 style="font-size:14px;font-weight:650;margin-bottom:4px">Copia local de SQLite</h3>
       ${sqlitePanel()}
     </div>
     <div class="modal-foot">
@@ -5919,10 +6879,41 @@ export function openSettings() {
             const el = wrap.querySelector("#origUsage");
             if (!el) return;
             el.textContent = u.count
-              ? `Guardados ${u.count} original${u.count === 1 ? "" : "es"} · ${originalSizeText(u.bytes)} en este navegador.`
+              ? `Guardados ${u.count} original${u.count === 1 ? "" : "es"} · ${originalSizeText(u.bytes)} en el servidor compartido.`
               : "Todavía no hay ningún original guardado: se guardan al dar de alta un documento con foto, PDF o correo.";
           })
           .catch(() => {});
+
+        const persistenceText = wrap.querySelector("#storagePersistenceStatus");
+        const persistenceButton = wrap.querySelector("#requestStoragePersistence");
+        const showPersistence = (info) => {
+          if (!persistenceText || !persistenceButton) return;
+          if (storageInfo().shared) {
+            persistenceText.textContent = "Los originales se guardan en el servidor compartido.";
+            persistenceButton.hidden = true;
+            return;
+          }
+          if (info.persistent) {
+            persistenceText.textContent = "Almacenamiento persistente concedido en este navegador.";
+            persistenceButton.hidden = true;
+          } else if (info.supported) {
+            persistenceText.textContent = "El navegador todavía no confirma la protección persistente. Descarga una copia completa como respaldo.";
+            persistenceButton.hidden = false;
+          } else {
+            persistenceText.textContent = "Este navegador no permite solicitar protección persistente. Descarga una copia completa con regularidad.";
+            persistenceButton.hidden = true;
+          }
+        };
+        persistentStorageStatus().then(showPersistence);
+        persistenceButton?.addEventListener("click", async () => {
+          persistenceButton.disabled = true;
+          persistenceText.textContent = "Solicitando protección al navegador…";
+          try {
+            showPersistence(await requestPersistentStorage());
+          } finally {
+            persistenceButton.disabled = false;
+          }
+        });
 
         wrap.querySelector("[data-save]").addEventListener("click", () => {
           updateSettings({
@@ -5959,7 +6950,7 @@ function csvCell(value) {
   return `"${s.replace(/"/g, '""')}"`;
 }
 
-export function exportCsv() {
+export async function exportCsv(format = "csv") {
   const list = sortedInvoices(filteredInvoices());
   if (!list.length) {
     toast("No hay facturas que exportar.", "bad");
@@ -5985,11 +6976,15 @@ export function exportCsv() {
       inv.status === STATUS.PAID ? "Pagado" : "Pendiente",
       inv.paidDate ? fmtDate(inv.paidDate) : "",
       sourceLabel(inv.source),
-    ].map(csvCell).join(";");
+    ];
   });
 
-  const csv = "\ufeff" + [headers.map(csvCell).join(";"), ...rows].join("\r\n");
-  downloadText(`facturas-${todayISO()}.csv`, csv);
+  const w = windowFor(ui.filters);
+  await downloadReport({
+    filename: `compras-${todayISO()}`, title: "Compras",
+    period: `${w.from || "Inicio"} — ${w.to || "Sin límite"}`,
+    filters: reportFiltersText(ui.filters), headers, rows,
+  }, format);
   toast(`Exportadas ${list.length} facturas.`);
 }
 
@@ -6092,7 +7087,7 @@ export async function onAction(action, el) {
     case "toggle-status": {
       const inv = getState().invoices.find((i) => i.id === id);
       if (!inv) return;
-      const lockError = invoiceWriteError(inv);
+      const lockError = isPendingCarryover(inv, activeExerciseYear()) ? "" : invoiceWriteError(inv);
       if (lockError) {
         toast(lockError, "bad", 7000);
         return;
@@ -6113,13 +7108,23 @@ export async function onAction(action, el) {
         return;
       }
       askPaidDate(inv, isIncome, (day, pay) => {
+        if (Number(String(day || "").slice(0, 4)) !== activeExerciseYear()) {
+          toast(`La fecha de cobro o pago debe pertenecer al ejercicio ${activeExerciseYear()}.`, "warn", 6500);
+          return;
+        }
         const paymentLock = exerciseWriteError(day?.slice(0, 4));
         if (paymentLock) {
           toast(paymentLock, "bad", 7000);
           return;
         }
+        const paymentPatch = {
+          status: STATUS.PAID,
+          paidDate: day,
+          payMethod: pay && pay.method,
+          payAccount: pay && pay.account,
+        };
         if (!setInvoiceStatus(id, STATUS.PAID, day, pay)) {
-          toast(invoiceWriteError(inv) || "No se pudo guardar el cobro o pago.", "bad", 7000);
+          toast(invoiceWriteError(inv, paymentPatch) || "No se pudo guardar el cobro o pago.", "bad", 7000);
           return;
         }
         rememberPayAccount(pay && pay.method, pay && pay.account);
@@ -6147,24 +7152,84 @@ export async function onAction(action, el) {
     }
     case "doc-dir":
       ui.docs.dir = el.dataset.value || "all";
+      resetListPage("documents");
       render();
       return;
     case "doc-status":
       ui.docs.status = el.dataset.value || "all";
+      resetListPage("documents");
       render();
       return;
     case "docs-reset":
       ui.docs = { q: "", kind: "all", dir: "all", status: "all", supplier: "", range: "all", from: "", to: "", sort: "recent" };
+      resetListPage("documents");
       render();
       return;
+    case "purchases-reset":
+      ui.filters = { ...ui.filters, status: "all", supplier: "", q: "", category: "", from: "", to: "" };
+      resetListPage("purchases");
+      render();
+      return;
+    case "sales-status":
+      ui.salesListFilters.status = el.dataset.value || "all";
+      resetListPage("sales");
+      refreshSalesTable();
+      return;
+    case "sales-list-reset":
+      ui.salesListFilters = { q: "", status: "all", sort: "recent" };
+      resetListPage("sales");
+      refreshSalesTable();
+      return;
+    case "nomina-status":
+      ui.nominaFilters.status = el.dataset.value || "all";
+      resetListPage("payroll");
+      render();
+      return;
+    case "nominas-reset":
+      ui.nominaFilters = { q: "", status: "all", from: "", to: "" };
+      resetListPage("payroll");
+      render();
+      return;
+    case "list-page": {
+      const scope = el.dataset.scope;
+      const state = ui.pagination[scope];
+      if (!state) return;
+      const total = scope === "documents" ? docList().length
+        : scope === "purchases" ? filteredInvoices().length
+          : scope === "payroll" ? nominasList().length
+            : scope === "suppliers" ? supplierList().length
+              : scope === "sales" ? filteredSalesDocs().length
+                : scope === "mail" ? filteredMailMessages().length : 0;
+      const pages = Math.max(1, Math.ceil(total / state.size));
+      state.page = Math.min(pages, Math.max(1, Number(el.dataset.page) || 1));
+      renderListScope(scope);
+      return;
+    }
     case "docs-export":
       exportDocsCsv();
       return;
+    case "report-pdf":
+    case "report-xls": {
+      const format = action === "report-pdf" ? "pdf" : "xls";
+      const scope = el.dataset.scope;
+      try {
+        if (scope === "documents") await exportDocsCsv(format);
+        else if (scope === "purchases") await exportCsv(format);
+        else if (scope === "debt") await exportDebtReport(format);
+        else await exportAccCsv(format);
+      } catch (error) {
+        toast(`No se pudo generar el informe: ${error?.message || error}`, "bad", 7500);
+      }
+      return;
+    }
     case "edit-invoice": {
       const inv = getState().invoices.find((i) => i.id === id);
       if (!inv) return;
       const lockError = invoiceWriteError(inv);
-      if (lockError) toast(lockError, "bad", 7000);
+      if (lockError) {
+        toast(lockError, "bad", 7000);
+        docPreviewModal(inv);
+      }
       else openInvoiceModal({ mode: "edit", invoice: inv });
       return;
     }
@@ -6194,6 +7259,15 @@ export async function onAction(action, el) {
     }
     case "new-invoice":
       openInvoiceModal({ mode: "new" });
+      return;
+    case "loan-reclass":
+      openInvoiceModal({
+        preset: {
+          kind: "PRESTAMO", rate: 0, igic: 0, base: null, total: null,
+          issueDate: contaWindow().to,
+          financial: { operation: "RECLASIFICACION", shortAccount: "520000", longAccount: "170000" },
+        },
+      });
       return;
     case "new-supplier":
       openSupplierModal();
@@ -6228,9 +7302,16 @@ export async function onAction(action, el) {
     case "supplier-role": {
       const rol = (el && el.dataset && el.dataset.role) || "PROVEEDOR";
       ui.supplierRole = rol;
+      resetListPage("suppliers");
       render();
       return;
     }
+    case "crm-import":
+      pickCrmImportFile();
+      return;
+    case "crm-template":
+      downloadCrmTemplate();
+      return;
     case "filter-supplier": {
       ui.filters.supplier = id;
       ui.filters.status = "all";
@@ -6241,8 +7322,17 @@ export async function onAction(action, el) {
       return;
     }
     case "import-files":
-      document.getElementById("filePicker").click();
+      openImportModal();
       return;
+    case "import-files-select": {
+      const picker = document.getElementById("filePicker");
+      if (!picker) {
+        toast("No se encuentra el selector de archivos.", "bad");
+        return;
+      }
+      picker.click();
+      return;
+    }
     case "import-camera":
       importFromCamera();
       return;
@@ -6486,6 +7576,9 @@ export async function onAction(action, el) {
       return;
     }
     case "import-email":
+      openEmailImportModal();
+      return;
+    case "import-email-select":
       pickEmails();
       return;
     case "paste-mail":
@@ -6503,10 +7596,41 @@ export async function onAction(action, el) {
       });
       if (!ok) return;
       deleteMessage(id);
+      ui.selectedMailIds.delete(id);
       toast("Correo borrado.");
       render();
       return;
     }
+    case "mail-bulk-review":
+      await useSelectedMails();
+      return;
+    case "mail-bulk-delete": {
+      const ids = messages().filter((message) => ui.selectedMailIds.has(message.id)).map((message) => message.id);
+      if (!ids.length) return;
+      const ok = await confirmDialog({
+        title: `Borrar ${ids.length} correos seleccionados`,
+        message: "Se quitarán esos correos guardados. Los documentos que ya se hayan importado desde ellos no se borrarán.",
+        confirm: "Sí, borrar correos",
+        danger: true,
+      });
+      if (!ok) return;
+      const removed = deleteMessages(ids);
+      ui.selectedMailIds.clear();
+      toast(`${removed} correos borrados. Los documentos importados siguen guardados.`);
+      render();
+      return;
+    }
+    case "mail-clear-selection":
+      ui.selectedMailIds.clear();
+      refreshSavedMailList();
+      return;
+    case "mail-clear-filters":
+      ui.mailFilters = { q: "", status: "all" };
+      resetListPage("mail");
+      document.getElementById("mailSearch").value = "";
+      document.getElementById("mailStatus").value = "all";
+      refreshSavedMailList();
+      return;
     case "test-ai":
       testAi();
       return;
@@ -6528,6 +7652,153 @@ export async function onAction(action, el) {
     case "settings":
       openSettings();
       return;
+    case "copy-mobile-link":
+      try {
+        if (!navigator.clipboard?.writeText) throw new Error("Selecciona y copia el enlace que aparece en pantalla.");
+        await navigator.clipboard.writeText(mobileInstallUrl());
+        toast("Enlace de instalación copiado.");
+      } catch (error) {
+        toast(error instanceof Error ? error.message : "No se pudo copiar el enlace.", "bad");
+      }
+      return;
+    case "view-mobile-upload": {
+      const fileId = el?.dataset.id || "";
+      if (!fileId) return;
+      const tab = window.open("about:blank", "_blank");
+      if (tab) tab.opener = null;
+      try {
+        const original = await originalOf(fileId);
+        if (!original?.blob) throw new Error("No se encontró el original en el almacén compartido.");
+        const url = URL.createObjectURL(original.blob);
+        if (tab) {
+          tab.location.replace(url);
+          window.setTimeout(() => URL.revokeObjectURL(url), 10 * 60 * 1000);
+        } else {
+          URL.revokeObjectURL(url);
+          downloadBytes(original.name || "documento", new Uint8Array(await original.blob.arrayBuffer()), original.type || "application/octet-stream");
+        }
+      } catch (error) {
+        if (tab && !tab.closed) tab.close();
+        toast(error instanceof Error ? error.message : "No se pudo abrir el original.", "bad", 7000);
+      }
+      return;
+    }
+    case "admin-add-user": {
+      if (window.agrosabinaAuthUser?.role !== "admin") {
+        toast("Solo la cuenta administradora puede crear accesos.", "bad");
+        return;
+      }
+      const name = document.getElementById("admin-new-name")?.value.trim() || "";
+      const email = document.getElementById("admin-new-email")?.value.trim() || "";
+      const password = document.getElementById("admin-new-password")?.value || "";
+      try {
+        await sharedRequest("/admin/users", { method: "POST", body: JSON.stringify({ name, email, password }) });
+        document.getElementById("admin-new-name").value = "";
+        document.getElementById("admin-new-email").value = "";
+        document.getElementById("admin-new-password").value = "";
+        toast("Acceso autorizado creado. Comparte la contraseña inicial por un canal seguro.");
+        await refreshAdminAccess(document.getElementById("modalRoot"));
+      } catch (error) {
+        toast(error instanceof Error ? error.message : "No se pudo crear el acceso.", "bad", 7000);
+      }
+      return;
+    }
+    case "admin-toggle-user": {
+      if (window.agrosabinaAuthUser?.role !== "admin") return;
+      const userId = el?.dataset.userId || "";
+      const active = el?.dataset.nextActive === "true";
+      if (!userId) return;
+      if (!active) {
+        const ok = await confirmDialog({ title: "Desactivar acceso", message: "La persona no podrá volver a entrar hasta que la cuenta se reactive.", confirm: "Desactivar", danger: true });
+        if (!ok) return;
+      }
+      try {
+        await sharedRequest(`/admin/users/${encodeURIComponent(userId)}`, { method: "PATCH", body: JSON.stringify({ active }) });
+        await refreshAdminAccess(document.getElementById("modalRoot"));
+        toast(active ? "Acceso activado." : "Acceso desactivado.");
+      } catch (error) {
+        toast(error instanceof Error ? error.message : "No se pudo actualizar el acceso.", "bad");
+      }
+      return;
+    }
+    case "admin-save-resend": {
+      if (window.agrosabinaAuthUser?.role !== "admin") return;
+      const fromEmail = document.getElementById("admin-resend-from")?.value.trim() || "";
+      const apiKey = document.getElementById("admin-resend-key")?.value || "";
+      const publicUrl = document.getElementById("admin-app-public-url")?.value.trim() || "";
+      try {
+        await sharedRequest("/admin/mail", { method: "PUT", body: JSON.stringify({ fromEmail, apiKey, publicUrl }) });
+        const keyField = document.getElementById("admin-resend-key");
+        if (keyField) keyField.value = "";
+        await refreshAdminAccess(document.getElementById("modalRoot"));
+        toast("Configuración de recuperación guardada en el servidor.");
+      } catch (error) {
+        toast(error instanceof Error ? error.message : "No se pudo guardar la configuración de Resend.", "bad", 7000);
+      }
+      return;
+    }
+    case "admin-test-resend": {
+      if (window.agrosabinaAuthUser?.role !== "admin") return;
+      const email = document.getElementById("admin-resend-test-to")?.value.trim() || "";
+      try {
+        await sharedRequest("/admin/mail/test", { method: "POST", body: JSON.stringify({ email }) });
+        toast("Correo de prueba enviado.");
+      } catch (error) {
+        toast(error instanceof Error ? error.message : "No se pudo enviar el correo de prueba.", "bad", 7000);
+      }
+      return;
+    }
+    case "shared-download-conflict": {
+      const backup = sharedConflictBackup();
+      if (!backup) {
+        toast("No se encontró una copia local pendiente.", "bad");
+        return;
+      }
+      downloadText(`agrosabina-copia-local-${todayISO()}.json`, backup, "application/json;charset=utf-8");
+      return;
+    }
+    case "shared-resolve-local": {
+      if (window.agrosabinaAuthUser?.role !== "admin") return;
+      const ok = await confirmDialog({
+        title: "Sustituir la base compartida",
+        message: "Se reemplazará la versión central con la copia local de este dispositivo. Descarga antes la copia local si quieres conservarla aparte.",
+        confirm: "Sustituir base",
+        danger: true,
+      });
+      if (!ok) return;
+      try {
+        await resolveSharedConflict("local");
+        toast("La copia local ya es la versión compartida.");
+        closeModal();
+        render();
+      } catch (error) {
+        toast(error instanceof Error ? error.message : "No se pudo resolver el conflicto.", "bad", 7000);
+      }
+      return;
+    }
+    case "shared-resolve-server": {
+      const ok = await confirmDialog({
+        title: "Usar la versión compartida",
+        message: "Se descartarán los cambios locales pendientes de este dispositivo.",
+        confirm: "Usar servidor",
+        danger: true,
+      });
+      if (!ok) return;
+      try {
+        await resolveSharedConflict("shared");
+        toast("Se han cargado los datos compartidos.");
+        closeModal();
+        render();
+      } catch (error) {
+        toast(error instanceof Error ? error.message : "No se pudo cargar la versión compartida.", "bad", 7000);
+      }
+      return;
+    }
+    case "shared-reload": {
+      const ok = await confirmDialog({ title: "Actualizar los datos", message: "Se cargarán los últimos cambios del servidor. Asegúrate de guardar antes cualquier formulario abierto.", confirm: "Recargar" });
+      if (ok) window.location.reload();
+      return;
+    }
     case "clear-all": {
       const ok = await confirmDialog({
         title: "Borrar todo",
@@ -6654,6 +7925,14 @@ export async function onAction(action, el) {
     }
     case "acc-save-apertura": {
       saveApertura();
+      return;
+    }
+    case "acc-opening-add-row": {
+      accOpeningAddRow();
+      return;
+    }
+    case "acc-opening-clear": {
+      await clearApertura();
       return;
     }
     case "acc-opening-carryforward": {
@@ -6796,16 +8075,37 @@ export function onInput(event) {
 
   if (target.id === "invoiceSearch") {
     ui.filters.q = target.value;
+    resetListPage("purchases");
     refreshInvoiceTable();
     return;
   }
   if (target.id === "docSearch") {
     ui.docs.q = target.value;
+    resetListPage("documents");
     refreshDocResults();
+    return;
+  }
+  if (target.id === "nominaSearch") {
+    ui.nominaFilters.q = target.value;
+    resetListPage("payroll");
+    const pos = target.selectionStart;
+    render();
+    const again = document.getElementById("nominaSearch");
+    if (again) {
+      again.focus();
+      try { again.setSelectionRange(pos, pos); } catch (_) { /* nada */ }
+    }
+    return;
+  }
+  if (target.id === "salesListSearch") {
+    ui.salesListFilters.q = target.value;
+    resetListPage("sales");
+    refreshSalesTable();
     return;
   }
   if (target.id === "supplierSearch") {
     ui.supplierQuery = target.value;
+    resetListPage("suppliers");
     const pos = target.selectionStart;
     refreshSupplierGrid();
     const again = document.getElementById("supplierSearch");
@@ -6817,6 +8117,12 @@ export function onInput(event) {
         /* nada */
       }
     }
+    return;
+  }
+  if (target.id === "mailSearch") {
+    ui.mailFilters.q = target.value;
+    resetListPage("mail");
+    refreshSavedMailList();
   }
 }
 
@@ -6824,20 +8130,60 @@ export function onChange(event) {
   const target = event.target;
   if (!(target instanceof HTMLElement)) return;
 
+  if (target.matches("[data-gmail-select-all]")) {
+    for (const message of gmailPreviewItems) {
+      for (const attachment of message.attachments) attachment.selected = target.checked;
+    }
+    render();
+    return;
+  }
+  if (target.matches("[data-gmail-message-select]")) {
+    const message = gmailPreviewItems.find((item) => item.id === target.dataset.gmailMessageSelect);
+    if (message) {
+      for (const attachment of message.attachments) attachment.selected = target.checked;
+      render();
+    }
+    return;
+  }
+  if (target.matches("[data-mail-select]")) {
+    if (target.checked) ui.selectedMailIds.add(target.value);
+    else ui.selectedMailIds.delete(target.value);
+    refreshSavedMailList();
+    return;
+  }
+  if (target.id === "mailSelectAll") {
+    const filteredIds = filteredMailMessages().map((message) => message.id);
+    if (target.checked) filteredIds.forEach((id) => ui.selectedMailIds.add(id));
+    else filteredIds.forEach((id) => ui.selectedMailIds.delete(id));
+    refreshSavedMailList();
+    return;
+  }
+  if (target.id === "mailStatus") {
+    ui.mailFilters.status = target.value;
+    resetListPage("mail");
+    refreshSavedMailList();
+    return;
+  }
+
+  if (target.dataset.listSize) {
+    const scope = target.dataset.listSize;
+    const state = ui.pagination[scope];
+    if (!state || !LIST_PAGE_SIZES.includes(Number(target.value))) return;
+    state.size = Number(target.value);
+    state.page = 1;
+    renderListScope(scope);
+    return;
+  }
+
   if (target.id === "pruebaPicker") {
     const files = target.files ? Array.from(target.files) : [];
     target.value = "";
     if (files.length) runPruebas(files);
     return;
   }
-  if (target.id === "accIgicYear") {
-      activateExercise(target.value);
-      render();
-      return;
-    }
-  if (target.id === "accExercise") {
+  if (target.id === "globalExercise") {
     if (!activateExercise(target.value)) {
-      toast("El ejercicio seleccionado no es válido.", "warn");
+      toast("No se pudo cambiar el ejercicio activo.", "warn");
     }
     render();
     return;
@@ -6863,21 +8209,25 @@ export function onChange(event) {
   }
   if (target.id === "docKind") {
     ui.docs.kind = target.value;
+    resetListPage("documents");
     render();
     return;
   }
   if (target.id === "docSupplier") {
     ui.docs.supplier = target.value;
+    resetListPage("documents");
     render();
     return;
   }
   if (target.id === "docSort") {
     ui.docs.sort = target.value;
+    resetListPage("documents");
     refreshDocResults();
     return;
   }
   if (target.id === "docRange") {
     ui.docs.range = target.value;
+    resetListPage("documents");
     if (ui.docs.range === "custom") {
       if (!ui.docs.from) ui.docs.from = `${new Date().getFullYear()}-01-01`;
       if (!ui.docs.to) ui.docs.to = todayISO();
@@ -6887,11 +8237,51 @@ export function onChange(event) {
   }
   if (target.id === "docFrom" || target.id === "docTo") {
     ui.docs[target.id === "docFrom" ? "from" : "to"] = target.value;
+    resetListPage("documents");
     render();
+    return;
+  }
+  if (target.id === "purchaseCategory") {
+    ui.filters.category = target.value;
+    resetListPage("purchases");
+    refreshInvoiceTable();
+    return;
+  }
+  if (target.id === "purchaseFrom" || target.id === "purchaseTo") {
+    const key = target.id === "purchaseFrom" ? "from" : "to";
+    const other = key === "from" ? ui.filters.to : ui.filters.from;
+    if (target.value && other && (key === "from" ? target.value > other : target.value < other)) {
+      toast("La fecha inicial debe ser anterior a la final.", "warn");
+      render();
+      return;
+    }
+    ui.filters[key] = target.value;
+    resetListPage("purchases");
+    refreshInvoiceTable();
+    return;
+  }
+  if (target.id === "nominaFrom" || target.id === "nominaTo") {
+    const key = target.id === "nominaFrom" ? "from" : "to";
+    const other = key === "from" ? ui.nominaFilters.to : ui.nominaFilters.from;
+    if (target.value && other && (key === "from" ? target.value > other : target.value < other)) {
+      toast("La fecha inicial debe ser anterior a la final.", "warn");
+      render();
+      return;
+    }
+    ui.nominaFilters[key] = target.value;
+    resetListPage("payroll");
+    render();
+    return;
+  }
+  if (target.id === "salesListSort") {
+    ui.salesListFilters.sort = target.value;
+    resetListPage("sales");
+    refreshSalesTable();
     return;
   }
   if (target.id === "salesRange") {
     ui.sales.range = target.value;
+    resetListPage("sales");
     if (ui.sales.range === "custom") {
       if (!ui.sales.from) ui.sales.from = `${new Date().getFullYear()}-01-01`;
       if (!ui.sales.to) ui.sales.to = todayISO();
@@ -6901,17 +8291,20 @@ export function onChange(event) {
   }
   if (target.id === "salesFrom" || target.id === "salesTo") {
     ui.sales[target.id === "salesFrom" ? "from" : "to"] = target.value;
+    resetListPage("sales");
     refreshSales();
     return;
   }
   if (target.matches("[data-filter-supplier]")) {
     ui.filters.supplier = target.value;
+    resetListPage("purchases");
     refreshInvoiceTable();
   }
 }
 
 export function onFilterButton(button) {
   ui.filters.status = button.dataset.filterStatus;
+  resetListPage("purchases");
   refreshInvoiceTable();
 }
 
@@ -7047,11 +8440,16 @@ function exerciseYears() {
 function activateExercise(yearValue) {
   const year = Number(yearValue);
   if (!Number.isInteger(year) || year < 1900 || year > 2200) return false;
-  updateSettings({ activeExerciseYear: year });
+  if (!updateSettings({ activeExerciseYear: year })) return false;
   ui.conta.exerciseYear = year;
   ui.conta.year = year;
   ui.conta.from = `${year}-01-01`;
   ui.conta.to = `${year}-12-31`;
+  ui.sales = { ...ui.sales, range: "year", from: "", to: "" };
+  ui.docs = { ...ui.docs, range: "all", from: "", to: "" };
+  ui.filters = { ...ui.filters, from: "", to: "" };
+  ui.nominaFilters = { ...ui.nominaFilters, from: "", to: "" };
+  ["sales", "documents", "purchases", "payroll"].forEach(resetListPage);
   return true;
 }
 
@@ -7131,6 +8529,13 @@ function bankStatementBatches() {
     : [];
 }
 
+function reconciliationInvoices() {
+  const year = activeExerciseYear();
+  return getState().invoices.filter((invoice) =>
+    Boolean(invoice.issueDate) && isVisibleInExercise(invoice, year)
+  );
+}
+
 function bankRailLabel(rail) {
   if (rail === "TARJETA") return "Tarjeta";
   if (rail === "TRANSFERENCIA") return "Transferencia";
@@ -7155,15 +8560,15 @@ function bankMovementLocation(movementId, batches = bankStatementBatches()) {
 function accPlan() {
   const s = getState().settings || {};
   const propias = (Array.isArray(s.cuentasPropias) ? s.cuentasPropias : [])
-    .map((c) => ({ code: String((c && c.code) || "").trim(), name: String((c && c.name) || "").trim() }))
-    .filter((c) => /^\d{3,6}$/.test(c.code) && c.name);
+    .map((c) => ({ code: normalizarCodigoCuenta(c && c.code), name: String((c && c.name) || "").trim() }))
+    .filter((c) => /^\d{6}$/.test(c.code) && c.name);
 
   const guardadas = (Array.isArray(s.subcuentas) ? s.subcuentas : [])
     .map((c) => ({
-      code: String((c && c.code) || "").trim(),
+      code: normalizarCodigoCuenta(c && c.code),
       name: String((c && c.name) || "").trim(),
       key: String((c && c.key) || ""),
-      cuenta: String((c && c.cuenta) || String((c && c.code) || "").slice(0, 3)),
+      cuenta: String((c && c.cuenta) || String((c && c.code) || "").slice(0, 3)).slice(0, 3),
     }))
     .filter((c) => /^\d{6}$/.test(c.code) && c.name);
 
@@ -7250,7 +8655,6 @@ function accRangeBar(w) {
   const end = `${year}-12-31`;
   return `
     <div class="filters">
-      <label class="date-filter"><span>Ejercicio</span><select id="accExercise" aria-label="Ejercicio contable">${exerciseYears().map((item) => `<option value="${item}"${item === year ? " selected" : ""}>${item}</option>`).join("")}</select></label>
       <label class="date-filter"><span>Desde</span><input id="accFrom" type="date" min="${start}" max="${end}" value="${esc(ui.conta.from || start)}" aria-label="Desde"></label>
       <label class="date-filter"><span>Hasta</span><input id="accTo" type="date" min="${start}" max="${end}" value="${esc(ui.conta.to || end)}" aria-label="Hasta"></label>
       <div class="spacer"></div>
@@ -7271,7 +8675,9 @@ function accTabBar() {
 }
 
 function accEmpty(text) {
-  const docs = getState().invoices || [];
+  const docs = (getState().invoices || []).filter((invoice) =>
+    isVisibleInExercise(invoice, activeExerciseYear())
+  );
   const fuera = docs.length > 0 && ui.conta.range !== "all";
   const sinFecha = docs.filter((d) => !String(d.issueDate || d.createdAt || "").slice(0, 10)).length;
   let titulo = "Todavía no hay nada que contabilizar";
@@ -7443,7 +8849,7 @@ function accSumasHtml(sumas) {
 }
 
 /** Balance de situación, con los epígrafes del modelo oficial. */
-function accBalanceHtml(bal, resultado) {
+function accBalanceHtml(bal, resultado, asOf) {
   const rows = bal.rows.map((r) => {
     const total = r.kind === "total" || r.kind === "grand";
     const shown = total ? fmtEUR(r.value) : r.value ? fmtEUR(r.value) : '<span class="muted">—</span>';
@@ -7465,7 +8871,7 @@ function accBalanceHtml(bal, resultado) {
     <div class="card-head">
       <div>
         <h2>Balance de situación</h2>
-        <p>Modelo oficial del Plan General de Contabilidad · resultado del periodo ${fmtEUR(resultado)}</p>
+        <p>Modelo del PGC · saldo acumulado al ${fmtDate(asOf)} · resultado del ejercicio ${fmtEUR(resultado)}</p>
       </div>
       <div class="spacer"></div>
       <button class="btn sm" data-action="acc-pdf-balance">${icon("download")}<span>Descargar PDF</span></button>
@@ -7560,14 +8966,8 @@ function accKpiStrip() {
 
 /** IGIC: el año trimestre a trimestre, y el cuadre con el libro mayor. */
 function accIgicHtml() {
-  const year = Number(ui.conta.year) || new Date().getFullYear();
+  const year = activeExerciseYear();
   const inf = igicPorTrimestre(accDocs(), { year });
-
-  const actual = new Date().getFullYear();
-  const anios = [];
-  for (let y = actual; y >= actual - 5; y -= 1) anios.push(y);
-  if (anios.indexOf(year) === -1) anios.push(year);
-  anios.sort((a, b) => b - a);
 
   // Lo que dicen las cuentas 477 y 472 del libro mayor del mismo año.
   let mayorRep = null;
@@ -7589,10 +8989,7 @@ function accIgicHtml() {
 
   return `
   <div class="acc-toolbar-note">
-    <span class="tag kind">Año</span>
-    <select id="accIgicYear" aria-label="Elegir el año del IGIC">
-      ${anios.map((y) => `<option value="${y}" ${y === year ? "selected" : ""}>${y}</option>`).join("")}
-    </select>
+    <span class="tag kind">Ejercicio ${esc(String(year))}</span>
     <div class="spacer"></div>
     <button class="btn sm ghost" data-action="export-acc-csv">${icon("download")}<span>Exportar CSV</span></button>
   </div>
@@ -7700,7 +9097,7 @@ function accTesoreriaHtml() {
     <div class="card-head">
       <div>
         <h2>Caja y bancos</h2>
-        <p>El dinero que ha entrado y ha salido por cada sitio, y lo que queda. Se decide al marcar cada documento como cobrado o pagado: en efectivo (caja, cuenta 570) o por el banco (cuenta 572).</p>
+        <p>El dinero que ha entrado y ha salido por cada sitio, y lo que queda. Se decide al marcar cada documento como cobrado o pagado: en efectivo (caja, cuenta 570000) o por el banco (cuenta 572000).</p>
       </div>
     </div>
     <div class="acc-kpis">
@@ -7784,7 +9181,7 @@ function accConciliacionHtml() {
   const movements = batches.flatMap((batch) =>
     batch.movements.map((movement) => ({ ...movement, batchId: batch.id, batchName: batch.name, account: batch.account }))
   ).filter((movement) => (!w.from || movement.date >= w.from) && (!w.to || movement.date <= w.to));
-  const suggestions = suggestBankMatches(movements, getState().invoices, getState().suppliers);
+  const suggestions = suggestBankMatches(movements, reconciliationInvoices(), getState().suppliers);
   const suggestionsById = new Map(suggestions.map((row) => [row.movement.id, row.suggestion]));
   const pending = movements.filter((movement) => movement.status === "PENDIENTE");
   const reconciled = movements.filter((movement) => movement.status === "CONCILIADO");
@@ -7991,7 +9388,7 @@ function openBankMatchReview(movementId) {
     return;
   }
   const { batch, movement } = location;
-  const result = suggestBankMatches([movement], getState().invoices, getState().suppliers)[0];
+  const result = suggestBankMatches([movement], reconciliationInvoices(), getState().suppliers)[0];
   const choices = result?.suggestion?.alternatives || [];
   if (!choices.length) {
     toast("No hay una factura pendiente del mismo importe y sentido. Puedes crear un asiento manual.", "info");
@@ -8131,7 +9528,7 @@ async function reconcileHighConfidenceBankMatches() {
   const rows = batches.flatMap((batch) => batch.movements
     .filter((movement) => movement.status === "PENDIENTE" && (!window.from || movement.date >= window.from) && (!window.to || movement.date <= window.to))
     .map((movement) => ({ ...movement, batchId: batch.id, account: batch.account })));
-  const candidates = suggestBankMatches(rows, getState().invoices, getState().suppliers);
+  const candidates = suggestBankMatches(rows, reconciliationInvoices(), getState().suppliers);
   const selected = [];
   const usedInvoices = new Set();
   for (const row of candidates) {
@@ -8155,7 +9552,7 @@ async function reconcileHighConfidenceBankMatches() {
     const location = bankMovementLocation(movement.id, batches);
     return {
       movementId: movement.id,
-      invoiceId: suggestBankMatches([movement], getState().invoices, getState().suppliers)[0]?.suggestion?.invoiceId,
+      invoiceId: suggestBankMatches([movement], reconciliationInvoices(), getState().suppliers)[0]?.suggestion?.invoiceId,
       amount: movement.amount,
       date: movement.date,
       method: movement.rail === "TARJETA" ? "TARJETA" : "BANCO",
@@ -8180,8 +9577,10 @@ function openBankManualPost(movementId) {
     return;
   }
   const isInflow = Number(movement.amount) > 0;
-  const codes = ["400", "410", "430", "440", "465", "472", "475", "476", "600", "602", "621", "622", "623", "624", "625", "626", "627", "628", "629", "640", "642", "662", "700", "705", "740", "778"];
-  const defaultCode = isInflow ? "700" : "629";
+  const plan = accPlan();
+  const accounts = new Map(PGC_CUENTAS.map((account) => [account.code, account.name]));
+  for (const account of [...plan.subcuentas, ...plan.propias]) accounts.set(account.code, account.name);
+  const defaultCode = isInflow ? "700000" : "629000";
   openModal(
     `<div class="modal-head">
       <div><h2>Contabilizar movimiento sin documento</h2><p>Elige la cuenta que explica este cobro o pago.</p></div>
@@ -8196,10 +9595,10 @@ function openBankManualPost(movementId) {
       <label class="field" style="margin-top:14px">
         <span>Cuenta de contrapartida</span>
         <select id="bankPostAccount">
-          ${codes.map((code) => `<option value="${code}" ${code === defaultCode ? "selected" : ""}>${code} · ${esc(pgcNombre(code) || `Cuenta ${code}`)}</option>`).join("")}
+          ${[...accounts].sort(([left], [right]) => left.localeCompare(right)).map(([code, name]) => `<option value="${esc(code)}" ${code === defaultCode ? "selected" : ""}>${code} · ${esc(name)}</option>`).join("")}
         </select>
       </label>
-      <p class="muted" style="margin-top:10px">Se creará un asiento equilibrado contra bancos (572). Revisa que la cuenta elegida corresponda al movimiento.</p>
+      <p class="muted" style="margin-top:10px">Se creará un asiento equilibrado contra bancos (572000). Revisa que la cuenta elegida corresponda al movimiento.</p>
     </div>
     <div class="modal-foot">
       <button class="btn primary" data-action="bank-manual-post-save" data-id="${esc(movement.id)}">${icon("check")}<span>Guardar asiento</span></button>
@@ -8213,7 +9612,13 @@ function saveBankManualPost(movementId) {
   const location = bankMovementLocation(movementId);
   const accountInput = document.getElementById("bankPostAccount");
   const counterAccount = String(accountInput?.value || "");
-  if (!location || location.movement.status !== "PENDIENTE" || !/^\d{3,6}$/.test(counterAccount) || counterAccount === "572") {
+  const plan = accPlan();
+  const accounts = new Set([
+    ...PGC_CUENTAS.map((account) => account.code),
+    ...plan.subcuentas.map((account) => account.code),
+    ...plan.propias.map((account) => account.code),
+  ]);
+  if (!location || location.movement.status !== "PENDIENTE" || !/^\d{6}$/.test(counterAccount) || counterAccount === "572000" || !accounts.has(counterAccount)) {
     toast("No se puede contabilizar este movimiento. Vuelve a revisarlo.", "warn");
     return;
   }
@@ -8236,8 +9641,8 @@ function saveBankManualPost(movementId) {
     concept: `Extracto bancario · ${String(movement.description || "").slice(0, 160)}`,
     ref: String(movement.reference || "").slice(0, 120),
     lineas: isInflow
-      ? [{ cuenta: "572", debe: amount, haber: 0 }, { cuenta: counterAccount, debe: 0, haber: amount }]
-      : [{ cuenta: counterAccount, debe: amount, haber: 0 }, { cuenta: "572", debe: 0, haber: amount }],
+      ? [{ cuenta: "572000", debe: amount, haber: 0 }, { cuenta: counterAccount, debe: 0, haber: amount }]
+      : [{ cuenta: counterAccount, debe: amount, haber: 0 }, { cuenta: "572000", debe: 0, haber: amount }],
   };
   const statements = copyBankStatements();
   const savedMovement = bankMovementLocation(movementId, statements)?.movement;
@@ -8311,7 +9716,11 @@ async function deleteBankBatch(batchId) {
 
 /** Vencimientos: lo que te deben y lo que debes, con los días de retraso. */
 function accVencimientosHtml() {
-  const inf = vencimientos(accDocs(), { today: todayISO() });
+  const docs = accDocs().filter((invoice) =>
+    isVisibleInExercise(invoice, activeExerciseYear())
+  );
+  const docsById = new Map(docs.map((invoice) => [invoice.id, invoice]));
+  const inf = vencimientos(docs, { today: todayISO() });
 
   const diasTexto = (dias) => {
     if (dias == null) return "sin fecha";
@@ -8341,7 +9750,7 @@ function accVencimientosHtml() {
           ${cesta.items
             .map(
               (i) => `<tr class="acc-row">
-            <td class="num">${i.due ? fmtDate(i.due) : "—"}${i.estimada ? " *" : ""}</td>
+            <td class="num">${i.due ? fmtDate(i.due) : "—"}${i.estimada ? " *" : ""}${carryoverSubline(docsById.get(i.id) || i)}</td>
             <td>${esc(i.party || "—")}</td>
             <td>${esc(i.number || i.concept || "—")}</td>
             <td class="num">${fmtEUR(i.amount)}</td>
@@ -8371,7 +9780,10 @@ function accVencimientosHtml() {
 
 function accBody() {
   try {
-    const entries = asientosContables();
+    const w = contaWindow();
+    const entries = asientosContables(
+      ui.conta.tab === "balance" ? balanceAsOfWindow(w, activeExerciseYear()) : w,
+    );
     const mayor = libroMayor(entries);
     if (ui.conta.tab === "igic") return accIgicHtml();
     if (ui.conta.tab === "tesoreria") return accTesoreriaHtml();
@@ -8382,7 +9794,7 @@ function accBody() {
     if (ui.conta.tab === "sumas") return accSumasHtml(balanceSumasYSaldos(mayor));
     if (ui.conta.tab === "balance") {
       const pyg = cuentaResultados(mayor);
-      return accBalanceHtml(balanceSituacion(mayor, pyg.resultado), pyg.resultado);
+      return accBalanceHtml(balanceSituacion(mayor, pyg.resultado), pyg.resultado, w.to);
     }
     if (ui.conta.tab === "resultados") return accResultadosHtml(cuentaResultados(mayor));
     return accDiarioHtml(entries);
@@ -8413,92 +9825,227 @@ function viewContabilidad() {
       </div>
     </section>
     ${accKpiStrip()}
+    <section class="card"><div class="card-body row wrap"><strong>Informe de la pestaña seleccionada</strong><div class="spacer"></div>${reportFormatButtons("accounting")}<span class="hint">Respeta el ejercicio y el periodo indicados. No modifica la contabilidad.</span></div></section>
+    ${financialDebtPanel()}
     <div id="accBody">${accBody()}</div>
   </div>`;
 }
 
-/** Los datos de partida y el traslado opcional desde el cierre anterior. */
+function financialDebtPanel() {
+  const w = contaWindow();
+  const rows = debtBalances(asientosContables({ from: `${activeExerciseYear()}-01-01`, to: w.to }));
+  const loans = accDocs().filter((doc) => doc.kind === "PRESTAMO");
+  if (!rows.length && !loans.length) return "";
+  return `<section class="card"><div class="card-head"><div><h2>Deuda a corto y largo plazo</h2><p>Saldos contables al ${esc(w.to)}. Incluye apertura; no incluye financiación aún no registrada.</p></div>
+    <div class="row wrap">${reportFormatButtons("debt")}<button class="btn" data-action="loan-reclass">Reclasificar vencimientos a corto plazo</button></div></div>
+    <div class="card-body"><p class="subtle">Corto plazo: vencimientos dentro de doce meses. Largo plazo: resto. Revisa el cuadro de amortización al cierre y registra únicamente el capital que deba pasar de 170xxx a 5200xx.</p>
+    <div class="table-wrap"><table><thead><tr><th>Cuenta</th><th>Plazo</th><th>Deuda pendiente</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${esc(row.account)} · ${esc(pgcNombre(row.account))}</td><td>${row.term}</td><td>${fmtEUR(row.amount)}${row.amount < 0 ? " · revisar saldo inicial / amortizaciones" : ""}</td></tr>`).join("")}</tbody></table></div></div></section>`;
+}
+
+function aperturaLinesForModal(apertura) {
+  if (Array.isArray(apertura?.lines)) return apertura.lines;
+  if (!apertura) return [];
+  const capital = round2(Number(apertura.capital) || 0);
+  const tesoreria = round2(Number(apertura.tesoreria) || 0);
+  if (!capital && !tesoreria) return [];
+  const resto = round2(tesoreria - capital);
+  return [
+    { account: "572000", debit: tesoreria, credit: 0 },
+    { account: "100000", debit: 0, credit: capital },
+    resto >= 0
+      ? { account: "113000", debit: 0, credit: resto }
+      : { account: "121000", debit: Math.abs(resto), credit: 0 },
+  ].filter((line) => line.debit || line.credit);
+}
+
+function accOpeningRow(line, index) {
+  const item = line || {};
+  const account = String(item.account || "");
+  const debit = Number(item.debit) || 0;
+  const credit = Number(item.credit) || 0;
+  return `<div class="acc-line" data-opening-row>
+    <input class="mono" data-opening-code type="text" inputmode="numeric" maxlength="6" value="${esc(account)}" placeholder="572000" list="accOpeningAccounts" aria-label="Cuenta de apertura, línea ${index + 1}">
+    <input data-opening-debit type="text" inputmode="decimal" value="${debit ? esc(fmtNum(debit)) : ""}" placeholder="0,00" aria-label="Debe de apertura, línea ${index + 1}">
+    <input data-opening-credit type="text" inputmode="decimal" value="${credit ? esc(fmtNum(credit)) : ""}" placeholder="0,00" aria-label="Haber de apertura, línea ${index + 1}">
+  </div>`;
+}
+
+function accOpeningSum() {
+  const box = document.getElementById("accOpeningLines");
+  const out = document.getElementById("accOpeningSum");
+  if (!box || !out) return;
+  let debit = 0;
+  let credit = 0;
+  box.querySelectorAll("[data-opening-row]").forEach((row) => {
+    debit = round2(debit + accNum(row.querySelector("[data-opening-debit]")?.value || ""));
+    credit = round2(credit + accNum(row.querySelector("[data-opening-credit]")?.value || ""));
+  });
+  const difference = round2(debit - credit);
+  const balanced = Math.abs(difference) < 0.005;
+  out.className = `acc-sum ${balanced ? "is-ok" : "is-bad"}`;
+  out.textContent = balanced
+    ? `Debe ${fmtEUR(debit)} · Haber ${fmtEUR(credit)} · cuadra`
+    : `Debe ${fmtEUR(debit)} · Haber ${fmtEUR(credit)} · descuadra ${fmtEUR(Math.abs(difference))}`;
+}
+
+function accOpeningAddRow() {
+  const box = document.getElementById("accOpeningLines");
+  if (!box) return;
+  const index = box.querySelectorAll("[data-opening-row]").length;
+  box.insertAdjacentHTML("beforeend", accOpeningRow(null, index));
+  box.lastElementChild?.querySelectorAll("input").forEach((input) => input.addEventListener("input", accOpeningSum));
+  accOpeningSum();
+}
+
+/** Apertura manual por cuenta, o traslado opcional desde el cierre anterior. */
 function accAperturaModal() {
-  const s = getState().settings || {};
+  const settings = getState().settings || {};
   const year = activeExerciseYear();
   const apertura = accApertura(year);
-  const esTrasladada = Array.isArray(apertura?.lines);
-  const esManual = !!apertura && !esTrasladada;
+  const lines = aperturaLinesForModal(apertura);
+  const transferred = Number(apertura?.sourceYear) > 0;
+  const rows = Array.from({ length: Math.max(4, lines.length) }, (_, index) =>
+    accOpeningRow(lines[index] || null, index)
+  );
+  const plan = accPlan();
+  const catalog = new Map(PGC_CUENTAS.map((account) => [account.code, account.name]));
+  for (const account of [...plan.subcuentas, ...plan.propias]) catalog.set(account.code, account.name);
+  const accountOptions = [...catalog]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([code, name]) => `<option value="${esc(code)}">${esc(name)}</option>`)
+    .join("");
   openModal(
     `<div class="modal-head">
        <div>
-         <h2>Apertura del ejercicio ${year}</h2>
-         <p>La apertura se fecha el primer día del ejercicio y no repite ingresos ni gastos.</p>
+         <h2>Asiento de apertura de ${year}</h2>
+         <p>Introduce el saldo de cada cuenta al inicio del ejercicio. La fecha será el 1 de enero.</p>
        </div>
        <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
-     </div>
-     <div class="modal-body">
+      </div>
+      <div class="modal-body">
         <div class="notice info">
-          ${esTrasladada
-            ? `Esta apertura contiene ${apertura.lines.length} ${apertura.lines.length === 1 ? "saldo" : "saldos"} por cuenta${apertura.sourceYear ? ` trasladados desde el cierre de ${apertura.sourceYear}` : ""}. Si vuelves a traer los saldos, se sustituirá.`
-            : "Puedes traer los saldos de cierre del ejercicio anterior. La acción sustituirá cualquier apertura guardada para este ejercicio."}
+          ${transferred
+            ? `Esta apertura trae ${lines.length} ${lines.length === 1 ? "saldo" : "saldos"} del cierre de ${apertura.sourceYear}. Al guardar, reemplazarás esos importes por las líneas que escribas.`
+            : "El asiento debe cuadrar y contener solo cuentas de balance. Puedes escribir saldos manualmente o traer el cierre anterior."}
         </div>
         <p><button class="btn" data-action="acc-opening-carryforward">${icon("download")}<span>Traer saldos de ${year - 1}</span></button></p>
-       <div class="form-grid">
-         <label class="field">
-           <span>Capital social (€)</span>
-           <input id="accCapital" type="text" inputmode="decimal" value="${esManual && apertura.capital ? esc(String(apertura.capital)) : ""}" placeholder="3.000,00">
-         </label>
-         <label class="field">
-           <span>Dinero en el banco y en caja (€)</span>
-           <input id="accCash" type="text" inputmode="decimal" value="${esManual && apertura.tesoreria ? esc(String(apertura.tesoreria)) : ""}" placeholder="12.000,00">
-         </label>
-         <label class="field">
-           <span>Fecha de apertura</span>
-           <input id="accDate" type="date" value="${esc(apertura?.fecha || `${year}-01-01`)}">
-         </label>
-       </div>
-        <p class="muted">La apertura manual solo permite indicar capital y tesorería. Para copiar el cierre completo, usa «Traer saldos»; al guardar los campos manuales se sustituirá el traslado de este ejercicio.</p>
-     </div>
-     <div class="modal-foot">
-       <button class="btn primary" data-action="acc-save-apertura">${icon("check")}<span>Guardar</span></button>
-       <button class="btn ghost" data-modal-cancel>Cancelar</button>
-     </div>`,
+        <div class="acc-lines" id="accOpeningLines">
+          <div class="acc-line acc-line-head"><span>Cuenta · 6 cifras</span><span>Debe</span><span>Haber</span></div>
+          ${rows.join("")}
+        </div>
+        <div class="acc-lines-foot">
+          <button class="btn sm ghost" data-action="acc-opening-add-row">${icon("plus")}<span>Añadir una cuenta</span></button>
+          <div class="spacer"></div>
+          <span class="acc-sum" id="accOpeningSum"></span>
+        </div>
+        <datalist id="accOpeningAccounts">${accountOptions}</datalist>
+        <p class="muted">Todas las cuentas tienen seis cifras. Si falta una cuenta propia, créala antes en la pestaña «Cuentas». No uses cuentas de gastos o ingresos en la apertura.</p>
+      </div>
+      <div class="modal-foot">
+        ${apertura ? `<button class="btn danger" data-action="acc-opening-clear">${icon("trash")}<span>Eliminar apertura</span></button>` : ""}
+        <div class="spacer"></div>
+        <button class="btn primary" data-action="acc-save-apertura">${icon("check")}<span>Guardar asiento</span></button>
+        <button class="btn ghost" data-modal-cancel>Cancelar</button>
+      </div>`,
     {
-      narrow: true,
       onMount: (wrap) => {
-        wrap.querySelectorAll("[data-modal-cancel]").forEach((el) => {
-          el.addEventListener("click", () => closeModal());
+        wrap.querySelectorAll("[data-modal-cancel]").forEach((element) => {
+          element.addEventListener("click", () => closeModal());
         });
+        wrap.querySelectorAll("#accOpeningLines input").forEach((input) => input.addEventListener("input", accOpeningSum));
+        accOpeningSum();
       },
     }
   );
 }
 
-/** Guarda los datos de partida y vuelve a pintar. */
+/** Guarda el asiento de apertura manual del ejercicio activo. */
 function saveApertura() {
-  const cap = document.getElementById("accCapital");
-  const cash = document.getElementById("accCash");
-  const day = document.getElementById("accDate");
-  const capital = accNum(cap ? cap.value : "");
-  const tesoreria = accNum(cash ? cash.value : "");
+  const box = document.getElementById("accOpeningLines");
   const year = activeExerciseYear();
-  const fecha = String((day && day.value) || "").slice(0, 10) || `${year}-01-01`;
   const settings = getState().settings || {};
+  const available = new Set([
+    ...PGC_CUENTAS.map((account) => account.code),
+    ...accPlan().subcuentas.map((account) => account.code),
+    ...accPlan().propias.map((account) => account.code),
+  ]);
+  const lines = [];
+  if (box) {
+    for (const row of box.querySelectorAll("[data-opening-row]")) {
+      const rawCode = String(row.querySelector("[data-opening-code]")?.value || "").trim();
+      const debit = round2(accNum(row.querySelector("[data-opening-debit]")?.value || ""));
+      const credit = round2(accNum(row.querySelector("[data-opening-credit]")?.value || ""));
+      if (!rawCode && !debit && !credit) continue;
+      if (!/^\d{6}$/.test(rawCode)) {
+        toast("Cada línea necesita una cuenta de exactamente seis cifras.", "warn");
+        return;
+      }
+      if (!available.has(rawCode)) {
+        toast(`La cuenta ${rawCode} no existe. Créala primero en la pestaña «Cuentas».`, "warn", 7000);
+        return;
+      }
+      if (rawCode.startsWith("6") || rawCode.startsWith("7")) {
+        toast("El asiento de apertura solo admite cuentas de balance (grupos 1 a 5).", "warn", 7000);
+        return;
+      }
+      if (debit < 0 || credit < 0 || (debit > 0 && credit > 0)) {
+        toast("En cada línea, escribe un importe no negativo solo en Debe o en Haber.", "warn");
+        return;
+      }
+      if (debit || credit) lines.push({ account: rawCode, debit, credit });
+    }
+  }
+  if (!lines.length) {
+    toast("Escribe las líneas del asiento o usa «Eliminar apertura» para borrar la apertura guardada.", "warn");
+    return;
+  }
+  if (lines.length < 2) {
+    toast("El asiento de apertura necesita al menos dos cuentas.", "warn");
+    return;
+  }
+  const debit = round2(lines.reduce((sum, line) => sum + line.debit, 0));
+  const credit = round2(lines.reduce((sum, line) => sum + line.credit, 0));
+  if (Math.abs(round2(debit - credit)) > 0.005) {
+    toast(`El debe (${fmtEUR(debit)}) y el haber (${fmtEUR(credit)}) deben cuadrar.`, "warn", 7000);
+    return;
+  }
   const aperturasPorEjercicio = { ...(settings.aperturasPorEjercicio || {}) };
-  delete aperturasPorEjercicio[String(year)];
-  const patch = {
-    openingCapital: capital,
-    openingCash: tesoreria,
-    openingDate: fecha,
-    aperturasPorEjercicio,
-  };
+  aperturasPorEjercicio[String(year)] = { lines };
+  const patch = { aperturasPorEjercicio };
   if (!updateSettings(patch)) {
-    toast(settingsWriteError(patch) || "No se pudieron guardar los datos de partida.", "bad", 7000);
+    toast(settingsWriteError(patch) || "No se pudo guardar el asiento de apertura.", "bad", 7000);
     return;
   }
   closeModal();
-  toast(
-    capital || tesoreria
-      ? `Datos de partida guardados: ${fmtEUR(capital)} de capital y ${fmtEUR(tesoreria)} en bancos.`
-      : "Datos de partida borrados.",
-    "ok"
-  );
+  toast(`Asiento de apertura de ${year} guardado y cuadrado.`, "ok");
+  render();
+}
+
+async function clearApertura() {
+  const year = activeExerciseYear();
+  const lockError = exerciseWriteError(year);
+  if (lockError) {
+    toast(lockError, "bad", 7000);
+    return;
+  }
+  if (!accApertura(year)) return;
+  const ok = await confirmDialog({
+    title: `Eliminar la apertura de ${year}`,
+    message: "Se eliminarán las líneas de saldo inicial de este ejercicio. Los documentos y otros asientos no se modificarán.",
+    confirm: "Sí, eliminar apertura",
+    danger: true,
+  });
+  if (!ok) return;
+  const settings = getState().settings || {};
+  const aperturasPorEjercicio = { ...(settings.aperturasPorEjercicio || {}) };
+  delete aperturasPorEjercicio[String(year)];
+  const patch = { aperturasPorEjercicio };
+  if (!updateSettings(patch)) {
+    toast(settingsWriteError(patch) || "No se pudo eliminar la apertura.", "bad", 7000);
+    return;
+  }
+  closeModal();
+  toast(`Apertura de ${year} eliminada.`);
   render();
 }
 
@@ -8604,7 +10151,18 @@ function confirmarTrasladoApertura() {
 }
 
 /** Descarga en CSV lo que se está viendo. */
-function exportAccCsv() {
+async function exportDebtReport(format) {
+  const w = contaWindow();
+  const rows = debtBalances(asientosContables({ from: `${activeExerciseYear()}-01-01`, to: w.to }));
+  await downloadReport({
+    filename: `deuda-por-plazo-${w.to}`, title: "Deuda a corto y largo plazo",
+    period: `Saldos al ${w.to}`, filters: "Incluye apertura del ejercicio y movimientos registrados hasta la fecha.",
+    headers: ["Cuenta", "Nombre", "Plazo", "Importe"],
+    rows: rows.map((row) => [row.account, pgcNombre(row.account), row.term, row.amount]),
+  }, format);
+}
+
+async function exportAccCsv(format = "csv") {
   const w = contaWindow();
   const tab = ui.conta.tab;
   if (tab === "conciliacion") {
@@ -8629,21 +10187,33 @@ function exportAccCsv() {
       return;
     }
     const headers = ["Fecha", "Cuenta", "Extracto", "Concepto", "Referencia", "Medio", "Importe", "Estado", "Documento relacionado", "Cuenta contable"];
-    downloadText(`conciliacion-bancaria-${todayISO()}.csv`, "\ufeff" + [headers, ...movements].map((row) => row.map(csvCell).join(";")).join("\r\n"));
+    await downloadReport({ filename: `conciliacion-bancaria-${w.from}-${w.to}`, title: "Conciliación bancaria", period: `${fmtDate(w.from)} — ${fmtDate(w.to)}`, headers, rows: movements }, format);
     toast("Conciliación bancaria exportada.", "ok");
     return;
   }
   // IGIC, caja y vencimientos salen de los documentos, no de los asientos.
   const gestion = tab === "igic" || tab === "tesoreria" || tab === "vencimientos";
-  const entries = gestion ? [] : asientosContables(w);
-  if (!gestion && !entries.length) {
+  const reportWindow = tab === "balance" ? balanceAsOfWindow(w, activeExerciseYear()) : w;
+  const entries = gestion ? [] : asientosContables(reportWindow);
+  if (!gestion && !entries.length && tab !== "cuentas") {
     toast("No hay asientos en ese periodo.", "warn");
     return;
   }
   const mayor = libroMayor(entries);
   let headers = [];
   let rows = [];
-  if (tab === "mayor") {
+  if (tab === "cuentas") {
+    headers = ["Cuenta", "Nombre", "Debe", "Haber", "Saldo"];
+    const accounts = new Map(mayor.map((row) => [row.code, row]));
+    for (const row of [...accPlan().subcuentas, ...accPlan().propias]) {
+      if (!accounts.has(row.code)) accounts.set(row.code, { code: row.code, name: row.name, moves: [] });
+    }
+    rows = [...accounts.values()].sort((a, b) => a.code.localeCompare(b.code)).map((row) => {
+      const debit = row.moves.reduce((sum, move) => sum + move.debit, 0);
+      const credit = row.moves.reduce((sum, move) => sum + move.credit, 0);
+      return [row.code, row.name, debit, credit, round2(debit - credit)];
+    });
+  } else if (tab === "mayor") {
     headers = ["Cuenta", "Nombre", "Fecha", "Asiento", "Concepto", "Debe", "Haber", "Saldo"];
     for (const r of mayor) {
       for (const m of r.moves) {
@@ -8666,11 +10236,11 @@ function exportAccCsv() {
     headers = ["Concepto", "Importe"];
     rows = pyg.lines.map((l) => [l.label, fmtNum(l.value)]);
   } else if (tab === "igic") {
-    const inf = igicPorTrimestre(accDocs(), { year: Number(ui.conta.year) || new Date().getFullYear() });
+    const inf = igicPorTrimestre(accDocs().filter((doc) => doc.issueDate >= w.from && doc.issueDate <= w.to), { year: activeExerciseYear() });
     headers = ["Trimestre", "Base repercutida", "IGIC repercutido", "Base soportada", "IGIC soportado", "Resultado"];
     rows = inf.rows.map((r) => [r.label, fmtNum(r.baseRep), fmtNum(r.cuotaRep), fmtNum(r.baseSop), fmtNum(r.cuotaSop), fmtNum(r.diferencia)]);
     rows.push([
-      "Total del año",
+      "Total del periodo",
       fmtNum(inf.totals.baseRep),
       fmtNum(inf.totals.cuotaRep),
       fmtNum(inf.totals.baseSop),
@@ -8686,7 +10256,7 @@ function exportAccCsv() {
     });
     headers = ["Cuenta", "Medio", "Fecha", "Documento", "Tercero", "Importe", "Saldo"];
     for (const c of inf.cuentas) {
-      const medio = c.method === "CAJA" ? "Caja (570)" : c.method === "TARJETA" ? "Tarjeta (572)" : c.method === "BANCO" ? "Banco (572)" : "Sin medio de pago";
+      const medio = c.method === "CAJA" ? "Caja (570000)" : c.method === "TARJETA" ? "Tarjeta (572000)" : c.method === "BANCO" ? "Banco (572000)" : "Sin medio de pago";
       for (const m of c.movimientos) {
         rows.push([c.name, medio, m.date, m.number, m.party, fmtNum(m.amount), fmtNum(m.running)]);
       }
@@ -8697,18 +10267,23 @@ function exportAccCsv() {
     rows.push(["", "", "", "", "Saldo del periodo", fmtNum(inf.totales.saldo), ""]);
   } else if (tab === "vencimientos") {
     const inf = vencimientos(accDocs(), { today: todayISO() });
+    const inRange = (item) => item.due && item.due >= w.from && item.due <= w.to;
+    const cobros = inf.cobros.items.filter(inRange);
+    const pagos = inf.pagos.items.filter(inRange);
     const situacion = (dias) =>
       dias == null ? "sin fecha" : dias > 0 ? "vencido" : dias === 0 ? "vence hoy" : "por vencer";
     headers = ["Sentido", "Vence", "Tercero", "Documento", "Concepto", "Importe", "Días de retraso", "Situación"];
-    for (const i of inf.cobros.items) {
+    for (const i of cobros) {
       rows.push(["Cobro", i.due, i.party, i.number, i.concept, fmtNum(i.amount), i.dias == null ? "" : String(i.dias), situacion(i.dias)]);
     }
-    for (const i of inf.pagos.items) {
+    for (const i of pagos) {
       rows.push(["Pago", i.due, i.party, i.number, i.concept, fmtNum(i.amount), i.dias == null ? "" : String(i.dias), situacion(i.dias)]);
     }
-    rows.push(["", "", "", "", "Total por cobrar", fmtNum(inf.cobros.total), "", ""]);
-    rows.push(["", "", "", "", "Total por pagar", fmtNum(inf.pagos.total), "", ""]);
-    rows.push(["", "", "", "", "Diferencia a favor", fmtNum(inf.neto), "", ""]);
+    const totalCobros = round2(cobros.reduce((sum, item) => sum + item.amount, 0));
+    const totalPagos = round2(pagos.reduce((sum, item) => sum + item.amount, 0));
+    rows.push(["", "", "", "", "Total por cobrar", totalCobros, "", ""]);
+    rows.push(["", "", "", "", "Total por pagar", totalPagos, "", ""]);
+    rows.push(["", "", "", "", "Diferencia a favor", round2(totalCobros - totalPagos), "", ""]);
   } else {
     headers = ["Fecha", "Asiento", "Cuenta", "Nombre", "Concepto", "Debe", "Haber"];
     for (const e of entries) {
@@ -8717,8 +10292,13 @@ function exportAccCsv() {
       }
     }
   }
-  const csv = "\ufeff" + [headers.map(csvCell).join(";"), ...rows.map((r) => r.map(csvCell).join(";"))].join("\r\n");
-  downloadText(`contabilidad-${tab}-${w.from || "todo"}-${todayISO()}.csv`, csv);
+  await downloadReport({
+    filename: `contabilidad-${tab}-${reportWindow.from || "todo"}-${reportWindow.to || todayISO()}`,
+    title: ACC_TABS.find(([key]) => key === tab)?.[1] || tab,
+    period: tab === "balance" ? `Saldo acumulado al ${fmtDate(w.to)}` : `${fmtDate(w.from)} — ${fmtDate(w.to)}`,
+    headers, rows,
+    filters: `Ejercicio ${activeExerciseYear()}.${tab === "balance" ? " Saldos desde el inicio del ejercicio hasta la fecha indicada." : ""}${tab === "vencimientos" ? " Selección por fecha de vencimiento; se excluyen registros sin fecha." : ""}`,
+  }, format);
   const nombres = {
     sumas: "balance de sumas y saldos",
     igic: "resumen del IGIC",
@@ -8800,10 +10380,11 @@ function accEntryModal(existing) {
   // Las cuentas que se pueden escribir, con su nombre, para no sabérselas de memoria.
   const plan = accPlan();
   const opciones = [];
-  for (const c of plan.subcuentas) opciones.push(`<option value="${esc(c.code)}">${esc(c.name)}</option>`);
-  for (const c of plan.propias) opciones.push(`<option value="${esc(c.code)}">${esc(c.name)}</option>`);
-  for (const code of ["100", "113", "129", "400", "430", "472", "477", "570", "572", "600", "621", "628", "629", "700", "705", "740"]) {
-    opciones.push(`<option value="${code}">${esc(pgcNombre(code) || `Cuenta ${code}`)}</option>`);
+  const catalogo = new Map(PGC_CUENTAS.map((c) => [c.code, c.name]));
+  for (const c of plan.subcuentas) catalogo.set(c.code, c.name);
+  for (const c of plan.propias) catalogo.set(c.code, c.name);
+  for (const [code, name] of [...catalogo].sort(([a], [b]) => a.localeCompare(b))) {
+    opciones.push(`<option value="${esc(code)}">${esc(name)}</option>`);
   }
 
   openModal(
@@ -8840,7 +10421,7 @@ function accEntryModal(existing) {
          <span class="acc-sum" id="accEntrySum"></span>
        </div>
        <datalist id="accCuentas">${opciones.join("")}</datalist>
-       <p class="muted">Puedes escribir la cuenta con 3 cifras (430) o con 6 (430001), que es la subcuenta de un cliente. Las líneas que dejes en blanco no se guardan.</p>
+        <p class="muted">Usa siempre una cuenta de seis cifras. Las cuentas base del PGC terminan en 000; las subcuentas añaden tres cifras, como 430001. Las líneas en blanco no se guardan.</p>
      </div>
      <div class="modal-foot">
        <button class="btn primary" data-action="acc-entry-save">${icon("check")}<span>Guardar el asiento</span></button>
@@ -8881,6 +10462,13 @@ function saveAccEntry() {
   }
 
   const lineas = [];
+  const plan = accPlan();
+  const cuentasValidas = new Set([
+    ...PGC_CUENTAS.map((account) => account.code),
+    ...plan.subcuentas.map((account) => account.code),
+    ...plan.propias.map((account) => account.code),
+  ]);
+  let lineError = "";
   if (box) {
     box.querySelectorAll("[data-acc-row]").forEach((row) => {
       const c = row.querySelector("[data-acc-code]");
@@ -8889,10 +10477,25 @@ function saveAccEntry() {
       const code = String((c && c.value) || "").trim();
       const debe = accNum(d ? d.value : "");
       const haber = accNum(h ? h.value : "");
-      if (!/^\d{3,6}$/.test(code)) return;
       if (!debe && !haber) return;
+      if (!/^\d{6}$/.test(code)) {
+        lineError = "Cada línea necesita una cuenta de exactamente seis cifras.";
+        return;
+      }
+      if (!cuentasValidas.has(code)) {
+        lineError = `La cuenta ${code} no existe. Créala primero en la pestaña «Cuentas».`;
+        return;
+      }
+      if (debe < 0 || haber < 0 || (debe > 0 && haber > 0)) {
+        lineError = "En cada línea, escribe un importe no negativo solo en Debe o en Haber.";
+        return;
+      }
       lineas.push({ cuenta: code, debe, haber });
     });
+  }
+  if (lineError) {
+    toast(lineError, "warn", 7000);
+    return;
   }
 
   if (lineas.length < 2) {
@@ -8968,8 +10571,11 @@ async function deleteAccEntry(id) {
 function accPdfBalance() {
   try {
     const w = contaWindow();
-    const mayor = libroMayor(asientosContables(w));
-    const out = informeBalancePdf(mayor, { from: w.from, to: w.to });
+    const reportWindow = balanceAsOfWindow(w, activeExerciseYear());
+    const entries = asientosContables(reportWindow);
+    if (!entries.length) throw new Error("No hay asientos en el ejercicio para generar el balance.");
+    const mayor = libroMayor(entries);
+    const out = informeBalancePdf(mayor, reportWindow);
     downloadBytes(out.filename, out.bytes, "application/pdf");
     toast(`Descargado ${out.filename}.`, "ok");
   } catch (err) {
@@ -8982,7 +10588,9 @@ function accPdfBalance() {
 function accPdfResultados() {
   try {
     const w = contaWindow();
-    const mayor = libroMayor(asientosContables(w));
+    const entries = asientosContables(w);
+    if (!entries.length) throw new Error("No hay asientos en el periodo para generar pérdidas y ganancias.");
+    const mayor = libroMayor(entries);
     const out = informeResultadosPdf(mayor, { from: w.from, to: w.to });
     downloadBytes(out.filename, out.bytes, "application/pdf");
     toast(`Descargado ${out.filename}.`, "ok");
@@ -9018,14 +10626,21 @@ function accCuentasHtml(plan, mayor) {
   };
 
   const deTerceros = plan.subcuentas.map(fila).join("");
-  const otras = usadas.filter((r) => !subCodes.has(String(r.code))).map(fila).join("");
+  const propiasPorCodigo = new Map(plan.propias.map((c) => [c.code, c]));
+  const otrasCuentas = [...plan.propias];
+  for (const row of usadas) {
+    const code = String(row.code || "");
+    if (subCodes.has(code) || propiasPorCodigo.has(code)) continue;
+    otrasCuentas.push(row);
+  }
+  const otras = otrasCuentas.map(fila).join("");
 
   return `
   <section class="card">
     <div class="card-head">
       <div>
         <h2>Plan de cuentas</h2>
-        <p>${plan.subcuentas.length} ${plan.subcuentas.length === 1 ? "subcuenta" : "subcuentas"} de clientes, proveedores y trabajadores · se abren solas, con el primer número libre de su cuenta</p>
+        <p>${plan.subcuentas.length} ${plan.subcuentas.length === 1 ? "subcuenta" : "subcuentas"} de clientes, proveedores y trabajadores · todas con código de seis cifras</p>
       </div>
       <div class="spacer"></div>
       ${guardadas < plan.subcuentas.length ? `<button class="btn sm ghost" data-action="acc-plan-fix">${icon("check")}<span>Guardar las ${plan.subcuentas.length} subcuentas</span></button>` : ""}
@@ -9037,13 +10652,13 @@ function accCuentasHtml(plan, mayor) {
         <tbody>${deTerceros || '<tr><td colspan="5" class="muted">Todavía no hay ningún cliente, proveedor ni trabajador con documentos.</td></tr>'}</tbody>
       </table>
     </div>
-    <p class="muted acc-note">Cada cliente y cada proveedor tiene su propia subcuenta de 6 cifras (430001, 400002…) y cada trabajador la suya de 465 (465001, 465002…); el asiento usa la suya y solo la suya, y el balance y las cuentas anuales los suman en «Clientes», «Proveedores» y «Remuneraciones pendientes de pago».</p>
+    <p class="muted acc-note">Todas las cuentas se muestran con seis cifras: por ejemplo, 430000 para la cuenta de clientes y 430001 para una subcuenta. Los códigos 400xxx, 430xxx y 465xxx identifican proveedores, clientes y trabajadores.</p>
   </section>
   <section class="card">
     <div class="card-head">
       <div>
-        <h2>Otras cuentas usadas</h2>
-        <p>Las que salen en el mayor del periodo elegido</p>
+        <h2>Cuentas propias y otras usadas</h2>
+        <p>Las cuentas manuales y las que salen en el mayor del periodo elegido</p>
       </div>
     </div>
     <div class="table-wrap">
@@ -9059,13 +10674,13 @@ function accCuentasHtml(plan, mayor) {
 function accOwnModal(existing) {
   const c = existing || null;
   accOwnEditing = c ? String(c.code) : "";
-  const plan = accPlan();
-  const sugerida = c ? c.code : siguienteSubcuenta("430", plan.subcuentas.map((x) => x.code));
+  const sugerida = c ? normalizarCodigoCuenta(c.code) : "";
+  const pgcOptions = PGC_CUENTAS.map((account) => `<option value="${esc(account.code)}">${esc(account.name)}</option>`).join("");
   openModal(
     `<div class="modal-head">
        <div>
          <h2>${c ? "Cambiar la cuenta" : "Nueva cuenta"}</h2>
-         <p>Tres cifras es una cuenta del PGC y seis es una subcuenta de un tercero (un cliente, un proveedor, un banco).</p>
+         <p>Todas las cuentas usan seis cifras. Puedes crear una subcuenta del PGC o una cuenta propia para el asiento de apertura.</p>
        </div>
        <button class="icon-btn" data-modal-cancel aria-label="Cerrar">${icon("x")}</button>
      </div>
@@ -9073,14 +10688,15 @@ function accOwnModal(existing) {
        <div class="form-grid">
          <label class="field">
            <span>Número</span>
-           <input id="accOwnCode" class="mono" type="text" inputmode="numeric" maxlength="6" value="${esc(sugerida)}">
+            <input id="accOwnCode" class="mono" type="text" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="Ej. 211001" list="accOwnCatalog" value="${esc(sugerida)}" ${c ? "readonly" : ""} required>
          </label>
          <label class="field acc-wide">
            <span>Nombre</span>
-           <input id="accOwnName" type="text" value="${esc(c ? c.name : "")}" placeholder="Clientes · Hermanos Pérez">
+            <input id="accOwnName" type="text" maxlength="120" value="${esc(c ? c.name : "")}" placeholder="Nombre de la cuenta">
          </label>
        </div>
-       <p class="muted">${c ? "Se cambia el nombre; los asientos no se tocan." : "El número que te propongo es el primero libre."}</p>
+        <datalist id="accOwnCatalog">${pgcOptions}</datalist>
+        <p class="muted">${c ? "El código queda fijo para conservar los asientos; solo cambia el nombre." : "Escribe un código de seis cifras. Para una cuenta PGC, usa el código base seguido de 000; por ejemplo, 211000."}</p>
      </div>
      <div class="modal-foot">
        <button class="btn primary" data-action="acc-own-save">${icon("check")}<span>Guardar</span></button>
@@ -9097,12 +10713,12 @@ function accOwnModal(existing) {
   );
 }
 
-/** Guarda la cuenta de la ventana (y de paso fija las subcuentas que se abrieron solas). */
+/** Guarda una cuenta propia o actualiza el nombre de una subcuenta existente. */
 function saveAccOwn() {
   const code = String((document.getElementById("accOwnCode") || {}).value || "").trim();
   const name = String((document.getElementById("accOwnName") || {}).value || "").trim();
-  if (!/^\d{3,6}$/.test(code)) {
-    toast("El número de la cuenta tiene que tener de 3 a 6 cifras (por ejemplo 629 o 430002).", "warn");
+  if (!/^\d{6}$/.test(code)) {
+    toast("El número de la cuenta debe tener exactamente seis cifras.", "warn");
     return;
   }
   if (!name) {
@@ -9111,19 +10727,31 @@ function saveAccOwn() {
   }
   const antes = accOwnEditing;
   const s = getState().settings || {};
-  const propias = (Array.isArray(s.cuentasPropias) ? s.cuentasPropias : []).filter(
-    (x) => String((x && x.code) || "") !== String(antes || code) && String((x && x.code) || "") !== code
+  const propias = Array.isArray(s.cuentasPropias) ? s.cuentasPropias.slice() : [];
+  const subcuentas = Array.isArray(s.subcuentas) ? s.subcuentas.slice() : [];
+  const editingCode = normalizarCodigoCuenta(antes);
+  const collision = [...propias, ...subcuentas].some((item) =>
+    normalizarCodigoCuenta(item?.code) === code && normalizarCodigoCuenta(item?.code) !== editingCode
   );
-  const subcuentas = (Array.isArray(s.subcuentas) ? s.subcuentas : []).filter(
-    (x) => String((x && x.code) || "") !== String(antes || code) && String((x && x.code) || "") !== code
-  );
-  if (code.length === 6) {
-    // La clave es el nombre del tercero, sin el «Clientes ·» de delante, para que
-    // el asiento de sus documentos encuentre esta subcuenta.
-    const limpio = name.replace(/^(Clientes|Proveedores|Bancos|Deudores|Acreedores)\s*·\s*/i, "");
-    subcuentas.push({ code, name, key: claveDeTercero({ party: limpio }), cuenta: code.slice(0, 3) });
+  if (collision) {
+    toast(`La cuenta ${code} ya está creada.`, "warn");
+    return;
+  }
+  const isSubaccount = Boolean(editingCode && subcuentas.some(
+    (item) => normalizarCodigoCuenta(item?.code) === editingCode
+  ));
+  if (isSubaccount) {
+    const updated = subcuentas.map((item) =>
+      normalizarCodigoCuenta(item?.code) === editingCode ? { ...item, code, name } : item
+    );
+    subcuentas.splice(0, subcuentas.length, ...updated);
   } else {
-    propias.push({ code, name });
+    const updated = propias.filter((item) =>
+      normalizarCodigoCuenta(item?.code) !== editingCode &&
+      normalizarCodigoCuenta(item?.code) !== code
+    );
+    updated.push({ code, name });
+    propias.splice(0, propias.length, ...updated);
   }
 
   // Las subcuentas que se habían abierto solas se guardan también, para que no cambien.
@@ -9132,7 +10760,11 @@ function saveAccOwn() {
   for (const x of plan.subcuentas) {
     if (!yaHay.has(String(x.code))) subcuentas.push(x);
   }
-  updateSettings({ cuentasPropias: propias, subcuentas });
+  const patch = { cuentasPropias: propias, subcuentas };
+  if (!updateSettings(patch)) {
+    toast(settingsWriteError(patch) || "No se pudo guardar la cuenta.", "bad", 7000);
+    return;
+  }
   accOwnEditing = "";
   closeModal();
   toast(`Cuenta ${code} guardada: ${name}.`, "ok");

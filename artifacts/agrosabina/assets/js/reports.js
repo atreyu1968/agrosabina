@@ -4,23 +4,30 @@
  * las cuentas que suman ese importe (así se ve de dónde sale cada cifra).
  */
 
-import { balanceSituacion, cuentaResultados } from "./accounting.js";
+import { balanceSituacion, cuenta, cuentaResultados } from "./accounting.js";
 import { informePdf } from "./pdf.js";
 import { fmtEUR } from "./util.js";
+
+function fechaTexto(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
+  return match ? `${match[3]}/${match[2]}/${match[1]}` : String(value || "");
+}
 
 /** «Del 1 de enero al 31 de diciembre de 2025», en palabras. */
 function periodoTexto(from, to) {
   if (!from && !to) return "Todos los documentos registrados";
-  if (from && to) return `Del ${from} al ${to}`;
-  if (from) return `Desde el ${from}`;
-  return `Hasta el ${to}`;
+  if (from && to) return `Del ${fechaTexto(from)} al ${fechaTexto(to)}`;
+  if (from) return `Desde el ${fechaTexto(from)}`;
+  return `Hasta el ${fechaTexto(to)}`;
 }
 
 function hoyTexto() {
-  const d = new Date();
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  return `${dd}/${mm}/${d.getFullYear()}`;
+  return new Intl.DateTimeFormat("es-ES", {
+    timeZone: "Atlantic/Canary",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(new Date());
 }
 
 function nombreFichero(base, from, to) {
@@ -44,37 +51,28 @@ function saldosDelMayor(mayor) {
   return out;
 }
 
-/** Los epígrafes se reconocen por su nombre; esto dice qué grupos los suman. */
-const PREFIJOS = [
-  ["tesorer", ["57"]],
-  ["efectiv", ["57"]],
-  ["clientes", ["43"]],
-  ["deudores", ["44"]],
-  ["proveedores", ["40"]],
-  ["acreedores", ["41"]],
-  ["hacienda", ["47"]],
-  ["igic", ["47"]],
-  ["capital", ["10"]],
-  ["reservas", ["11"]],
-  ["resultado", ["12"]],
-  ["subvencion", ["13"]],
-  ["inmovilizado", ["20", "21", "22", "23", "25", "28", "29"]],
-  ["existencias", ["3"]],
-  ["deudaso", ["52"]],
-  ["deudas", ["51", "52", "16", "17", "18"]],
-];
+/** Ajusta el balance a fecha de cierre, aunque la pantalla filtre desde otra fecha. */
+export function balanceAsOfWindow(window, exerciseYear) {
+  const year = Number(exerciseYear);
+  const start = Number.isInteger(year) && year >= 1900 && year <= 2200
+    ? `${year}-01-01`
+    : String(window?.from || "");
+  return { ...(window || {}), from: start };
+}
 
-/** La lista corta de cuentas que forman un epígrafe, para poder repasarlo. */
-function detalleDe(label, saldos) {
-  const l = String(label || "").toLowerCase();
-  const prefijos = PREFIJOS.find(([ clave ]) => l.indexOf(clave) >= 0);
-  if (!prefijos) return "";
-  const trozos = [];
-  for (const s of saldos) {
-    if (!prefijos[1].some((p) => s.code.indexOf(p) === 0)) continue;
-    trozos.push(`${s.code} ${s.name}: ${fmtEUR(Math.abs(s.saldo))}`);
-  }
-  return trozos.length ? `\n${trozos.slice(0, 6).join(" · ")}` : "";
+/** Las cuentas se asocian al epígrafe por el plan contable, nunca por el texto. */
+function detalleDe(key, saldos) {
+  if (key === "PN_VII") return [];
+  const activo = key.startsWith("AN_") || key.startsWith("AC_");
+  return saldos.flatMap((saldo) => {
+    if (cuenta(saldo.code).balance !== key) return [];
+    const importe = activo ? saldo.saldo : -saldo.saldo;
+    if (Math.abs(importe) < 0.005) return [];
+    return [{
+      cells: [`· ${saldo.code} — ${saldo.name}`, fmtEUR(importe)],
+      size: 7.5,
+    }];
+  });
 }
 
 const COLUMNAS = [
@@ -92,12 +90,12 @@ export function informeBalancePdf(mayor, opts) {
   const rows = [];
   for (const r of bal.rows) {
     const total = /total/i.test(String(r.label || ""));
-    const detalle = r.value ? detalleDe(r.label, saldos) : "";
     rows.push({
-      cells: [`${r.label}${detalle}`, r.value ? fmtEUR(r.value) : ""],
+      cells: [r.label, r.value ? fmtEUR(r.value) : ""],
       bold: total,
       shade: total,
     });
+    if (r.kind === "line" && r.value) rows.push(...detalleDe(r.key, saldos));
   }
   rows.push({
     cells: ["Comprobación: activo − (patrimonio neto + pasivo)", fmtEUR(bal.descuadre)],
@@ -108,8 +106,8 @@ export function informeBalancePdf(mayor, opts) {
   return informePdf({
     filename: nombreFichero("balance-de-situacion", o.from, o.to),
     title: "Agrosabina SL · Balance de situación",
-    subtitle: `${periodoTexto(o.from, o.to)} · modelo oficial del Plan General de Contabilidad · emitido el ${hoyTexto()}`,
-    footer: "Agrosabina SL · Balance de situación",
+    subtitle: `A ${fechaTexto(o.to) || hoyTexto()} · saldo acumulado desde el inicio del ejercicio · estructura orientativa del PGC · emitido el ${hoyTexto()}`,
+    footer: `Agrosabina SL · Balance de situación · al ${fechaTexto(o.to) || hoyTexto()}`,
     horizontal: !!o.horizontal,
     blocks: [
       {
@@ -117,11 +115,16 @@ export function informeBalancePdf(mayor, opts) {
         text: `Resultado del periodo: ${fmtEUR(pyg.resultado)}. El balance cuadra cuando la comprobación de la última línea da 0,00 €.`,
       },
       { type: "space", size: 6 },
-      { type: "table", columns: COLUMNAS, rows, size: 8, rowHeight: 16 },
+      { type: "table", columns: COLUMNAS, rows, size: 8, rowHeight: 16, wrap: true },
       {
         type: "text",
         size: 8,
-        text: "En letra pequeña, debajo de cada epígrafe, van las cuentas del plan que suman ese importe.",
+        text: "El detalle bajo cada epígrafe muestra las cuentas que forman su importe.",
+      },
+      {
+        type: "text",
+        size: 7.5,
+        text: "Informe interno basado en los datos registrados; no sustituye el depósito oficial de cuentas ni una revisión profesional.",
       },
     ],
   });
@@ -143,7 +146,12 @@ export function informeResultadosPdf(mayor, opts) {
       text: "Los gastos van en negativo y los ingresos en positivo. El resultado positivo al final es beneficio; el negativo, pérdida.",
     },
     { type: "space", size: 6 },
-    { type: "table", columns: COLUMNAS, rows, size: 8.5, rowHeight: 16 },
+    { type: "table", columns: COLUMNAS, rows, size: 10, rowHeight: 19, wrap: true },
+    {
+      type: "text",
+      size: 7.5,
+      text: "Informe interno basado en los datos registrados; no sustituye declaraciones ni una revisión profesional.",
+    },
   ];
   if (pyg.sinClasificar) {
     blocks.push({
@@ -157,8 +165,8 @@ export function informeResultadosPdf(mayor, opts) {
   return informePdf({
     filename: nombreFichero("perdidas-y-ganancias", o.from, o.to),
     title: "Agrosabina SL · Cuenta de pérdidas y ganancias",
-    subtitle: `${periodoTexto(o.from, o.to)} · modelo oficial del Plan General de Contabilidad · emitido el ${hoyTexto()}`,
-    footer: "Agrosabina SL · Pérdidas y ganancias",
+    subtitle: `${periodoTexto(o.from, o.to)} · estructura orientativa basada en el PGC · emitido el ${hoyTexto()}`,
+    footer: `Agrosabina SL · Pérdidas y ganancias · ${periodoTexto(o.from, o.to)}`,
     blocks,
   });
 }

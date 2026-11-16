@@ -1,0 +1,26 @@
+{
+  "id": "./mobile.html",
+  "name": "Agrosabina Móvil · Documentos y pendientes",
+  "short_name": "Agrosabina",
+  "description": "Consulta facturas pendientes y sube documentos para revisar.",
+  "start_url": "./mobile.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f6f0",
+  "theme_color": "#07583f",
+  "icons": [
+    {
+      "src": "icons/agrosabina-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/agrosabina-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -9,7 +9,7 @@ globalThis.localStorage = {
   setItem: (key, value) => memory.set(key, String(value)),
 };
 
-test("el cierre protege documentos, asientos y extractos hasta reabrir el ejercicio", async () => {
+test("el cierre protege los datos originales y permite liquidar pendientes en el ejercicio siguiente", async () => {
   const year = store.activeExerciseYear();
   const date = `${year}-08-12`;
   const { invoice, supplier } = store.addInvoice({
@@ -20,6 +20,14 @@ test("el cierre protege documentos, asientos y extractos hasta reabrir el ejerci
     total: 100,
   });
   assert.ok(invoice);
+  const { invoice: directPaymentInvoice } = store.addInvoice({
+    supplierName: supplier.name,
+    number: "CERRADO-PAGO-001",
+    issueDate: date,
+    base: 50,
+    total: 50,
+  });
+  assert.ok(directPaymentInvoice);
   const manual = {
     id: "manual-lock-test",
     date,
@@ -61,8 +69,9 @@ test("el cierre protege documentos, asientos y extractos hasta reabrir el ejerci
   assert.equal(store.updateSettings({ bankStatements: changedStatements }), null);
   assert.equal(store.getState().settings.bankStatements[0].movements[0].status, "PENDIENTE");
   const changedOpening = { aperturasPorEjercicio: { [String(year)]: { sourceYear: year - 1, lines: [] } } };
+  const openingBefore = structuredClone(store.getState().settings.aperturasPorEjercicio);
   assert.equal(store.updateSettings(changedOpening), null);
-  assert.equal(store.getState().settings.aperturasPorEjercicio, undefined);
+  assert.deepEqual(store.getState().settings.aperturasPorEjercicio, openingBefore);
 
   store.updateSettings({ activeExerciseYear: year + 1 });
   const futureDate = `${year + 1}-02-03`;
@@ -93,6 +102,46 @@ test("el cierre protege documentos, asientos y extractos hasta reabrir el ejerci
     method: "BANCO",
     account: batch.account,
   }]), []);
+
+  store.updateSettings({ activeExerciseYear: year + 1 });
+  const paymentPatch = {
+    status: "PAGADO",
+    paidDate: futureDate,
+    payMethod: "BANCO",
+    payAccount: "Cuenta de prueba",
+  };
+  assert.equal(store.invoiceWriteError(invoice, paymentPatch), "");
+  assert.match(store.invoiceWriteError(invoice, { ...paymentPatch, total: 80 }), /Reabrir ejercicio/);
+  assert.equal(store.setInvoiceStatus(invoice.id, "PAGADO", date, {
+    method: "BANCO",
+    account: "Cuenta de prueba",
+  }), null);
+  assert.ok(store.setInvoiceStatus(directPaymentInvoice.id, "PAGADO", futureDate, {
+    method: "BANCO",
+    account: "Cuenta de prueba",
+  }));
+  assert.equal(store.invoiceById(directPaymentInvoice.id).paidDate, futureDate);
+
+  const currentBatch = {
+    id: "statement-current-year",
+    name: "Extracto del ejercicio siguiente",
+    account: "Cuenta de prueba",
+    movements: [{ id: "movement-carryover", date: futureDate, amount: -100, status: "PENDIENTE" }],
+  };
+  const carryoverStatements = [batch, currentBatch];
+  assert.ok(store.updateSettings({ bankStatements: carryoverStatements }));
+  assert.deepEqual(store.applyBankReconciliation(carryoverStatements, [{
+    movementId: "movement-carryover",
+    invoiceId: invoice.id,
+    amount: -100,
+    date: futureDate,
+    method: "BANCO",
+    account: currentBatch.account,
+  }]), [invoice.id]);
+  assert.equal(store.invoiceById(invoice.id).issueDate, date);
+  assert.equal(store.invoiceById(invoice.id).total, 100);
+  assert.equal(store.invoiceById(invoice.id).paidDate, futureDate);
+
   assert.match(store.clearAll(), /Reabrir ejercicio/);
 
   const backup = JSON.parse(store.exportJSON());
@@ -110,5 +159,6 @@ test("el cierre protege documentos, asientos y extractos hasta reabrir el ejerci
   assert.deepEqual(store.setExerciseClosed(year, false), { closed: false, error: "" });
   assert.equal(store.updateInvoice(invoice.id, { number: "REVISADO" }).number, "REVISADO");
   assert.equal(store.deleteInvoice(invoice.id), "");
+  assert.equal(store.deleteInvoice(directPaymentInvoice.id), "");
   assert.equal(store.deleteInvoice(futureInvoice.id), "");
 });

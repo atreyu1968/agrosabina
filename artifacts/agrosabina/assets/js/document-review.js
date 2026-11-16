@@ -3,8 +3,29 @@ import { importadoresDisponibles } from "./importers.js";
 import { closeModal, openModal } from "./dom.js";
 import { directionOf } from "./model.js";
 import { documentPageImages } from "./read.js";
+import { isFinancial, normalizeFinancial } from "./financial-documents.js";
 
 export const DOCUMENT_REVIEW_SPECS = Object.freeze({
+  IGIC: Object.freeze({
+    title: "documento de IGIC", party: "Administración tributaria", number: "Modelo / periodo / referencia",
+    issueDate: "Fecha de presentación o justificante", dueDate: "Fecha límite", total: "Resultado absoluto / importe del movimiento",
+    description: "Distingue liquidación del impuesto y pago o devolución. Una declaración informativa o con compensaciones/ajustes necesita revisión y asiento manual; no la contabilices como liquidación simple.",
+  }),
+  RECIBO_BANCARIO: Object.freeze({
+    title: "recibo bancario", party: "Emisor del recibo", number: "Referencia del adeudo",
+    issueDate: "Fecha del recibo", dueDate: "Vencimiento", total: "Importe del recibo",
+    description: "Vincula el justificante a su documento para no duplicar gastos ni pagos. Solo elige gasto nuevo si no existe un documento contabilizado.",
+  }),
+  PRESTAMO: Object.freeze({
+    title: "documento de préstamo", party: "Entidad prestamista", number: "Referencia del recibo",
+    issueDate: "Fecha del documento", dueDate: "Vencimiento de la cuota", total: "Importe de cuota, desembolso o reclasificación",
+    description: "Separa capital a corto plazo (5200xx), a largo plazo (170xxx), intereses y comisiones. Reclasifica a corto el principal que venza en los próximos doce meses, sin generar gasto ni movimiento bancario.",
+  }),
+  POLIZA_CREDITO: Object.freeze({
+    title: "documento de póliza de crédito", party: "Entidad de crédito", number: "Referencia de la liquidación",
+    issueDate: "Fecha de liquidación", dueDate: "Vencimiento", total: "Importe de la operación",
+    description: "Separa liquidación de costes, disposición y reembolso del principal. La cuenta 5201xx refleja deuda dispuesta, no el límite concedido.",
+  }),
   FACTURA: Object.freeze({
     title: "factura recibida",
     party: "Proveedor",
@@ -69,6 +90,7 @@ export function documentReviewSpec(kind) {
 /** No data from another document's specialized block may reach storage. */
 export function isolateDocumentKind(data, kind) {
   const result = { ...data, kind, direction: directionOf(kind) };
+  result.financial = normalizeFinancial(data.financial, kind);
   if (kind !== "LIQUIDACION") {
     result.liquidacion = null;
     delete result.liquidacionRead;
@@ -82,7 +104,7 @@ export function isolateDocumentKind(data, kind) {
     result.lines = [];
     result.category = "LABORALES";
   }
-  if (kind === "SUBVENCION" || kind === "COBRO") {
+  if (kind === "SUBVENCION" || kind === "COBRO" || isFinancial(kind)) {
     if (Number(data.igic) || data.lines?.some((line) => Number(line.rate))) {
       result.notes = [...(data.notes || []), "El documento elegido no es una factura: se ha descartado el IGIC detectado. Comprueba el tipo y el importe del original."];
     }

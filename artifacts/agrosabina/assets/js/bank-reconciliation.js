@@ -1,4 +1,5 @@
 import { invoiceDirection } from "./model.js";
+import { financialHasCash } from "./financial-documents.js";
 
 const cleanHeader = (value) =>
   String(value || "")
@@ -269,7 +270,7 @@ export function suggestBankMatches(movements, invoices, suppliers = []) {
     const movementText = normalText(`${movement.description || ""} ${movement.reference || ""}`);
     const expectedDirection = Number(movement.amount) > 0 ? "INGRESO" : "GASTO";
     const ranked = (invoices || [])
-      .filter((invoice) => invoice.status !== "PAGADO" && invoice.total != null)
+      .filter((invoice) => invoice.status !== "PAGADO" && invoice.total != null && financialHasCash(invoice))
       .map((invoice) => {
         const total = Math.abs(Number(invoice.total) || 0);
         if (!total || Math.round(total * 100) !== Math.round(Math.abs(Number(movement.amount)) * 100)) return null;

@@ -18,6 +18,7 @@ const ROUTES = [
   "correo",
   "importar",
   "pruebas",
+  "movil",
 ];
 
 // La sección se llamaba «facturas»: los enlaces antiguos (#/facturas) siguen valiendo.
@@ -59,7 +60,35 @@ function registerOfflineApp() {
   });
 }
 
-async function boot() {
+function addSessionControl(user) {
+  const sidebar = document.querySelector(".sidebar");
+  const collapseToggle = document.getElementById("sidebarCollapseToggle");
+  if (!sidebar || !user) return;
+  const control = document.createElement("div");
+  control.className = "ag-session-control";
+  const identity = document.createElement("span");
+  identity.className = "ag-session-identity";
+  identity.textContent = user.name || user.email || "Sesión activa";
+  const logout = document.createElement("button");
+  logout.type = "button";
+  logout.className = "ag-session-logout";
+  logout.textContent = "Cerrar sesión";
+  logout.addEventListener("click", async () => {
+    logout.disabled = true;
+    try {
+      const response = await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+      if (!response.ok) throw new Error("No se pudo cerrar la sesión.");
+      window.location.reload();
+    } catch (error) {
+      logout.disabled = false;
+      toast(error instanceof Error ? error.message : "No se pudo cerrar la sesión.", "bad");
+    }
+  });
+  control.append(identity, logout);
+  sidebar.insertBefore(control, collapseToggle || null);
+}
+
+async function bootApplication() {
   window.__appBooted = true; // el aviso de «no arranca» de index.html ya no hace falta
 
   views.ui.route = routeFromHash();
@@ -108,6 +137,17 @@ async function boot() {
   }
 
   function wireGlobalEvents() {
+    window.addEventListener("agrosabina:session-expired", () => window.location.reload());
+    window.addEventListener("agrosabina:shared-save-error", (event) => {
+      toast(event.detail?.message || "No se pudieron compartir los cambios.", "bad", 9000);
+    });
+    window.addEventListener("agrosabina:shared-conflict", (event) => {
+      toast(event.detail?.message || "Se han detenido los guardados para proteger los datos.", "warn", 10000);
+    });
+    window.addEventListener("agrosabina:shared-stale", (event) => {
+      toast(event.detail?.message || "Hay cambios guardados por otra persona. Recarga la página.", "warn", 10000);
+    });
+
     const sidebar = document.querySelector(".sidebar");
     const navToggle = document.getElementById("mobileNavToggle");
     const collapseToggle = document.getElementById("sidebarCollapseToggle");
@@ -252,6 +292,19 @@ async function boot() {
   window.addEventListener("beforeunload", () => {
     flush().catch(() => {});
   });
+}
+
+async function boot() {
+  const { mountAuthScreen } = await import("./auth-screen.js");
+  const authRoot = document.createElement("div");
+  authRoot.id = "agrosabina-auth-root";
+  document.body.append(authRoot);
+  const user = await new Promise((resolve) => mountAuthScreen(authRoot, resolve));
+  authRoot.remove();
+  window.agrosabinaAuthUser = user || null;
+  window.agrosabinaSharedStorage = true;
+  addSessionControl(user);
+  await bootApplication();
 }
 
 if (document.readyState === "loading") {

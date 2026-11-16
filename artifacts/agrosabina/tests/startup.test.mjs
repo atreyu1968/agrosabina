@@ -33,6 +33,8 @@ function environment() {
     addEventListener: (name, fn) => events.document.set(name, fn),
     getElementById: () => null,
     querySelector: () => null,
+    createElement: () => ({ remove() {} }),
+    body: { append() {} },
   };
   globalThis.location = { hash: "#/compras" };
   globalThis.Element = class {
@@ -65,7 +67,11 @@ test("mÃ¡s de nueve segundos no libera acciones, filtros ni campos; la resoluciÃ
   const source = (await readFile(new URL("../assets/js/main.js", import.meta.url), "utf8"))
     .replace('"./store.js"', JSON.stringify(storeUrl))
     .replace('"./views.js"', JSON.stringify(viewsUrl))
-    .replace('"./dom.js"', JSON.stringify(domUrl));
+    .replace('"./dom.js"', JSON.stringify(domUrl))
+    .replace(
+      'const { mountAuthScreen } = await import("./auth-screen.js");',
+      'const mountAuthScreen = (_root, finish) => finish({ id: "test", name: "Test", role: "admin" });',
+    );
   const timers = new Map();
   const realTimeout = globalThis.setTimeout;
   const realClear = globalThis.clearTimeout;
@@ -74,6 +80,7 @@ test("mÃ¡s de nueve segundos no libera acciones, filtros ni campos; la resoluciÃ
   try {
     await import(moduleUrl(source));
     const boot = events.document.get("DOMContentLoaded")();
+    await Promise.resolve();
     timers.get(9000)(); // reloj controlado: SQLite continÃºa sin resolver
     assert.equal(calls.filter(([name]) => name === "render").length, 0);
     assert.match(calls.at(-1)[1], /proteger tus cambios/);

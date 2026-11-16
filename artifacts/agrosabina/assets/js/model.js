@@ -10,6 +10,8 @@
  * el que funciona siempre, sin internet y sin enviar nada a ningún sitio.
  */
 
+import { financialDirection, isFinancial } from "./financial-documents.js";
+
 export const DIRECTIONS = Object.freeze({ IN: "INGRESO", OUT: "GASTO" });
 
 /** Tipos de documento que entran en el programa. */
@@ -18,7 +20,11 @@ export const DOC_KINDS = Object.freeze([
   { id: "LIQUIDACION", label: "Liquidación de fruta", short: "Liquidación", direction: DIRECTIONS.IN },
   { id: "SUBVENCION", label: "Subvención o ayuda", short: "Subvención", direction: DIRECTIONS.IN },
   { id: "COBRO", label: "Cobro o abono recibido", short: "Cobro", direction: DIRECTIONS.IN },
-  { id: "NOMINA", label: "Nómina o coste laboral", short: "Laboral", direction: DIRECTIONS.OUT },
+  { id: "NOMINA", label: "Nómina (gasto de personal)", short: "Nómina", direction: DIRECTIONS.OUT },
+  { id: "IGIC", label: "Declaración o justificante de IGIC", short: "IGIC", direction: DIRECTIONS.OUT },
+  { id: "RECIBO_BANCARIO", label: "Recibo bancario", short: "Recibo", direction: DIRECTIONS.OUT },
+  { id: "PRESTAMO", label: "Préstamo: cuota, alta o reclasificación", short: "Préstamo", direction: DIRECTIONS.OUT },
+  { id: "POLIZA_CREDITO", label: "Póliza de crédito", short: "Póliza", direction: DIRECTIONS.OUT },
   { id: "OTRO", label: "Otro documento", short: "Otro", direction: DIRECTIONS.OUT },
 ]);
 
@@ -58,11 +64,45 @@ export function directionOf(kindId, fallback = DIRECTIONS.OUT) {
  */
 export function invoiceDirection(invoice) {
   const kind = String(invoice?.kind || "FACTURA").toUpperCase();
+  if (isFinancial(kind)) return financialDirection(kind, invoice.financial);
   if (kind === "LIQUIDACION") return DIRECTIONS.IN;
   if (invoice?.direction === DIRECTIONS.IN || invoice?.direction === DIRECTIONS.OUT) {
     return invoice.direction;
   }
   return directionOf(kind);
+}
+
+/** Las nóminas son gastos de personal, no facturas de compra. */
+export function isPurchaseExpense(invoice) {
+  const kind = String(invoice?.kind || "FACTURA").toUpperCase();
+  return kind !== "NOMINA" && !isFinancial(kind) && invoiceDirection(invoice) === DIRECTIONS.OUT;
+}
+
+/** Año asignado por la fecha de emisión; los documentos sin fecha quedan visibles para corregirlos. */
+export function invoiceExerciseYear(invoice) {
+  const match = /^(\d{4})-\d{2}-\d{2}/.exec(String(invoice?.issueDate || ""));
+  return match ? Number(match[1]) : null;
+}
+
+export function isIssuedInExercise(invoice, year) {
+  return invoiceExerciseYear(invoice) === Number(year);
+}
+
+/** Una factura abierta de un ejercicio anterior sigue siendo accionable en el activo. */
+export function isPendingCarryover(invoice, year) {
+  const issuedYear = invoiceExerciseYear(invoice);
+  const status = String(invoice?.status || "").toUpperCase();
+  return issuedYear != null &&
+    issuedYear < Number(year) &&
+    status !== "PAGADO" &&
+    status !== "PAID";
+}
+
+/** Año activo + facturas abiertas anteriores + documentos sin fecha que requieren revisión. */
+export function isVisibleInExercise(invoice, year) {
+  return invoiceExerciseYear(invoice) == null ||
+    isIssuedInExercise(invoice, year) ||
+    isPendingCarryover(invoice, year);
 }
 
 /** Tipos para un <select>, con el sentido bien claro. */

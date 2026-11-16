@@ -19,6 +19,7 @@ import { parseInvoiceText, parseLiquidacion } from "./parse.js";
 import { leerNomina } from "./nomina.js";
 import { DIRECTIONS, directionOf } from "./model.js";
 import { STATUS, fmtEUR, fmtNum, round2, todayISO } from "./util.js";
+import { FINANCIAL_KINDS, parseFinancialText } from "./financial-documents.js";
 
 /** Lo que tiene cualquier documento en blanco, se lea como se lea. */
 function documentoVacio(kind) {
@@ -358,7 +359,39 @@ const OTRO = {
 };
 
 /** Todos los importadores, en orden de prioridad cuando empatan. */
-export const IMPORTADORES = [NOMINA, LIQUIDACION, FACTURA, SUBVENCION, COBRO, OTRO];
+const FINANCIAL_LABELS = {
+  IGIC: "Declaración o justificante de IGIC",
+  RECIBO_BANCARIO: "Recibo bancario",
+  PRESTAMO: "Préstamo: cuota, alta o reclasificación",
+  POLIZA_CREDITO: "Póliza de crédito",
+};
+const FINANCIAL_MARKS = {
+  IGIC: /\bIGIC\b|modelo\s*(?:420|421|425)/i,
+  RECIBO_BANCARIO: /recibo bancario|adeudo|domiciliaci[oó]n|SEPA|cargo en cuenta/i,
+  PRESTAMO: /pr[eé]stamo|amortizaci[oó]n|cuota hipotecaria/i,
+  POLIZA_CREDITO: /p[oó]liza de cr[eé]dito|liquidaci[oó]n de cr[eé]dito|l[ií]nea de cr[eé]dito/i,
+};
+const FINANCIAL_IMPORTERS = FINANCIAL_KINDS.map((kind) => ({
+  id: kind.toLowerCase(), label: FINANCIAL_LABELS[kind], kinds: [kind], generico: false,
+  puntua: (text) => FINANCIAL_MARKS[kind].test(String(text || "")) ? (kind === "IGIC" ? 25 : 90) : 0,
+  leer(text, options = {}) {
+    const parsed = parseFinancialText(text, kind);
+    const identity = parseInvoiceText(text, options);
+    const missingDate = (identity.notes || []).some((note) => /no he encontrado la fecha/i.test(note));
+    return {
+      ...documentoVacio(kind), ...identidad(text, options),
+      // Never guess today's date for fiscal/financial originals.
+      issueDate: missingDate ? "" : identity.issueDate || "",
+      financial: parsed.financial, base: parsed.total, total: parsed.total,
+      igic: 0, rate: 0, lines: [], rawText: text, confidence: 0.6, requiresReview: true,
+      notes: [
+        "Revisa la operación y su desglose financiero. No se presume pagado. El capital y los pagos fiscales no son compras ni gastos nuevos.",
+        ...(missingDate ? ["No se ha identificado la fecha del documento financiero. Indícala contrastando el original."] : []),
+      ],
+    };
+  },
+}));
+export const IMPORTADORES = [NOMINA, LIQUIDACION, ...FINANCIAL_IMPORTERS, FACTURA, SUBVENCION, COBRO, OTRO];
 
 /** Lo justo para enseñar en pantalla qué lectores hay. */
 export function importadoresDisponibles() {

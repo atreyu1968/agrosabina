@@ -1,10 +1,10 @@
 /*
  * Las cuentas del Plan General de Contabilidad (adaptación para PYMES).
  *
- * Cada cuenta son tres dígitos, como en el plan oficial: 430 Clientes,
- * 400 Proveedores, 572 Bancos… Las subcuentas añaden tres dígitos más —seis
- * en total— para abrir una cuenta a cada cliente, a cada proveedor o a cada
- * banco: 430001, 430002, 400001, 572001…
+ * El código que usa la aplicación siempre tiene seis dígitos. Las cuentas
+ * oficiales de tres dígitos se muestran con tres ceros finales: 430000,
+ * 400000, 572000. Las subcuentas conservan el prefijo y sus tres cifras propias:
+ * 430001, 430002, 400001, 572001…
  *
  * La lista es una selección de las cuentas que usa una empresa agraria
  * canaria. Si hace falta otra, se puede dar de alta a mano en la pestaña
@@ -49,6 +49,7 @@ const LISTA = [
   ["153", "Desembolsos no exigidos"],
   ["160", "Deudas a largo plazo con partes vinculadas"],
   ["170", "Deudas a largo plazo con entidades de crédito"],
+  ["170000", "Préstamos bancarios a largo plazo"],
   ["171", "Deudas a largo plazo"],
   ["172", "Deudas a largo plazo transformables en subvenciones"],
   ["173", "Proveedores de inmovilizado a largo plazo"],
@@ -135,10 +136,13 @@ const LISTA = [
   ["460", "Anticipos de remuneraciones"],
   ["465", "Remuneraciones pendientes de pago"],
   ["470", "Hacienda Pública, deudora por diversos conceptos"],
+  ["470000", "Hacienda Pública, deudora por IGIC"],
   ["471", "Organismos de la Seguridad Social, deudores"],
   ["472", "Hacienda Pública, IGIC soportado"],
   ["473", "Hacienda Pública, retenciones y pagos a cuenta"],
   ["475", "Hacienda Pública, acreedora por conceptos fiscales"],
+  ["475000", "Hacienda Pública, acreedora por IGIC"],
+  ["475100", "Hacienda Pública, acreedora por retenciones practicadas"],
   ["476", "Organismos de la Seguridad Social, acreedores"],
   ["477", "Hacienda Pública, IGIC repercutido"],
   ["480", "Gastos anticipados"],
@@ -149,6 +153,8 @@ const LISTA = [
 
   ["500", "Obligaciones y bonos"],
   ["520", "Deudas a corto plazo por préstamos recibidos y otros conceptos"],
+  ["520000", "Préstamos bancarios a corto plazo"],
+  ["520100", "Deudas por crédito dispuesto en pólizas"],
   ["523", "Proveedores de inmovilizado a corto plazo"],
   ["525", "Efectos a pagar a corto plazo"],
   ["526", "Acreedores por arrendamiento financiero a corto plazo"],
@@ -248,24 +254,40 @@ const LISTA = [
   ["778", "Ingresos excepcionales"],
 ];
 
-/** Las cuentas de tres dígitos, ordenadas como en el plan. */
-export const PGC_CUENTAS = Object.freeze(LISTA.map(([code, name]) => ({ code, name })));
+/** Convierte los códigos antiguos del PGC a la representación de seis cifras. */
+export function normalizarCodigoCuenta(value) {
+  const code = String(value == null ? "" : value).trim();
+  if (!/^\d{3,6}$/.test(code)) return "";
+  return code.padEnd(6, "0");
+}
 
-const POR_CODIGO = new Map(LISTA.map(([code, name]) => [code, name]));
+const catalogoSeisCifras = new Map();
+for (const [rawCode, name] of LISTA) {
+  const code = normalizarCodigoCuenta(rawCode);
+  if (!catalogoSeisCifras.has(code) || rawCode.length === 6) catalogoSeisCifras.set(code, name);
+}
+
+/** Cuentas del PGC presentadas siempre con seis cifras. */
+export const PGC_CUENTAS = Object.freeze(
+  [...catalogoSeisCifras].map(([code, name]) => ({ code, name }))
+);
+
+const POR_CODIGO = new Map(PGC_CUENTAS.map(({ code, name }) => [code, name]));
 
 /**
  * El nombre de una cuenta según el plan. Si le pasan una subcuenta de seis
  * dígitos, devuelve el nombre de su cuenta madre (430001 → «Clientes»).
  */
 export function pgcNombre(code) {
-  const c = String(code == null ? "" : code).trim();
+  const c = normalizarCodigoCuenta(code);
   if (!c) return "";
-  return POR_CODIGO.get(c) || POR_CODIGO.get(c.slice(0, 3)) || "";
+  return POR_CODIGO.get(c) || POR_CODIGO.get(`${c.slice(0, 3)}000`) || "";
 }
 
 /** ¿Está esa cuenta en el plan? */
 export function pgcTiene(code) {
-  return POR_CODIGO.has(String(code == null ? "" : code).trim());
+  const c = normalizarCodigoCuenta(code);
+  return Boolean(c && (POR_CODIGO.has(c) || POR_CODIGO.has(`${c.slice(0, 3)}000`)));
 }
 
 /**

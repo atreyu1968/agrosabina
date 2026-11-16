@@ -13,8 +13,9 @@
 
 import { round2 } from "./util.js";
 import { directionOf } from "./model.js";
-import { pgcNombre } from "./pgc.js";
+import { normalizarCodigoCuenta, pgcNombre } from "./pgc.js";
 import { CUENTAS_NOMINA, esNomina, lineasNomina } from "./nomina.js";
+import { isFinancial, financialJournal } from "./financial-documents.js";
 
 /* ------------------------------------------------------------------ */
 /* Plan de cuentas                                                    */
@@ -25,10 +26,11 @@ import { CUENTAS_NOMINA, esNomina, lineasNomina } from "./nomina.js";
  * pérdidas y ganancias va; `balance`, en qué epígrafe del balance. Las de
  * gastos e ingresos no van al balance (su saldo acaba en el resultado).
  */
-export const CUENTAS = Object.freeze([
+const CUENTAS_BASE = [
   { code: "100", name: "Capital social", balance: "PN_I" },
   { code: "113", name: "Reservas voluntarias", balance: "PN_III" },
   { code: "121", name: "Resultados negativos de ejercicios anteriores", balance: "PN_V" },
+  { code: "170", name: "Deudas a largo plazo con entidades de crédito", balance: "PNC_II" },
   { code: "400", name: "Proveedores", balance: "PC_V" },
   { code: "430", name: "Clientes", balance: "AC_III" },
   { code: "472", name: "Hacienda Pública, IGIC soportado", balance: "AC_III" },
@@ -46,29 +48,60 @@ export const CUENTAS = Object.freeze([
   { code: "701", name: "Ventas de productos terminados", pl: "1" },
   { code: "740", name: "Subvenciones a la explotación", pl: "5" },
   { code: "759", name: "Ingresos por servicios diversos", pl: "5" },
-]);
+];
+
+export const CUENTAS = Object.freeze(
+  CUENTAS_BASE.map((item) => ({ ...item, code: normalizarCodigoCuenta(item.code) }))
+);
 
 /**
  * Epígrafe de balance que le toca a una cuenta que no está en la lista. Se
- * mira el grupo y, dentro del 4 y del 5, el subgrupo: 430 Clientes es dinero
- * que nos deben (activo) y 400 Proveedores es dinero que debemos (pasivo).
+ * mira el grupo y, dentro del 4 y del 5, el subgrupo: 430000 Clientes es dinero
+ * que nos deben (activo) y 400000 Proveedores es dinero que debemos (pasivo).
  */
 function balancePorDefecto(code) {
   const c = String(code || "").slice(0, 3);
   const first = c.charAt(0);
-  if (first === "1") return "PN_V";
-  if (first === "2") return "AN_II";
+  if (first === "1") {
+    if (c.startsWith("10")) return "PN_I";
+    if (c.startsWith("11")) return "PN_III";
+    if (c.startsWith("13")) return "PN_A3";
+    if (c.startsWith("14")) return "PNC_I";
+    if (c.startsWith("16")) return "PNC_III";
+    if (c.startsWith("17")) return "PNC_II";
+    if (c.startsWith("18")) return "PNC_V";
+    return "PN_V";
+  }
+  if (first === "2") {
+    if (c.startsWith("20") || c === "280" || c === "290") return "AN_I";
+    if (["281", "291"].includes(c)) return "AN_II";
+    if (["282", "292"].includes(c)) return "AN_III";
+    if (["283", "293"].includes(c)) return "AN_IV";
+    if (c.startsWith("24")) return "AN_IV";
+    if (c.startsWith("25") || c.startsWith("26") || c.startsWith("29")) return "AN_V";
+    return "AN_II";
+  }
   if (first === "3") return "AC_II";
   if (first === "4") {
     if (c >= "430" && c <= "449") return "AC_III";
     if (c >= "470" && c <= "474") return "AC_III";
-    if (c >= "480" && c <= "489") return "AC_III";
+    if (c >= "460" && c <= "464") return "AC_III";
+    if (c >= "480" && c <= "484") return "AC_VI";
+    if (c >= "485" && c <= "489") return "PC_VI";
+    if (c >= "490" && c <= "499") return "AC_III";
     return "PC_V";
   }
   if (first === "5") {
     if (c >= "500" && c <= "509") return "PC_II";
-    if (c >= "520" && c <= "559") return "PC_III";
-    return "AC_VII";
+    if (c >= "520" && c <= "529") return "PC_III";
+    if (c >= "530" && c <= "539") return "AC_IV";
+    if (c >= "540" && c <= "549") return "AC_V";
+    if (c >= "560" && c <= "564") return "PC_VI";
+    if (c >= "565" && c <= "567") return "AC_VI";
+    if (c >= "568" && c <= "569") return "PC_VI";
+    if (c >= "570" && c <= "579") return "AC_VII";
+    if (c >= "550" && c <= "559") return "PC_III";
+    return "AC_V";
   }
   return "";
 }
@@ -119,13 +152,13 @@ let PLANO = { subcuentas: [], propias: [] };
 export function setPlanDeCuentas(plan) {
   const p = plan || {};
   const subcuentas = (p.subcuentas || []).map((s) => ({
-    code: String(s.code || "").trim(),
+    code: normalizarCodigoCuenta(s.code),
     name: String(s.name || "").trim(),
     key: String(s.key == null ? "" : s.key),
     cuenta: String(s.cuenta || String(s.code || "").slice(0, 3)),
   }));
   const propias = (p.propias || []).map((c) => ({
-    code: String(c.code || "").trim(),
+    code: normalizarCodigoCuenta(c.code),
     name: String(c.name || "").trim(),
   }));
   const firma = subcuentas.map((s) => `${s.code}=${s.name}`).join("|") + "#" + propias.map((c) => `${c.code}=${c.name}`).join("|");
@@ -136,7 +169,8 @@ export function setPlanDeCuentas(plan) {
 
 /** La ficha de una cuenta: código, nombre, epígrafe de balance y línea de P&G. */
 export function cuenta(code) {
-  const key = String(code == null ? "" : code).trim();
+  const key = normalizarCodigoCuenta(code);
+  if (!key) return { code: "", name: "", balance: "", pl: "" };
   if (CACHE_CUENTAS.has(key)) return CACHE_CUENTAS.get(key);
   const found = CUENTAS.find((c) => c.code === key);
   let row;
@@ -168,31 +202,31 @@ export function cuenta(code) {
 /* ------------------------------------------------------------------ */
 
 const GASTO_POR_CONCEPTO = {
-  AGUA: "628",
-  ELECTRICIDAD: "628",
-  COMBUSTIBLE: "628",
-  SERVICIOS: "623",
-  FITOSANITARIOS: "602",
-  ABONOS: "602",
-  IMPUESTOS: "631",
-  LABORALES: "640",
+  AGUA: "628000",
+  ELECTRICIDAD: "628000",
+  COMBUSTIBLE: "628000",
+  SERVICIOS: "623000",
+  FITOSANITARIOS: "602000",
+  ABONOS: "602000",
+  IMPUESTOS: "631000",
+  LABORALES: "640000",
 };
 
 const INGRESO_POR_CONCEPTO = {
-  FRUTA: "701",
-  SUBVENCIONES: "740",
+  FRUTA: "701000",
+  SUBVENCIONES: "740000",
 };
 
 /** La cuenta de gasto o de ingreso que le toca a un documento. */
 export function cuentaDeDocumento(inv) {
   const kind = String((inv && inv.kind) || "FACTURA");
   const cat = String((inv && inv.category) || "");
-  if (kind === "LIQUIDACION") return "701";
-  if (kind === "SUBVENCION") return "740";
-  if (kind === "NOMINA") return "640";
-  if (kind === "COBRO") return cat === "SUBVENCIONES" ? "740" : cat === "FRUTA" ? "701" : "759";
-  if (directionOf(kind) === "INGRESO") return INGRESO_POR_CONCEPTO[cat] || "759";
-  return GASTO_POR_CONCEPTO[cat] || "629";
+  if (kind === "LIQUIDACION") return "701000";
+  if (kind === "SUBVENCION") return "740000";
+  if (kind === "NOMINA") return "640000";
+  if (kind === "COBRO") return cat === "SUBVENCIONES" ? "740000" : cat === "FRUTA" ? "701000" : "759000";
+  if (directionOf(kind) === "INGRESO") return INGRESO_POR_CONCEPTO[cat] || "759000";
+  return GASTO_POR_CONCEPTO[cat] || "629000";
 }
 
 /* ------------------------------------------------------------------ */
@@ -223,7 +257,7 @@ export function cuentaTerceroPorClave(ingreso, clave) {
   const prefijo = ingreso ? "430" : "400";
   const buscada = String(clave == null ? "" : clave);
   const found = PLANO.subcuentas.find((s) => s.cuenta === prefijo && s.key === buscada);
-  return found && found.code ? found.code : prefijo;
+  return found && found.code ? found.code : `${prefijo}000`;
 }
 
 /** La subcuenta de un documento concreto: 430001, 400003… o la cuenta madre. */
@@ -257,9 +291,9 @@ export function claveDeTrabajador(inv) {
  */
 export function cuentaTrabajadorPorClave(clave) {
   const buscada = String(clave == null ? "" : clave);
-  if (!buscada) return CUENTAS_NOMINA.liquido;
+  if (!buscada) return normalizarCodigoCuenta(CUENTAS_NOMINA.liquido);
   const found = PLANO.subcuentas.find((s) => s.cuenta === "465" && s.key === buscada);
-  return found && found.code ? found.code : CUENTAS_NOMINA.liquido;
+  return found && found.code ? found.code : normalizarCodigoCuenta(CUENTAS_NOMINA.liquido);
 }
 
 /** La subcuenta de un trabajador concreto, o 465 si todavía no se le abrió. */
@@ -268,13 +302,13 @@ export function cuentaTrabajador(inv) {
 }
 
 /**
- * La cuenta de tesorería donde entra o sale el dinero: 570 Caja si se cobró o
- * se pagó en efectivo, 572 Bancos si fue por el banco. Si el documento no dice
+ * La cuenta de tesorería donde entra o sale el dinero: 570000 Caja si se cobró o
+ * se pagó en efectivo, 572000 Bancos si fue por el banco. Si el documento no dice
  * el medio (los antiguos), se supone banco, que es lo habitual.
  */
 export function cuentaDeTesoreria(inv) {
   const d = inv || {};
-  return String(d.payMethod || "").toUpperCase() === "CAJA" ? "570" : "572";
+  return String(d.payMethod || "").toUpperCase() === "CAJA" ? "570000" : "572000";
 }
 
 /** Cómo se llama el medio y la cuenta, para escribirlo en el asiento. */
@@ -308,8 +342,8 @@ function importes(inv) {
  */
 export function lineas(raw) {
   const rows = (raw || [])
-    .map((pair) => ({ code: String(pair[0]), value: round2(Number(pair[1]) || 0) }))
-    .filter((r) => Math.abs(r.value) >= 0.005);
+    .map((pair) => ({ code: normalizarCodigoCuenta(pair[0]), value: round2(Number(pair[1]) || 0) }))
+    .filter((r) => r.code && Math.abs(r.value) >= 0.005);
   if (!rows.length) return [];
   const suma = round2(rows.reduce((n, r) => n + r.value, 0));
   if (suma !== 0) {
@@ -363,9 +397,9 @@ export function asientosDe(invoices, opts = {}) {
     let lines = [];
     if (Array.isArray(ap.lines)) {
       const raw = ap.lines
-        .filter((l) => l && /^\d{3,6}$/.test(String(l.account || "")))
+        .filter((l) => l && normalizarCodigoCuenta(l.account))
         .map((l) => [
-          String(l.account),
+          normalizarCodigoCuenta(l.account),
           round2((Number(l.debit) || 0) - (Number(l.credit) || 0)),
         ]);
       lines = lineas(raw);
@@ -377,9 +411,9 @@ export function asientosDe(invoices, opts = {}) {
       if (capital || tesoreria) {
         const resto = round2(tesoreria - capital);
         const raw = [
-          ["572", tesoreria],
-          ["100", -capital],
-          resto >= 0 ? ["113", -resto] : ["121", -resto],
+          ["572000", tesoreria],
+          ["100000", -capital],
+          resto >= 0 ? ["113000", -resto] : ["121000", -resto],
         ];
         lines = lineas(raw);
       }
@@ -399,6 +433,17 @@ export function asientosDe(invoices, opts = {}) {
 
   for (const inv of invoices || []) {
     if (!inv) continue;
+    if (isFinancial(inv.kind)) {
+      for (const event of financialJournal(inv, cuentaDeTesoreria(inv))) {
+        if (!dentro(event.date)) continue;
+        out.push({
+          id: `${inv.id}:${event.suffix}`, date: event.date,
+          concept: `${inv.financial?.operation || inv.kind} · ${inv.financial?.reference || inv.number || ""}${inv.party ? ` · ${inv.party}` : ""}`,
+          ref: inv.number || "", kind: event.suffix, docId: inv.id, lines: lineas(event.raw),
+        });
+      }
+      continue;
+    }
     const dia = String(inv.issueDate || inv.createdAt || "").slice(0, 10);
     const { base, igic, total } = importes(inv);
     if (!total) continue;
@@ -445,7 +490,7 @@ export function asientosDe(invoices, opts = {}) {
     }
 
     // El cobro o el pago, el día en que se cobró o se pagó, y en la cuenta del
-    // medio que se eligió (570 Caja o 572 Bancos). Va aparte del gasto a
+    // medio que se eligió (570000 Caja o 572000 Bancos). Va aparte del gasto a
     // propósito: una factura del año pasado cobrada este año entra en el libro
     // de este año, y antes no entraba porque solo se miraba la fecha del papel.
     if (String(inv.status || "") === "PAGADO") {
@@ -487,10 +532,11 @@ export function asientosDe(invoices, opts = {}) {
     const raw = [];
     for (const l of m.lineas || []) {
       const code = String((l && l.cuenta) || "").trim();
-      if (!/^\d{3,6}$/.test(code)) continue;
+      const account = normalizarCodigoCuenta(code);
+      if (!account) continue;
       const valor = round2((Number(l.debe) || 0) - (Number(l.haber) || 0));
       if (!valor) continue;
-      raw.push([code, valor]);
+      raw.push([account, valor]);
     }
     const lines = lineas(raw);
     if (!lines.length) continue;
@@ -571,14 +617,14 @@ export function libroMayor(entries) {
 /**
  * Prepara los saldos de cierre como apertura del ejercicio siguiente.
  * Las cuentas de gastos e ingresos se cancelan y su resultado neto se incorpora
- * a resultados de ejercicios anteriores (121).
+ * a resultados de ejercicios anteriores (121000).
  */
 export function aperturaDesdeCierre(entries) {
   const saldos = new Map();
   for (const entry of entries || []) {
     for (const row of entry?.lines || []) {
-      const code = String(row?.account || "").trim();
-      if (!/^\d{3,6}$/.test(code)) continue;
+      const code = normalizarCodigoCuenta(row?.account);
+      if (!code) continue;
       const movimiento = round2((Number(row.debit) || 0) - (Number(row.credit) || 0));
       saldos.set(code, round2((saldos.get(code) || 0) + movimiento));
     }
@@ -592,7 +638,7 @@ export function aperturaDesdeCierre(entries) {
     }
   }
   if (Math.abs(resultado) >= 0.005) {
-    saldos.set("121", round2((saldos.get("121") || 0) + resultado));
+    saldos.set("121000", round2((saldos.get("121000") || 0) + resultado));
   }
 
   return [...saldos.entries()]

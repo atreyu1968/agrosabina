@@ -19,7 +19,9 @@ import * as sqlite from "./sqlite.js";
 import * as files from "./files.js";
 import { validateBackup } from "./backup.js";
 import { invoiceDirection } from "./model.js";
+import { isFinancial, normalizeFinancial, financialError, financialDirection, financialProfitAmount, financialHasCash } from "./financial-documents.js";
 import { packCompleteBackup, unpackCompleteBackup } from "./complete-backup.js";
+import { normalizarCodigoCuenta } from "./pgc.js";
 
 const KEY = "facturas.igic.v1";
 const listeners = new Set();
@@ -30,6 +32,15 @@ let engine = "local"; // "sqlite" | "local"
 let persistTimer = null;
 let initPromise = null;
 let ready = false;
+let sharedStorageEnabled = false;
+let sharedRevision = null;
+let sharedConflict = false;
+let sharedStale = false;
+let sharedSaveTimer = null;
+let pendingSharedSnapshot = null;
+let sharedSaveChain = Promise.resolve();
+let sharedSaveError = "";
+const SHARED_CONFLICT_KEY = `${KEY}.shared-conflict`;
 
 /* ------------------------------------------------------------------ */
 /* Carga y guardado                                                   */
@@ -188,7 +199,7 @@ function normaliseInvoice(inv) {
   const igic = Number.isFinite(+inv.igic) && inv.igic !== null && inv.igic !== "" ? +inv.igic : null;
   const total = Number.isFinite(+inv.total) && inv.total !== null && inv.total !== "" ? +inv.total : null;
   const rate = Number.isFinite(+inv.rate) && inv.rate !== null && inv.rate !== "" ? +inv.rate : null;
-  const complete = kind === "NOMINA"
+  const complete = isFinancial(kind) ? { base: total, rate: 0, igic: 0, total } : kind === "NOMINA"
     ? { base, rate: 0, igic: 0, total }
     : completeAmounts({ base, igic, total, rate });
   return {
@@ -226,6 +237,7 @@ function normaliseInvoice(inv) {
       String(inv.kind || "").toUpperCase() === "NOMINA" ? null : normaliseLiquidacion(inv.liquidacion),
     // Nómina: bruto, Seguridad Social, IRPF y líquido del recibo de salarios.
     nomina: kind === "NOMINA" ? normaliseNomina(inv.nomina) : null,
+    financial: normalizeFinancial(inv.financial, kind),
     source: inv.source || "manual",
     fileName: inv.fileName || "",
     // El fichero original (foto, PDF, correo) que se guardó con el documento.
@@ -239,12 +251,100 @@ function normaliseInvoice(inv) {
   };
 }
 
+function normalizarAjustesContables(settings) {
+  const out = { ...(settings || {}) };
+  const code = (value) => normalizarCodigoCuenta(value) || String(value || "").trim();
+  if (Array.isArray(out.cuentasPropias)) {
+    out.cuentasPropias = out.cuentasPropias.map((item) => ({
+      ...item,
+      code: code(item?.code),
+    }));
+  }
+  if (Array.isArray(out.subcuentas)) {
+    out.subcuentas = out.subcuentas.map((item) => {
+      const accountCode = code(item?.code);
+      return {
+        ...item,
+        code: accountCode,
+        cuenta: String(item?.cuenta || accountCode.slice(0, 3)).slice(0, 3),
+      };
+    });
+  }
+  if (Array.isArray(out.asientosManuales)) {
+    out.asientosManuales = out.asientosManuales.map((entry) => ({
+      ...entry,
+      lineas: Array.isArray(entry?.lineas)
+        ? entry.lineas.map((line) => ({ ...line, cuenta: code(line?.cuenta) }))
+        : [],
+    }));
+  }
+  if (out.aperturasPorEjercicio && typeof out.aperturasPorEjercicio === "object") {
+    out.aperturasPorEjercicio = Object.fromEntries(
+      Object.entries(out.aperturasPorEjercicio).map(([year, opening]) => [
+        year,
+        {
+          ...opening,
+          lines: Array.isArray(opening?.lines)
+            ? opening.lines.map((line) => ({ ...line, account: code(line?.account) }))
+            : opening?.lines,
+        },
+      ])
+    );
+  }
+  if (Array.isArray(out.bankStatements)) {
+    out.bankStatements = out.bankStatements.map((batch) => ({
+      ...batch,
+      movements: Array.isArray(batch?.movements)
+        ? batch.movements.map((movement) => movement?.accountCode
+            ? { ...movement, accountCode: code(movement.accountCode) }
+            : movement)
+        : [],
+    }));
+  }
+  const openings = {
+    ...(out.aperturasPorEjercicio && typeof out.aperturasPorEjercicio === "object"
+      ? out.aperturasPorEjercicio
+      : {}),
+  };
+  const legacyCapital = round2(Number(out.openingCapital) || 0);
+  const legacyCash = round2(Number(out.openingCash) || 0);
+  if (legacyCapital || legacyCash) {
+    const legacyYear = dateYear(out.openingDate) || Number(out.activeExerciseYear) || new Date().getFullYear();
+    const key = String(legacyYear);
+    if (!openings[key]) {
+      const difference = round2(legacyCash - legacyCapital);
+      const lines = [
+        { account: "572000", debit: legacyCash, credit: 0 },
+        { account: "100000", debit: 0, credit: legacyCapital },
+      ];
+      if (difference > 0) lines.push({ account: "113000", debit: 0, credit: difference });
+      if (difference < 0) lines.push({ account: "121000", debit: Math.abs(difference), credit: 0 });
+      openings[key] = { lines };
+    }
+  }
+  out.aperturasPorEjercicio = Object.fromEntries(
+    Object.entries(openings).map(([year, opening]) => [
+      year,
+      {
+        ...opening,
+        lines: Array.isArray(opening?.lines)
+          ? opening.lines.map((line) => ({ ...line, account: code(line?.account) }))
+          : opening?.lines,
+      },
+    ])
+  );
+  delete out.openingCapital;
+  delete out.openingCash;
+  delete out.openingDate;
+  return out;
+}
+
 function normalise(raw) {
   const base = emptyState();
   if (!raw || typeof raw !== "object") return base;
   const out = {
     version: 1,
-    settings: Object.assign(base.settings, raw.settings || {}),
+    settings: normalizarAjustesContables(Object.assign(base.settings, raw.settings || {})),
     suppliers: Array.isArray(raw.suppliers) ? raw.suppliers.map(normaliseSupplier).filter(Boolean) : [],
     invoices: Array.isArray(raw.invoices) ? raw.invoices.map(normaliseInvoice) : [],
     messages: Array.isArray(raw.messages) ? raw.messages.map(normaliseMessage).filter(Boolean) : [],
@@ -271,6 +371,7 @@ function rolValido(valor) {
 /** ¿Este documento es dinero que entra (cliente) o que sale (proveedor)? */
 function direccionDeDocumento(doc) {
   const d = doc || {};
+  if (isFinancial(d.kind)) return financialDirection(d.kind, d.financial);
   if (d.direction === "INGRESO") return "INGRESO";
   if (d.direction === "GASTO") return "GASTO";
   const tipo = String(d.kind || "").toUpperCase();
@@ -321,12 +422,26 @@ function normaliseSupplier(s) {
   if (!s || typeof s !== "object") return null;
   const name = String(s.name || "").trim();
   if (!name && !s.nif) return null;
+  const paymentTermDays = s.paymentTermDays == null || s.paymentTermDays === ""
+    ? null
+    : Number(s.paymentTermDays);
+  const paymentMethod = String(s.paymentMethod || "").trim().toUpperCase();
   return {
     id: s.id || uid("sup"),
     name: name || String(s.nif || "Proveedor"),
     nif: String(s.nif || "").trim(),
     email: String(s.email || "").trim(),
     phone: String(s.phone || "").trim(),
+    contactName: String(s.contactName || "").trim().slice(0, 160),
+    address: String(s.address || "").trim().slice(0, 240),
+    city: String(s.city || "").trim().slice(0, 120),
+    postalCode: String(s.postalCode || "").trim().slice(0, 24),
+    country: String(s.country || "").trim().slice(0, 80),
+    website: String(s.website || "").trim().slice(0, 200),
+    paymentMethod: ["CAJA", "BANCO", "TRANSFERENCIA", "DOMICILIACION", "TARJETA", "CHEQUE", "OTRO"].includes(paymentMethod) ? paymentMethod : "",
+    paymentTermDays: Number.isInteger(paymentTermDays) && paymentTermDays >= 0 && paymentTermDays <= 3650
+      ? paymentTermDays
+      : null,
     note: String(s.note || "").trim(),
     // Proveedor, cliente o las dos cosas: lo que decide en qué lista sale.
     role: rolValido(s.role),
@@ -343,6 +458,235 @@ function load() {
     console.warn("No se pudieron leer los datos guardados:", err);
     return emptyState();
   }
+}
+
+function sharedStatePayload(source = state) {
+  const copy = JSON.parse(JSON.stringify(source));
+  if (copy.settings) copy.settings.aiKey = "";
+  return copy;
+}
+
+function hasMeaningfulLocalState(value) {
+  if (Object.entries(value || {}).some(([key, entry]) => key !== "settings" && Array.isArray(entry) && entry.length > 0)) return true;
+  const defaults = emptyState().settings;
+  return Object.entries(value?.settings || {}).some(([key, entry]) =>
+    !["aiKey", "activeExerciseYear", "createdAt"].includes(key) &&
+    JSON.stringify(entry) !== JSON.stringify(defaults[key])
+  );
+}
+
+function rememberLocalSharedConflict() {
+  try {
+    localStorage.setItem(SHARED_CONFLICT_KEY, JSON.stringify(sharedStatePayload()));
+  } catch {
+    throw new Error("No se pudo proteger la copia local antes de sincronizar. Libera espacio en este navegador y vuelve a intentarlo.");
+  }
+  sharedConflict = true;
+  sharedStale = true;
+}
+
+function stateWithRemoteData(remoteState, localAiKey) {
+  return normalise({
+    ...remoteState,
+    settings: { ...(remoteState.settings || {}), aiKey: localAiKey },
+  });
+}
+
+function sharedStatusEvent(type, message) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(type, { detail: { message } }));
+}
+
+async function persistLocalState() {
+  let stored = false;
+  if (engine === "sqlite" && sqlite.isAvailable()) {
+    if (sqlite.writeState(state)) {
+      stored = true;
+      await sqlite.persist();
+    }
+  }
+  try {
+    localStorage.setItem(KEY, JSON.stringify(state));
+    stored = true;
+  } catch {}
+  if (!stored) throw new Error("No se pudo guardar una copia local de los datos.");
+}
+
+async function loadSharedState() {
+  if (typeof window === "undefined" || window.agrosabinaSharedStorage !== true) return;
+  const { sharedRequest } = await import("./shared-api.js");
+  sharedStorageEnabled = true;
+  files.enableSharedFiles();
+  const localAiKey = state.settings?.aiKey || "";
+  let remote = await sharedRequest("/state");
+
+  let savedConflict = null;
+  try {
+    const rawConflict = localStorage.getItem(SHARED_CONFLICT_KEY);
+    if (rawConflict) savedConflict = normalise(JSON.parse(rawConflict));
+  } catch {}
+  if (savedConflict && remote.state) {
+    sharedRevision = Number(remote.revision);
+    sharedConflict = true;
+    sharedStale = true;
+    state = normalise({
+      ...savedConflict,
+      settings: { ...(savedConflict.settings || {}), aiKey: localAiKey },
+    });
+    sharedStatusEvent("agrosabina:shared-conflict", "Hay cambios locales sin sincronizar. Descarga una copia o elige qué versión conservar en Ajustes.");
+    await persistLocalState();
+    return;
+  }
+
+  if (remote.state) {
+    sharedRevision = Number(remote.revision);
+    const remoteState = normalise(remote.state);
+    if (hasMeaningfulLocalState(state) &&
+        JSON.stringify(sharedStatePayload()) !== JSON.stringify(sharedStatePayload(remoteState))) {
+      rememberLocalSharedConflict();
+      sharedStatusEvent("agrosabina:shared-conflict", "Esta instalación tenía datos locales distintos. La copia local está protegida; revisa las versiones en Ajustes.");
+      return;
+    }
+    state = stateWithRemoteData(remoteState, localAiKey);
+  } else {
+    try {
+      const result = await sharedRequest("/state", {
+        method: "PUT",
+        body: JSON.stringify({ expectedRevision: 0, state: sharedStatePayload(state) }),
+      });
+      sharedRevision = Number(result.revision);
+    } catch (error) {
+      if (error?.status !== 409) throw error;
+      remote = await sharedRequest("/state");
+      if (!remote.state) throw error;
+      sharedRevision = Number(remote.revision);
+      const remoteState = normalise(remote.state);
+      if (hasMeaningfulLocalState(state) &&
+          JSON.stringify(sharedStatePayload()) !== JSON.stringify(sharedStatePayload(remoteState))) {
+        rememberLocalSharedConflict();
+        sharedStatusEvent("agrosabina:shared-conflict", "Esta instalación tenía datos locales distintos. La copia local está protegida; revisa las versiones en Ajustes.");
+        return;
+      }
+      state = stateWithRemoteData(remoteState, localAiKey);
+    }
+  }
+
+  await files.uploadExistingOriginals();
+  await persistLocalState();
+  startSharedRevisionPolling();
+}
+
+async function writeSharedSnapshot(snapshot) {
+  if (!sharedStorageEnabled || sharedConflict || sharedRevision == null) return false;
+  const { sharedRequest } = await import("./shared-api.js");
+  try {
+    const result = await sharedRequest("/state", {
+      method: "PUT",
+      body: JSON.stringify({ expectedRevision: sharedRevision, state: snapshot }),
+    });
+    sharedRevision = Number(result.revision);
+    sharedSaveError = "";
+    return true;
+  } catch (error) {
+    sharedSaveError = error?.message || "No se pudieron sincronizar los cambios.";
+    if (error?.status === 409) {
+      sharedConflict = true;
+      try { localStorage.setItem(SHARED_CONFLICT_KEY, JSON.stringify(snapshot)); } catch {}
+      sharedStatusEvent("agrosabina:shared-conflict", "Otra persona guardó cambios. Este dispositivo conserva una copia local y ha detenido la sincronización para no sobrescribir datos.");
+    } else {
+      sharedStatusEvent("agrosabina:shared-save-error", `${sharedSaveError} Los cambios siguen guardados en este dispositivo.`);
+    }
+    return false;
+  }
+}
+
+function scheduleSharedSave() {
+  if (!sharedStorageEnabled || sharedConflict || sharedStale || sharedRevision == null) return;
+  pendingSharedSnapshot = sharedStatePayload(state);
+  if (sharedSaveTimer) clearTimeout(sharedSaveTimer);
+  sharedSaveTimer = setTimeout(() => {
+    sharedSaveTimer = null;
+    const snapshot = pendingSharedSnapshot;
+    pendingSharedSnapshot = null;
+    if (!snapshot) return;
+    sharedSaveChain = sharedSaveChain.then(() => writeSharedSnapshot(snapshot));
+  }, 350);
+}
+
+async function flushSharedSave() {
+  if (sharedSaveTimer) {
+    clearTimeout(sharedSaveTimer);
+    sharedSaveTimer = null;
+  }
+  if (pendingSharedSnapshot) {
+    const snapshot = pendingSharedSnapshot;
+    pendingSharedSnapshot = null;
+    sharedSaveChain = sharedSaveChain.then(() => writeSharedSnapshot(snapshot));
+  }
+  await sharedSaveChain;
+  return sharedStorageEnabled && !sharedConflict && !sharedSaveError;
+}
+
+function saveConflictSnapshot() {
+  const wasAlreadyConflicted = sharedConflict;
+  sharedConflict = true;
+  sharedStale = true;
+  const snapshot = sharedStatePayload(state);
+  try { localStorage.setItem(SHARED_CONFLICT_KEY, JSON.stringify(snapshot)); } catch {}
+  if (!wasAlreadyConflicted) {
+    sharedStatusEvent("agrosabina:shared-conflict", "Se han detenido los guardados compartidos para no sobrescribir cambios de otra persona. La versión local queda conservada en Ajustes.");
+  }
+}
+
+function startSharedRevisionPolling() {
+  if (!sharedStorageEnabled || typeof window === "undefined" || window.__agrosabinaRevisionPollStarted) return;
+  window.__agrosabinaRevisionPollStarted = true;
+  window.setInterval(async () => {
+    if (sharedConflict || sharedStale || sharedRevision == null) return;
+    try {
+      const { sharedRequest } = await import("./shared-api.js");
+      const remote = await sharedRequest("/state");
+      if (Number(remote.revision) !== sharedRevision) {
+        sharedStale = true;
+        sharedStatusEvent("agrosabina:shared-stale", "Hay cambios de otra persona. Guarda tu trabajo y recarga la página antes de seguir editando.");
+      }
+    } catch {}
+  }, 30000);
+}
+
+export function sharedConflictBackup() {
+  try { return localStorage.getItem(SHARED_CONFLICT_KEY) || ""; } catch { return ""; }
+}
+
+export async function resolveSharedConflict(choice) {
+  if (!sharedStorageEnabled || !sharedConflict) throw new Error("No hay una copia local en conflicto.");
+  const { sharedRequest } = await import("./shared-api.js");
+  if (choice === "local") {
+    const result = await sharedRequest("/state/resolve", {
+      method: "POST",
+      body: JSON.stringify({ state: sharedStatePayload(state) }),
+    });
+    sharedRevision = Number(result.revision);
+  } else if (choice === "shared") {
+    const remote = await sharedRequest("/state");
+    if (!remote.state) throw new Error("No se encontró una versión compartida para restaurar.");
+    const localAiKey = state.settings?.aiKey || "";
+    state = normalise({
+      ...remote.state,
+      settings: { ...(remote.state.settings || {}), aiKey: localAiKey },
+    });
+    sharedRevision = Number(remote.revision);
+  } else {
+    throw new Error("Elige la copia local o la base compartida.");
+  }
+  sharedConflict = false;
+  sharedStale = false;
+  sharedSaveError = "";
+  try { localStorage.removeItem(SHARED_CONFLICT_KEY); } catch {}
+  await persistLocalState();
+  emit();
+  startSharedRevisionPolling();
+  return true;
 }
 
 /**
@@ -377,8 +721,10 @@ async function initialise() {
     state = load();
   }
 
+  await loadSharedState();
   lastSaveOk = true;
   ready = true;
+  void files.requestPersistentStorage();
   emit();
   return engine;
 }
@@ -408,6 +754,11 @@ export function save() {
   }
 
   lastSaveOk = stored;
+  if (sharedStorageEnabled && (sharedConflict || sharedStale)) {
+    saveConflictSnapshot();
+  } else {
+    scheduleSharedSave();
+  }
   emit();
   return lastSaveOk;
 }
@@ -430,12 +781,15 @@ export async function flush() {
   }
   if (engine === "sqlite" && sqlite.isAvailable()) {
     try {
-      sqlite.writeState(state);
-      return await sqlite.persist();
+      if (!sqlite.writeState(state)) return false;
+      const localSaved = await sqlite.persist();
+      const sharedSaved = sharedStorageEnabled ? await flushSharedSave() : true;
+      return localSaved && sharedSaved;
     } catch (err) {
       console.warn("No se pudo volcar la base de datos:", err);
     }
   }
+  if (sharedStorageEnabled) return flushSharedSave();
   return false;
 }
 
@@ -467,6 +821,11 @@ export function storageInfo() {
   return {
     engine,
     sqlite: sqlite.isAvailable(),
+    shared: sharedStorageEnabled,
+    sharedRevision,
+    sharedConflict,
+    sharedStale,
+    sharedSaveError,
     reason: sqlite.why(),
     suppliers: state.suppliers.length,
     invoices: state.invoices.length,
@@ -536,6 +895,21 @@ export function findSupplierByNameOrNif(name, nif) {
   return loose || null;
 }
 
+/** Coincidencia segura para importaciones: NIF exacto o nombre exacto, sin prefijos difusos. */
+export function findSupplierForContactImport(name, nif) {
+  const key = nifKey(nif);
+  const wanted = fold(name);
+  if (key.length >= 8) {
+    const byNif = state.suppliers.find((supplier) => nifKey(supplier.nif) === key);
+    if (byNif) return byNif;
+  }
+  if (wanted.length < 3) return null;
+  const byName = state.suppliers.find((supplier) => fold(supplier.name) === wanted);
+  if (!byName) return null;
+  if (key.length >= 8 && byName.nif && nifKey(byName.nif) !== key) return null;
+  return byName;
+}
+
 /** Devuelve el proveedor o cliente que corresponde y, si no existía, lo crea. */
 export function ensureSupplier(name, nif, role) {
   const cleanName = String(name || "").trim();
@@ -574,6 +948,14 @@ export function ensureSupplier(name, nif, role) {
     nif: cleanNif,
     email: "",
     phone: "",
+    contactName: "",
+    address: "",
+    city: "",
+    postalCode: "",
+    country: "",
+    website: "",
+    paymentMethod: "",
+    paymentTermDays: null,
     note: "",
     role: roleWanted || "PROVEEDOR",
     createdAt: new Date().toISOString(),
@@ -598,6 +980,76 @@ export function updateSupplier(id, patch) {
   Object.assign(s, patch);
   save();
   return s;
+}
+
+/**
+ * Importa fichas CRM en memoria y guarda una sola vez para evitar una escritura
+ * completa de SQLite por cada fila del CSV/XLSX.
+ */
+export function importSupplierContacts(records, defaultRole = "PROVEEDOR") {
+  const summary = { created: 0, updated: 0, failed: 0, errors: [] };
+  const fields = [
+    "contactName", "email", "phone", "address", "city", "postalCode",
+    "country", "website", "paymentMethod", "note",
+  ];
+  let changed = false;
+
+  for (const record of Array.isArray(records) ? records : []) {
+    try {
+      const name = String(record.name || "").trim();
+      const rawNif = String(record.nif || "").trim();
+      const nif = rawNif ? normaliseSpanishNif(rawNif) : "";
+      const role = rolValido(record.role || defaultRole);
+      if (!name || (rawNif && !nif) || !role) throw new Error("Nombre, NIF o tipo de contacto no válido.");
+      const paymentTermDays = record.paymentTermDays == null || record.paymentTermDays === ""
+        ? null
+        : Number(record.paymentTermDays);
+      if (paymentTermDays != null && (!Number.isInteger(paymentTermDays) || paymentTermDays < 0 || paymentTermDays > 3650)) {
+        throw new Error("El plazo debe ser un número de días entre 0 y 3650.");
+      }
+
+      const existing = findSupplierForContactImport(name, nif);
+      if (existing && supplierWriteError(existing.id)) {
+        throw new Error("La ficha está bloqueada por un ejercicio cerrado.");
+      }
+      const patch = {};
+      for (const field of fields) {
+        const value = String(record[field] || "").trim();
+        if (value) patch[field] = value;
+      }
+      if (paymentTermDays != null) patch.paymentTermDays = paymentTermDays;
+      if (nif) patch.nif = nif;
+      if (record.role) patch.role = role;
+
+      if (existing) {
+        Object.assign(existing, patch);
+        summary.updated++;
+      } else {
+        const supplier = normaliseSupplier({
+          id: uid("sup"),
+          name,
+          nif,
+          role,
+          ...patch,
+          createdAt: new Date().toISOString(),
+        });
+        state.suppliers.push(supplier);
+        summary.created++;
+      }
+      changed = true;
+    } catch (error) {
+      summary.failed++;
+      summary.errors.push(String(error?.message || error));
+    }
+  }
+
+  if (changed && !save()) {
+    summary.failed += summary.created + summary.updated;
+    summary.created = 0;
+    summary.updated = 0;
+    summary.errors.push("No se pudieron guardar los cambios en este navegador.");
+  }
+  return summary;
 }
 
 export function deleteSupplier(id) {
@@ -691,6 +1143,8 @@ export function findExactDuplicateDocument(data, excludeId = "") {
  * @returns {{invoice: object|null, supplier: object|null, supplierCreated: boolean, duplicate: object|null, error?: string}}
  */
 export function addInvoice(data) {
+  const financeError = financialError(data);
+  if (financeError) return { invoice: null, error: financeError };
   const year = invoiceYear(data);
   const lockError = exerciseWriteError(year);
   if (lockError) return { invoice: null, supplier: null, supplierCreated: false, duplicate: null, error: lockError };
@@ -742,6 +1196,7 @@ export function addInvoice(data) {
     lines: data.lines || [],
     liquidacion: data.liquidacion || null,
     nomina: data.nomina || null,
+    financial: data.financial || null,
     paidDate: data.status === STATUS.PAID ? data.paidDate || "" : "",
     payMethod: data.status === STATUS.PAID ? normaliseMedio(data.payMethod) : "",
     payAccount: data.status === STATUS.PAID ? String(data.payAccount || "").slice(0, 120) : "",
@@ -762,6 +1217,7 @@ export function addInvoice(data) {
 export function updateInvoice(id, patch) {
   const inv = state.invoices.find((i) => i.id === id);
   if (!inv) return null;
+  if (financialError({ ...inv, ...patch })) return null;
   if (invoiceWriteError(inv, patch)) return null;
   const duplicate = findDuplicateDocument({ ...inv, ...patch }, id);
   if (duplicate && patch?.allowDuplicate !== true) return null;
@@ -786,6 +1242,14 @@ export function updateInvoice(id, patch) {
   inv.igic = complete.igic;
   inv.total = complete.total;
   inv.rate = complete.rate;
+  inv.financial = normalizeFinancial(inv.financial, inv.kind);
+  if (isFinancial(inv.kind)) {
+    inv.base = inv.total;
+    inv.igic = 0;
+    inv.rate = 0;
+    inv.lines = [];
+    inv.direction = financialDirection(inv.kind, inv.financial);
+  }
   inv.lines = payroll ? [] : normaliseInvoice({ lines: inv.lines }).lines;
   inv.liquidacion = normaliseLiquidacion(inv.liquidacion);
   inv.original = normaliseOriginal(inv.original);
@@ -864,11 +1328,18 @@ export function applyBankReconciliation(statements, matches) {
       return found || (movement ? { batch, movement } : null);
     }, null);
     const movement = location?.movement;
+    if (invoice && !financialHasCash(invoice)) continue;
     const amount = Number(match.amount);
     const movementAmount = Number(movement?.amount);
     const date = String(match.date || "").slice(0, 10);
     const account = String(match.account || "").trim().slice(0, 120);
-    if (!invoice || exerciseWriteError(invoiceYear(invoice)) || exerciseWriteError(dateYear(movement?.date)) || invoice.status === STATUS.PAID || usedInvoices.has(invoice.id) || !movement || movement.status !== "PENDIENTE") continue;
+    const paymentPatch = {
+      status: STATUS.PAID,
+      paidDate: date,
+      payMethod: normaliseMedio(match.method) || "BANCO",
+      payAccount: account,
+    };
+    if (!invoice || invoiceWriteError(invoice, paymentPatch) || invoiceYear(invoice) == null || invoiceYear(invoice) > activeExerciseYear() || dateYear(date) !== activeExerciseYear() || exerciseWriteError(dateYear(movement?.date)) || invoice.status === STATUS.PAID || usedInvoices.has(invoice.id) || !movement || movement.status !== "PENDIENTE") continue;
     if (!Number.isFinite(amount) || amount === 0 || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !account) continue;
     if (!Number.isFinite(movementAmount) || Math.abs(Math.round(amount * 100) - Math.round(movementAmount * 100)) > 0) continue;
     if (String(movement.date || "").slice(0, 10) !== date || String(location.batch.account || "").trim() !== account) continue;
@@ -877,6 +1348,7 @@ export function applyBankReconciliation(statements, matches) {
     const signMatches = (amount > 0) === (direction === "INGRESO");
     if (!signMatches || !total || Math.round(total * 100) !== Math.round(Math.abs(amount) * 100)) continue;
 
+    if (financialError({ ...invoice, status: STATUS.PAID, paidDate: date, payMethod: "BANCO" })) continue;
     invoice.status = STATUS.PAID;
     invoice.paidDate = date;
     invoice.payMethod = normaliseMedio(match.method) || "BANCO";
@@ -935,7 +1407,10 @@ export async function keepInvoiceOriginal(id, blob, info = {}) {
     });
     inv.original = normaliseOriginal(fileInfo);
     inv.updatedAt = new Date().toISOString();
-    save();
+    if (!save()) throw new Error("No se pudo guardar la referencia del original.");
+    if (engine === "sqlite" && sqlite.isAvailable() && !(await flush())) {
+      throw new Error("No se pudo confirmar el guardado persistente del documento.");
+    }
     return inv.original;
   } catch (err) {
     console.warn("No se pudo guardar el original del documento:", err);
@@ -1014,6 +1489,20 @@ export function totals(invoices) {
   };
   const today = todayISO();
   for (const inv of invoices) {
+    if (isFinancial(inv.kind)) {
+      const cost = financialProfitAmount(inv);
+      out.base += cost;
+      out.total += cost;
+      out.expense += cost;
+      if (cost) out.expenseCount++;
+      if (inv.status === STATUS.PAID) out.paid += cost;
+      else {
+        out.pending += cost;
+        out.expensePending += cost;
+        if (cost) out.pendingCount++;
+      }
+      continue;
+    }
     const base = Number(inv.base) || 0;
     const igic = Number(inv.igic) || 0;
     const total = Number(inv.total) || 0;
@@ -1115,9 +1604,19 @@ export function markMessageUsed(id) {
 }
 
 export function deleteMessage(id) {
-  state.messages = state.messages.filter((m) => m.id !== id);
-  files.dropOriginal(`mail:${id}`).catch(() => {});
+  deleteMessages([id]);
+}
+
+export function deleteMessages(ids) {
+  const selected = new Set((Array.isArray(ids) ? ids : []).map(String));
+  if (!selected.size) return 0;
+  const before = state.messages.length;
+  state.messages = state.messages.filter((m) => !selected.has(m.id));
+  const removed = before - state.messages.length;
+  if (!removed) return 0;
+  for (const id of selected) files.dropOriginal(`mail:${id}`).catch(() => {});
   save();
+  return removed;
 }
 
 export function invoicesOf(supplierId) {
@@ -1140,7 +1639,7 @@ export function sortedInvoices(list = state.invoices) {
 export function updateSettings(patch) {
   if (Object.prototype.hasOwnProperty.call(patch || {}, "closedExercises")) return null;
   if (settingsWriteError(patch || {})) return null;
-  state.settings = Object.assign(state.settings, patch);
+  state.settings = normalizarAjustesContables(Object.assign(state.settings, patch));
   save();
   return state.settings;
 }
@@ -1169,7 +1668,7 @@ export function isExerciseClosed(year) {
 export function exerciseWriteError(year) {
   const value = Number(year);
   return isExerciseClosed(value)
-    ? `El ejercicio ${value} está cerrado. Para hacer cambios, selecciónalo en Contabilidad y pulsa «Reabrir ejercicio».`
+    ? `El ejercicio ${value} está cerrado. Para hacer cambios, selecciónalo en el selector de Ejercicio y pulsa «Reabrir ejercicio» en Contabilidad.`
     : "";
 }
 
@@ -1200,7 +1699,30 @@ export function invoiceWriteError(invoiceOrId, patch = {}) {
   const newIssueYear = Object.prototype.hasOwnProperty.call(patch, "issueDate")
     ? invoiceYear({ issueDate: patch.issueDate })
     : oldIssueYear;
-  for (const year of [oldIssueYear, newIssueYear]) {
+  const patchKeys = Object.keys(patch || {});
+  const isNewSettlement =
+    invoice.status !== STATUS.PAID &&
+    patch.status === STATUS.PAID &&
+    Object.prototype.hasOwnProperty.call(patch, "paidDate");
+  if (isNewSettlement && oldIssueYear == null) {
+    return "Indica la fecha de emisión antes de registrar el cobro o pago.";
+  }
+  if (isNewSettlement && oldIssueYear > activeExerciseYear()) {
+    return `La factura del ejercicio ${oldIssueYear} no puede liquidarse desde el ejercicio ${activeExerciseYear()}.`;
+  }
+  const settlementDateError = isNewSettlement
+    ? exerciseDateError(patch.paidDate, activeExerciseYear())
+    : "";
+  if (settlementDateError) {
+    return settlementDateError;
+  }
+  const settlementOnly =
+    isNewSettlement &&
+    oldIssueYear != null &&
+    oldIssueYear < activeExerciseYear() &&
+    patchKeys.length > 0 &&
+    patchKeys.every((key) => ["status", "paidDate", "payMethod", "payAccount"].includes(key));
+  for (const year of settlementOnly ? [] : [oldIssueYear, newIssueYear]) {
     const error = exerciseWriteError(year);
     if (error) return error;
   }
@@ -1337,7 +1859,7 @@ export function exerciseDateError(value, year = activeExerciseYear()) {
     return "La fecha de emisión no es válida.";
   }
   if (y !== Number(year)) {
-    return `La fecha ${date} pertenece al ejercicio ${y}, no al ${year}. Cambia el ejercicio en Contabilidad o corrige la fecha.`;
+    return `La fecha ${date} pertenece al ejercicio ${y}, no al ${year}. Cambia el selector de Ejercicio o corrige la fecha.`;
   }
   return "";
 }
@@ -1384,6 +1906,10 @@ export async function importCompleteBackup(text) {
     suppliers: [...before.suppliers, ...restored.suppliers.map((s) => ({ ...s, id: supplierIds.get(s.id) }))],
     invoices: [...before.invoices, ...restored.invoices.map((inv) => ({
       ...inv, id: invoiceIds.get(inv.id), supplierId: supplierIds.get(inv.supplierId) || null,
+      financial: inv.financial ? {
+        ...inv.financial,
+        linkedDocumentId: invoiceIds.get(inv.financial.linkedDocumentId) || "",
+      } : null,
     }))],
     messages: [...before.messages, ...restored.messages.map((m) => ({ ...m, id: uid("msg") }))],
   };

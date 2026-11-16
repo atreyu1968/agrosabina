@@ -4,7 +4,9 @@ const APP_SCOPE = self.registration.scope;
 const APP_ROOT = new URL("./", APP_SCOPE).href;
 const CORE_URLS = [
   APP_ROOT,
+  new URL("mobile.html", APP_ROOT).href,
   new URL("manifest.webmanifest", APP_ROOT).href,
+  new URL("manifest-mobile.webmanifest", APP_ROOT).href,
   new URL("icons/agrosabina-icon-192.png", APP_ROOT).href,
   new URL("icons/agrosabina-icon-512.png", APP_ROOT).href,
   new URL("favicon.svg", APP_ROOT).href,

@@ -56,6 +56,7 @@ const ESPECIALES = {
   "œ": 156,
   "ž": 158,
   "Ÿ": 159,
+  "−": 45,
 };
 
 /** Un carácter cualquiera, en el número de byte que entiende el PDF. */
@@ -105,6 +106,50 @@ function recorta(value, maxAncho, tam, negrita) {
   return out + puntos;
 }
 
+/** Ajusta por palabras; solo parte un token si es demasiado largo para una línea. */
+function ajustaLineas(value, maxAncho, tam, negrita) {
+  const out = [];
+  const partirPalabra = (word) => {
+    const partes = [];
+    let parte = "";
+    for (const ch of word) {
+      if (parte && anchoTexto(parte + ch, tam, negrita) > maxAncho) {
+        partes.push(parte);
+        parte = "";
+      }
+      parte += ch;
+    }
+    if (parte) partes.push(parte);
+    return partes;
+  };
+
+  for (const parrafo of String(value == null ? "" : value).split(/\r?\n/)) {
+    const palabras = parrafo.trim().split(/\s+/).filter(Boolean);
+    if (!palabras.length) {
+      out.push("");
+      continue;
+    }
+    let linea = "";
+    for (const palabra of palabras) {
+      const candidata = linea ? `${linea} ${palabra}` : palabra;
+      if (anchoTexto(candidata, tam, negrita) <= maxAncho) {
+        linea = candidata;
+        continue;
+      }
+      if (linea) out.push(linea);
+      if (anchoTexto(palabra, tam, negrita) <= maxAncho) {
+        linea = palabra;
+        continue;
+      }
+      const partes = partirPalabra(palabra);
+      out.push(...partes.slice(0, -1));
+      linea = partes.at(-1) || "";
+    }
+    if (linea) out.push(linea);
+  }
+  return out.length ? out : [""];
+}
+
 /** Un número con dos decimales y punto, que es lo que pide el PDF. */
 function num(n) {
   const v = Number(n);
@@ -118,7 +163,7 @@ function aBytes(partes) {
   const out = new Uint8Array(largo);
   let i = 0;
   for (const p of partes) {
-    for (let k = 0; k < p.length; k += 1) out[i] = p.charCodeAt(k) & 0xff;
+    for (let k = 0; k < p.length; k += 1) out[i + k] = p.charCodeAt(k) & 0xff;
     i += p.length;
   }
   return out;
@@ -216,12 +261,13 @@ export function informePdf(spec) {
   const sitio = (alto) => {
     if (y - alto < abajo) salto();
   };
-  const texto = (value, x, yy, dim, negrita) => {
+  const comandoTexto = (value, x, yy, dim, negrita) => {
     const s = textoPdf(value);
-    if (!s) return;
-    ops.push(
-      `BT /${negrita ? "F2" : "F1"} ${dim} Tf 1 0 0 1 ${num(x)} ${num(yy)} Tm (${s}) Tj ET`
-    );
+    return s ? `BT /${negrita ? "F2" : "F1"} ${dim} Tf 1 0 0 1 ${num(x)} ${num(yy)} Tm (${s}) Tj ET` : "";
+  };
+  const texto = (value, x, yy, dim, negrita) => {
+    const comando = comandoTexto(value, x, yy, dim, negrita);
+    if (comando) ops.push(comando);
   };
   const rect = (x, yy, w, h, gris) => {
     ops.push(`${gris} ${gris} ${gris} rg ${num(x)} ${num(yy)} ${num(w)} ${num(h)} re f 0 0 0 rg`);
@@ -262,10 +308,12 @@ export function informePdf(spec) {
 
     if (tipo === "text") {
       const dim = Number(bloque.size) || 9.5;
-      const lineas = String(bloque.text == null ? "" : bloque.text).split("\n");
+      const lineas = String(bloque.text == null ? "" : bloque.text)
+        .split(/\r?\n/)
+        .flatMap((linea) => ajustaLineas(linea, ancho, dim, !!bloque.bold));
       for (const linea of lineas) {
         sitio(dim + 6);
-        texto(recorta(linea, ancho, dim, !!bloque.bold), izq, y - dim, dim, !!bloque.bold);
+        texto(linea, izq, y - dim, dim, !!bloque.bold);
         y -= dim + 4;
       }
       continue;
@@ -300,10 +348,26 @@ export function informePdf(spec) {
       sitio(46);
       cabecera();
 
-      for (const fila of bloque.rows || []) {
+      // Optional multiline rows for exports: keep all text, including OCR warnings.
+      const renderedRows = [];
+      for (const row of bloque.rows || []) {
+        if (!bloque.wrap) { renderedRows.push(row); continue; }
+        const cells = Array.isArray(row) ? row : row.cells || [];
+        const rowSize = !Array.isArray(row) && Number(row.size) ? Number(row.size) : dim;
+        const rowBold = !Array.isArray(row) && !!row.bold;
+        const wrapped = columnas.map((column, i) => {
+          return ajustaLineas(cells[i] ?? "", anchos[i] - 10, rowSize, rowBold);
+        });
+        const count = Math.max(...wrapped.map((lines) => lines.length));
+        for (let i = 0; i < count; i++) renderedRows.push({
+          ...(Array.isArray(row) ? {} : row), cells: wrapped.map((lines) => lines[i] || ""),
+        });
+      }
+      for (const fila of renderedRows) {
         const celdas = Array.isArray(fila) ? fila : fila.cells || [];
         const negrita = !Array.isArray(fila) && !!fila.bold;
         const sombra = !Array.isArray(fila) && !!fila.shade;
+        const dimFila = !Array.isArray(fila) && Number(fila.size) ? Number(fila.size) : dim;
         if (y - alto < abajo) {
           salto();
           cabecera();
@@ -311,12 +375,12 @@ export function informePdf(spec) {
         if (sombra) rect(izq, y - alto, ancho, alto, 0.955);
         columnas.forEach((c, i) => {
           const bruto = celdas[i];
-          const t = recorta(bruto == null ? "" : String(bruto), anchos[i] - 8, dim, negrita);
+          const t = recorta(bruto == null ? "" : String(bruto), anchos[i] - 8, dimFila, negrita);
           const x =
             c.align === "right"
-              ? xs[i] + anchos[i] - 4 - anchoTexto(t, dim, negrita)
+              ? xs[i] + anchos[i] - 4 - anchoTexto(t, dimFila, negrita)
               : xs[i] + 4;
-          texto(t, x, y - (alto - 4), dim, negrita);
+          texto(t, x, y - (alto - 4), dimFila, negrita);
         });
         raya(izq, y - alto, der, y - alto, 0.88);
         y -= alto;
@@ -341,10 +405,12 @@ export function informePdf(spec) {
   const cuantas = hojas.length;
   hojas.forEach((hoja, i) => {
     hoja.push(`0.85 0.85 0.85 RG 0.6 w ${num(izq)} ${num(MARGEN + 12)} m ${num(der)} ${num(MARGEN + 12)} l S 0 0 0 RG`);
-    texto(recorta(datos.footer || datos.title || "", ancho - 70, 7.5, false), izq, MARGEN, 7.5, false);
+    const pie = comandoTexto(recorta(datos.footer || datos.title || "", ancho - 70, 7.5, false), izq, MARGEN, 7.5, false);
     const derecha = `Página ${i + 1} de ${cuantas}`;
     const x = der - anchoTexto(derecha, 7.5, false);
-    texto(derecha, x, MARGEN, 7.5, false);
+    const pagina = comandoTexto(derecha, x, MARGEN, 7.5, false);
+    if (pie) hoja.push(pie);
+    if (pagina) hoja.push(pagina);
   });
 
   return {

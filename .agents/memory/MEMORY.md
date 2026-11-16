@@ -7,3 +7,6 @@
 - [Categorías de terceros](third-party-categories.md) — separar empleados y acreedores de proveedores.
 - [Elección previa del importador](import-type-choice.md) — ver el original y elegir el tipo antes de extraer; revisión específica sin mezclar datos entre tipos.
 - [Fechas de Gmail](gmail-date-ranges.md) — intervalo de recepción inclusivo en horario canario; incluir abiertos y no leídos sin duplicar documentos.
+- [Financiación y documentos fiscales](financing-and-tax-documents.md) — préstamos con corto y largo plazo separados; IGIC, recibos y pólizas no deben duplicar gastos ni pagos.
+- [Cuentas contables de seis cifras](account-codes.md) — usar códigos de seis cifras en todos los asientos y permitir cuentas manuales para la apertura.
+- [Acceso autorizado por administración](authorized-users.md) — una sola contabilidad compartida, sin registro público y con altas aprobadas por administración.

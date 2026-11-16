@@ -12,12 +12,14 @@
  */
 
 import { round2 } from "./util.js";
+import { isFinancial, financialDirection, financialHasCash } from "./financial-documents.js";
 
 /** Tipos de documento que son dinero que entra. */
 const TIPOS_ENTRADA = ["LIQUIDACION", "SUBVENCION", "COBRO", "VENTA"];
 
 /** ¿Este documento es dinero que entra? Manda el sentido; si no lo tiene, el tipo. */
 export function esEntrada(doc) {
+  if (isFinancial(doc?.kind)) return financialDirection(doc.kind, doc.financial) === "INGRESO";
   const sentido = String((doc && doc.direction) || "").toUpperCase();
   if (sentido === "INGRESO") return true;
   if (sentido === "GASTO") return false;
@@ -27,7 +29,7 @@ export function esEntrada(doc) {
 /** Un documento que solo mueve dinero, sin ser una factura con su IGIC. */
 function soloDinero(doc) {
   const tipo = String((doc && doc.kind) || "").toUpperCase();
-  return tipo === "COBRO" || tipo === "PAGO";
+  return tipo === "COBRO" || tipo === "PAGO" || isFinancial(tipo);
 }
 
 /** La fecha del documento: la de emisión; si no la tiene, la de alta. */
@@ -163,6 +165,7 @@ export function tesoreriaPorCuenta(docs, opts) {
 
   for (const doc of docs || []) {
     const amount = importeDe(doc);
+    if (!financialHasCash(doc)) continue;
     if (!estaPagado(doc)) {
       pendientes.count += 1;
       pendientes.amount = round2(pendientes.amount + amount);
@@ -248,6 +251,7 @@ export function vencimientos(docs, opts) {
   const pagos = cestaVacia();
 
   for (const doc of docs || []) {
+    if (!financialHasCash(doc)) continue;
     if (estaPagado(doc)) continue;
     const amount = importeDe(doc);
     const destino = esEntrada(doc) ? cobros : pagos;

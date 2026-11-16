@@ -55,6 +55,6 @@ test("una nómina nunca contabiliza IGIC, aunque un dato antiguo lo indique", ()
     to: "2026-10-31",
   });
   const accounts = entries.flatMap((entry) => entry.lines.map((line) => line.account));
-  assert.equal(accounts.includes("472"), false);
-  assert.equal(accounts.includes("477"), false);
+  assert.equal(accounts.includes("472000"), false);
+  assert.equal(accounts.includes("477000"), false);
 });

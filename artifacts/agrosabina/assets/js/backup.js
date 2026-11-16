@@ -45,7 +45,7 @@ export function validateBackup(data) {
         inv.lines.some((line) => !object(line) || !amount(line.base) || !amount(line.rate)))) {
       fail("desglose de IGIC incorrecto");
     }
-    for (const key of ["nomina", "liquidacion", "original"]) {
+    for (const key of ["nomina", "liquidacion", "original", "financial"]) {
       if (inv[key] != null && !object(inv[key])) fail(`datos incorrectos en ${key}`);
     }
   }
