@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { buildGmailSearchQuery, decodeGmailRaw } from "../assets/js/gmail.js";
+import { buildGmailSearchQuery, gmailDateBounds, gmailMessageInRange, connectGmail, disconnectGmail, fetchRecentGmailFiles, decodeGmailRaw } from "../assets/js/gmail.js";
 import { emailDocumentFiles, parseEml } from "../assets/js/mail.js";
 
 test("decodifica el correo raw base64url de Gmail en UTF-8", () => {
@@ -13,12 +13,115 @@ test("decodifica el correo raw base64url de Gmail en UTF-8", () => {
 test("filtra Gmail por intervalo inclusivo y solo busca correos con adjuntos", () => {
   assert.equal(
     buildGmailSearchQuery({ from: "2026-10-01", to: "2026-10-31" }),
-    "has:attachment after:2026/10/01 before:2026/11/01",
+    `has:attachment after:${Date.parse("2026-09-30T23:00:00Z") / 1000 - 1} before:${Date.parse("2026-11-01T00:00:00Z") / 1000}`,
   );
   assert.throws(
     () => buildGmailSearchQuery({ from: "2026-11-01", to: "2026-10-31" }),
     /posterior/,
   );
+});
+
+test("ambos días completos, un solo día y cambios de horario de Canarias", () => {
+  const sameDay = gmailDateBounds({ from: "2026-07-15", to: "2026-07-15" });
+  assert.equal(sameDay.start, Date.parse("2026-07-14T23:00:00Z"));
+  assert.equal(sameDay.end, Date.parse("2026-07-15T23:00:00Z"));
+  assert.equal(gmailMessageInRange(sameDay.start - 1, sameDay), false);
+  assert.equal(gmailMessageInRange(String(sameDay.start), sameDay), true);
+  assert.equal(gmailMessageInRange(sameDay.end - 1, sameDay), true);
+  assert.equal(gmailMessageInRange(sameDay.end, sameDay), false);
+  assert.equal(gmailMessageInRange("", sameDay), false);
+  assert.equal(gmailMessageInRange("sin fecha", sameDay), false);
+  const spring = gmailDateBounds({ from: "2026-03-29", to: "2026-03-29" });
+  assert.equal(spring.end - spring.start, 23 * 3600000);
+  const autumn = gmailDateBounds({ from: "2026-10-25", to: "2026-10-25" });
+  assert.equal(autumn.end - autumn.start, 25 * 3600000);
+  const yearEnd = gmailDateBounds({ from: "2026-12-31", to: "2026-12-31" });
+  assert.equal(yearEnd.end, Date.parse("2027-01-01T00:00:00Z"));
+  assert.doesNotThrow(() => gmailDateBounds({ from: "2024-02-29", to: "2024-02-29" }));
+  for (const invalid of ["2026-02-29", "2026-04-31", "2026-13-01", "2026-10", "ayer"]) {
+    assert.throws(() => buildGmailSearchQuery({ from: invalid, to: "2026-12-31" }), /válida/);
+  }
+});
+
+async function mockConnectedGmail(t, handler) {
+  const previousWindow = globalThis.window;
+  globalThis.window = { google: { accounts: { oauth2: {
+    initTokenClient: (config) => ({
+      requestAccessToken() { config.callback({ access_token: "synthetic-test-token", expires_in: 3600 }); },
+    }),
+    revoke: (_, callback) => callback(),
+  } } } };
+  t.mock.method(globalThis, "fetch", async (url) => ({
+    ok: true, status: 200,
+    json: async () => String(url).endsWith("/profile")
+      ? { emailAddress: "synthetic@example.test" }
+      : handler(new URL(url)),
+  }));
+  t.after(async () => {
+    await disconnectGmail();
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+  });
+  await connectGmail("synthetic-client");
+}
+
+test("la descarga real del cliente incluye leídos y no leídos, excluye extremos exteriores y usa recepción", async (t) => {
+  const range = { from: "2026-10-01", to: "2026-10-31" };
+  const { start, end } = gmailDateBounds(range);
+  const queries = [];
+  const raw = Buffer.from("Date: Thu, 1 Jan 1998 00:00:00 +0000\r\nSubject: asunto sin relación con el intervalo\r\n\r\nSolo un mensaje sintético.").toString("base64url");
+  const data = {
+    opened: { internalDate: String(start), labelIds: ["INBOX"], raw },
+    unread: { internalDate: String(end - 1), labelIds: ["INBOX", "UNREAD"], raw },
+    previous: { internalDate: String(start - 1), raw },
+    next: { internalDate: String(end), raw },
+    undated: { raw },
+  };
+  await mockConnectedGmail(t, (url) => {
+    if (url.pathname.endsWith("/messages")) {
+      queries.push(url.searchParams.get("q"));
+      return { messages: Object.keys(data).map((id) => ({ id })) };
+    }
+    return data[url.pathname.split("/").pop()];
+  });
+  const result = await fetchRecentGmailFiles([], range);
+  assert.deepEqual(result.files.map((file) => file.gmailMessageId), ["opened", "unread"]);
+  assert.deepEqual(result.messageIds, ["opened", "unread"]);
+  assert.equal(result.skippedOutsideRange, 3);
+  assert.equal(result.files[0].gmailReceivedAt, new Date(start).toISOString());
+  assert.match(await result.files[0].text(), /1998/);
+  assert.equal(queries[0], buildGmailSearchQuery(range));
+  assert.doesNotMatch(queries[0], /is:(unread|read)|label:unread|-is:read/i);
+});
+
+test("mantiene el intervalo en todas las páginas y lotes sin volver a descargar los revisados", async (t) => {
+  const range = { from: "2026-01-01", to: "2026-01-31" };
+  const { start } = gmailDateBounds(range);
+  const queries = [];
+  const downloaded = [];
+  const raw = Buffer.from("Subject: adjunto sintético\r\n\r\nOriginal.").toString("base64url");
+  const candidates = Array.from({ length: 12 }, (_, index) => ({ id: `message${index}` }));
+  await mockConnectedGmail(t, (url) => {
+    if (url.pathname.endsWith("/messages")) {
+      queries.push(url.searchParams.get("q"));
+      return url.searchParams.get("pageToken") === "page2"
+        ? { messages: candidates }
+        : { messages: [{ id: "previously-reviewed" }], nextPageToken: "page2" };
+    }
+    const id = url.pathname.split("/").pop();
+    downloaded.push(id);
+    return { internalDate: String(start + 1000), raw, labelIds: ["INBOX"] };
+  });
+  const first = await fetchRecentGmailFiles(["previously-reviewed"], range);
+  assert.equal(first.files.length, 10);
+  assert.equal(first.hasMore, true);
+  const second = await fetchRecentGmailFiles(["previously-reviewed", ...first.messageIds], range);
+  assert.equal(second.files.length, 2);
+  assert.equal(second.hasMore, false);
+  assert.equal(new Set(downloaded).size, 12);
+  assert.equal(downloaded.length, 12);
+  assert.equal(queries.length, 4);
+  assert.ok(queries.every((query) => query === buildGmailSearchQuery(range)));
 });
 
 test("el correo raw de Gmail conserva el PDF para la revisión existente", async () => {

@@ -14,6 +14,7 @@ const MAX_LIST_PAGE_SIZE = 500;
 const MAX_LIST_PAGES = 20;
 const MAX_RAW_MESSAGE_BYTES = 10 * 1024 * 1024;
 const MAX_TOTAL_RAW_BYTES = 30 * 1024 * 1024;
+export const GMAIL_DATE_TIME_ZONE = "Atlantic/Canary";
 
 function nextIsoDate(value) {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
@@ -29,17 +30,50 @@ function isValidIsoDate(value) {
 }
 
 export function buildGmailSearchQuery({ from = "", to = "" } = {}) {
+  const { start, end } = gmailDateBounds({ from, to });
   const query = ["has:attachment"];
+  // Gmail interprets date-only operators in its own timezone. Epoch seconds
+  // express Canary midnights unambiguously, including summer time.
+  if (start != null) query.push(`after:${Math.floor(start / 1000) - 1}`);
+  if (end != null) query.push(`before:${Math.floor(end / 1000)}`);
+  return query.join(" ");
+}
+
+function canaryMidnight(value) {
+  const [year, month, day] = value.split("-").map(Number);
+  const target = Date.UTC(year, month - 1, day);
+  const formatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone: GMAIL_DATE_TIME_ZONE, year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23",
+  });
+  let instant = target;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const parts = Object.fromEntries(formatter.formatToParts(instant).map(({ type, value }) => [type, value]));
+    const local = Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day),
+      Number(parts.hour), Number(parts.minute), Number(parts.second));
+    const adjustment = target - local;
+    instant += adjustment;
+    if (!adjustment) break;
+  }
+  return instant;
+}
+
+export function gmailDateBounds({ from = "", to = "" } = {}) {
   if (from && !isValidIsoDate(from)) throw new Error("La fecha inicial de Gmail no es válida.");
   if (to && !isValidIsoDate(to)) throw new Error("La fecha final de Gmail no es válida.");
   if (from && to && from > to) throw new Error("La fecha inicial no puede ser posterior a la fecha final.");
-  if (from) query.push(`after:${String(from).replace(/-/g, "/")}`);
-  if (to) {
-    const exclusiveEnd = nextIsoDate(to);
-    if (!exclusiveEnd) throw new Error("La fecha final de Gmail no es válida.");
-    query.push(`before:${exclusiveEnd.replace(/-/g, "/")}`);
-  }
-  return query.join(" ");
+  return {
+    start: from ? canaryMidnight(from) : null,
+    end: to ? canaryMidnight(nextIsoDate(to)) : null,
+  };
+}
+
+export function gmailMessageInRange(internalDate, bounds) {
+  if (internalDate == null || internalDate === "") return false;
+  const received = Number(internalDate);
+  return Number.isFinite(received) &&
+    (bounds.start == null || received >= bounds.start) &&
+    (bounds.end == null || received < bounds.end);
 }
 
 let scriptPromise = null;
@@ -221,6 +255,9 @@ export function decodeGmailRaw(raw) {
 }
 
 export async function fetchRecentGmailFiles(importedIds = [], dateRange = null) {
+  // Validate and freeze the query before requesting any page.
+  const bounds = dateRange ? gmailDateBounds(dateRange) : null;
+  const query = dateRange ? buildGmailSearchQuery(dateRange) : "has:attachment newer_than:90d";
   const alreadyImported = new Set(Array.isArray(importedIds) ? importedIds : []);
   const found = [];
   const newMessages = [];
@@ -229,9 +266,7 @@ export async function fetchRecentGmailFiles(importedIds = [], dateRange = null) 
 
   while (pagesScanned < MAX_LIST_PAGES && newMessages.length < MAX_RESULTS) {
     const params = new URLSearchParams({
-      q: dateRange
-        ? buildGmailSearchQuery(dateRange)
-        : "has:attachment newer_than:90d",
+      q: query,
       maxResults: String(MAX_LIST_PAGE_SIZE),
     });
     if (pageToken) params.set("pageToken", pageToken);
@@ -251,9 +286,16 @@ export async function fetchRecentGmailFiles(importedIds = [], dateRange = null) 
   let skippedLarge = 0;
   let skippedMalformed = 0;
   let totalRawBytes = 0;
+  let skippedOutsideRange = 0;
+  const messageIds = [];
 
   for (const summary of newMessages.slice(0, MAX_RESULTS)) {
     const message = await gmailRequest(`/messages/${encodeURIComponent(summary.id)}?format=raw`);
+    if (bounds && !gmailMessageInRange(message.internalDate, bounds)) {
+      skippedOutsideRange++;
+      continue;
+    }
+    messageIds.push(String(summary.id));
     if (!message.raw) {
       skippedMalformed++;
       continue;
@@ -271,16 +313,20 @@ export async function fetchRecentGmailFiles(importedIds = [], dateRange = null) 
     }
     const file = new File([raw], `gmail-${summary.id}.eml`, { type: "message/rfc822" });
     Object.defineProperty(file, "gmailMessageId", { value: summary.id });
+    if (message.internalDate != null && Number.isFinite(Number(message.internalDate))) {
+      Object.defineProperty(file, "gmailReceivedAt", { value: new Date(Number(message.internalDate)).toISOString() });
+    }
     files.push(file);
   }
 
   return {
     files,
-    messageIds: newMessages.slice(0, MAX_RESULTS).map((message) => String(message.id || "")).filter(Boolean),
+    messageIds,
     foundCount: found.length,
     alreadyImportedCount: found.filter((message) => message.id && alreadyImported.has(message.id)).length,
     skippedLarge,
     skippedMalformed,
+    skippedOutsideRange,
     hasMore: !!pageToken || found.filter((message) => message.id && !alreadyImported.has(message.id)).length > MAX_RESULTS,
   };
 }

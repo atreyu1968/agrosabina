@@ -92,6 +92,7 @@ import {
   fetchRecentGmailFiles,
   gmailStatus,
   prepareGmail,
+  GMAIL_DATE_TIME_ZONE,
 } from "./gmail.js";
 import {
   asientosDe,
@@ -2204,7 +2205,7 @@ function mailDateText(raw) {
   if (!raw) return "";
   const d = new Date(raw);
   if (Number.isNaN(d.getTime())) return String(raw).slice(0, 40);
-  return d.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return d.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: GMAIL_DATE_TIME_ZONE });
 }
 
 function mailRow(m) {
@@ -2308,7 +2309,7 @@ function gmailConnectionCard() {
         </button>
         <button class="btn ghost" data-action="gmail-disconnect" ${gmailBusy ? "disabled" : ""}>Desconectar</button>
       </div>
-      <p class="subtle">Solo se buscan correos con adjuntos. Podrás ver cada original y elegir qué documentos importar.</p>
+      <p class="subtle">Incluye correos abiertos y no leídos, siempre con adjuntos. Fechas de recepción del correo, incluidos ambos días completos, en horario de Canarias. No son las fechas de las facturas adjuntas; estas se comprueban al guardar en su ejercicio.</p>
       ${gmailPreviewHasMore && !gmailPreviewItems.length ? `<p class="subtle">Quedan más correos en este intervalo; busca otra vez después de revisar el lote.</p>` : ""}
       ${gmailPreviewItems.length ? `<p class="subtle">Revisa o descarta los adjuntos encontrados antes de hacer otra búsqueda.</p>` : ""}`;
   } else if (gmailSdkError) {
@@ -6417,6 +6418,8 @@ export async function onAction(action, el) {
             toast(`${result.skippedLarge} correo${result.skippedLarge === 1 ? "" : "s"} supera${result.skippedLarge === 1 ? "" : "n"} el límite de tamaño y no se ha importado.`, "warn", 7000);
           } else if (result.skippedMalformed) {
             toast(`${result.skippedMalformed} correo${result.skippedMalformed === 1 ? "" : "s"} no se ha${result.skippedMalformed === 1 ? "" : "n"} podido leer. Descárgalo${result.skippedMalformed === 1 ? "" : "s"} como .eml para probar de nuevo.`, "warn", 7000);
+          } else if (result.skippedOutsideRange) {
+            toast("Gmail devolvió correos fuera del intervalo o sin fecha de recepción verificable. Se han excluido por seguridad.", "warn", 7500);
           } else if (!result.foundCount) {
             toast("No he encontrado correos con adjuntos en ese intervalo.");
           } else {
@@ -6440,7 +6443,7 @@ export async function onAction(action, el) {
                 id: String(eml.gmailMessageId || uid()),
                 subject: message.subject,
                 from: message.from,
-                date: message.date,
+                date: eml.gmailReceivedAt || message.date,
                 attachments,
               });
             } else {
