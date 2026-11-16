@@ -774,7 +774,7 @@ function docResults() {
     ${list.length ? "" : vacio}`;
 }
 
-function mobileUploadInboxHtml() {
+function mobileImportInboxHtml() {
   const inbox = Array.isArray(getState().settings?.mobileDocumentInbox)
     ? getState().settings.mobileDocumentInbox
     : [];
@@ -787,8 +787,8 @@ function mobileUploadInboxHtml() {
       <div class="row wrap" style="align-items:flex-start;justify-content:space-between;gap:10px">
         <div>
           <p class="eyebrow">Capturados desde el móvil</p>
-          <h2 style="font-size:18px;margin:2px 0 4px">Documentos pendientes de revisión</h2>
-          <p class="muted" style="font-size:13px">Se guardan como originales y no se contabilizan hasta que selecciones su tipo.</p>
+          <h2 style="font-size:18px;margin:2px 0 4px">Pendientes de importar</h2>
+          <p class="muted" style="font-size:13px">Elige un documento para ver el original y seleccionar su tipo antes de leerlo.</p>
         </div>
         <span class="pill">${inbox.length} pendientes</span>
       </div>
@@ -799,17 +799,73 @@ function mobileUploadInboxHtml() {
               <strong style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(file.name || "Documento sin nombre")}</strong>
               <span class="muted" style="font-size:12px">${esc(file.type || "Archivo")} · ${file.savedAt ? fmtDate(String(file.savedAt).slice(0, 10)) : "Fecha no indicada"}</span>
             </div>
-            <button class="btn sm" type="button" data-action="view-mobile-upload" data-id="${esc(file.id)}">Ver original</button>
+            <div class="row wrap" style="gap:7px">
+              <button class="btn sm ghost" type="button" data-action="view-mobile-upload" data-id="${esc(file.id)}">Ver original</button>
+              <button class="btn sm primary" type="button" data-action="import-mobile-upload" data-id="${esc(file.id)}">Importar documento</button>
+            </div>
           </div>`).join("")}
       </div>
       ${inbox.length > visible.length ? `<p class="hint" style="margin-top:8px">Se muestran los 20 documentos más recientes.</p>` : ""}
     </section>`;
 }
 
+async function importMobileUpload(fileId) {
+  const inbox = Array.isArray(getState().settings?.mobileDocumentInbox)
+    ? getState().settings.mobileDocumentInbox
+    : [];
+  const item = inbox.find((file) => String(file.id) === String(fileId));
+  if (!item) {
+    toast("Ese documento ya no está en la bandeja móvil. Recarga la sección e inténtalo de nuevo.", "warn");
+    return;
+  }
+  try {
+    if (typeof File === "undefined") throw new Error("Este navegador no puede preparar el archivo para importarlo.");
+    const original = await originalOf(item.id);
+    if (!original?.blob) throw new Error("No se encontró el original en el almacén compartido.");
+    const name = String(item.name || original.name || "documento móvil");
+    const type = String(item.type || original.type || original.blob.type || "application/octet-stream");
+    const file = new File([original.blob], name, { type });
+    queueFiles([file], {
+      mobileInboxId: String(item.id),
+      fileHash: String(item.sha256 || original.sha256 || ""),
+    });
+  } catch (error) {
+    toast(error instanceof Error ? error.message : "No se pudo preparar el original móvil para importarlo.", "bad", 7000);
+  }
+}
+
+async function removeImportedMobileUpload(job, invoice) {
+  const fileId = String(job?.mobileInboxId || "");
+  if (!fileId) return;
+  if (!invoice?.original) {
+    toast("El documento se importó, pero su original aún no está guardado en la ficha. Se conserva en Pendientes de importar.", "warn", 8000);
+    return;
+  }
+  const inbox = Array.isArray(getState().settings?.mobileDocumentInbox)
+    ? getState().settings.mobileDocumentInbox
+    : [];
+  const remaining = inbox.filter((item) => String(item.id) !== fileId);
+  if (remaining.length === inbox.length) return;
+  if (!updateSettings({ mobileDocumentInbox: remaining })) {
+    toast("El documento se importó, pero no se pudo retirar de la bandeja móvil. No lo vuelvas a importar.", "warn", 8000);
+    return;
+  }
+  if (!(await flush())) {
+    toast("El documento se importó, pero no se confirmó la actualización de la bandeja. No lo vuelvas a importar; recarga y compruébala.", "warn", 9000);
+    return;
+  }
+  try {
+    await dropOriginal(fileId);
+    job.mobileInboxId = "";
+  } catch {
+    toast("El documento se importó y ya está en Documentos, pero quedó una copia temporal en la bandeja móvil.", "warn", 8000);
+  }
+}
+
 function viewDocumentos() {
   const state = getState();
   if (!state.invoices.length) {
-    return `${mobileUploadInboxHtml()}<section class="card">
+    return `<section class="card">
       <div class="empty">
         <div class="e-icon">${icon("folder")}</div>
         <h3>Todavía no hay documentos</h3>
@@ -823,7 +879,6 @@ function viewDocumentos() {
   }
   return `
     <div class="stack">
-      ${mobileUploadInboxHtml()}
       <section class="card">${docsFilters()}</section>
       <div id="docResults">${docResults()}</div>
     </div>`;
@@ -3469,6 +3524,8 @@ function openEmailImportModal() {
 function viewImportar() {
   const defaultRate = getState().settings.defaultRate;
   return `
+  <div class="stack">
+  ${mobileImportInboxHtml()}
   <section class="card">
     <div class="empty" style="padding:46px 24px">
       <div class="e-icon">${icon("upload")}</div>
@@ -3481,7 +3538,8 @@ function viewImportar() {
       </div>
       <p class="hint" style="margin-top:16px">IGIC por defecto: ${rateText(defaultRate)}. Puedes corregirlo en la revisión de cada documento.</p>
     </div>
-  </section>`;
+  </section>
+  </div>`;
 }
 
 /* ---- lista de ficheros de esta sesión ---- */
@@ -3543,7 +3601,7 @@ function paintIngest() {
 
 let runningQueue = false;
 
-export function queueFiles(files) {
+export function queueFiles(files, options = {}) {
   const list = [...files].filter(Boolean);
   if (!list.length) return;
 
@@ -3565,13 +3623,18 @@ export function queueFiles(files) {
       ignored.push(file.name);
       continue;
     }
-    ui.jobs.push({
+    const job = {
       id: `job_${Math.random().toString(36).slice(2, 9)}`,
       file,
       state: "queued",
       pct: 0,
       stage: "En cola",
-    });
+    };
+    if (list.length === 1 && options.mobileInboxId) {
+      job.mobileInboxId = String(options.mobileInboxId);
+      job.fileHash = String(options.fileHash || "");
+    }
+    ui.jobs.push(job);
   }
   if (ignored.length) {
     toast(`No sé leer ${ignored.length === 1 ? "este archivo" : "estos archivos"} (${ignored.slice(0, 2).join(", ")}). Solo fotos y PDF.`, "bad", 5200);
@@ -6401,6 +6464,7 @@ async function reviewJob(job) {
     if (job.mailMessageId) markMessageUsed(job.mailMessageId);
     job.state = "saved";
     job.savedLabel = `Guardada como ${res.invoice.number || "sin número"} · ${fmtEUR(res.invoice.total)}`;
+    await removeImportedMobileUpload(job, res.invoice);
   } else {
     job.state = "skipped";
   }
@@ -7324,6 +7388,9 @@ export async function onAction(action, el) {
     }
     case "import-files":
       openImportModal();
+      return;
+    case "import-mobile-upload":
+      await importMobileUpload(el?.dataset.id || "");
       return;
     case "import-files-select": {
       const picker = document.getElementById("filePicker");

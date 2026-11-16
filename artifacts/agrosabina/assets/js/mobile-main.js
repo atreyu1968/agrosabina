@@ -226,7 +226,7 @@ async function uploadSelectedFiles(fileList) {
       const synchronized = await flush();
       uploaded += 1;
       if (!synchronized) {
-        uploadSyncAlert = "El original se guardó, pero la bandeja no se pudo sincronizar. No lo vuelvas a subir; recarga y revisa Documentos.";
+        uploadSyncAlert = "El original se guardó, pero la bandeja no se pudo sincronizar. No lo vuelvas a subir; recarga y revisa Importar.";
         notices.push(`${file.name}: guardado, pendiente de confirmar la sincronización.`);
       } else {
         uploadSyncAlert = "";
