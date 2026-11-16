@@ -255,6 +255,7 @@ const ROUTES = [
   "correo",
   "importar",
   "pruebas",
+  "movil",
 ];
 
 
