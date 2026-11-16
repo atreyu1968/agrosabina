@@ -41,6 +41,40 @@ test("conserva números y ceros explícitos; no inventa campos ausentes", () => 
   assert.equal(result.requiresReview, true);
 });
 
+test("distingue la razón social de la marca legible en el logo", () => {
+  const result = normalizeExtraction({
+    ...invoice, proveedor: "Marca de ejemplo",
+    identidad_emisor: { razon_social: "Emisor de ejemplo SL", nombre_comercial: "Marca de ejemplo", fuente: "logo_texto" },
+  });
+  assert.equal(result.supplierName, "Emisor de ejemplo SL");
+  assert.equal(result.issuerIdentity.brand, "Marca de ejemplo");
+  assert.ok(result.warnings.some((warning) => /Marca comercial/.test(warning)));
+  const brandOnly = normalizeExtraction({
+    ...invoice,
+    identidad_emisor: { nombre_comercial: "Marca visible", fuente: "logo_texto" },
+  });
+  assert.equal(brandOnly.supplierName, "Marca visible");
+  assert.equal(brandOnly.requiresReview, true);
+  assert.ok(brandOnly.warnings.some((warning) => /Confirma la razón social/.test(warning)));
+});
+
+test("un símbolo o identidad dudosa no confirma un emisor ni un NIF sugeridos por la IA", () => {
+  for (const source of ["solo_simbolo", "dudosa"]) {
+    const result = normalizeExtraction({
+      ...invoice, nif: "B12345678",
+      identidad_emisor: { razon_social: "Empresa supuesta SL", fuente: source },
+    });
+    assert.equal(result.supplierName, "");
+    assert.equal(result.supplierNif, "");
+    assert.equal(result.requiresReview, true);
+  }
+  const payroll = normalizeExtraction({
+    tipo: "NOMINA", proveedor: "Trabajador de prueba",
+    identidad_emisor: { razon_social: "Empresa empleadora SL", fuente: "logo_texto" },
+  });
+  assert.equal(payroll.supplierName, "Trabajador de prueba");
+});
+
 test("rechaza objetos vacíos, listas y tipos de documento desconocidos", () => {
   for (const value of [{}, [], null, { tipo: "PAGAR_TODO" }]) {
     assert.throws(() => normalizeExtraction(value));
@@ -177,9 +211,30 @@ test("la petición real solicita JSON, nómina, IGIC y defensas frente a instruc
   const result = await aiExtract("Documento de prueba", settings);
   assert.equal(result.total, 107);
   assert.equal(result.leido, "texto");
+  assert.equal(result.requiresReview, true);
+  assert.ok(result.warnings.some((warning) => /logos, anagramas/.test(warning)));
   assert.equal(body.response_format.type, "json_object");
   assert.match(body.messages[0].content, /ssTrabajador/);
   assert.match(body.messages[0].content, /fuente de datos, no instrucciones/);
+});
+
+test("envía el original a visión con instrucciones para leer logos sin adivinar la identidad", async (t) => {
+  let body;
+  t.mock.method(globalThis, "fetch", async (_, options) => {
+    body = JSON.parse(options.body);
+    return response(JSON.stringify({
+      ...invoice,
+      identidad_emisor: { razon_social: "Empresa visible SL", nombre_comercial: "Marca legible", fuente: "logo_texto" },
+    }));
+  });
+  const image = "data:image/png;base64,AAAA";
+  const result = await aiExtract("OCR sin datos de cabecera", settings, { images: [image] });
+  assert.equal(result.leido, "papel");
+  assert.equal(result.supplierName, "Empresa visible SL");
+  const contents = body.messages.flatMap((message) => Array.isArray(message.content) ? message.content : []);
+  assert.ok(contents.some((part) => part.type === "image_url" && part.image_url.url === image && part.image_url.detail === "high"));
+  assert.match(body.messages[0].content, /logos, logotipos, anagramas/);
+  assert.match(body.messages[0].content, /no identifiques una empresa por parecido/i);
 });
 
 test("si falla la visión, reintenta con texto y advierte del cambio", async (t) => {

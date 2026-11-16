@@ -350,7 +350,7 @@ export async function aiExtract(
     } catch (err) {
       nota = `La IA no ha leído el documento en imágenes (${
         (err && err.message) || "sin respuesta"
-      }), así que le he mandado el texto que saqué del papel.`;
+      }), así que le he mandado el texto que saqué del papel. No se han comprobado visualmente los logos ni anagramas.`;
       if (typeof onNote === "function") onNote(nota);
       content = "";
     }
@@ -372,8 +372,13 @@ export async function aiExtract(
   if (!json || typeof json !== "object") throw new Error("La IA no ha devuelto los datos del documento.");
   const hojasLeidas = leido === "papel" ? pics.length : 0;
 
+  const result = normalizeExtraction(json);
+  if (leido !== "papel") {
+    result.warnings.push("Lectura solo de texto: no se han comprobado visualmente logos, anagramas ni datos del emisor integrados en imágenes. Revisa el original.");
+    result.requiresReview = true;
+  }
   return {
-    ...normalizeExtraction(json),
+    ...result,
     leido,
     hojas: hojasLeidas,
     note: nota,

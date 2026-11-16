@@ -3887,6 +3887,8 @@ async function applyAiDocument(job, text) {
     if (job.file && settings.aiReadDocument !== false) {
       const sacadas = await documentPageImages(job.file, {
         maxPages: pages ? Math.min(6, pages.length) : 6,
+        maxSide: 2200,
+        quality: 0.94,
         pages,
       });
       images = sacadas.images || [];
@@ -5839,9 +5841,9 @@ export function openSettings() {
         }>
         <span>
           <strong>Que la IA lea el papel tal cual</strong>, no solo el texto que saca el lector.<br>
-          <span class="hint">Le mando la foto o las hojas del PDF —hasta 4— y la IA lo mira y lo lee ella misma.
-          Es lo que mejor funciona con las tablas de importes, pero significa que el documento sale de este
-          ordenador y va al servicio de IA. Si lo desmarcas, solo le llega el texto ya leído.</span>
+          <span class="hint">Le mando la foto o las hojas del PDF —hasta 6— en color, incluidos logos, anagramas,
+          membretes y datos del emisor. Requiere un modelo con visión. El documento sale de este
+          ordenador y va al servicio de IA. Si lo desmarcas, solo le llega el texto ya leído y no podrá comprobar los logos.</span>
         </span>
       </label>
       <p style="font-size:12.5px;color:var(--ink-3);margin-bottom:12px">
